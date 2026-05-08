@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHC · Market Intelligence Cheat Sheet 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #06264f;
+  --navy-d: #030f24;
+  --navy-m: #0c3d7a;
+  --gold: #c9993f;
+  --gold-lt: #e0b86a;
+  --gold-dim: #9a7630;
+  --gold-bg: rgba(201,153,63,0.07);
+  --gold-line: rgba(201,153,63,0.22);
+  --ok: #1a6b40;
+  --ok-bg: rgba(26,107,64,0.07);
+  --warn: #b03030;
+  --warn-bg: rgba(176,48,48,0.07);
+  --ink: #0b1a2e;
+  --ink-2: #3a5068;
+  --ink-3: #7a90a4;
+  --border: rgba(6,38,79,0.1);
+  --border-md: rgba(6,38,79,0.18);
+  --bg: #ffffff;
+  --bg-2: #f5f7fb;
+  --bg-3: #edf0f6;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  background: #e8ecf4;
+  color: var(--ink);
+  padding: 20px;
+  min-height: 100vh;
+}
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+  background: var(--bg);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 12px 60px rgba(6,38,79,0.18);
+  border: 1px solid var(--border-md);
+}
+
+/* ── HEADER ── */
+.header {
+  background: var(--navy-d);
+  padding: 28px 36px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 280px; height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,153,63,.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+.header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.brand-row { display: flex; align-items: center; gap: 12px; }
+.brand-mark {
+  width: 40px; height: 40px;
+  border: 1.5px solid rgba(201,153,63,.45);
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+}
+.brand-mark svg { width: 20px; height: 20px; fill: var(--gold); }
+.brand-text {}
+.brand-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+.brand-sub {
+  font-size: 10px;
+  color: rgba(255,255,255,.4);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: 'IBM Plex Mono', monospace;
+}
+.doc-meta { text-align: right; }
+.doc-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 3px;
+}
+.doc-date {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: rgba(255,255,255,.35);
+}
+.header-headline {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+.header-sub {
+  font-size: 12.5px;
+  color: rgba(255,255,255,.45);
+  line-height: 1.6;
+}
+.source-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 4px 12px;
+  background: rgba(201,153,63,.12);
+  border: 1px solid rgba(201,153,63,.25);
+  border-radius: 20px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9.5px;
+  color: var(--gold);
+  letter-spacing: 0.08em;
+}
+
+/* ── BODY ── */
+.body { padding: 28px 36px 32px; display: flex; flex-direction: column; gap: 24px; }
+
+/* ── SECTION ── */
+.section {}
+.section-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-label::before {
+  content: '';
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: var(--gold);
+  flex-shrink: 0;
+}
+
+/* ── PRICE TABLE ── */
+.price-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.price-table thead tr { background: var(--navy); }
+.price-table th {
+  padding: 9px 14px;
+  text-align: left;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.55);
+  white-space: nowrap;
+}
+.price-table td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink);
+  vertical-align: middle;
+  line-height: 1.4;
+}
+.price-table tr:nth-child(even) td { background: var(--bg-2); }
+.price-table tr:last-child td { border-bottom: none; }
+.price-table .highlight td { background: rgba(201,153,63,.06) !important; }
+.price-table .highlight td:first-child { font-weight: 600; color: var(--navy); }
+.mono { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; }
+.tag {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+.tag.top { background: rgba(201,153,63,.12); color: var(--gold-dim); }
+.tag.mid { background: rgba(6,38,79,.07); color: var(--navy-m); }
+.tag.low { background: var(--bg-3); color: var(--ink-3); }
+
+/* ── STAT GRID ── */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+.stat-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.stat-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 5px;
+}
+.stat-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--navy);
+  line-height: 1;
+  margin-bottom: 3px;
+}
+.stat-sub { font-size: 11px; color: var(--ink-3); line-height: 1.4; }
+
+/* ── BUYER/RENTER ROW ── */
+.people-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.people-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.pc-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gold-dim);
+  margin-bottom: 10px;
+}
+.pc-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0;
+  font-size: 12px;
+  color: var(--ink-2);
+  border-bottom: 1px solid var(--border);
+}
+.pc-row:last-child { border-bottom: none; }
+.pc-row strong { color: var(--ink); font-weight: 500; }
+.pc-pct {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  color: var(--navy);
+  font-weight: 500;
+}
+
+/* ── ROI CASE STUDY ── */
+.roi-box {
+  background: var(--navy-d);
+  border-radius: 12px;
+  padding: 20px 22px;
+  position: relative;
+  overflow: hidden;
+}
+.roi-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), transparent 70%);
+}
+.roi-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.roi-subtitle {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 16px;
+}
+.roi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.roi-cell {
+  background: rgba(255,255,255,.05);
+  border-radius: 8px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,.07);
+}
+.roi-cell-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8.5px;
+  color: rgba(255,255,255,.4);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 4px;
+}
+.roi-cell-val {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255,255,255,.88);
+  line-height: 1.35;
+}
+.roi-cell-val.gold { color: var(--gold-lt); font-family: 'IBM Plex Mono', monospace; }
+.roi-summary {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.roi-pill {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid;
+}
+.roi-pill.total { background: rgba(201,153,63,.12); color: var(--gold-lt); border-color: rgba(201,153,63,.3); }
+.roi-pill.rate { background: rgba(26,107,64,.15); color: #5dd49a; border-color: rgba(93,212,154,.25); }
+.roi-disclaimer {
+  margin-top: 12px;
+  font-size: 11px;
+  color: rgba(255,255,255,.3);
+  font-style: italic;
+  line-height: 1.55;
+  border-top: 1px solid rgba(255,255,255,.06);
+  padding-top: 10px;
+}
+
+/* ── TAX BOX ── */
+.tax-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.tax-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.tax-head {
+  background: var(--navy);
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.tax-name {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9.5px;
+  font-weight: 500;
+  color: rgba(255,255,255,.7);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.tax-rate {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--gold-lt);
+  font-weight: 500;
+}
+.tax-body { padding: 10px 14px; background: var(--bg-2); }
+.tax-detail { font-size: 12px; color: var(--ink-2); line-height: 1.6; }
+.tax-example { font-size: 11px; color: var(--ink-3); margin-top: 5px; font-style: italic; }
+
+/* ── ALERT BOXES ── */
+.alert {
+  padding: 12px 16px;
+  border-radius: 8px;
+  border-left: 3px solid;
+  font-size: 13px;
+  line-height: 1.65;
+}
+.alert.warn { background: var(--warn-bg); border-color: var(--warn); color: #7a1f1f; }
+.alert.info { background: var(--gold-bg); border-color: var(--gold); color: var(--ink); }
+.alert strong { font-weight: 600; }
+.alert-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+/* ── RULES LIST ── */
+.rules-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.rule-row {
+  display: flex;
+  gap: 14px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  align-items: flex-start;
+  background: var(--bg);
+}
+.rule-row:last-child { border-bottom: none; }
+.rule-row:nth-child(even) { background: var(--bg-2); }
+.rule-num {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: var(--gold);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.rule-title { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 2px; }
+.rule-detail { font-size: 12px; color: var(--ink-2); line-height: 1.6; }
+
+/* ── BUYING PROCESS ── */
+.process-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+.process-step {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 8px;
+  text-align: center;
+}
+.ps-num {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: var(--gold);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 6px;
+}
+.ps-title { font-size: 10px; font-weight: 600; color: var(--ink); line-height: 1.3; margin-bottom: 3px; }
+.ps-detail { font-size: 9.5px; color: var(--ink-3); line-height: 1.4; }
+
+/* ── FOOTER ── */
+.footer {
+  background: var(--navy-d);
+  padding: 14px 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.footer-left { font-size: 10.5px; color: rgba(255,255,255,.35); line-height: 1.5; }
+.footer-right {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  color: rgba(255,255,255,.25);
+  text-align: right;
+  letter-spacing: 0.06em;
+}
+.footer-gold { color: var(--gold); font-weight: 500; }
+
+/* ── PRINT ── */
+@media print {
+  body { background: #fff; padding: 0; }
+  .page { border-radius: 0; box-shadow: none; border: none; }
+}
+@media (max-width: 680px) {
+  body { padding: 0; }
+  .page { border-radius: 0; }
+  .body { padding: 18px 16px; }
+  .header { padding: 20px 18px; }
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+  .roi-grid { grid-template-columns: 1fr 1fr; }
+  .people-grid { grid-template-columns: 1fr; }
+  .tax-grid { grid-template-columns: 1fr; }
+  .process-row { grid-template-columns: repeat(4, 1fr); }
+  .footer { flex-direction: column; gap: 6px; padding: 14px 18px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-top">
+      <div class="brand-row">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22" style="fill:none;stroke:#c9993f;stroke-width:1.5;stroke-linejoin:round"/></svg>
+        </div>
+        <div class="brand-text">
+          <div class="brand-name">Property Hub Cambodia</div>
+          <div class="brand-sub">カンボジア不動産 · Agent Reference</div>
+        </div>
+      </div>
+      <div class="doc-meta">
+        <div class="doc-title">Market Intelligence</div>
+        <div class="doc-date">2026 Edition</div>
+      </div>
+    </div>
+    <div class="header-headline">Market Intelligence Cheat Sheet</div>
+    <div class="header-sub">Numbers, benchmarks, and rules every PHC agent must know before any client conversation.</div>
+    <div class="source-badge">
+      <svg viewBox="0 0 16 16" width="10" height="10" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm.75 10.5h-1.5v-5h1.5v5zm0-6.5h-1.5V3.5h1.5V5z"/></svg>
+      All data sourced from REAKH Investment & Market Analysis Condominium Report 2025 · Official PHC listing partner
+    </div>
+    <div style="margin-top:10px;display:inline-flex;align-items:center;gap:6px;background:rgba(201,153,63,0.12);border:1px solid rgba(201,153,63,0.28);border-radius:6px;padding:5px 12px;font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:#c9993f;letter-spacing:0.04em;">
+      <svg viewBox="0 0 16 16" width="10" height="10" fill="currentColor"><path d="M8 0a8 8 0 100 16A8 8 0 008 0zm.5 4.5v4.25l3 1.5-.5 1L7.5 9.5V4.5h1z"/></svg>
+      Data as of: May 2026 &#8212; update monthly
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- MARKET SNAPSHOT -->
+    <div class="section">
+      <div class="section-label">Market Snapshot — Phnom Penh 2026</div>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-label">Avg price/sqm (PP)</div>
+          <div class="stat-value">$1,800</div>
+          <div class="stat-sub">Gross · all Phnom Penh</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">BKK1 avg price/sqm</div>
+          <div class="stat-value">$2,000</div>
+          <div class="stat-sub">Gross · all BKK1 tiers</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Transaction volume</div>
+          <div class="stat-value">+25%</div>
+          <div class="stat-sub">vs 2024 · market recovering</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total condo supply</div>
+          <div class="stat-value">60K+</div>
+          <div class="stat-sub">Units in Phnom Penh</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRICE & RENT BY DISTRICT -->
+    <div class="section">
+      <div class="section-label">Price & Rent by District — Source: REAKH 2025</div>
+      <table class="price-table">
+        <thead>
+          <tr>
+            <th>District</th>
+            <th>Buy $/sqm (gross)</th>
+            <th>1BR rent/mo</th>
+            <th>2BR rent/mo</th>
+            <th>3BR rent/mo</th>
+            <th>Tier</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="highlight">
+            <td><strong>BKK1</strong></td>
+            <td class="mono">$2,000</td>
+            <td class="mono">$800</td>
+            <td class="mono">$1,450</td>
+            <td class="mono">$2,550</td>
+            <td><span class="tag top">Premium</span></td>
+          </tr>
+          <tr class="highlight">
+            <td><strong>Tonle Bassac</strong></td>
+            <td class="mono">$2,500</td>
+            <td class="mono">$600</td>
+            <td class="mono">$1,000</td>
+            <td class="mono">$1,550</td>
+            <td><span class="tag top">Premium</span></td>
+          </tr>
+          <tr>
+            <td>Daun Penh</td>
+            <td class="mono">$2,000</td>
+            <td class="mono">$500</td>
+            <td class="mono">$900</td>
+            <td class="mono">$1,500</td>
+            <td><span class="tag mid">Mid-High</span></td>
+          </tr>
+          <tr>
+            <td>Chroy Changvar</td>
+            <td class="mono">$1,700</td>
+            <td class="mono">$450</td>
+            <td class="mono">$900</td>
+            <td class="mono">$1,800</td>
+            <td><span class="tag mid">Mid-High</span></td>
+          </tr>
+          <tr>
+            <td>Toul Kork</td>
+            <td class="mono">$1,450</td>
+            <td class="mono">$500</td>
+            <td class="mono">$900</td>
+            <td class="mono">$1,500</td>
+            <td><span class="tag mid">Mid</span></td>
+          </tr>
+          <tr>
+            <td>BKK3</td>
+            <td class="mono">$1,600</td>
+            <td class="mono">$550</td>
+            <td class="mono">$900</td>
+            <td class="mono">$1,200</td>
+            <td><span class="tag mid">Mid</span></td>
+          </tr>
+          <tr>
+            <td>Toul Tompoung (TTP)</td>
+            <td class="mono">$1,200</td>
+            <td class="mono">$450</td>
+            <td class="mono">$800</td>
+            <td class="mono">$1,300</td>
+            <td><span class="tag low">Entry</span></td>
+          </tr>
+          <tr>
+            <td>Sen Sok</td>
+            <td class="mono">$1,100</td>
+            <td class="mono">$400</td>
+            <td class="mono">$650</td>
+            <td class="mono">$950</td>
+            <td><span class="tag low">Entry</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top:8px;font-size:11px;color:var(--ink-3);font-style:italic;padding-left:4px">Rental prices reflect semi- to fully-serviced condo units (pool, gym, reception). Net vs gross size: average 20% difference. Prices are gross.</div>
+    </div>
+
+    <!-- BUYER & RENTER PROFILES -->
+    <div class="section">
+      <div class="section-label">Who's Buying & Who's Renting — Source: REAKH 2025</div>
+      <div class="people-grid">
+        <div class="people-card">
+          <div class="pc-title">🏠 Condo Buyers by Nationality</div>
+          <div class="pc-row"><strong>🇰🇭 Cambodian</strong><span class="pc-pct">18.8%</span></div>
+          <div class="pc-row"><strong>🇺🇸 American</strong><span class="pc-pct">10.3%</span></div>
+          <div class="pc-row"><strong>🇸🇬 Singaporean</strong><span class="pc-pct">7.0%</span></div>
+          <div class="pc-row"><strong>🇬🇧 British</strong><span class="pc-pct">6.7%</span></div>
+          <div class="pc-row"><strong>🇨🇳 Chinese</strong><span class="pc-pct">6.7%</span></div>
+          <div class="pc-row"><strong>🇷🇺 Russian</strong><span class="pc-pct">6.2%</span></div>
+          <div class="pc-row"><strong>🇩🇪 German</strong><span class="pc-pct">5.3%</span></div>
+          <div class="pc-row"><strong>🇯🇵 Japanese</strong><span class="pc-pct">3.8%</span></div>
+          <div class="pc-row" style="color:var(--ink-3)">Others<span class="pc-pct" style="color:var(--ink-3)">31.2%</span></div>
+        </div>
+        <div class="people-card">
+          <div class="pc-title">🔑 Condo Renters by Nationality</div>
+          <div class="pc-row"><strong>🇰🇭 Cambodian</strong><span class="pc-pct">13.8%</span></div>
+          <div class="pc-row"><strong>🇺🇸 American</strong><span class="pc-pct">10.6%</span></div>
+          <div class="pc-row"><strong>🇨🇳 Chinese</strong><span class="pc-pct">9.8%</span></div>
+          <div class="pc-row"><strong>🇫🇷 French</strong><span class="pc-pct">9.0%</span></div>
+          <div class="pc-row"><strong>🇿🇦 South African</strong><span class="pc-pct">6.8%</span></div>
+          <div class="pc-row"><strong>🇬🇧 British</strong><span class="pc-pct">5.2%</span></div>
+          <div class="pc-row"><strong>🇯🇵 Japanese</strong><span class="pc-pct">3.3%</span></div>
+          <div class="pc-row"><strong>🇰🇷 Korean</strong><span class="pc-pct">3.2%</span></div>
+          <div class="pc-row" style="color:var(--ink-3)">Others<span class="pc-pct" style="color:var(--ink-3)">38.3%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- J TOWER 2 ROI CASE STUDY -->
+    <div class="section">
+      <div class="section-label">Verified ROI Case Study — J Tower 2 · Source: REAKH Report 2025</div>
+      <div class="roi-box">
+        <div class="roi-title">J Tower 2 — Real Transaction, Real Numbers</div>
+        <div class="roi-subtitle">Tanichu Developer · BKK1 Area · 5-Year Verified Case Study (2019–2024)</div>
+        <div class="roi-grid">
+          <div class="roi-cell">
+            <div class="roi-cell-label">Unit</div>
+            <div class="roi-cell-val">2BR 2BA · 65sqm net<br>Floor 17 · South & East</div>
+          </div>
+          <div class="roi-cell">
+            <div class="roi-cell-label">Purchase + Fit-out</div>
+            <div class="roi-cell-val gold">$139,755 + $8,000<br>= $147,755 total in</div>
+          </div>
+          <div class="roi-cell">
+            <div class="roi-cell-label">Construction Period</div>
+            <div class="roi-cell-val">3 years · Handover 2022<br>Off-plan purchase 2019</div>
+          </div>
+          <div class="roi-cell">
+            <div class="roi-cell-label">Rental Income (2yr)</div>
+            <div class="roi-cell-val gold">$1,200/mo gross<br>Net $1,083 @ 90% occ → <strong>$23,392</strong></div>
+          </div>
+          <div class="roi-cell">
+            <div class="roi-cell-label">Resale 2024</div>
+            <div class="roi-cell-val gold">$175,000<br>Capital gain: $27,245</div>
+          </div>
+          <div class="roi-cell">
+            <div class="roi-cell-label">Management fee</div>
+            <div class="roi-cell-val">$1.8/sqm/month<br>= $117/month deducted</div>
+          </div>
+        </div>
+        <div class="roi-summary">
+          <div class="roi-pill total">Total return: $50,637</div>
+          <div class="roi-pill rate">34.27% over 5 years</div>
+          <div class="roi-pill rate">6.85% avg per year</div>
+        </div>
+        <div class="roi-disclaimer">
+          This is a historical result on a specific unit with specific conditions. Present as data, never as a guarantee or projection. CGT (20% on taxable gain) now applies to any resale. The 8-year projection from REAKH shows 58% ROI at 7.25%/yr; 10-year shows 77% at 7.72%/yr — these are forward projections, not verified results.
+        </div>
+      </div>
+    </div>
+
+    <!-- PROPERTY TAX SUMMARY -->
+    <div class="section">
+      <div class="section-label">Property Tax Summary — Cambodia 2026 · Source: REAKH Report</div>
+      <div class="tax-grid">
+        <div class="tax-card">
+          <div class="tax-head">
+            <div class="tax-name">Annual Property Tax (TOIP)</div>
+            <div class="tax-rate">0.1% / yr</div>
+          </div>
+          <div class="tax-body">
+            <div class="tax-detail">Applies to value above ~$25,000. On a $100K property: taxable $80K minus $25K = $55K × 0.1% = <strong>$55/year</strong>.</div>
+            <div class="tax-example">Very low annual holding cost. Not a deterrent for investors.</div>
+          </div>
+        </div>
+        <div class="tax-card">
+          <div class="tax-head">
+            <div class="tax-name">Transfer Tax (Stamp Duty)</div>
+            <div class="tax-rate">4% of value</div>
+          </div>
+          <div class="tax-body">
+            <div class="tax-detail">One-time tax on ownership transfer. On $200K: <strong>$8,000</strong>. Exemptions extended until end of 2026 for properties under $70K (full exemption) and under $210K (preferential).</div>
+          </div>
+        </div>
+        <div class="tax-card">
+          <div class="tax-head">
+            <div class="tax-name">Capital Gains Tax (CGT)</div>
+            <div class="tax-rate">20% on profit</div>
+          </div>
+          <div class="tax-body">
+            <div class="tax-detail">Applied to the taxable gain. Gain = sale price minus (purchase + documented costs). Example: Buy $100K, sell $200K, costs $40K → taxable $60K × 20% = <strong>$12,000 CGT</strong>. Alternative: 80% flat deduction method.</div>
+            <div class="tax-example">Effective January 2026. Always disclose. Always factor into exit scenarios.</div>
+          </div>
+        </div>
+        <div class="tax-card">
+          <div class="tax-head">
+            <div class="tax-name">Rental Income Tax</div>
+            <div class="tax-rate">10% / 14%</div>
+          </div>
+          <div class="tax-body">
+            <div class="tax-detail">10% for Cambodian residents · 14% for foreign non-residents. On $12,000/yr rental: Cambodian pays <strong>$1,200</strong> · Foreigner pays <strong>$1,680</strong>.</div>
+            <div class="tax-example">Always factor into net yield calculations for foreign investors.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOREIGN OWNERSHIP RULES -->
+    <div class="section">
+      <div class="section-label">Foreign Ownership Rules — Non-Negotiable</div>
+      <div class="rules-grid">
+        <div class="rule-row">
+          <div class="rule-num">1</div>
+          <div>
+            <div class="rule-title">Above ground floor only</div>
+            <div class="rule-detail">Foreigners can only legally own units on the 1st floor and above. Ground floor is prohibited regardless of title type. Never show ground-floor units to foreign buyers.</div>
+          </div>
+        </div>
+        <div class="rule-row">
+          <div class="rule-num">2</div>
+          <div>
+            <div class="rule-title">70% foreign quota per building</div>
+            <div class="rule-detail">Maximum 70% of all units in any single building can be held by foreign nationals. Always verify remaining foreign quota before recommending. Flag if under 5% remains.</div>
+          </div>
+        </div>
+        <div class="rule-row">
+          <div class="rule-num">3</div>
+          <div>
+            <div class="rule-title">Strata title is mandatory for foreign ownership</div>
+            <div class="rule-detail">Only strata title (freehold) is valid for foreign condo ownership. Soft title is for Cambodian nationals only. All PHC-recommended projects carry strata title — verify per unit.</div>
+          </div>
+        </div>
+        <div class="rule-row">
+          <div class="rule-num">4</div>
+          <div>
+            <div class="rule-title">No informal nominee structures</div>
+            <div class="rule-detail">Using a Cambodian citizen to hold property on behalf of a foreigner with only a verbal or side agreement is illegal, legally unenforceable, and not supported by PHC. Redirect all informal nominee enquiries to compliant options.</div>
+          </div>
+        </div>
+        <div class="rule-row">
+          <div class="rule-num">5</div>
+          <div>
+            <div class="rule-title">Cambodian Trust = compliant alternative for land &amp; non-condo assets</div>
+            <div class="rule-detail">The Law on Trust 2019 allows a licensed trustee to legally hold land or non-strata assets on behalf of a foreign beneficiary. This is NOT a nominee structure — it is formally registered and legally enforceable. Used for: land banking, villa purchases, and airport corridor plays. Always require a licensed trustee firm with written trust deed. Reference: 552 of 683 registered trusts in 2023 were foreign-held.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BUYING PROCESS -->
+    <div class="section">
+      <div class="section-label">Buying Process — 7 Steps</div>
+      <div class="process-row">
+        <div class="process-step">
+          <div class="ps-num">1</div>
+          <div class="ps-title">Unit Selection & Booking</div>
+          <div class="ps-detail">$500–$2,000 booking fee. Confirm refund terms.</div>
+        </div>
+        <div class="process-step">
+          <div class="ps-num">2</div>
+          <div class="ps-title">SPA Review & Sign</div>
+          <div class="ps-detail">Legal review required. Check price, handover, penalties.</div>
+        </div>
+        <div class="process-step">
+          <div class="ps-num">3</div>
+          <div class="ps-title">Downpayment</div>
+          <div class="ps-detail">20–30% due after SPA signing.</div>
+        </div>
+        <div class="process-step">
+          <div class="ps-num">4</div>
+          <div class="ps-title">Payment Schedule</div>
+          <div class="ps-detail">Monthly, quarterly, or milestone-based payments.</div>
+        </div>
+        <div class="process-step">
+          <div class="ps-num">5</div>
+          <div class="ps-title">Handover & Inspection</div>
+          <div class="ps-detail">Final inspection. Document all defects in snag list.</div>
+        </div>
+        <div class="process-step">
+          <div class="ps-num">6</div>
+          <div class="ps-title">Final Payment</div>
+          <div class="ps-detail">On handover. Balance or bank loan settlement.</div>
+        </div>
+        <div class="process-step">
+          <div class="ps-num">7</div>
+          <div class="ps-title">Title Registration</div>
+          <div class="ps-detail">Strata title registered with MLMUPC in buyer's name.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- UNIT AVERAGES -->
+    <div class="section">
+      <div class="section-label">Unit Averages — Market-Wide · Source: REAKH 2025</div>
+      <table class="price-table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Avg size</th>
+            <th>Avg sale price</th>
+            <th>Avg rent/mo</th>
+            <th>Buy demand</th>
+            <th>Rent demand</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Studio</td>
+            <td class="mono">38 sqm</td>
+            <td class="mono">$70,000</td>
+            <td class="mono">$350</td>
+            <td>10.1%</td>
+            <td>5% (short-term higher)</td>
+          </tr>
+          <tr class="highlight">
+            <td><strong>1-Bedroom</strong></td>
+            <td class="mono">53 sqm</td>
+            <td class="mono">$118,000</td>
+            <td class="mono">$500</td>
+            <td><strong>61% — dominant</strong></td>
+            <td><strong>72% — dominant</strong></td>
+          </tr>
+          <tr>
+            <td>2-Bedroom</td>
+            <td class="mono">78 sqm</td>
+            <td class="mono">$158,000</td>
+            <td class="mono">$900</td>
+            <td>20.5%</td>
+            <td>18%</td>
+          </tr>
+          <tr>
+            <td>3-Bedroom</td>
+            <td class="mono">145 sqm</td>
+            <td class="mono">$298,000</td>
+            <td class="mono">$1,322</td>
+            <td>8.4%</td>
+            <td>5% (limited supply)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- TECHO AIRPORT -->
+    <div class="section">
+      <div class="section-label">Techo International Airport — Investment Corridor Guide</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="alert info">
+          <div class="alert-title">✓ Status: Operational since September 2025</div>
+          Techo International Airport (Kandal Province) opened September 2025, replacing Phnom Penh International for most commercial traffic. Located ~30km south of BKK1 along Hun Sen Boulevard. Designed capacity: 13M passengers/year (Phase 1), scalable to 50M.
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px">
+          <div class="rule-row" style="margin:0">
+            <div class="rule-num">1</div>
+            <div>
+              <div class="rule-title">Corridor play: Hun Sen Boulevard</div>
+              <div class="rule-detail">Land values along the airport corridor (Kandal Province, Chbar Ampov fringe) are showing fresh price momentum. Best suited for 5–8 year land banking. Must hold via Cambodian Trust with a verified trustee firm — not verbal agreements.</div>
+            </div>
+          </div>
+          <div class="rule-row" style="margin:0">
+            <div class="rule-num">2</div>
+            <div>
+              <div class="rule-title">Adjacent suburbs: early signals</div>
+              <div class="rule-detail">Chak Angre, Prek Pnov, and southern Phnom Penh districts are seeing early spillover. Industrial and logistics land near the access roads is most active. Residential still lagging — airport-effect pricing typically takes 3–5 years post-opening.</div>
+            </div>
+          </div>
+          <div class="rule-row" style="margin:0">
+            <div class="rule-num">3</div>
+            <div>
+              <div class="rule-title">Who this suits</div>
+              <div class="rule-detail">High-net-worth clients ($300K+) with a speculative allocation, long time horizon, and no need for rental income. Not suitable for yield-seeking investors or anyone needing liquidity within 5 years.</div>
+            </div>
+          </div>
+          <div class="rule-row" style="margin:0">
+            <div class="rule-num">4</div>
+            <div>
+              <div class="rule-title">What to watch</div>
+              <div class="rule-detail">New road and BRT infrastructure commitments from government — these directly unlock land value. Also watch airline route announcements: each new long-haul route increases corridor premium. CBRE and REAKH publish quarterly corridor updates.</div>
+            </div>
+          </div>
+        </div>
+        <div class="alert warn">
+          <div class="alert-title">⚠ Do not over-promise on airport-linked land</div>
+          Liquidity is near-zero on undeveloped corridor land. Resale requires finding another long-term buyer. Zoning can change. Present as a speculative allocation — never as a primary investment strategy for first-time investors.
+        </div>
+      </div>
+    </div>
+
+    <!-- KEY ALERTS -->
+    <div class="section">
+      <div class="section-label">Critical Reminders for Every Client Conversation</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="alert warn">
+          <div class="alert-title">⚠ Never say this</div>
+          <strong>"Guaranteed returns"</strong> · <strong>"This will definitely go up"</strong> · <strong>"Don't worry about CGT"</strong> · <strong>"Only X units left"</strong>. These destroy trust permanently with serious investors.
+        </div>
+        <div class="alert info">
+          <div class="alert-title">✓ Always disclose before showing any project</div>
+          Exit liquidity risk · Net yield (not gross) · CGT on exit · Developer delivery track record · Management quality · Foreign quota remaining
+        </div>
+        <div class="alert info">
+          <div class="alert-title">✓ Gross vs Net — always clarify</div>
+          Gross yield = rental income ÷ purchase price. Net yield = rental income after management fees, vacancy, and taxes ÷ purchase price. Average difference: <strong>management fee ($1.8/sqm) + ~10% vacancy + 14% rental tax for foreigners</strong>. Never quote gross without clarifying.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-gold">Property Hub Cambodia | カンボジア不動産</span><br>
+      #12F Time Square 5, St. 306, BKK1, Phnom Penh · 011 666 952 · propertyhubcambodia.com
+    </div>
+    <div class="footer-right">
+      Official partner: Realestate.com.kh<br>
+      Data sourced: REAKH Condo Report 2025<br>
+      Internal use only · 2026 Edition
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

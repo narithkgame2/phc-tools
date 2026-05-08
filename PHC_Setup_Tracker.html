@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHC · Setup Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0A3258;
+    --navy-light: #0d3d6b;
+    --gold: #C9A84C;
+    --gold-light: #e8c96a;
+    --gold-faint: #fdf8ec;
+    --white: #ffffff;
+    --grey-50: #f8f9fa;
+    --grey-100: #f0f2f5;
+    --grey-200: #e2e6ea;
+    --grey-400: #9aa5b4;
+    --grey-600: #627282;
+    --dark: #1a2332;
+    --green: #1a7a4a;
+    --green-light: #eafaf1;
+    --red: #c0392b;
+    --red-light: #fdedec;
+    --mc-blue: #0099dd;
+    --mc-blue-light: #e8f4fd;
+    --tg: #229ED9;
+    --mc-green: #00B594;
+    --fb: #1877F2;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 2px 12px rgba(10,50,88,0.10);
+    --shadow-md: 0 4px 24px rgba(10,50,88,0.14);
+    --shadow-lg: 0 8px 40px rgba(10,50,88,0.18);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #f0f3f8;
+    color: var(--dark);
+    min-height: 100vh;
+  }
+
+  /* ── TOP NAV ── */
+  .topbar {
+    background: var(--navy);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 3px solid var(--gold);
+  }
+  .topbar-logo {
+    font-family: 'Playfair Display', serif;
+    color: var(--white);
+    font-size: 18px;
+    letter-spacing: 0.3px;
+  }
+  .topbar-logo span { color: var(--gold); }
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .progress-pill {
+    background: rgba(201,168,76,0.15);
+    border: 1px solid rgba(201,168,76,0.4);
+    border-radius: 20px;
+    padding: 5px 14px;
+    color: var(--gold);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .reset-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 6px;
+    color: rgba(255,255,255,0.5);
+    font-size: 12px;
+    padding: 5px 12px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+  .reset-btn:hover { border-color: rgba(255,255,255,0.5); color: white; }
+
+  /* ── LAYOUT ── */
+  .layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: calc(100vh - 64px);
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    background: var(--navy);
+    padding: 28px 0;
+    position: sticky;
+    top: 64px;
+    height: calc(100vh - 64px);
+    overflow-y: auto;
+  }
+  .sidebar-section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.35);
+    padding: 0 24px 10px;
+    text-transform: uppercase;
+  }
+  .guide-tab {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 24px;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .guide-tab:hover { background: rgba(255,255,255,0.06); }
+  .guide-tab.active {
+    background: rgba(201,168,76,0.12);
+    border-left-color: var(--gold);
+  }
+  .guide-tab-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .guide-tab-info { flex: 1; min-width: 0; }
+  .guide-tab-num {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 2px;
+  }
+  .guide-tab-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .guide-tab.active .guide-tab-name { color: var(--gold); }
+  .guide-tab-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.5);
+    flex-shrink: 0;
+  }
+  .guide-tab-badge.done {
+    background: rgba(26,122,74,0.3);
+    color: #4cd98a;
+  }
+
+  .sidebar-divider { height: 1px; background: rgba(255,255,255,0.08); margin: 16px 24px; }
+
+  /* Overall progress in sidebar */
+  .sidebar-progress {
+    padding: 16px 24px;
+    margin: 0 12px 8px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+  }
+  .sp-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+    font-weight: 500;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+  .sp-bar {
+    height: 6px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+  .sp-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+  .sp-text {
+    font-size: 12px;
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  /* ── MAIN CONTENT ── */
+  .main {
+    padding: 36px 40px;
+    overflow-y: auto;
+  }
+
+  /* Guide header */
+  .guide-header {
+    background: var(--navy);
+    border-radius: var(--radius);
+    padding: 32px 36px;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    border-bottom: 4px solid var(--gold);
+    box-shadow: var(--shadow-md);
+  }
+  .gh-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    flex-shrink: 0;
+  }
+  .gh-info { flex: 1; }
+  .gh-guide-num {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  .gh-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    color: white;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .gh-subtitle { font-size: 15px; color: rgba(255,255,255,0.55); }
+  .gh-stats {
+    display: flex;
+    gap: 24px;
+    flex-shrink: 0;
+  }
+  .gh-stat {
+    text-align: center;
+    background: rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 12px 20px;
+  }
+  .gh-stat-val {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--gold);
+    display: block;
+  }
+  .gh-stat-label { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 3px; }
+
+  /* Guide progress bar */
+  .guide-progress-bar {
+    background: white;
+    border-radius: var(--radius);
+    padding: 18px 24px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: var(--shadow);
+  }
+  .gpb-label { font-size: 13px; font-weight: 600; color: var(--grey-600); white-space: nowrap; }
+  .gpb-track {
+    flex: 1;
+    height: 10px;
+    background: var(--grey-100);
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  .gpb-fill {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.4s ease;
+  }
+  .gpb-count { font-size: 13px; font-weight: 700; white-space: nowrap; }
+  .complete-badge {
+    background: var(--green);
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    display: none;
+  }
+  .complete-badge.visible { display: block; }
+
+  /* Before you start box */
+  .before-box {
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    border-left: 4px solid;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .before-box.info { background: var(--mc-blue-light); border-color: var(--mc-blue); }
+  .before-box-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+  .before-box-title { font-size: 14px; font-weight: 700; margin-bottom: 8px; color: var(--navy); }
+  .before-box ul { padding-left: 18px; }
+  .before-box li { font-size: 14px; line-height: 1.7; color: var(--dark); }
+
+  /* Section header */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--navy);
+    border-radius: var(--radius-sm);
+    padding: 12px 20px;
+    margin: 24px 0 14px;
+  }
+  .section-header-icon { font-size: 18px; }
+  .section-header-text {
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.3px;
+  }
+  .section-header-time {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  /* Step card */
+  .step-card {
+    background: white;
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .step-card:hover { box-shadow: var(--shadow-md); }
+  .step-card.completed { border-left: 4px solid var(--green); }
+  .step-header {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    cursor: pointer;
+    user-select: none;
+  }
+  .step-num {
+    width: 56px;
+    min-width: 56px;
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+  .step-info {
+    flex: 1;
+    padding: 16px 18px;
+    border-right: 1px solid var(--grey-100);
+  }
+  .step-title { font-size: 16px; font-weight: 600; color: var(--navy); margin-bottom: 3px; }
+  .step-meta { font-size: 12px; color: var(--grey-400); }
+  .step-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 20px;
+  }
+  .step-time {
+    font-size: 12px;
+    color: var(--grey-400);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .step-expand-hint {
+    font-size: 11px;
+    color: var(--mc-blue);
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+  }
+  .step-card.open .step-expand-hint { display: none; }
+  .step-collapse-hint { display: none; font-size: 11px; color: var(--grey-400); white-space: nowrap; }
+  .step-card.open .step-collapse-hint { display: block; }
+  .step-toggle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--grey-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    transition: all 0.2s;
+    color: var(--grey-600);
+    flex-shrink: 0;
+  }
+  .step-card.open .step-toggle { background: var(--navy); color: white; transform: rotate(180deg); }
+
+  /* Step body */
+  .step-body {
+    display: none;
+    padding: 0 20px 20px;
+    border-top: 1px solid var(--grey-100);
+  }
+  .step-card.open .step-body { display: block; }
+
+  /* Action row */
+  .action-row {
+    display: flex;
+    gap: 0;
+    margin: 8px 0;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--grey-200);
+  }
+  .action-label {
+    min-width: 120px;
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    letter-spacing: 0.3px;
+    line-height: 1.3;
+  }
+  .action-detail {
+    flex: 1;
+    padding: 10px 16px;
+    font-size: 14px;
+    color: var(--dark);
+    background: white;
+    display: flex;
+    align-items: center;
+    line-height: 1.5;
+  }
+
+  /* Paste box */
+  .paste-box {
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    margin: 10px 0;
+    border: 1px solid var(--grey-200);
+  }
+  .paste-header {
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .paste-body {
+    background: #f8fff8;
+    padding: 14px 18px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--dark);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .copy-btn {
+    margin-left: auto;
+    background: rgba(255,255,255,0.2);
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-size: 11px;
+    padding: 3px 10px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+  .copy-btn:hover { background: rgba(255,255,255,0.35); }
+  .copy-btn.copied { background: rgba(26,122,74,0.4); }
+
+  /* Note boxes */
+  .note-box {
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    margin: 10px 0;
+    border-left: 4px solid;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .note-box.tip { background: #fefce8; border-color: #ca8a04; color: #713f12; }
+  .note-box.warn { background: var(--red-light); border-color: var(--red); color: var(--red); }
+  .note-box.ok { background: var(--green-light); border-color: var(--green); color: #145a32; }
+  .note-box strong { display: block; margin-bottom: 4px; }
+
+  /* Checkbox tasks */
+  .checklist { margin: 12px 0; }
+  .check-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 6px;
+    border: 1px solid var(--grey-200);
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .check-item:hover { border-color: var(--gold); background: var(--gold-faint); }
+  .check-item.checked { background: var(--green-light); border-color: var(--green); }
+  .check-box {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 2px solid var(--grey-400);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: all 0.2s;
+    font-size: 13px;
+    color: transparent;
+  }
+  .check-item.checked .check-box {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+  }
+  .check-text { flex: 1; }
+  .check-main { font-size: 14px; font-weight: 600; color: var(--navy); line-height: 1.4; }
+  .check-item.checked .check-main { color: var(--green); text-decoration: line-through; opacity: 0.8; }
+  .check-hint { font-size: 12px; color: var(--grey-400); margin-top: 3px; font-style: italic; }
+
+  /* Translation table */
+  .trans-table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 13px; }
+  .trans-table th { background: var(--navy); color: white; padding: 8px 12px; text-align: left; font-size: 12px; font-weight: 600; letter-spacing: 0.3px; }
+  .trans-table td { padding: 8px 12px; border-bottom: 1px solid var(--grey-200); }
+  .trans-table tr:nth-child(even) td { background: var(--grey-50); }
+
+  /* Success state */
+  .success-banner {
+    background: linear-gradient(135deg, var(--green) 0%, #1a9a5e 100%);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    text-align: center;
+    margin-top: 24px;
+    box-shadow: var(--shadow-md);
+  }
+  .success-banner h3 { font-family:'Playfair Display',serif; font-size: 26px; color: white; margin-bottom: 8px; }
+  .success-banner p { color: rgba(255,255,255,0.8); font-size: 15px; margin-bottom: 16px; }
+  .next-guide-btn {
+    background: white;
+    color: var(--green);
+    border: none;
+    border-radius: 8px;
+    padding: 12px 28px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .next-guide-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+
+  /* Dashboard view */
+  .dashboard {
+    display: none;
+  }
+  .dashboard.active { display: block; }
+  .guide-view { display: none; }
+  .guide-view.active { display: block; }
+
+  /* Dashboard cards */
+  .dash-header {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+  .dash-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+  .dash-header p { font-size: 16px; color: var(--grey-600); }
+  .dash-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 28px; }
+  .dash-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: all 0.25s;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+  }
+  .dash-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+  }
+  .dash-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); border-color: var(--gold); }
+  .dc-top { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+  .dc-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+  }
+  .dc-title-wrap { flex: 1; }
+  .dc-guide-num { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--grey-400); margin-bottom: 4px; }
+  .dc-title { font-size: 20px; font-weight: 700; color: var(--navy); }
+  .dc-status {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+  .dc-desc { font-size: 13px; color: var(--grey-600); margin-bottom: 16px; line-height: 1.6; }
+  .dc-progress-row { display: flex; align-items: center; gap: 12px; }
+  .dc-prog-track { flex: 1; height: 8px; background: var(--grey-100); border-radius: 4px; overflow: hidden; }
+  .dc-prog-fill { height: 100%; border-radius: 4px; transition: width 0.4s; }
+  .dc-prog-text { font-size: 12px; font-weight: 700; white-space: nowrap; }
+  .dc-steps-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .dc-step-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--grey-200);
+    transition: background 0.3s;
+  }
+  .dc-step-dot.done { background: var(--green); }
+
+  .overall-card {
+    background: var(--navy);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    box-shadow: var(--shadow-md);
+  }
+  .oc-text { flex: 1; }
+  .oc-text h3 { font-family: 'Playfair Display', serif; font-size: 22px; color: white; margin-bottom: 6px; }
+  .oc-text p { font-size: 14px; color: rgba(255,255,255,0.55); }
+  .oc-circle {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    border: 3px solid var(--gold);
+    flex-shrink: 0;
+  }
+  .oc-pct { font-size: 28px; font-weight: 700; color: var(--gold); line-height: 1; }
+  .oc-label { font-size: 10px; color: rgba(255,255,255,0.4); margin-top: 2px; letter-spacing: 0.5px; }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { position: static; height: auto; display: flex; flex-wrap: wrap; gap: 8px; padding: 16px; }
+    .guide-tab { flex: 1 1 auto; min-width: 140px; border-left: none; border-bottom: 3px solid transparent; }
+    .guide-tab.active { border-bottom-color: var(--gold); border-left: none; }
+    .main { padding: 20px; }
+    .dash-grid { grid-template-columns: 1fr; }
+    .guide-header { flex-direction: column; gap: 16px; }
+    .gh-stats { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="topbar-logo">Property Hub <span>Cambodia</span> — Setup Tracker</div>
+  <div class="topbar-right">
+    <div class="progress-pill" id="topbar-progress">0% Complete</div>
+    <button class="reset-btn" onclick="resetAll()">Reset All</button>
+  </div>
+</nav>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-progress">
+      <div class="sp-label">Overall Progress</div>
+      <div class="sp-bar"><div class="sp-fill" id="sidebar-fill" style="width:0%"></div></div>
+      <div class="sp-text" id="sidebar-text">0 of 61 tasks done</div>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">Guides</div>
+    <div class="guide-tab active" onclick="showView('dashboard')" id="tab-dashboard">
+      <div class="guide-tab-icon" style="background:rgba(201,168,76,0.15); font-size:20px;">🏠</div>
+      <div class="guide-tab-info">
+        <div class="guide-tab-num">Overview</div>
+        <div class="guide-tab-name">Dashboard</div>
+      </div>
+    </div>
+    <div class="guide-tab" onclick="showView('g1')" id="tab-g1">
+      <div class="guide-tab-icon" style="background:rgba(0,153,221,0.15);">💬</div>
+      <div class="guide-tab-info">
+        <div class="guide-tab-num">Guide 1 of 4</div>
+        <div class="guide-tab-name">ManyChat</div>
+      </div>
+      <div class="guide-tab-badge" id="badge-g1">0/10</div>
+    </div>
+    <div class="guide-tab" onclick="showView('g2')" id="tab-g2">
+      <div class="guide-tab-icon" style="background:rgba(34,158,217,0.15);">⚙️</div>
+      <div class="guide-tab-info">
+        <div class="guide-tab-num">Guide 2 of 4</div>
+        <div class="guide-tab-name">Make.com</div>
+      </div>
+      <div class="guide-tab-badge" id="badge-g2">0/7</div>
+    </div>
+    <div class="guide-tab" onclick="showView('g3')" id="tab-g3">
+      <div class="guide-tab-icon" style="background:rgba(0,181,148,0.15);">✉️</div>
+      <div class="guide-tab-info">
+        <div class="guide-tab-num">Guide 3 of 4</div>
+        <div class="guide-tab-name">Mailchimp</div>
+      </div>
+      <div class="guide-tab-badge" id="badge-g3">0/6</div>
+    </div>
+    <div class="guide-tab" onclick="showView('g4')" id="tab-g4">
+      <div class="guide-tab-icon" style="background:rgba(24,119,242,0.15);">📱</div>
+      <div class="guide-tab-info">
+        <div class="guide-tab-num">Guide 4 of 4</div>
+        <div class="guide-tab-name">Facebook Ads</div>
+      </div>
+      <div class="guide-tab-badge" id="badge-g4">0/8</div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- DASHBOARD -->
+    <div class="dashboard active" id="view-dashboard">
+      <div class="dash-header">
+        <h1>Setup Progress Dashboard</h1>
+        <p>Complete all 4 guides in order. Tick each step as you finish it — progress saves automatically.</p>
+      </div>
+      <div class="dash-grid">
+        <div class="dash-card" onclick="showView('g1')" style="--card-color:#0099dd">
+          <div style="position:absolute;top:0;left:0;right:0;height:4px;background:#0099dd;border-radius:12px 12px 0 0"></div>
+          <div class="dc-top">
+            <div class="dc-icon" style="background:#e8f4fd; font-size:28px;">💬</div>
+            <div class="dc-title-wrap">
+              <div class="dc-guide-num">Guide 1 of 4</div>
+              <div class="dc-title">ManyChat</div>
+            </div>
+            <div class="dc-status" id="dc-status-g1" style="background:#f0f2f5;color:#9aa5b4">Not started</div>
+          </div>
+          <div class="dc-desc">Set up automatic WhatsApp replies. Every person who messages your number gets an instant response 24/7.</div>
+          <div class="dc-progress-row">
+            <div class="dc-prog-track"><div class="dc-prog-fill" id="dc-fill-g1" style="width:0%;background:#0099dd"></div></div>
+            <div class="dc-prog-text" id="dc-text-g1" style="color:#0099dd">0/10</div>
+          </div>
+          <div class="dc-steps-row" id="dc-dots-g1"></div>
+        </div>
+        <div class="dash-card" onclick="showView('g2')" style="--card-color:#229ED9">
+          <div style="position:absolute;top:0;left:0;right:0;height:4px;background:#229ED9;border-radius:12px 12px 0 0"></div>
+          <div class="dc-top">
+            <div class="dc-icon" style="background:#e8f4fd; font-size:28px;">⚙️</div>
+            <div class="dc-title-wrap">
+              <div class="dc-guide-num">Guide 2 of 4</div>
+              <div class="dc-title">Make.com</div>
+            </div>
+            <div class="dc-status" id="dc-status-g2" style="background:#f0f2f5;color:#9aa5b4">Not started</div>
+          </div>
+          <div class="dc-desc">Connect WhatsApp and website form to Telegram and Mailchimp. One lead triggers everything automatically.</div>
+          <div class="dc-progress-row">
+            <div class="dc-prog-track"><div class="dc-prog-fill" id="dc-fill-g2" style="width:0%;background:#229ED9"></div></div>
+            <div class="dc-prog-text" id="dc-text-g2" style="color:#229ED9">0/7</div>
+          </div>
+          <div class="dc-steps-row" id="dc-dots-g2"></div>
+        </div>
+        <div class="dash-card" onclick="showView('g3')" style="--card-color:#00B594">
+          <div style="position:absolute;top:0;left:0;right:0;height:4px;background:#00B594;border-radius:12px 12px 0 0"></div>
+          <div class="dc-top">
+            <div class="dc-icon" style="background:#e8f8f5; font-size:28px;">✉️</div>
+            <div class="dc-title-wrap">
+              <div class="dc-guide-num">Guide 3 of 4</div>
+              <div class="dc-title">Mailchimp</div>
+            </div>
+            <div class="dc-status" id="dc-status-g3" style="background:#f0f2f5;color:#9aa5b4">Not started</div>
+          </div>
+          <div class="dc-desc">Set up 3 automatic follow-up emails sent over 10 days. Every lead is nurtured even while you sleep.</div>
+          <div class="dc-progress-row">
+            <div class="dc-prog-track"><div class="dc-prog-fill" id="dc-fill-g3" style="width:0%;background:#00B594"></div></div>
+            <div class="dc-prog-text" id="dc-text-g3" style="color:#00B594">0/6</div>
+          </div>
+          <div class="dc-steps-row" id="dc-dots-g3"></div>
+        </div>
+        <div class="dash-card" onclick="showView('g4')" style="--card-color:#1877F2">
+          <div style="position:absolute;top:0;left:0;right:0;height:4px;background:#1877F2;border-radius:12px 12px 0 0"></div>
+          <div class="dc-top">
+            <div class="dc-icon" style="background:#e8f0fe; font-size:28px;">📱</div>
+            <div class="dc-title-wrap">
+              <div class="dc-guide-num">Guide 4 of 4</div>
+              <div class="dc-title">Facebook Ads</div>
+            </div>
+            <div class="dc-status" id="dc-status-g4" style="background:#f0f2f5;color:#9aa5b4">Not started</div>
+          </div>
+          <div class="dc-desc">Launch paid ads to generate leads daily. 2 ad sets targeting local Cambodian and Japanese investors.</div>
+          <div class="dc-progress-row">
+            <div class="dc-prog-track"><div class="dc-prog-fill" id="dc-fill-g4" style="width:0%;background:#1877F2"></div></div>
+            <div class="dc-prog-text" id="dc-text-g4" style="color:#1877F2">0/8</div>
+          </div>
+          <div class="dc-steps-row" id="dc-dots-g4"></div>
+        </div>
+      </div>
+      <div class="overall-card">
+        <div class="oc-text">
+          <h3>Total System Progress</h3>
+          <p>Complete all 4 guides to have the full lead generation system live and running.</p>
+        </div>
+        <div class="oc-circle">
+          <div class="oc-pct" id="oc-pct">0%</div>
+          <div class="oc-label">DONE</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GUIDE 1: MANYCHAT -->
+    <div class="guide-view" id="view-g1">
+      <div class="guide-header">
+        <div class="gh-icon" style="background:rgba(0,153,221,0.15); font-size:38px;">💬</div>
+        <div class="gh-info">
+          <div class="gh-guide-num">Staff Guide 1 of 4</div>
+          <div class="gh-title">ManyChat WhatsApp</div>
+          <div class="gh-subtitle">Set up automatic replies for every incoming WhatsApp message</div>
+        </div>
+        <div class="gh-stats">
+          <div class="gh-stat"><span class="gh-stat-val">45</span><div class="gh-stat-label">Minutes</div></div>
+          <div class="gh-stat"><span class="gh-stat-val" id="g1-total-tasks">—</span><div class="gh-stat-label">Tasks</div></div>
+          <div class="gh-stat"><span class="gh-stat-val" id="g1-done-count">0</span><div class="gh-stat-label">Done</div></div>
+        </div>
+      </div>
+      <div class="guide-progress-bar">
+        <div class="gpb-label">Guide Progress</div>
+        <div class="gpb-track"><div class="gpb-fill" id="g1-prog-fill" style="width:0%;background:#0099dd"></div></div>
+        <div class="gpb-count" id="g1-prog-count" style="color:#0099dd">0 / 10</div>
+        <div class="complete-badge" id="g1-complete-badge">✓ Complete</div>
+      </div>
+      <div class="before-box info">
+        <div class="before-box-icon">📋</div>
+        <div>
+          <div class="before-box-title">Before you start — have these ready:</div>
+          <ul>
+            <li>A computer with internet connection</li>
+            <li>Your Facebook login email and password</li>
+            <li>The phone <strong>011 666 952</strong> nearby to receive an SMS code</li>
+            <li>A second phone to test the flow at the end</li>
+            <li>Work through every step in order — do not skip any</li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:13px;color:var(--grey-600);">👆 Click any step title to open it and see the tasks</div>
+        <div style="display:flex;gap:8px">
+          <button onclick="expandAll('g1')" style="background:var(--navy);color:white;border:none;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">Expand All</button>
+          <button onclick="collapseAll('g1')" style="background:var(--grey-200);color:var(--grey-600);border:none;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">Collapse All</button>
+        </div>
+      </div>
+      <div class="section-header">
+        <span class="section-header-icon">🔧</span>
+        <span class="section-header-text">SECTION A — CREATE YOUR ACCOUNT</span>
+        <span class="section-header-time">~15 minutes</span>
+      </div>
+
+      <!-- Steps 1-3 -->
+      <div id="steps-g1"></div>
+
+      <div class="section-header" style="margin-top:28px">
+        <span class="section-header-icon">🏗️</span>
+        <span class="section-header-text">SECTION B — BUILD THE WELCOME FLOW</span>
+        <span class="section-header-time">~25 minutes</span>
+      </div>
+      <div id="steps-g1-b"></div>
+
+      <div class="section-header" style="margin-top:28px">
+        <span class="section-header-icon">✅</span>
+        <span class="section-header-text">SECTION C — PUBLISH AND TEST</span>
+        <span class="section-header-time">~5 minutes</span>
+      </div>
+      <div id="steps-g1-c"></div>
+      <div class="success-banner" id="g1-success" style="display:none">
+        <h3>🎉 Guide 1 Complete!</h3>
+        <p>ManyChat WhatsApp is live. Every incoming message now gets an automatic reply.</p>
+        <button class="next-guide-btn" onclick="showView('g2')">Continue to Guide 2 — Make.com →</button>
+      </div>
+    </div>
+
+    <!-- GUIDE 2: MAKE.COM -->
+    <div class="guide-view" id="view-g2">
+      <div class="guide-header">
+        <div class="gh-icon" style="background:rgba(34,158,217,0.15); font-size:38px;">⚙️</div>
+        <div class="gh-info">
+          <div class="gh-guide-num">Staff Guide 2 of 4</div>
+          <div class="gh-title">Make.com Automation</div>
+          <div class="gh-subtitle">Connect leads from WhatsApp and website form to Telegram and Mailchimp</div>
+        </div>
+        <div class="gh-stats">
+          <div class="gh-stat"><span class="gh-stat-val">30</span><div class="gh-stat-label">Minutes</div></div>
+          <div class="gh-stat"><span class="gh-stat-val" id="g2-total-tasks">—</span><div class="gh-stat-label">Tasks</div></div>
+          <div class="gh-stat"><span class="gh-stat-val" id="g2-done-count">0</span><div class="gh-stat-label">Done</div></div>
+        </div>
+      </div>
+      <div class="guide-progress-bar">
+        <div class="gpb-label">Guide Progress</div>
+        <div class="gpb-track"><div class="gpb-fill" id="g2-prog-fill" style="width:0%;background:#229ED9"></div></div>
+        <div class="gpb-count" id="g2-prog-count" style="color:#229ED9">0 / 7</div>
+        <div class="complete-badge" id="g2-complete-badge">✓ Complete</div>
+      </div>
+      <div class="before-box info">
+        <div class="before-box-icon">📋</div>
+        <div>
+          <div class="before-box-title">Before you start:</div>
+          <ul>
+            <li>Guide 1 (ManyChat) must be <strong>fully complete</strong> before starting this guide</li>
+            <li>Have Telegram open on your phone</li>
+            <li>Make.com is completely free — no credit card needed</li>
+          </ul>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:13px;color:var(--grey-600);">👆 Click any step title to open it and see the tasks</div>
+        <div style="display:flex;gap:8px">
+          <button onclick="expandAll('g2')" style="background:var(--navy);color:white;border:none;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">Expand All</button>
+          <button onclick="collapseAll('g2')" style="background:var(--grey-200);color:var(--grey-600);border:none;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">Collapse All</button>
+        </div>
+      </div>
+      <div id="steps-g2"></div>
+      <div class="success-banner" id="g2-success" style="display:none">
+        <h3>🎉 Guide 2 Complete!</h3>
+        <p>Make.com is live. Leads now flow automatically to Telegram and Mailchimp.</p>
+        <button class="next-guide-btn" onclick="showView('g3')">Continue to Guide 3 — Mailchimp →</button>
+      </div>
+    </div>
+
+    <!-- GUIDE 3: MAILCHIMP -->
+    <div class="guide-view" id="view-g3">
+      <div class="guide-header">
+        <div class="gh-icon" style="background:rgba(0,181,148,0.15); font-size:38px;">✉️</div>
+        <div class="gh-info">
+          <div class="gh-guide-num">Staff Guide 3 of 4</div>
+          <div class="gh-title">Mailchimp Emails</div>
+          <div class="gh-subtitle">Set up 3 automatic follow-up emails sent over 10 days to every new lead</div>
+        </div>
+        <div class="gh-stats">
+          <div class="gh-stat"><span class="gh-stat-val">90</span><div class="gh-stat-label">Minutes</div></div>
+          <div class="gh-stat"><span class="gh-stat-val" id="g3-total-tasks">—</span><div class="gh-stat-label">Tasks</div></div>
+          <div class="gh-stat"><span class="gh-stat-val" id="g3-done-count">0</span><div class="gh-stat-label">Done</div></div>
+        </div>
+      </div>
+      <div class="guide-progress-bar">
+        <div class="gpb-label">Guide Progress</div>
+        <div class="gpb-track"><div class="gpb-fill" id="g3-prog-fill" style="width:0%;background:#00B594"></div></div>
+        <div class="gpb-count" id="g3-prog-count" style="color:#00B594">0 / 6</div>
+        <div class="complete-badge" id="g3-complete-badge">✓ Complete</div>
+      </div>
+      <div class="before-box info">
+        <div class="before-box-icon">📋</div>
+        <div>
+          <div class="before-box-title">Before you start:</div>
+          <ul>
+            <li>Guides 1 and 2 must be <strong>fully complete</strong></li>
+            <li>Mailchimp is free for up to 500 contacts — no credit card needed</li>
+            <li>You will write 3 emails — the full text is provided below, just copy and paste it</li>
+          </ul>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:13px;color:var(--grey-600);">👆 Click any step title to open it and see the tasks</div>
+        <div style="display:flex;gap:8px">
+          <button onclick="expandAll('g3')" style="background:var(--navy);color:white;border:none;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">Expand All</button>
+          <button onclick="collapseAll('g3')" style="background:var(--grey-200);color:var(--grey-600);border:none;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">Collapse All</button>
+        </div>
+      </div>
+      <div id="steps-g3"></div>
+      <div class="success-banner" id="g3-success" style="display:none">
+        <h3>🎉 Guide 3 Complete!</h3>
+        <p>Mailchimp is live. Every new lead receives 3 follow-up emails automatically over 10 days.</p>
+        <button class="next-guide-btn" onclick="showView('g4')">Continue to Guide 4 — Facebook Ads →</button>
+      </div>
+    </div>
+
+    <!-- GUIDE 4: FACEBOOK ADS -->
+    <div class="guide-view" id="view-g4">
+      <div class="guide-header">
+        <div class="gh-icon" style="background:rgba(24,119,242,0.15); font-size:38px;">📱</div>
+        <div class="gh-info">
+          <div class="gh-guide-num">Staff Guide 4 of 4</div>
+          <div class="gh-title">Facebook & Instagram Ads</div>
+          <div class="gh-subtitle">Launch paid ads to generate new leads from local and Japanese investors every day</div>
+        </div>
+        <div class="gh-stats">
+          <div class="gh-stat"><span class="gh-stat-val">60</span><div class="gh-stat-label">Minutes</div></div>
+          <div class="gh-stat"><span class="gh-stat-val" id="g4-total-tasks">—</span><div class="gh-stat-label">Tasks</div></div>
+          <div class="gh-stat"><span class="gh-stat-val" id="g4-done-count">0</span><div class="gh-stat-label">Done</div></div>
+        </div>
+      </div>
+      <div class="guide-progress-bar">
+        <div class="gpb-label">Guide Progress</div>
+        <div class="gpb-track"><div class="gpb-fill" id="g4-prog-fill" style="width:0%;background:#1877F2"></div></div>
+        <div class="gpb-count" id="g4-prog-count" style="color:#1877F2">0 / 8</div>
+        <div class="complete-badge" id="g4-complete-badge">✓ Complete</div>
+      </div>
+      <div class="before-box info">
+        <div class="before-box-icon">📋</div>
+        <div>
+          <div class="before-box-title">Before you start:</div>
+          <ul>
+            <li>All 3 previous guides must be <strong>fully complete</strong></li>
+            <li>Have a credit or debit card ready for the $15/day ad budget</li>
+            <li>Do not change the ad copy — use the exact text provided in this guide</li>
+          </ul>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:13px;color:var(--grey-600);">👆 Click any step title to open it and see the tasks</div>
+        <div style="display:flex;gap:8px">
+          <button onclick="expandAll('g4')" style="background:var(--navy);color:white;border:none;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">Expand All</button>
+          <button onclick="collapseAll('g4')" style="background:var(--grey-200);color:var(--grey-600);border:none;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">Collapse All</button>
+        </div>
+      </div>
+      <div id="steps-g4"></div>
+      <div class="success-banner" id="g4-success" style="display:none">
+        <h3>🎉 All 4 Guides Complete!</h3>
+        <p>The entire system is live. WhatsApp auto-replies, Make.com automation, Mailchimp nurture emails, and Facebook ads are all running.</p>
+        <button class="next-guide-btn" onclick="showView('dashboard')">← Back to Dashboard</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════
+const GUIDES = {
+  g1: {
+    total: 10, color: '#0099dd',
+    sections: {
+      'steps-g1': [
+        { id:'g1s1', title:'Verify Your ManyChat Account & Channel Connections', time:'2 min', checks:[
+          {id:'g1s1c1', text:'Go to manychat.com → log in with Facebook'},
+          {id:'g1s1c2', text:'In the left sidebar: confirm Facebook Page "Property Hub Cambodia" shows Connected ✅'},
+          {id:'g1s1c3', text:'Click Settings → Connected Channels → confirm Instagram shows Connected ✅'},
+          {id:'g1s1c4', text:'If either channel is not connected: click Connect and follow the prompts to authorise access'},
+        ], notes:[{type:'ok', text:'SUCCESS: Both Facebook and Instagram show Connected. WhatsApp is Phase 2 (Step 10) — skip it for now.'}]},
+        { id:'g1s2', title:'Create 4 Custom Fields', time:'3 min', checks:[
+          {id:'g1s2c1', text:'Click Settings (gear icon, bottom of left sidebar) → Custom Fields → + New Field'},
+          {id:'g1s2c2', text:'Field 1: Name = Budget Range | Type = Text → Save'},
+          {id:'g1s2c3', text:'Field 2: Name = Investment Timeline | Type = Text → Save'},
+          {id:'g1s2c4', text:'Field 3: Name = Buyer Nationality | Type = Text → Save'},
+          {id:'g1s2c5', text:'Field 4: Name = Lead Score | Type = Text → Save'},
+        ], notes:[{type:'ok', text:'SUCCESS: All 4 fields listed under Custom Fields. These automatically store each lead\'s answers.'}]},
+        { id:'g1s3', title:'Create the PHC Lead Qualification Flow', time:'3 min', checks:[
+          {id:'g1s3c1', text:'Click Automation in the left sidebar → Flows → + New Flow (top right corner)'},
+          {id:'g1s3c2', text:'Name it exactly: PHC Lead Qualification → click Create'},
+          {id:'g1s3c3', text:'The Flow Builder canvas opens — you will add messages in Steps 4 and 5'},
+          {id:'g1s3c4', text:'Note: This one flow works across Instagram DM and Facebook Messenger simultaneously'},
+        ], notes:[{type:'tip', text:'You are building one flow that handles all leads from both Instagram and Facebook. WhatsApp will be added later in Step 10.'}]},
+      ],
+      'steps-g1-b': [
+        { id:'g1s4', title:'Build Message 1 — Welcome + Budget Question', time:'5 min', checks:[
+          {id:'g1s4c1', text:'In the Flow Builder: click the + icon → Send Message → select Instagram DM'},
+          {id:'g1s4c2', text:'Paste Message 1 text into the message body (see green box below)'},
+          {id:'g1s4c3', text:'Click + Add Button → Button 1: Under $100K'},
+          {id:'g1s4c4', text:'Button 2: $100K – $200K'},
+          {id:'g1s4c5', text:'Button 3: $200K – $500K'},
+          {id:'g1s4c6', text:'Button 4: $500K+'},
+        ],
+        paste:{label:'MESSAGE 1 — Welcome + Budget', color:'#25D366', text:`Hi {{first_name}} 👋
+
+Welcome to Property Hub Cambodia — Phnom Penh's leading real estate advisory.
+
+We match investors to the right projects. Quick question first:
+
+What is your investment budget? 💰`}},
+        { id:'g1s5', title:'Build Messages 2, 3 and 4 — Timeline, Nationality, Lead Magnet', time:'10 min', checks:[
+          {id:'g1s5c1', text:'For each budget button: Add Action → Set Custom Field → Budget Range = [button label] → then connect ALL 4 to the same Message 2 block'},
+          {id:'g1s5c2', text:'Message 2: paste Timeline text (box below) → add 4 buttons: Ready now · Within 6 months · 1–2 years · Just exploring'},
+          {id:'g1s5c3', text:'For each timeline button: Set Custom Field → Investment Timeline = [button label] → connect ALL 4 to same Message 3'},
+          {id:'g1s5c4', text:'Message 3: paste Nationality text (box below) → add 6 buttons: English / Western · Japanese · German / European · Russian · Cambodian · Overseas Cambodian'},
+          {id:'g1s5c5', text:'For each nationality button: Set Custom Field → Buyer Nationality = [button label] → connect ALL 6 to Message 4'},
+          {id:'g1s5c6', text:'VIP rule: for the $500K+ budget path also set Lead Score = "VIP" (Add Action before connecting to Message 2)'},
+          {id:'g1s5c7', text:'Message 4: paste Lead Magnet text (box below) — no buttons needed on this final message'},
+        ],
+        paste:{label:'MESSAGES 2 · 3 · 4 — Paste each into its block', color:'#25D366', text:`— MESSAGE 2 — TIMELINE —
+Good to know 👌
+
+What is your investment timeline?
+
+[ Button: Ready now ] [ Button: Within 6 months ] [ Button: 1–2 years ] [ Button: Just exploring ]
+
+— MESSAGE 3 — NATIONALITY —
+Almost done! One last question:
+
+Which best describes you?
+
+[ Button: English / Western ] [ Button: Japanese ] [ Button: German / European ] [ Button: Russian ] [ Button: Cambodian ] [ Button: Overseas Cambodian ]
+
+— MESSAGE 4 — LEAD MAGNET —
+Thank you {{first_name}} 🙏
+
+Here is what happens next:
+✅ A PHC advisor will contact you within 2 hours
+✅ You will receive your personalised project shortlist
+✅ We will match you to the right projects for your budget
+
+While you wait — here is our free 2026 Cambodia Investment Guide:
+Market overview · how to buy · tax guide · top strategies by budget:
+
+👉 https://drive.google.com/file/d/1qM9k5dMXSRYkY-6PDzqrPrPBb0HsFFVE/view?usp=sharing
+
+Property Hub Cambodia
+📞 011 666 952`}},
+        { id:'g1s6', title:'Set Up Comment-to-DM Automation (Instagram Posts)', time:'4 min', checks:[
+          {id:'g1s6c1', text:'Click Automation → My Automations → + New Automation'},
+          {id:'g1s6c2', text:'Choose the template: "Auto-DM links from comments" (Quick Automation)'},
+          {id:'g1s6c3', text:'Scope: set to All posts and reels (not a specific post)'},
+          {id:'g1s6c4', text:'Trigger keywords: invest, info, property, guide, interested'},
+          {id:'g1s6c5', text:'Public comment reply text: Thanks! I just sent you the details in your DMs 👋'},
+          {id:'g1s6c6', text:'DM action: click Connect to existing flow → select PHC Lead Qualification → Save'},
+        ], notes:[{type:'ok', text:'Result: anyone who comments "invest" or "info" on any PHC post gets an auto-DM that starts the lead qualification flow.'}]},
+        { id:'g1s7', title:'Set Up Keyword DM Trigger (Direct Messages)', time:'3 min', checks:[
+          {id:'g1s7c1', text:'Click Automation → My Automations → + New Automation → Start From Scratch'},
+          {id:'g1s7c2', text:'Channel: select both Instagram and Facebook Messenger'},
+          {id:'g1s7c3', text:'Trigger: DM Received → Keywords → type each: invest · property · info · hi · hello'},
+          {id:'g1s7c4', text:'Action: Start Flow → select PHC Lead Qualification → Save and activate'},
+        ], notes:[{type:'ok', text:'Result: anyone who DMs "hi" or "invest" to the PHC Instagram or Facebook page triggers the flow automatically.'}]},
+        { id:'g1s8', title:'Add Webhook Placeholder + Publish', time:'3 min', checks:[
+          {id:'g1s8c1', text:'Open the PHC Lead Qualification flow in Flow Builder'},
+          {id:'g1s8c2', text:'After Message 4: click + → Action → External Request → Method: POST'},
+          {id:'g1s8c3', text:'Leave the URL field blank — your manager fills this in after Guide 2 (Make.com)'},
+          {id:'g1s8c4', text:'Body Type: JSON → paste the JSON body (see blue box below) → Save'},
+          {id:'g1s8c5', text:'Click Publish (green button, top right) — flow status changes to Live'},
+        ],
+        paste:{label:'WEBHOOK JSON BODY — Paste exactly as shown', color:'#0A3258', text:`{"name":"{{first name}} {{last name}}","budget":"{{Budget Range}}","timeline":"{{Investment Timeline}}","nationality":"{{Buyer Nationality}}","score":"{{Lead Score}}","source":"Instagram/Facebook ManyChat"}`}},
+        { id:'g1s9', title:'Test the Instagram & Facebook Flow', time:'5 min', checks:[
+          {id:'g1s9c1', text:'Test 1 — Instagram DM: from a second Instagram account send the DM: invest → Message 1 arrives instantly ✓'},
+          {id:'g1s9c2', text:'Complete the full flow: tap each button through all 4 messages ✓'},
+          {id:'g1s9c3', text:'ManyChat → Contacts → find the test lead → confirm Budget Range, Investment Timeline, Buyer Nationality are all saved ✓'},
+          {id:'g1s9c4', text:'Test 2 — Instagram Comment: comment the word "info" on any PHC post → check DMs for auto-reply within 30 seconds ✓'},
+          {id:'g1s9c5', text:'Test 3 — Facebook: from your personal Facebook account DM the PHC page: property → confirm the flow starts ✓'},
+        ], notes:[
+          {type:'ok', text:'ALL 5 CHECKS PASS = Instagram and Facebook are live. Phase 1 complete. Proceed to Guide 2 (Make.com) or continue to Step 10 for WhatsApp.'},
+          {type:'warn', text:'If any test fails — take a screenshot and show your manager before marking complete.'},
+        ]},
+      ],
+      'steps-g1-c': [
+        { id:'g1s10', title:'Transfer WhatsApp 011 666 952 to ManyChat (Phase 2)', time:'15 min setup + 1–7 days approval', checks:[
+          {id:'g1s10c1', text:'⚠️ READ FIRST: Transferring this number will delete all existing WhatsApp chat history on 011 666 952 and disable regular WhatsApp use on that phone. Confirm with your manager before starting.'},
+          {id:'g1s10c2', text:'Upgrade to ManyChat Pro: click Upgrade in ManyChat sidebar ($29/month — required for WhatsApp)'},
+          {id:'g1s10c3', text:'Click Settings → Connected Channels → WhatsApp → Connect → choose "Transfer your existing WhatsApp number"'},
+          {id:'g1s10c4', text:'Follow the Meta embedded signup — enter Property Hub Cambodia business details'},
+          {id:'g1s10c5', text:'When asked for phone number: enter 011 666 952 → verify via SMS code sent to the phone'},
+          {id:'g1s10c6', text:'Submit and wait — Meta reviews the business account in 1–7 business days. You will receive an email when approved.'},
+          {id:'g1s10c7', text:'Once approved: open PHC Lead Qualification flow → channel selector (top of flow) → add WhatsApp'},
+          {id:'g1s10c8', text:'Test: send "invest" to 011 666 952 from another phone → confirm all 4 messages arrive on WhatsApp ✓'},
+        ], notes:[
+          {type:'warn', text:'After transfer: 011 666 952 can no longer send or receive normal WhatsApp messages from a phone. All WhatsApp is automated through ManyChat. Brief your whole team before switching.'},
+          {type:'ok', text:'Once complete: all 3 channels (Instagram DM, Facebook Messenger, WhatsApp) run the same PHC Lead Qualification flow. Every lead is captured automatically.'},
+        ]},
+      ],
+    }
+  },
+  g2: {
+    total: 7, color: '#229ED9',
+    sections: { 'steps-g2': [
+      { id:'g2s1', title:'Create a Make.com Account', time:'4 min', checks:[
+        {id:'g2s1c1', text:'Go to make.com in your browser'},
+        {id:'g2s1c2', text:'Click "Get started free" → enter your work email and create a password'},
+        {id:'g2s1c3', text:'Check your email inbox → click the confirmation link'},
+        {id:'g2s1c4', text:'Log back in to make.com'},
+      ], notes:[{type:'ok', text:'SUCCESS: You see the Make.com dashboard with a blue "+ Create a new scenario" button.'}]},
+      { id:'g2s2', title:'Create a Telegram Bot', time:'5 min', checks:[
+        {id:'g2s2c1', text:'Open Telegram on your phone → search for @BotFather (blue tick) → tap START'},
+        {id:'g2s2c2', text:'Send the message: /newbot'},
+        {id:'g2s2c3', text:'When asked for a name, type: PHC Lead Alerts'},
+        {id:'g2s2c4', text:'When asked for a username, type: PHCLeadAlerts_bot'},
+        {id:'g2s2c5', text:'Copy the token BotFather sends you — save it in your notes app'},
+      ], notes:[{type:'tip', text:'The token looks like: 123456789:ABCDefGhIJKlmNoPQRsTUVwxyZ — keep it safe and private.'}]},
+      { id:'g2s3', title:'Create a Telegram Group and Get the Chat ID', time:'4 min', checks:[
+        {id:'g2s3c1', text:'In Telegram: create a New Group → name it: PHC Lead Notifications'},
+        {id:'g2s3c2', text:'Add your bot (PHCLeadAlerts_bot) and your manager to the group'},
+        {id:'g2s3c3', text:'Send any message in the group (e.g. "test")'},
+        {id:'g2s3c4', text:'In your browser go to: api.telegram.org/bot[YOUR-TOKEN]/getUpdates (replace [YOUR-TOKEN])'},
+        {id:'g2s3c5', text:'Find the section that says chat id — copy the number after it (it may start with a minus sign). That number is your Chat ID.'},
+      ], notes:[{type:'tip', text:'Chat ID usually looks like: -1001234567890 (with a minus sign). Save it alongside your Bot Token.'}]},
+      { id:'g2s4', title:'Build the Make.com Scenario', time:'8 min', checks:[
+        {id:'g2s4c1', text:'In Make.com: click + Create a new scenario → click the + circle → search Webhooks → Custom Webhook → Add → Save'},
+        {id:'g2s4c2', text:'Copy the webhook URL that appears — save it (you will use it in Steps 5 and 6)'},
+        {id:'g2s4c3', text:'Click the + circle to the right → search Telegram Bot → Send a Text Message'},
+        {id:'g2s4c4', text:'Click Add next to Connection → paste your Bot Token → Save'},
+        {id:'g2s4c5', text:'Enter your Telegram Group Chat ID in the Chat ID field'},
+        {id:'g2s4c6', text:'Paste the notification template (see box below) into the Text field → Save'},
+      ],
+      paste:{label:'TELEGRAM NOTIFICATION TEMPLATE', color:'#229ED9', text:`🔔 NEW LEAD ARRIVED
+
+Name: {{1.name}}
+Budget: {{1.budget}}
+Timeline: {{1.timeline}}
+Nationality: {{1.nationality}}
+Score: {{1.score}}
+Source: {{1.source}}`}},
+      { id:'g2s5', title:'Connect ManyChat to Make.com', time:'3 min', checks:[
+        {id:'g2s5c1', text:'Go to manychat.com → Automation → Flows → PHC Lead Qualification'},
+        {id:'g2s5c2', text:'Find the External Request action after Message 4'},
+        {id:'g2s5c3', text:'Paste the Make.com webhook URL into the URL field → Save → Publish'},
+      ], notes:[{type:'ok', text:'ManyChat will now send lead data to Make.com every time someone completes the Instagram or Facebook qualification flow.'}]},
+      { id:'g2s6', title:'Connect Website Form to Make.com', time:'3 min', checks:[
+        {id:'g2s6c1', text:'Open the file phc-lead-form.html in a text editor (Notepad on Windows)'},
+        {id:'g2s6c2', text:'Find the line: webhookUrl: \'\' → paste your Make.com URL between the quote marks'},
+        {id:'g2s6c3', text:'Find the line: webhookEnabled: false → change false to true'},
+        {id:'g2s6c4', text:'Save the file → re-upload it to the website'},
+      ], notes:[{type:'warn', text:'Not sure how to edit the HTML file? Ask your manager — it takes 2 minutes and they can guide you through it.'}]},
+      { id:'g2s7', title:'Test the Full Connection', time:'4 min', checks:[
+        {id:'g2s7c1', text:'Test 1 — Instagram DM: from a second Instagram account send the DM: invest → complete the full 4-message flow → check the Telegram group for a notification'},
+        {id:'g2s7c2', text:'Test 2 — Website: go to website → fill in lead form → submit → check Telegram group for second notification'},
+        {id:'g2s7c3', text:'Test 3 — Make.com: go to make.com → open scenario → History tab → confirm 2 green runs appear'},
+      ], notes:[
+        {type:'ok', text:'ALL 3 TESTS PASSED = Make.com is live. Report to your manager: "Guide 2 complete and tested."'},
+        {type:'warn', text:'If any test fails — screenshot the Make.com History tab and show your manager.'},
+      ]},
+    ]}
+  },
+  g3: {
+    total: 6, color: '#00B594',
+    sections: { 'steps-g3': [
+      { id:'g3s1', title:'Create a Mailchimp Account', time:'5 min', checks:[
+        {id:'g3s1c1', text:'Go to mailchimp.com → click Sign Up Free'},
+        {id:'g3s1c2', text:'Enter your work email → click Get Started'},
+        {id:'g3s1c3', text:'Check your email → click the activation link'},
+        {id:'g3s1c4', text:'Complete your name and password → log in → select the Free plan'},
+      ], notes:[{type:'ok', text:'SUCCESS: You are inside the Mailchimp dashboard.'}]},
+      { id:'g3s2', title:'Create the PHC Leads Audience', time:'5 min', checks:[
+        {id:'g3s2c1', text:'Click Audience (top navigation) → Create Audience → Create Audience'},
+        {id:'g3s2c2', text:'Audience Name: PHC Leads'},
+        {id:'g3s2c3', text:'Default From Name: Property Hub Cambodia'},
+        {id:'g3s2c4', text:'Default From Email: use a professional email if you have one (e.g. nick@propertyhubcambodia.com) — narithkgame2@gmail.com works for testing but looks unprofessional to clients'},
+        {id:'g3s2c5', text:'Remind people box: type "You signed up to receive property information from Property Hub Cambodia."'},
+        {id:'g3s2c6', text:'Click Save'},
+      ], notes:[{type:'ok', text:'SUCCESS: You have an audience called PHC Leads.'}]},
+      { id:'g3s3', title:'Create the Email Automation', time:'5 min', checks:[
+        {id:'g3s3c1', text:'Click Automations (left sidebar) → Create → Email → Welcome new subscribers'},
+        {id:'g3s3c2', text:'Select PHC Leads from the audience dropdown → click Begin'},
+        {id:'g3s3c3', text:'Name it: PHC Lead Nurture Sequence'},
+      ], notes:[{type:'ok', text:'SUCCESS: You are in the automation builder with Email 1 already shown.'}]},
+      { id:'g3s4', title:'Write Email 1 — Project Overview (sent immediately)', time:'20 min', checks:[
+        {id:'g3s4c1', text:'Click on Email 1 → Edit Email → Edit Design'},
+        {id:'g3s4c2', text:'Subject line: Your Phnom Penh property overview is ready'},
+        {id:'g3s4c3', text:'Send time: Immediately after subscribing'},
+        {id:'g3s4c4', text:'Delete the default template content → paste Email 1 body (see box below)'},
+        {id:'g3s4c5', text:'Click Save → Continue'},
+      ],
+      paste:{label:'EMAIL 1 BODY — Copy and paste into Mailchimp', color:'#00B594', text:`Dear [FNAME],
+
+Thank you for reaching out to Property Hub Cambodia.
+
+As promised, here is your project overview for Phnom Penh off-plan condominiums.
+
+OUR CURRENT PROJECTS:
+
+Time Square 7 — 1BR Duplex from $90,956
+45-month payment plan from $1,596/month | Book with $1,000
+
+Time Square 8 — 1BR Duplex from $93,036
+45-month payment plan from $1,632/month | Book with $1,000
+
+Time Square 9 Gatsby Residence (BKK1) — 1BR from $97,760
+45-month payment plan from $1,715/month | Book with $1,000
+
+Time Square 10 Ocean View — 1BR from $108,929
+45-month payment plan from $1,910/month | Book with $1,000
+
+All projects: strata title | Foreign ownership available | MegaKim developer
+
+To receive your personalised payment plan and ROI calculation,
+please reply to this email or message us on WhatsApp:
+wa.me/85511666952
+
+Best regards,
+Nick — Property Hub Cambodia
+propertyhubcambodia.com | 011 666 952`}},
+      { id:'g3s5', title:'Write Email 2 and Email 3', time:'40 min', checks:[
+        {id:'g3s5c1', text:'Click + Add Email in the automation timeline'},
+        {id:'g3s5c2', text:'Email 2 — Delay: 3 days | Subject: Why investors are choosing Phnom Penh in 2026 | Paste body from box below'},
+        {id:'g3s5c3', text:'Click + Add Email again for Email 3'},
+        {id:'g3s5c4', text:'Email 3 — Delay: 10 days | Subject: One unit. $1,000 to secure it. | Paste body from box below'},
+      ],
+      paste:{label:'EMAIL 2 BODY (3 days delay) + EMAIL 3 BODY (10 days delay)', color:'#00B594', text:`--- EMAIL 2 ---
+Dear [FNAME],
+
+I wanted to share some context about the Phnom Penh property market.
+
+WHY NOW IS A STRONG TIME TO INVEST:
+• Rental yields in BKK1 are 7.8–8.7% per year
+• Transaction volume increased 25% in 2025
+• Cambodia's Capital Gains Tax (January 2026) has shifted investors toward long-term rental income — exactly what our projects are designed for
+• Foreign ownership is fully legal via strata title
+
+OUR MOST POPULAR UNIT THIS MONTH:
+Time Square 9 Gatsby — 1BR in BKK1
+Price: $97,760 | Monthly: $1,715 | Booking: $1,000
+Estimated rental income: $700–$900/month after handover
+
+Would you like a full ROI calculation for your budget?
+Reply with your budget range and I will send it within 2 hours.
+
+Best regards,
+Nick — Property Hub Cambodia
+011 666 952
+
+--- EMAIL 3 ---
+Dear [FNAME],
+
+I will keep this short.
+
+If you are still considering a property investment in Phnom Penh, the next step is simple:
+
+1. Pick a project and unit type that fits your budget
+2. Pay $1,000 to secure the unit
+3. Review and sign the Sale and Purchase Agreement
+4. Begin your 45-month payment plan
+
+The $1,000 booking fee is fully refundable if you change your mind.
+
+Reply to this email or message us:
+WhatsApp: wa.me/85511666952
+
+Best regards,
+Nick — Property Hub Cambodia
+011 666 952`}},
+      { id:'g3s6', title:'Connect Mailchimp to Make.com and Activate', time:'10 min', checks:[
+        {id:'g3s6c1', text:'Go to make.com → open your scenario → click + after the Telegram module'},
+        {id:'g3s6c2', text:'Search Mailchimp → Add/Update Subscriber → Connect → log in to Mailchimp → allow access'},
+        {id:'g3s6c3', text:'Select Audience: PHC Leads | Email: {{1.email}} | First Name: {{1.name}} → Save — ⚠️ Note: This only works for leads who come through the website form (which captures email). Instagram and Facebook DM leads do not include an email address. Those leads are handled by Telegram notification only.'},
+        {id:'g3s6c4', text:'Go to mailchimp.com → Automations → PHC Lead Nurture Sequence'},
+        {id:'g3s6c5', text:'Click Start Sending → confirm status shows Active'},
+        {id:'g3s6c6', text:'Test: add your own email to PHC Leads audience → confirm Email 1 arrives within 5 minutes'},
+      ], notes:[
+        {type:'ok', text:'ALL STEPS DONE = Mailchimp is live. Every new lead receives 3 emails automatically. Report to manager: "Guide 3 complete and tested."'},
+      ]},
+    ]}
+  },
+  g4: {
+    total: 8, color: '#1877F2',
+    sections: { 'steps-g4': [
+      { id:'g4s1', title:'Set Up Facebook Business Manager', time:'5 min', checks:[
+        {id:'g4s1c1', text:'Go to business.facebook.com → log in or create account'},
+        {id:'g4s1c2', text:'Business name: Property Hub Cambodia | Enter your name and email → Submit'},
+        {id:'g4s1c3', text:'Verify your email → log back in'},
+        {id:'g4s1c4', text:'Settings → Pages → Add → Add a Page → select Property Hub Cambodia'},
+      ], notes:[{type:'ok', text:'SUCCESS: Property Hub Cambodia is listed under Pages in Business Manager.'}]},
+      { id:'g4s2', title:'Create a Campaign in Ads Manager', time:'5 min', checks:[
+        {id:'g4s2c1', text:'Click Ads Manager in the left sidebar'},
+        {id:'g4s2c2', text:'Click + Create (green button) → select Messages as the objective — this opens a DM conversation that connects directly to your ManyChat PHC Lead Qualification flow (much better than a Lead Form now that ManyChat is live)'},
+        {id:'g4s2c3', text:'Campaign name: PHC Lead Gen — May 2026 → click Continue'},
+      ]},
+      { id:'g4s3', title:'Create Ad Set A — Local Cambodian Investors', time:'6 min', checks:[
+        {id:'g4s3c1', text:'Ad Set Name: Ad Set A — Local Investors'},
+        {id:'g4s3c2', text:'Daily budget: $5.00'},
+        {id:'g4s3c3', text:'Location: Phnom Penh → 25km radius'},
+        {id:'g4s3c4', text:'Age: 28 to 55'},
+        {id:'g4s3c5', text:'Languages: Khmer and English'},
+        {id:'g4s3c6', text:'Placements: Manual → tick Facebook Feed and Facebook Reels only → click Next'},
+      ]},
+      { id:'g4s4', title:'Create Ad 1 — Local Investors', time:'8 min', checks:[
+        {id:'g4s4c1', text:'Ad Name: Ad 1 — Local — Entry Price'},
+        {id:'g4s4c2', text:'Identity: select Property Hub Cambodia page'},
+        {id:'g4s4c3', text:'Format: Single Image → upload best exterior render (1200×628px)'},
+        {id:'g4s4c4', text:'Headline: Own a Phnom Penh Condo from $1,000'},
+        {id:'g4s4c5', text:'Primary text: paste from box below'},
+        {id:'g4s4c6', text:'Call to Action: Get Quote'},
+        {id:'g4s4c7', text:'Messenger destination: select your ManyChat flow → PHC Lead Qualification → confirm it connects'},
+        {id:'g4s4c8', text:'Click Publish'},
+      ],
+      paste:{label:'AD 1 PRIMARY TEXT — Copy and paste exactly', color:'#1877F2', text:`Off-plan condos in central Phnom Penh. Flexible 45-month payment plans.
+Rental yield 6–9% per year. Book with just $1,000.
+
+Starting from $90,000. Foreign and Cambodian buyers welcome.
+
+Fill in the form — we will send your personalised project overview within 2 hours.`}},
+      { id:'g4s5', title:'Create Ad Set B — Japanese Investors', time:'5 min', checks:[
+        {id:'g4s5c1', text:'Go back to campaign level → click + Add New Ad Set'},
+        {id:'g4s5c2', text:'Ad Set Name: Ad Set B — Japanese Investors'},
+        {id:'g4s5c3', text:'Daily budget: $10.00'},
+        {id:'g4s5c4', text:'Locations: Cambodia AND Japan (both countries)'},
+        {id:'g4s5c5', text:'Age: 35 to 60 | Language: Japanese'},
+        {id:'g4s5c6', text:'Placements: Manual → Facebook Feed and Instagram Feed → Next'},
+      ]},
+      { id:'g4s6', title:'Create Ad 2 — Japanese Investors', time:'8 min', checks:[
+        {id:'g4s6c1', text:'Ad Name: Ad 2 — Japanese — ROI Focus'},
+        {id:'g4s6c2', text:'Upload premium interior render — living room or kitchen (1200×628px)'},
+        {id:'g4s6c3', text:'Headline (Japanese): paste from box below'},
+        {id:'g4s6c4', text:'Primary Text (Japanese): paste from box below'},
+        {id:'g4s6c5', text:'Call to Action: Learn More'},
+        {id:'g4s6c6', text:'Messenger destination: same PHC Lead Qualification ManyChat flow — the nationality button (Japanese) in the flow handles language personalisation. No separate form needed. → Publish'},
+      ],
+      paste:{label:'AD 2 JAPANESE HEADLINE + PRIMARY TEXT — Copy exactly', color:'#833AB4', text:`HEADLINE:
+プノンペンで年利6〜9%の不動産投資
+
+PRIMARY TEXT:
+カンボジア・プノンペンのオフプランコンドミニアム。
+• 頭金わずか1,000ドルから
+• 45ヶ月の分割払いプラン
+• 年間賃貸利回り6〜9%
+• 外国人名義での所有が可能
+
+無料の投資概要レポートをお送りします。
+フォームにご記入ください。2時間以内にご連絡します。`},
+      table:{headers:['English Label','Japanese Label'], rows:[['Budget Range','予算範囲'],['Investment Timeline','投資のタイムライン'],['Nationality','国籍'],['Within 3 months','3ヶ月以内'],['3–6 months','3〜6ヶ月'],['6–12 months','6〜12ヶ月'],['Just exploring','検討中']]}},
+      { id:'g4s7', title:'Add Payment Method', time:'4 min', checks:[
+        {id:'g4s7c1', text:'Go to Billing in Ads Manager (left sidebar) → Add Payment Method'},
+        {id:'g4s7c2', text:'Enter credit or debit card details → Save'},
+        {id:'g4s7c3', text:'Make sure your card accepts international USD payments'},
+      ], notes:[{type:'warn', text:'Card declined? Try a different card or ask your manager about using PayPal as an alternative.'}]},
+      { id:'g4s8', title:'Confirm Ads Are Running', time:'5 min', checks:[
+        {id:'g4s8c1', text:'Go to Ads Manager → Campaigns → PHC Lead Gen — May 2026'},
+        {id:'g4s8c2', text:'Both Ad Set A and Ad Set B show status: In Review or Active'},
+        {id:'g4s8c3', text:'Facebook reviews ads within 24 hours — status will change to Active after approval'},
+        {id:'g4s8c4', text:'Check every morning that both ads show Active (not Rejected)'},
+      ], notes:[
+        {type:'ok', text:'ALL STEPS DONE = All 4 guides are complete! The system is fully live. Report to your manager: "All 4 guides complete — ManyChat, Make.com, Mailchimp, and Facebook Ads are all live and tested."'},
+        {type:'warn', text:'If an ad shows Rejected: take a screenshot of the rejection reason and show your manager immediately.'},
+      ]},
+    ]}
+  }
+};
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+function loadState() {
+  try { return JSON.parse(localStorage.getItem('phc_tracker') || '{}'); }
+  catch(e) { return {}; }
+}
+function saveState(state) {
+  localStorage.setItem('phc_tracker', JSON.stringify(state));
+}
+let state = loadState();
+
+// ══════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════
+function buildStep(step, guideId, color) {
+  const totalChecks = step.checks.length;
+  const doneChecks = step.checks.filter(c => state[c.id]).length;
+  const isComplete = doneChecks === totalChecks;
+
+  let html = `<div class="step-card ${isComplete?'completed':''}" id="card-${step.id}">
+    <div class="step-header" onclick="toggleStep('${step.id}')">
+      <div class="step-num" style="background:${isComplete?'#1a7a4a':color}">${stepIndexMap[step.id]}</div>
+      <div class="step-info">
+        <div class="step-title">${step.title}</div>
+        <div class="step-meta">${doneChecks} of ${totalChecks} tasks done${isComplete?' ✓ All done!':''}</div>
+      </div>
+      <div class="step-right">
+        ${step.time?`<div class="step-time">⏱ ${step.time}</div>`:''}
+        <div class="step-expand-hint">👆 Tap to open</div>
+        <div class="step-collapse-hint">▴ Close</div>
+        <div class="step-toggle" id="toggle-${step.id}">▾</div>
+      </div>
+    </div>
+    <div class="step-body" id="body-${step.id}">`;
+
+  // Translation table first (context before paste)
+  if (step.table) {
+    html += `<table class="trans-table" style="margin-top:14px"><tr>`;
+    step.table.headers.forEach(h => html += `<th>${h}</th>`);
+    html += '</tr>';
+    step.table.rows.forEach((r) => {
+      html += `<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`;
+    });
+    html += '</table>';
+  }
+  // Paste box — shown BELOW checklist (see further down)
+  // Intentionally blank here — paste box rendered after checklist
+  if (false && step.paste) {
+    const pasteId = 'paste-' + step.id;
+    // Store paste text safely in a map
+    pasteStore[pasteId] = step.paste.text;
+    html += `<div class="paste-box" style="margin-top:14px">
+      <div class="paste-header" style="background:${step.paste.color}">
+        📋 ${step.paste.label}
+        <button class="copy-btn" data-paste-id="${pasteId}" onclick="copyPaste(this)">📋 Copy Text</button>
+      </div>
+      <div class="paste-body">${escHtml(step.paste.text)}</div>
+    </div>`;
+  }
+
+  // (table rendered above checklist)
+
+  // Checklist
+  html += '<div class="checklist" style="margin-top:14px">';
+  step.checks.forEach(c => {
+    const checked = !!state[c.id];
+    html += `<div class="check-item ${checked?'checked':''}" onclick="toggleCheck('${c.id}','${step.id}','${guideId}')">
+      <div class="check-box">${checked?'✓':''}</div>
+      <div class="check-text">
+        <div class="check-main">${c.text}</div>
+        ${c.hint?`<div class="check-hint">${c.hint}</div>`:''}
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+
+  // Paste box rendered AFTER checklist so staff read what to do before seeing what to paste
+  if (step.paste) {
+    const pasteId = 'paste-' + step.id + '-b';
+    pasteStore[pasteId] = step.paste.text;
+    html += `<div class="paste-box" style="margin:14px 0 4px">
+      <div class="paste-header" style="background:${step.paste.color}">
+        📋 ${step.paste.label}
+        <button class="copy-btn" data-paste-id="${pasteId}" onclick="copyPaste(this)">📋 Copy Text</button>
+      </div>
+      <div class="paste-body">${escHtml(step.paste.text)}</div>
+    </div>`;
+  }
+
+  // Notes
+  if (step.notes) {
+    step.notes.forEach(n => {
+      html += `<div class="note-box ${n.type}" style="margin-top:10px">
+        <strong>${n.type==='ok'?'✅':n.type==='warn'?'⚠️':'💡'} ${n.type==='ok'?'Success':'Important'}</strong>
+        ${n.text}
+      </div>`;
+    });
+  }
+
+  html += '</div></div>';
+  return html;
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// Build step index map — clean step numbers per guide
+function buildStepIndexMap(guideId) {
+  const guide = GUIDES[guideId];
+  const map = {};
+  let idx = 1;
+  Object.values(guide.sections).forEach(steps => {
+    steps.forEach(step => { map[step.id] = idx++; });
+  });
+  return map;
+}
+let stepIndexMap = {};
+
+function renderGuide(guideId) {
+  const guide = GUIDES[guideId];
+  const color = guide.color;
+  stepIndexMap = buildStepIndexMap(guideId);
+  Object.entries(guide.sections).forEach(([containerId, steps]) => {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    el.innerHTML = steps.map(s => buildStep(s, guideId, color)).join('');
+  });
+  updateGuideProgress(guideId);
+}
+
+function renderAllGuides() {
+  ['g1','g2','g3','g4'].forEach(g => {
+    renderGuide(g);
+    // Set total tasks count in header
+    const { total } = getGuideCounts(g);
+    const el = document.getElementById(g+'-total-tasks');
+    if (el) el.textContent = total;
+  });
+  updateAll();
+}
+
+// ══════════════════════════════════════════
+// INTERACTIONS
+// ══════════════════════════════════════════
+function toggleStep(stepId) {
+  const card = document.getElementById('card-'+stepId);
+  const isOpen = card.classList.contains('open');
+  document.querySelectorAll('.step-card.open').forEach(c => c.classList.remove('open'));
+  if (!isOpen) card.classList.add('open');
+}
+
+function expandAll(guideId) {
+  const guide = GUIDES[guideId];
+  Object.values(guide.sections).flat().forEach(step => {
+    const card = document.getElementById('card-'+step.id);
+    if (card) card.classList.add('open');
+  });
+}
+
+function collapseAll(guideId) {
+  const guide = GUIDES[guideId];
+  Object.values(guide.sections).flat().forEach(step => {
+    const card = document.getElementById('card-'+step.id);
+    if (card) card.classList.remove('open');
+  });
+}
+
+function toggleCheck(checkId, stepId, guideId) {
+  state[checkId] = !state[checkId];
+  saveState(state);
+  // Save scroll position
+  const scrollY = window.scrollY;
+  renderGuide(guideId);
+  // Re-open the step and restore scroll
+  const card = document.getElementById('card-'+stepId);
+  if (card) card.classList.add('open');
+  updateAll();
+  // Restore scroll after render
+  requestAnimationFrame(() => window.scrollTo(0, scrollY));
+}
+
+const pasteStore = {};
+
+function copyPaste(btn) {
+  const id = btn.getAttribute('data-paste-id');
+  const text = pasteStore[id] || '';
+  const doFallback = () => {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    try { document.execCommand('copy'); } catch(e) {}
+    document.body.removeChild(ta);
+    btn.textContent = '✓ Copied!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋 Copy Text'; btn.classList.remove('copied'); }, 2500);
+  };
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = '✓ Copied!'; btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = '📋 Copy Text'; btn.classList.remove('copied'); }, 2500);
+    }).catch(doFallback);
+  } else { doFallback(); }
+}
+
+function showView(viewId) {
+  // Warn if trying to skip ahead
+  const order = ['dashboard','g1','g2','g3','g4'];
+  const idx = order.indexOf(viewId);
+  if (idx > 1) {
+    const prevGuide = order[idx - 1];
+    if (prevGuide !== 'dashboard') {
+      const { done, total } = getGuideCounts(prevGuide);
+      if (done < total) {
+        const names = {g1:'Guide 1 (ManyChat)', g2:'Guide 2 (Make.com)', g3:'Guide 3 (Mailchimp)'};
+        const ok = confirm(`⚠️ ${names[prevGuide]} is not complete yet (${done}/${total} tasks done).\n\nIt is recommended to complete guides in order.\n\nAre you sure you want to continue to ${viewId.replace('g','Guide ')}?`);
+        if (!ok) return;
+      }
+    }
+  }
+  document.querySelectorAll('.dashboard,.guide-view').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.guide-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-'+viewId).classList.add('active');
+  document.getElementById('tab-'+viewId).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function resetAll() {
+  const answer = prompt('Type RESET to confirm clearing all progress. This cannot be undone.');
+  if (answer !== 'RESET') return;
+  state = {};
+  saveState(state);
+  renderAllGuides();
+  alert('Progress has been reset. All guides are back to 0%.');
+}
+
+// ══════════════════════════════════════════
+// PROGRESS UPDATES
+// ══════════════════════════════════════════
+function getGuideCounts(guideId) {
+  const guide = GUIDES[guideId];
+  let done = 0, total = 0;
+  Object.values(guide.sections).forEach(steps => {
+    steps.forEach(step => {
+      total += step.checks.length;
+      done += step.checks.filter(c => state[c.id]).length;
+    });
+  });
+  return { done, total };
+}
+
+function updateGuideProgress(guideId) {
+  const { done, total } = getGuideCounts(guideId);
+  const pct = total > 0 ? Math.round(done/total*100) : 0;
+  const color = GUIDES[guideId].color;
+
+  // In-guide progress bar
+  const fill = document.getElementById(guideId+'-prog-fill');
+  const count = document.getElementById(guideId+'-prog-count');
+  const badge = document.getElementById(guideId+'-complete-badge');
+  const doneCount = document.getElementById(guideId+'-done-count');
+  if (fill) fill.style.width = pct+'%';
+  if (count) count.textContent = done+' / '+total;
+  if (badge) badge.classList.toggle('visible', done===total);
+  if (doneCount) doneCount.textContent = done;
+
+  // Success banner
+  const success = document.getElementById(guideId+'-success');
+  if (success) success.style.display = done===total ? 'block' : 'none';
+
+  // Sidebar badge
+  const badge2 = document.getElementById('badge-'+guideId);
+  if (badge2) {
+    badge2.textContent = done+'/'+total;
+    badge2.classList.toggle('done', done===total);
+  }
+
+  // Dashboard card
+  const dcFill = document.getElementById('dc-fill-'+guideId);
+  const dcText = document.getElementById('dc-text-'+guideId);
+  const dcStatus = document.getElementById('dc-status-'+guideId);
+  const dcDots = document.getElementById('dc-dots-'+guideId);
+  if (dcFill) dcFill.style.width = pct+'%';
+  if (dcText) dcText.textContent = done+'/'+total;
+  if (dcStatus) {
+    if (done===0) { dcStatus.textContent='Not started'; dcStatus.style.background='#f0f2f5'; dcStatus.style.color='#9aa5b4'; }
+    else if (done===total) { dcStatus.textContent='✓ Complete'; dcStatus.style.background='#eafaf1'; dcStatus.style.color='#1a7a4a'; }
+    else { dcStatus.textContent='In progress'; dcStatus.style.background='#fdf8ec'; dcStatus.style.color='#92620a'; }
+  }
+  if (dcDots) {
+    const allSteps = Object.values(GUIDES[guideId].sections).flat();
+    dcDots.innerHTML = allSteps.map(s => {
+      const stepDone = s.checks.every(c => state[c.id]);
+      return `<div class="dc-step-dot ${stepDone?'done':''}" title="${s.title}"></div>`;
+    }).join('');
+  }
+}
+
+function updateAll() {
+  ['g1','g2','g3','g4'].forEach(updateGuideProgress);
+
+  // Overall
+  let totalDone = 0, totalAll = 0;
+  ['g1','g2','g3','g4'].forEach(g => {
+    const { done, total } = getGuideCounts(g);
+    totalDone += done; totalAll += total;
+  });
+  const pct = totalAll > 0 ? Math.round(totalDone/totalAll*100) : 0;
+
+  document.getElementById('topbar-progress').textContent = pct+'% Complete';
+  const sf = document.getElementById('sidebar-fill');
+  const st = document.getElementById('sidebar-text');
+  const op = document.getElementById('oc-pct');
+  if (sf) sf.style.width = pct+'%';
+  if (st) st.textContent = totalDone+' of '+totalAll+' tasks done';
+  if (op) op.textContent = pct+'%';
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+renderAllGuides();
+</script>
+</body>
+</html>

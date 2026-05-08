@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHC · Investment Guide 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --gold:#c9993f;
+  --gold-lt:#e0b86a;
+  --gold-dim:rgba(201,153,63,.12);
+  --navy:#06264F;
+  --navy-dark:#040f24;
+  --navy-mid:#0b3d7a;
+  --ink:#1a1a2e;
+  --mid:#5a5a7a;
+  --light:#9090a8;
+  --cream:#f8f5f0;
+  --white:#ffffff;
+  --border:#e5e0d8;
+  --fd:'Playfair Display',serif;
+  --fb:'Inter',sans-serif;
+  --fm:'JetBrains Mono',monospace;
+  --pw:794px;
+  --ph:1123px;
+}
+body{font-family:var(--fb);background:#c8c8c8;color:var(--ink);font-size:13px;line-height:1.6;padding-top:50px;}
+
+/* ── PRINT TOOLBAR ── */
+.toolbar{
+  position:fixed;top:0;left:0;right:0;height:50px;
+  background:var(--navy-dark);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;z-index:9999;
+}
+.tb-title{font-family:var(--fm);font-size:12px;letter-spacing:.12em;color:var(--gold);}
+.tb-meta{font-size:12px;color:rgba(255,255,255,.4);}
+.tb-btn{
+  background:var(--gold);color:var(--navy-dark);
+  border:none;padding:8px 22px;border-radius:6px;
+  font-family:var(--fb);font-weight:700;font-size:12px;letter-spacing:.04em;
+  cursor:pointer;
+}
+.tb-btn:hover{background:var(--gold-lt);}
+
+/* ── PAGE SHELL ── */
+.page{
+  width:var(--pw);min-height:var(--ph);
+  background:var(--white);
+  margin:16px auto;
+  position:relative;overflow:hidden;
+  box-shadow:0 4px 32px rgba(0,0,0,.22);
+}
+
+/* ── SHARED FOOTER STRIP ── */
+.pf{
+  position:absolute;bottom:0;left:0;right:0;height:34px;
+  background:var(--navy-dark);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 40px;
+  font-family:var(--fm);font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.08em;
+}
+.pf-brand{color:var(--gold);}
+
+/* ── SHARED INNER PAGE HEADER ── */
+.iph{
+  background:var(--navy);color:var(--white);
+  padding:18px 48px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.iph-title{font-family:var(--fd);font-size:14px;font-weight:700;letter-spacing:.04em;}
+.iph-tag{font-family:var(--fm);font-size:10px;color:var(--gold);letter-spacing:.12em;}
+
+/* ── INNER PAGE BODY ── */
+.pb{padding:36px 48px 54px;}
+.eyebrow{font-family:var(--fm);font-size:10px;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin-bottom:6px;}
+.h1{font-family:var(--fd);font-size:28px;font-weight:700;color:var(--navy);margin-bottom:4px;line-height:1.15;}
+.subhead{font-size:12px;color:var(--mid);line-height:1.55;margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+
+/* ═══════════════════════════════════════
+   PAGE 1 — COVER
+   ═══════════════════════════════════════ */
+.cover{background:var(--navy-dark);color:var(--white);min-height:var(--ph);display:flex;flex-direction:column;}
+.cover-body{flex:1;padding:60px 56px 44px;display:flex;flex-direction:column;justify-content:center;}
+
+.logo-row{display:flex;align-items:center;gap:14px;margin-bottom:64px;}
+.logo-mark{width:42px;height:42px;background:var(--gold);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.logo-mark svg{width:22px;height:22px;fill:var(--navy-dark);}
+.logo-name{font-family:var(--fd);font-size:19px;font-weight:700;letter-spacing:.04em;}
+.logo-sub{font-size:11px;letter-spacing:.14em;color:rgba(255,255,255,.4);margin-top:1px;}
+
+.cover-eyebrow{font-family:var(--fm);font-size:11px;letter-spacing:.2em;color:var(--gold);margin-bottom:18px;}
+.cover-title{font-family:var(--fd);font-size:54px;font-weight:700;line-height:1.08;margin-bottom:18px;}
+.cover-title em{color:var(--gold);font-style:italic;}
+.cover-desc{font-size:16px;color:rgba(255,255,255,.65);max-width:500px;line-height:1.6;margin-bottom:44px;}
+.cover-rule{width:56px;height:2px;background:var(--gold);margin-bottom:36px;}
+
+.cover-stats{display:flex;gap:36px;}
+.cs{border-left:2px solid var(--gold);padding-left:14px;}
+.cs-n{font-family:var(--fm);font-size:22px;color:var(--gold);font-weight:500;}
+.cs-l{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.08em;margin-top:3px;}
+
+.cover-band{
+  background:var(--gold);color:var(--navy-dark);
+  padding:18px 56px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.cb-left{font-family:var(--fd);font-size:14px;font-weight:700;}
+.cb-right{font-size:12px;font-weight:600;letter-spacing:.04em;}
+
+/* ═══════════════════════════════════════
+   PAGE 2 — THE OPPORTUNITY
+   ═══════════════════════════════════════ */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
+.sc{background:var(--cream);border-radius:10px;padding:14px 12px;border-top:3px solid var(--gold);}
+.sc-n{font-family:var(--fm);font-size:20px;color:var(--navy);}
+.sc-l{font-size:9px;color:var(--light);letter-spacing:.08em;text-transform:uppercase;margin-top:3px;}
+.sc-d{font-size:11px;color:var(--mid);margin-top:5px;line-height:1.4;}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.info-box{background:var(--cream);border-radius:10px;padding:16px;}
+.ib-title{font-family:var(--fd);font-size:14px;font-weight:700;color:var(--navy);margin-bottom:10px;}
+.dot-list{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.dot-list li{font-size:11px;color:var(--ink);line-height:1.45;padding-left:14px;position:relative;}
+.dot-list li::before{content:'→';position:absolute;left:0;color:var(--gold);font-size:10px;top:2px;}
+
+/* ═══════════════════════════════════════
+   PAGE 3 — BUDGET STRATEGY
+   ═══════════════════════════════════════ */
+.tier{border-radius:10px;overflow:hidden;margin-bottom:10px;border:1px solid var(--border);}
+.tier-head{
+  background:var(--navy);color:var(--white);
+  padding:11px 18px;display:flex;align-items:center;justify-content:space-between;
+}
+.th-range{font-family:var(--fm);font-size:13px;color:var(--gold);}
+.th-label{font-size:11px;color:rgba(255,255,255,.6);letter-spacing:.04em;}
+.tier-body{padding:14px 18px;display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.ti-head{font-weight:700;font-size:12px;color:var(--navy);margin-bottom:3px;}
+.ti-text{font-size:11px;color:var(--mid);line-height:1.45;}
+.tag{display:inline-block;font-family:var(--fm);font-size:9px;padding:2px 7px;border-radius:4px;background:var(--gold-dim);color:var(--gold);letter-spacing:.06em;margin:4px 3px 0 0;}
+
+/* ═══════════════════════════════════════
+   PAGE 4 — DISTRICTS
+   ═══════════════════════════════════════ */
+.dist-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.dc{border-radius:10px;border:1px solid var(--border);overflow:hidden;}
+.dc-head{padding:12px 16px;border-bottom:1px solid var(--border);}
+.dc-name{font-family:var(--fd);font-size:15px;font-weight:700;color:var(--navy);}
+.dc-sub{font-size:10px;color:var(--light);margin-top:2px;}
+.dc-body{padding:12px 16px;}
+.dc-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);}
+.dc-row:last-of-type{border-bottom:none;}
+.dc-k{font-size:11px;color:var(--mid);}
+.dc-v{font-family:var(--fm);font-size:10px;color:var(--ink);}
+.dc-note{font-size:11px;color:var(--mid);line-height:1.5;margin-top:8px;}
+
+/* ═══════════════════════════════════════
+   PAGE 5 — TAX & LEGAL
+   ═══════════════════════════════════════ */
+.section-h2{font-family:var(--fd);font-size:16px;font-weight:700;color:var(--navy);margin:0 0 10px;}
+.tax-row{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);}
+.tax-row:last-of-type{border-bottom:none;}
+.tr-lbl{min-width:150px;font-weight:600;font-size:12px;color:var(--navy);}
+.tr-rate{min-width:72px;font-family:var(--fm);font-size:12px;color:var(--gold);}
+.tr-note{font-size:11px;color:var(--mid);line-height:1.45;flex:1;}
+
+.rule-row{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);}
+.rule-row:last-of-type{border-bottom:none;}
+.r-num{min-width:22px;height:22px;background:var(--navy);color:var(--white);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:2px;}
+.r-title{font-weight:700;font-size:12px;color:var(--navy);}
+.r-detail{font-size:11px;color:var(--mid);line-height:1.45;margin-top:2px;}
+
+/* ═══════════════════════════════════════
+   PAGE 6 — BUYING PROCESS
+   ═══════════════════════════════════════ */
+.steps-row-4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px;}
+.steps-row-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;}
+.step{background:var(--cream);border-radius:10px;padding:14px 12px;text-align:center;position:relative;}
+.step:not(:last-child)::after{content:'›';position:absolute;right:-8px;top:50%;transform:translateY(-50%);color:var(--gold);font-size:18px;font-weight:700;}
+.step-n{width:28px;height:28px;background:var(--navy);color:var(--white);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;margin:0 auto 7px;}
+.step-title{font-weight:700;font-size:11px;color:var(--navy);margin-bottom:3px;}
+.step-detail{font-size:10px;color:var(--mid);line-height:1.4;}
+
+.phc-panel{background:var(--gold-dim);border:1px solid rgba(201,153,63,.3);border-radius:10px;padding:16px 18px;}
+.pp-title{font-weight:700;font-size:12px;color:var(--navy);margin-bottom:8px;}
+.pp-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 20px;}
+.pp-item{font-size:11px;color:var(--ink);padding-left:14px;position:relative;line-height:1.4;}
+.pp-item::before{content:'✓';position:absolute;left:0;color:var(--gold);}
+
+/* ═══════════════════════════════════════
+   PAGE 7 — WHY PHC
+   ═══════════════════════════════════════ */
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.wc{border:1px solid var(--border);border-radius:10px;padding:18px 16px;border-top:3px solid var(--gold);}
+.wc-icon{font-size:20px;margin-bottom:8px;}
+.wc-title{font-family:var(--fd);font-size:14px;font-weight:700;color:var(--navy);margin-bottom:5px;}
+.wc-text{font-size:11px;color:var(--mid);line-height:1.5;}
+.lang-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.lp{padding:3px 10px;border-radius:20px;font-family:var(--fm);font-size:10px;font-weight:700;letter-spacing:.06em;}
+
+.quote-panel{background:var(--navy);color:var(--white);border-radius:10px;padding:18px 20px;}
+.qp-text{font-family:var(--fd);font-size:14px;font-style:italic;line-height:1.65;margin-bottom:10px;}
+.qp-attr{font-size:11px;color:rgba(255,255,255,.45);}
+
+/* ═══════════════════════════════════════
+   PAGE 8 — BACK COVER
+   ═══════════════════════════════════════ */
+.back-cover{background:var(--navy-dark);color:var(--white);min-height:var(--ph);display:flex;flex-direction:column;}
+.bc-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 56px;text-align:center;}
+.bc-eyebrow{font-family:var(--fm);font-size:11px;letter-spacing:.2em;color:var(--gold);margin-bottom:16px;}
+.bc-title{font-family:var(--fd);font-size:46px;font-weight:700;line-height:1.1;margin-bottom:14px;}
+.bc-title em{color:var(--gold);font-style:italic;}
+.bc-sub{font-size:15px;color:rgba(255,255,255,.6);max-width:460px;line-height:1.6;margin-bottom:40px;}
+.bc-btn{
+  display:inline-block;
+  background:var(--gold);color:var(--navy-dark);
+  border:none;padding:15px 32px;border-radius:8px;
+  font-family:var(--fb);font-weight:700;font-size:14px;letter-spacing:.03em;
+  cursor:pointer;margin-bottom:44px;
+}
+.bc-btn:hover{background:var(--gold-lt);}
+.bc-contacts{display:flex;gap:32px;justify-content:center;flex-wrap:wrap;}
+.bc-contact{font-size:13px;color:rgba(255,255,255,.6);}
+.bc-contact strong{color:var(--white);}
+
+.bc-band{
+  background:var(--gold);color:var(--navy-dark);
+  padding:16px 40px;text-align:center;
+  font-size:10px;font-weight:600;letter-spacing:.06em;line-height:1.6;
+}
+
+/* ═══════════════════════════════════════
+   PRINT
+   ═══════════════════════════════════════ */
+@media print{
+  body{background:white;padding-top:0;}
+  .toolbar{display:none;}
+  .page{width:210mm;min-height:297mm;margin:0;box-shadow:none;page-break-after:always;}
+  .page:last-child{page-break-after:auto;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <span class="tb-title">PHC · CAMBODIA INVESTMENT GUIDE 2026</span>
+  <span class="tb-meta">8 pages · Print or share as PDF</span>
+  <button class="tb-btn" onclick="window.print()">⬇ Export PDF</button>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     PAGE 1 — COVER
+     ═══════════════════════════════════════════ -->
+<div class="page">
+  <div class="cover">
+    <div class="cover-body">
+      <div class="logo-row">
+        <div class="logo-mark">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        </div>
+        <div>
+          <div class="logo-name">Property Hub Cambodia</div>
+          <div class="logo-sub">カンボジア不動産 · BKK1, Phnom Penh</div>
+        </div>
+      </div>
+
+      <div class="cover-eyebrow">Cambodia Real Estate · 2026 Edition</div>
+      <div class="cover-title">Your <em>complete</em><br>investment guide</div>
+      <div class="cover-desc">Everything you need to make a confident, well-structured property investment decision in Cambodia — from market fundamentals to legal framework to exit strategies.</div>
+      <div class="cover-rule"></div>
+      <div class="cover-stats">
+        <div class="cs"><div class="cs-n">6.7M</div><div class="cs-l">Tourists · 2024</div></div>
+        <div class="cs"><div class="cs-n">7–8%</div><div class="cs-l">Avg Gross Yield · BKK1</div></div>
+        <div class="cs"><div class="cs-n">$70K</div><div class="cs-l">Entry Price · BKK1</div></div>
+        <div class="cs"><div class="cs-n">100%</div><div class="cs-l">Foreign Freehold via Strata</div></div>
+      </div>
+    </div>
+    <div class="cover-band">
+      <div class="cb-left">Prepared by Property Hub Cambodia · BKK1, Phnom Penh</div>
+      <div class="cb-right">📞 011 666 952 · propertyhubcambodia.com</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     PAGE 2 — THE OPPORTUNITY
+     ═══════════════════════════════════════════ -->
+<div class="page">
+  <div class="iph">
+    <span class="iph-title">The Cambodia Opportunity</span>
+    <span class="iph-tag">PHC · INVESTMENT GUIDE 2026</span>
+  </div>
+  <div class="pb">
+    <div class="eyebrow">Market Overview</div>
+    <div class="h1">Why Cambodia, Why Now</div>
+    <div class="subhead">Southeast Asia's most accessible market for foreign investors — strata title freehold, USD-denominated pricing, and yields that mature markets no longer deliver.</div>
+
+    <div class="stat-grid">
+      <div class="sc">
+        <div class="sc-n">~6%</div>
+        <div class="sc-l">GDP Growth</div>
+        <div class="sc-d">Sustained trajectory. Post-COVID recovery complete. Garments, tourism, and FDI driving expansion.</div>
+      </div>
+      <div class="sc">
+        <div class="sc-n">$47B</div>
+        <div class="sc-l">FDI · 2019–2023</div>
+        <div class="sc-d">Regional manufacturing hub. China accounts for 47% of FDI. Macro base is stable.</div>
+      </div>
+      <div class="sc">
+        <div class="sc-n">6.7M</div>
+        <div class="sc-l">Tourists · 2024</div>
+        <div class="sc-d">Above pre-COVID levels. Techo International Airport opened September 2025 — adds long-haul routes.</div>
+      </div>
+      <div class="sc">
+        <div class="sc-n">$27B</div>
+        <div class="sc-l">FX Reserves</div>
+        <div class="sc-d">Public debt below 30% GDP. USD freely used as primary currency — no conversion risk.</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="info-box">
+        <div class="ib-title">Why investors choose Cambodia</div>
+        <ul class="dot-list">
+          <li>100% foreign ownership via strata title — legally clean, LMAP-registered in your name</li>
+          <li>USD-denominated — no currency conversion risk on price, rent, or resale</li>
+          <li>Gross rental yields 7–8% in BKK1; net 4.5–6% after fees and taxes</li>
+          <li>No capital controls — repatriate rental income and sale proceeds freely</li>
+          <li>Lower entry than Bangkok, HCMC, or Singapore for comparable yield profile</li>
+          <li>Growing expat community and regional professional tenant base in BKK1</li>
+        </ul>
+      </div>
+      <div class="info-box">
+        <div class="ib-title">Key risks — understand before you buy</div>
+        <ul class="dot-list">
+          <li>~72,000 condo units with ~15% vacancy — research project-level occupancy, not city averages</li>
+          <li>Developer delivery risk on off-plan — verify track record and escrow terms before signing</li>
+          <li>Luxury segment vacancy hit 42% in 2024 — mid-range near local demand outperforms</li>
+          <li>Property management quality varies widely — net yield is the only honest number</li>
+          <li>CGT (20% on gains) in effect since January 2026 — always factor into exit modelling</li>
+          <li>Exit liquidity is lower than developed markets — plan for 3–6 months to resale</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pf">
+    <span class="pf-brand">Property Hub Cambodia</span>
+    <span>Cambodia Property Investment Guide · 2026 Edition</span>
+    <span>Page 2 of 8</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     PAGE 3 — BUDGET STRATEGY
+     ═══════════════════════════════════════════ -->
+<div class="page">
+  <div class="iph">
+    <span class="iph-title">Investment Strategy by Budget</span>
+    <span class="iph-tag">PHC · INVESTMENT GUIDE 2026</span>
+  </div>
+  <div class="pb">
+    <div class="eyebrow">Structured Approach</div>
+    <div class="h1">What to Buy at Every Budget</div>
+    <div class="subhead">Each tier has a distinct risk/return profile. Match strategy to your goals first — never to the largest property you can afford.</div>
+
+    <div class="tier">
+      <div class="tier-head">
+        <span class="th-range">$50,000 – $100,000</span>
+        <span class="th-label">Entry · Yield Focus</span>
+      </div>
+      <div class="tier-body">
+        <div>
+          <div class="ti-head">Studio or 1BR in BKK1 / BKK3</div>
+          <div class="ti-text">Best entry point. Focus on strata-titled studios 35–45 sqm in mid-market buildings with professional management. Target 7–8% gross, 5–6% net. Avoid luxury high-rises — vacancy risk is high at this budget.</div>
+          <div><span class="tag">BKK1</span><span class="tag">STRATA TITLE</span><span class="tag">RENTAL YIELD</span></div>
+        </div>
+        <div>
+          <div class="ti-head">Split: income + growth</div>
+          <div class="ti-text">$70K in a mid-range rental condo for immediate cash flow. $30K as deposit on a pre-launch unit for capital gain exposure. Balanced for first-time investors wanting both yield and an upside bet.</div>
+          <div><span class="tag">SPLIT ALLOCATION</span><span class="tag">PRE-LAUNCH DEPOSIT</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tier">
+      <div class="tier-head">
+        <span class="th-range">$100,000 – $200,000</span>
+        <span class="th-label">Mid-Range · Balanced Strategy</span>
+      </div>
+      <div class="tier-body">
+        <div>
+          <div class="ti-head">1BR or 2BR income unit</div>
+          <div class="ti-text">Larger unit, stronger rental demand from families and long-stay professionals. Mid-range buildings in BKK1/BKK3 outperform luxury on occupancy. Target 6.5–7.5% gross. Always negotiate a management contract at signing.</div>
+          <div><span class="tag">BKK3</span><span class="tag">LONG-STAY TENANT</span><span class="tag">MANAGED</span></div>
+        </div>
+        <div>
+          <div class="ti-head">Dual-unit portfolio start</div>
+          <div class="ti-text">Two studios across two buildings diversifies tenant and vacancy risk. One ready-to-rent for immediate income; one pre-launch for capital growth. Always confirm foreign quota on both buildings before committing any deposit.</div>
+          <div><span class="tag">DIVERSIFY</span><span class="tag">PORTFOLIO STARTER</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tier">
+      <div class="tier-head">
+        <span class="th-range">$200,000 – $300,000</span>
+        <span class="th-label">Premium · Yield + Appreciation</span>
+      </div>
+      <div class="tier-body">
+        <div>
+          <div class="ti-head">Premium BKK1 2BR or penthouse</div>
+          <div class="ti-text">Upper-floor unit in a premium BKK1 address. Targets corporate tenants, embassy staff, senior expats. Higher rent ceiling, stronger resale liquidity. Negotiate direct with developer on payment structure.</div>
+          <div><span class="tag">PREMIUM BKK1</span><span class="tag">CORPORATE TENANT</span></div>
+        </div>
+        <div>
+          <div class="ti-head">Boutique villa or shophouse</div>
+          <div class="ti-text">Converted colonial or modern villa for F&amp;B, co-working, or medical. Triple-net leases possible with commercial tenants. Requires Cambodian Trust for land component. Minimum 5-year hold.</div>
+          <div><span class="tag">COMMERCIAL USE</span><span class="tag">CAMBODIAN TRUST</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tier">
+      <div class="tier-head">
+        <span class="th-range">$300,000+</span>
+        <span class="th-label">Portfolio · Multi-Asset Strategy</span>
+      </div>
+      <div class="tier-body">
+        <div>
+          <div class="ti-head">Multi-unit income portfolio</div>
+          <div class="ti-text">3–5 units across 2–3 buildings. Diversified by location and tenant profile. Target blended net yield of 5.5–6.5%. Full management delegation. PHC provides annual portfolio reporting and re-optimisation review.</div>
+          <div><span class="tag">PASSIVE INCOME</span><span class="tag">FULL DELEGATION</span></div>
+        </div>
+        <div>
+          <div class="ti-head">Techo Airport land corridor</div>
+          <div class="ti-text">Land along Hun Sen Boulevard, Kandal Province. Airport opened September 2025 — early price momentum. 5–8 year hold for rezoning and infrastructure uplift. Requires Cambodian Trust with a licensed trustee firm.</div>
+          <div><span class="tag">LAND BANKING</span><span class="tag">5–8 YR HOLD</span><span class="tag">SPECULATIVE</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pf">
+    <span class="pf-brand">Property Hub Cambodia</span>
+    <span>Cambodia Property Investment Guide · 2026 Edition</span>
+    <span>Page 3 of 8</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     PAGE 4 — DISTRICTS
+     ═══════════════════════════════════════════ -->
+<div class="page">
+  <div class="iph">
+    <span class="iph-title">Key Districts — Phnom Penh</span>
+    <span class="iph-tag">PHC · INVESTMENT GUIDE 2026</span>
+  </div>
+  <div class="pb">
+    <div class="eyebrow">Location Intelligence</div>
+    <div class="h1">Where to Buy and Why</div>
+    <div class="subhead">District selection is your single most important decision. Same budget, different district — different yield, tenant quality, and exit liquidity.</div>
+
+    <div class="dist-grid">
+      <div class="dc">
+        <div class="dc-head" style="background:#eef2ff;border-top:3px solid #06264F;">
+          <div class="dc-name">BKK1 — Boeng Keng Kang 1</div>
+          <div class="dc-sub">Premier condo hub · Expat &amp; diplomatic belt</div>
+        </div>
+        <div class="dc-body">
+          <div class="dc-row"><span class="dc-k">Studio entry price</span><span class="dc-v">$70K – $90K</span></div>
+          <div class="dc-row"><span class="dc-k">Gross yield</span><span class="dc-v">7–8%</span></div>
+          <div class="dc-row"><span class="dc-k">Primary tenant</span><span class="dc-v">Expat, corporate, embassy</span></div>
+          <div class="dc-row"><span class="dc-k">PHC office location</span><span class="dc-v">Here — #12F TS5</span></div>
+          <div class="dc-note">Best liquidity and rental demand in Phnom Penh. Largest concentration of strata-titled condos. PHC's primary recommendation zone for first-time and repeat investors.</div>
+        </div>
+      </div>
+
+      <div class="dc">
+        <div class="dc-head" style="background:#f0fff8;border-top:3px solid #2d9e6b;">
+          <div class="dc-name">BKK3 — Boeng Keng Kang 3</div>
+          <div class="dc-sub">Mid-market growth corridor · Value play</div>
+        </div>
+        <div class="dc-body">
+          <div class="dc-row"><span class="dc-k">2BR price range</span><span class="dc-v">$110K – $150K</span></div>
+          <div class="dc-row"><span class="dc-k">Gross yield</span><span class="dc-v">6.5–7.5%</span></div>
+          <div class="dc-row"><span class="dc-k">Primary tenant</span><span class="dc-v">Mid-income local &amp; regional</span></div>
+          <div class="dc-row"><span class="dc-k">Best for</span><span class="dc-v">2BR+ income units</span></div>
+          <div class="dc-note">Lower entry than BKK1 with comparable yield. Growing F&amp;B strip. Stronger local buyer pool for eventual resale to Cambodian nationals.</div>
+        </div>
+      </div>
+
+      <div class="dc">
+        <div class="dc-head" style="background:#fff8f0;border-top:3px solid #c9993f;">
+          <div class="dc-name">Daun Penh — Historical Core</div>
+          <div class="dc-sub">Tourism &amp; heritage quarter · Commercial play</div>
+        </div>
+        <div class="dc-body">
+          <div class="dc-row"><span class="dc-k">Asset type</span><span class="dc-v">Shophouses, boutique</span></div>
+          <div class="dc-row"><span class="dc-k">Commercial yield</span><span class="dc-v">6–8%</span></div>
+          <div class="dc-row"><span class="dc-k">Primary tenant</span><span class="dc-v">F&amp;B, hospitality, retail</span></div>
+          <div class="dc-row"><span class="dc-k">Legal structure</span><span class="dc-v">Cambodian Trust required</span></div>
+          <div class="dc-note">Colonial character properties with riverside frontage. Triple-net commercial leases possible. Best for investors with a 5+ year horizon and commercial tenant experience.</div>
+        </div>
+      </div>
+
+      <div class="dc">
+        <div class="dc-head" style="background:#f5f0ff;border-top:3px solid #8b5cf6;">
+          <div class="dc-name">Techo Corridor — Kandal Province</div>
+          <div class="dc-sub">Airport infrastructure play · Speculative</div>
+        </div>
+        <div class="dc-body">
+          <div class="dc-row"><span class="dc-k">Asset type</span><span class="dc-v">Land, logistics</span></div>
+          <div class="dc-row"><span class="dc-k">Catalyst</span><span class="dc-v">Airport opened Sept 2025</span></div>
+          <div class="dc-row"><span class="dc-k">Minimum hold</span><span class="dc-v">5–8 years</span></div>
+          <div class="dc-row"><span class="dc-k">Legal structure</span><span class="dc-v">Cambodian Trust required</span></div>
+          <div class="dc-note">Speculative land banking only — no rental income. Early price momentum along Hun Sen Boulevard. Suitable for HNW investors with an existing income portfolio and long time horizon.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pf">
+    <span class="pf-brand">Property Hub Cambodia</span>
+    <span>Cambodia Property Investment Guide · 2026 Edition</span>
+    <span>Page 4 of 8</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     PAGE 5 — TAX & LEGAL
+     ═══════════════════════════════════════════ -->
+<div class="page">
+  <div class="iph">
+    <span class="iph-title">Tax &amp; Legal Framework</span>
+    <span class="iph-tag">PHC · INVESTMENT GUIDE 2026</span>
+  </div>
+  <div class="pb">
+    <div class="eyebrow">Compliance Essentials</div>
+    <div class="h1">Know Before You Sign</div>
+    <div class="subhead">Cambodia's tax regime is relatively straightforward — but agents who do not disclose CGT and rental tax upfront lose client trust permanently.</div>
+
+    <div class="section-h2" style="margin-bottom:10px;">Property Tax Summary · Cambodia 2026</div>
+    <div class="tax-row">
+      <div class="tr-lbl">Transfer Tax</div>
+      <div class="tr-rate">4%</div>
+      <div class="tr-note">One-time on purchase. On $200K property: $8,000. Exemptions extended to end 2026 — full exemption under $70K, preferential rate under $210K.</div>
+    </div>
+    <div class="tax-row">
+      <div class="tr-lbl">Annual Property Tax</div>
+      <div class="tr-rate">0.1%</div>
+      <div class="tr-note">On assessed value above $25,000 threshold. Most condos under $200K result in minimal annual liability. Paid to Phnom Penh Capital Hall.</div>
+    </div>
+    <div class="tax-row">
+      <div class="tr-lbl">Rental Income Tax</div>
+      <div class="tr-rate">10% / 14%</div>
+      <div class="tr-note">10% for Cambodian residents · 14% for foreign non-residents. On $12,000/yr rental: Cambodian pays $1,200, foreigner pays $1,680. Always factor into net yield calculations for foreign investors.</div>
+    </div>
+    <div class="tax-row" style="margin-bottom:22px;">
+      <div class="tr-lbl">Capital Gains Tax (CGT)</div>
+      <div class="tr-rate">20%</div>
+      <div class="tr-note">In effect since January 2026. On taxable gain = sale minus (purchase + documented costs). Alternative: 80% flat deduction method. Example: Buy $100K, sell $200K, costs $40K → taxable $60K × 20% = <strong>$12,000 CGT</strong>. Always disclose. Always model into exit scenarios.</div>
+    </div>
+
+    <div class="section-h2" style="margin-bottom:10px;">Foreign Ownership Rules · Non-Negotiable</div>
+    <div class="rule-row">
+      <div class="r-num">1</div>
+      <div>
+        <div class="r-title">Above ground floor only</div>
+        <div class="r-detail">Foreigners may only legally own units on the 1st floor and above. Ground floor is prohibited regardless of title type.</div>
+      </div>
+    </div>
+    <div class="rule-row">
+      <div class="r-num">2</div>
+      <div>
+        <div class="r-title">70% foreign quota per building</div>
+        <div class="r-detail">Max 70% of all units in any single building may be foreign-held. Always verify remaining quota before recommending a project.</div>
+      </div>
+    </div>
+    <div class="rule-row">
+      <div class="r-num">3</div>
+      <div>
+        <div class="r-title">Strata title (LMAP) is mandatory for foreign freehold</div>
+        <div class="r-detail">Only strata title confers legal foreign ownership. Soft title is for Cambodian nationals only. Verify title type per unit — not per building.</div>
+      </div>
+    </div>
+    <div class="rule-row">
+      <div class="r-num">4</div>
+      <div>
+        <div class="r-title">Land: Cambodian Trust is the compliant structure — not a nominee</div>
+        <div class="r-detail">For land or non-strata assets, a Cambodian Trust under the Law on Trust 2019 is the correct structure. This is formally registered and legally enforceable. Informal nominee arrangements are illegal and PHC does not support them.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pf">
+    <span class="pf-brand">Property Hub Cambodia</span>
+    <span>Cambodia Property Investment Guide · 2026 Edition</span>
+    <span>Page 5 of 8</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     PAGE 6 — BUYING PROCESS
+     ═══════════════════════════════════════════ -->
+<div class="page">
+  <div class="iph">
+    <span class="iph-title">The Buying Process</span>
+    <span class="iph-tag">PHC · INVESTMENT GUIDE 2026</span>
+  </div>
+  <div class="pb">
+    <div class="eyebrow">Step by Step</div>
+    <div class="h1">From Enquiry to Title Registration</div>
+    <div class="subhead">A straightforward 7-step process. PHC accompanies you at every stage — from unit selection to legal review to title registration in your name.</div>
+
+    <div class="steps-row-4">
+      <div class="step">
+        <div class="step-n">1</div>
+        <div class="step-title">Unit Selection &amp; Booking</div>
+        <div class="step-detail">$500–$2,000 booking fee. Confirm refund terms in writing before paying.</div>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <div class="step-title">SPA Review &amp; Sign</div>
+        <div class="step-detail">Legal review required. Check price, handover date, penalties, and management terms.</div>
+      </div>
+      <div class="step">
+        <div class="step-n">3</div>
+        <div class="step-title">Downpayment</div>
+        <div class="step-detail">20–30% due after SPA signing. Wire transfer or local bank.</div>
+      </div>
+      <div class="step">
+        <div class="step-n">4</div>
+        <div class="step-title">Payment Schedule</div>
+        <div class="step-detail">Monthly, quarterly, or milestone-based. Match schedule to your cash flow.</div>
+      </div>
+    </div>
+    <div class="steps-row-3">
+      <div class="step">
+        <div class="step-n">5</div>
+        <div class="step-title">Handover &amp; Inspection</div>
+        <div class="step-detail">Final walk-through. Document all defects in a written snag list before signing acceptance.</div>
+      </div>
+      <div class="step">
+        <div class="step-n">6</div>
+        <div class="step-title">Final Payment</div>
+        <div class="step-detail">Balance due on handover. Settle via bank transfer or approved financing.</div>
+      </div>
+      <div class="step">
+        <div class="step-n">7</div>
+        <div class="step-title">Title Registration</div>
+        <div class="step-detail">Strata title registered with MLMUPC in your name. PHC assists with full documentation.</div>
+      </div>
+    </div>
+
+    <div class="phc-panel">
+      <div class="pp-title">What PHC handles at every stage:</div>
+      <div class="pp-grid">
+        <div class="pp-item">Project shortlisting matched to your goals and budget</div>
+        <div class="pp-item">Developer negotiation — price and payment structure</div>
+        <div class="pp-item">SPA review coordination with qualified legal counsel</div>
+        <div class="pp-item">Title verification (strata title type and foreign quota)</div>
+        <div class="pp-item">Property management referral and onboarding</div>
+        <div class="pp-item">Post-handover support and defect follow-up</div>
+      </div>
+    </div>
+  </div>
+  <div class="pf">
+    <span class="pf-brand">Property Hub Cambodia</span>
+    <span>Cambodia Property Investment Guide · 2026 Edition</span>
+    <span>Page 6 of 8</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     PAGE 7 — WHY PHC
+     ═══════════════════════════════════════════ -->
+<div class="page">
+  <div class="iph">
+    <span class="iph-title">Why Property Hub Cambodia</span>
+    <span class="iph-tag">PHC · INVESTMENT GUIDE 2026</span>
+  </div>
+  <div class="pb">
+    <div class="eyebrow">Your Advisory Partner</div>
+    <div class="h1">How PHC Is Different</div>
+    <div class="subhead">PHC is not a portal. We are a boutique advisory firm — multilingual, BKK1-based, and structured to serve international investors with the same rigour they expect in their home markets.</div>
+
+    <div class="why-grid">
+      <div class="wc">
+        <div class="wc-icon">🌐</div>
+        <div class="wc-title">Multilingual Team</div>
+        <div class="wc-text">We advise in English, Khmer, Japanese, German, and Russian. No translation gaps. Japanese investor protocol delivered in Japanese — by a Japanese-speaking advisor, not through a translator.</div>
+        <div class="lang-row">
+          <span class="lp" style="background:rgba(24,119,242,.1);color:#1877f2;">EN</span>
+          <span class="lp" style="background:rgba(33,150,163,.1);color:#2196a3;">KH</span>
+          <span class="lp" style="background:rgba(230,57,70,.1);color:#e63946;">JP</span>
+          <span class="lp" style="background:rgba(45,158,107,.1);color:#2d9e6b;">DE</span>
+          <span class="lp" style="background:rgba(192,57,43,.1);color:#c0392b;">RU</span>
+        </div>
+      </div>
+      <div class="wc">
+        <div class="wc-icon">🏛</div>
+        <div class="wc-title">Independent Advisory</div>
+        <div class="wc-text">We are not tied to any developer. We recommend based on your goals — yield, capital growth, personal use — not on which developer offers the highest referral fee. PHC's reputation depends on outcomes, not transaction volume.</div>
+      </div>
+      <div class="wc">
+        <div class="wc-icon">📍</div>
+        <div class="wc-title">Market-Embedded, BKK1-Based</div>
+        <div class="wc-text">Our office is in BKK1 — the centre of Phnom Penh's investment market. We attend project launches, know developer sales teams personally, and track quarterly data from REAKH and CBRE.</div>
+      </div>
+      <div class="wc">
+        <div class="wc-icon">🔒</div>
+        <div class="wc-title">End-to-End Support</div>
+        <div class="wc-text">From first briefing call to title registration. We coordinate legal review, negotiate payment terms, introduce property management, and follow up after handover. One point of contact throughout.</div>
+      </div>
+    </div>
+
+    <div class="quote-panel">
+      <div class="qp-text">"We came to Cambodia not knowing a single developer or project. PHC walked us through the entire process — from budget briefing to legal review to title registration. The Japanese-language service made a complex process feel straightforward."</div>
+      <div class="qp-attr">— Japanese investor · 2-unit acquisition · BKK1 · 2025</div>
+    </div>
+  </div>
+  <div class="pf">
+    <span class="pf-brand">Property Hub Cambodia</span>
+    <span>Cambodia Property Investment Guide · 2026 Edition</span>
+    <span>Page 7 of 8</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     PAGE 8 — BACK COVER / CTA
+     ═══════════════════════════════════════════ -->
+<div class="page">
+  <div class="back-cover">
+    <div class="bc-body">
+      <div class="bc-eyebrow">Ready to explore your options?</div>
+      <div class="bc-title">Let's find your<br><em>right property.</em></div>
+      <div class="bc-sub">Book a 30-minute briefing call. We'll match your budget, timeline, and goals to the best available options — no pressure, no developer script.</div>
+      <button class="bc-btn" onclick="window.open('https://wa.me/85511666952?text='+encodeURIComponent('Hi, I\'d like to book a property investment briefing with PHC.'),'_blank')">
+        📱 WhatsApp Us Now
+      </button>
+      <div class="bc-contacts">
+        <div class="bc-contact">📞 <strong>011 666 952</strong></div>
+        <div class="bc-contact">🌐 <strong>propertyhubcambodia.com</strong></div>
+        <div class="bc-contact">📍 <strong>#12F Time Square 5, BKK1, Phnom Penh</strong></div>
+      </div>
+    </div>
+    <div class="bc-band">
+      PROPERTY HUB CAMBODIA · カンボジア不動産 · BKK1, PHNOM PENH · © 2026
+      &nbsp;·&nbsp;
+      This guide is for informational purposes only. Figures sourced from REAKH 2025 and CBRE Cambodia. Always consult a qualified legal and financial adviser before making any investment decision. PHC does not guarantee returns.
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

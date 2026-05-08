@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PHC · Proposal Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #C9993F; --navy: #06264F; --navy-dark: #040f24; --navy-mid: #0b3d7a;
+      --bg: #0a0f1e; --bg-card: #111827; --bg-card2: #0d1526;
+      --border: rgba(201,153,63,0.15); --text: #e8e4d4; --muted: rgba(232,228,212,0.45);
+      --green: #2d9e6b; --r: 10px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; }
+
+    /* ── TOP BAR ── */
+    .topbar { background: var(--navy-dark); border-bottom: 1px solid var(--border); padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; }
+    .tb-left { display: flex; align-items: center; gap: 12px; }
+    .tb-logo { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--gold); font-weight: 600; }
+    .tb-sep { color: rgba(255,255,255,0.15); }
+    .tb-title { font-size: 0.78rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.05em; }
+    .tb-badge { background: rgba(201,153,63,0.12); border: 1px solid rgba(201,153,63,0.28); border-radius: 20px; padding: 4px 12px; font-size: 0.68rem; color: var(--gold); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.07em; }
+
+    /* ── LAYOUT ── */
+    .main { max-width: 1200px; margin: 0 auto; padding: 28px 24px 120px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 900px) { .main { grid-template-columns: 1fr; } }
+    .col { display: flex; flex-direction: column; gap: 18px; }
+
+    /* ── SECTION CARD ── */
+    .sec { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r); padding: 22px; }
+    .sec-title { font-family: 'Playfair Display', serif; font-size: 0.95rem; color: var(--gold); font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .badge { font-family: 'JetBrains Mono', monospace; font-size: 0.63rem; background: rgba(201,153,63,0.14); border: 1px solid rgba(201,153,63,0.28); color: var(--gold); border-radius: 10px; padding: 2px 8px; margin-left: 4px; }
+
+    /* ── FORM ── */
+    label { display: block; font-size: 0.68rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 5px; margin-top: 13px; }
+    label:first-of-type { margin-top: 0; }
+    input[type="text"], input[type="date"], select, textarea {
+      width: 100%; background: var(--bg-card2); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 6px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 0.84rem;
+      padding: 8px 11px; outline: none; transition: border-color 0.2s;
+    }
+    input:focus, select:focus, textarea:focus { border-color: rgba(201,153,63,0.5); }
+    textarea { resize: vertical; min-height: 130px; line-height: 1.55; }
+    select option { background: var(--navy-dark); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    /* ── LIBRARY ── */
+    .lib-grid { display: flex; flex-direction: column; gap: 9px; }
+    .lib-card { background: var(--bg-card2); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 13px 15px; cursor: pointer; transition: border-color 0.18s, background 0.18s; display: flex; align-items: center; gap: 12px; }
+    .lib-card:not(.added):hover { border-color: rgba(201,153,63,0.4); background: rgba(201,153,63,0.04); }
+    .lib-card.added { opacity: 0.45; cursor: default; }
+    .lib-info { flex: 1; }
+    .lib-name { font-family: 'Playfair Display', serif; font-size: 0.88rem; font-weight: 600; }
+    .lib-sub { font-size: 0.73rem; color: var(--muted); margin-top: 2px; }
+    .lib-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; letter-spacing: 0.06em; padding: 3px 7px; border-radius: 4px; white-space: nowrap; }
+    .lib-price { font-family: 'JetBrains Mono', monospace; font-size: 0.76rem; color: var(--gold); font-weight: 500; white-space: nowrap; }
+    .lib-add { width: 27px; height: 27px; border-radius: 50%; border: 1px solid rgba(201,153,63,0.4); background: transparent; color: var(--gold); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.18s; flex-shrink: 0; line-height: 1; }
+    .lib-add:hover { background: rgba(201,153,63,0.15); }
+
+    /* ── SELECTED LIST ── */
+    .sel-list { display: flex; flex-direction: column; gap: 9px; }
+    .sel-item { background: var(--bg-card2); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 12px 14px; transition: border-color 0.2s; }
+    .sel-head { display: flex; align-items: center; gap: 8px; margin-bottom: 9px; }
+    .sel-num { width: 21px; height: 21px; border-radius: 50%; background: rgba(201,153,63,0.14); border: 1px solid rgba(201,153,63,0.3); display: flex; align-items: center; justify-content: center; font-size: 0.68rem; color: var(--gold); font-family: 'JetBrains Mono', monospace; flex-shrink: 0; }
+    .sel-name { font-family: 'Playfair Display', serif; font-size: 0.88rem; font-weight: 600; flex: 1; }
+    .sel-price { font-family: 'JetBrains Mono', monospace; font-size: 0.73rem; color: var(--gold); }
+    .sel-controls { display: flex; gap: 5px; flex-wrap: wrap; }
+    .ctrl { background: transparent; border: 1px solid rgba(255,255,255,0.12); border-radius: 4px; color: var(--muted); font-size: 0.72rem; padding: 3px 8px; cursor: pointer; transition: all 0.18s; font-family: 'Inter', sans-serif; }
+    .ctrl:hover:not(:disabled) { border-color: rgba(201,153,63,0.4); color: var(--gold); }
+    .ctrl:disabled { opacity: 0.28; cursor: default; }
+    .ctrl.on-anchor { border-color: var(--gold); color: var(--gold); background: rgba(201,153,63,0.1); }
+    .ctrl.on-rec { border-color: var(--green); color: var(--green); background: rgba(45,158,107,0.1); }
+    .ctrl.rm { border-color: rgba(220,60,60,0.3); color: rgba(220,60,60,0.6); }
+    .ctrl.rm:hover { border-color: rgba(220,60,60,0.7); color: rgba(220,60,60,1); background: rgba(220,60,60,0.07); }
+    .sel-img label { margin-top: 8px; }
+    .sel-img input { font-size: 0.76rem; padding: 5px 10px; }
+
+    /* ── ANCHOR TIP ── */
+    .anchor-tip { background: rgba(201,153,63,0.07); border: 1px solid rgba(201,153,63,0.2); border-radius: 8px; padding: 11px 15px; font-size: 0.76rem; color: rgba(201,153,63,0.85); line-height: 1.55; margin-top: 11px; display: none; }
+    .anchor-tip.show { display: block; }
+
+    /* ── EMPTY STATE ── */
+    .empty { text-align: center; padding: 28px 12px; color: var(--muted); font-size: 0.8rem; line-height: 1.65; }
+    .empty-icon { font-size: 1.8rem; margin-bottom: 8px; }
+
+    /* ── AUTO BTN ── */
+    .auto-btn { background: transparent; border: 1px solid rgba(201,153,63,0.3); color: var(--gold); border-radius: 6px; padding: 5px 13px; font-size: 0.7rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.04em; cursor: pointer; margin-bottom: 8px; transition: background 0.18s; }
+    .auto-btn:hover { background: rgba(201,153,63,0.1); }
+
+    /* ── GENERATE BAR ── */
+    .gen-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--navy-dark); border-top: 1px solid var(--border); padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; gap: 20px; z-index: 100; }
+    .gen-info { font-size: 0.8rem; color: var(--muted); }
+    .gen-info strong { color: var(--text); }
+    .gen-btn { background: linear-gradient(135deg, var(--gold), #9a6c28); color: #fff; border: none; border-radius: 8px; padding: 12px 40px; font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 600; cursor: pointer; letter-spacing: 0.03em; transition: opacity 0.2s, transform 0.1s; box-shadow: 0 4px 18px rgba(201,153,63,0.28); white-space: nowrap; }
+    .gen-btn:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
+    .gen-btn:disabled { opacity: 0.35; cursor: default; transform: none; }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tb-left">
+    <span class="tb-logo">Property Hub Cambodia</span>
+    <span class="tb-sep">|</span>
+    <span class="tb-title">Proposal Generator</span>
+  </div>
+  <span class="tb-badge">INTERNAL TOOL</span>
+</div>
+
+<div class="main">
+
+  <!-- LEFT COLUMN -->
+  <div class="col">
+
+    <div class="sec">
+      <div class="sec-title">👤 Client Details</div>
+      <div class="form-row">
+        <div>
+          <label>Salutation</label>
+          <select id="salutation">
+            <option>Mr.</option><option>Mrs.</option><option>Ms.</option>
+            <option>Dr.</option><option>Mr. &amp; Mrs.</option>
+          </select>
+        </div>
+        <div>
+          <label>Client Full Name</label>
+          <input type="text" id="clientName" placeholder="e.g. Lennox &amp; Clemency">
+        </div>
+      </div>
+      <div class="form-row">
+        <div>
+          <label>Prepared By</label>
+          <input type="text" id="preparedBy" placeholder="e.g. Monika">
+        </div>
+        <div>
+          <label>Date</label>
+          <input type="date" id="propDate">
+        </div>
+      </div>
+      <label>Investment Focus / Note (optional)</label>
+      <input type="text" id="investFocus" placeholder="e.g. Passive income, $70K–$130K, BKK1 preferred">
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">✉️ Intro Letter</div>
+      <button class="auto-btn" onclick="autoIntro()">↻ Auto-Generate from Template</button>
+      <textarea id="introLetter" placeholder="Dear Mr. [Name],&#10;&#10;Thank you for your time..."></textarea>
+    </div>
+
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="col">
+
+    <div class="sec">
+      <div class="sec-title">🏢 Property Library <span id="libBadge" class="badge">3 properties</span></div>
+      <div class="lib-grid" id="libGrid"></div>
+      <div style="margin-top:10px;font-size:0.68rem;color:var(--muted);font-family:'JetBrains Mono',monospace;">
+        + More properties can be added to the library at any time
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">✅ Selected for Proposal <span id="selBadge" class="badge">0 / 6</span></div>
+      <div id="selList">
+        <div class="empty"><div class="empty-icon">📋</div>Click properties above to add them.<br>Include 3–6 options per proposal.</div>
+      </div>
+      <div id="anchorTip" class="anchor-tip">
+        <strong>⚓ Anchoring:</strong> Mark one high-price option as <strong>Anchor</strong> — it makes your recommended option look like better value. Mark your top pick as <strong>★ Recommended</strong> so the client sees your suggestion clearly.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="gen-bar">
+  <div class="gen-info" id="genInfo">Add properties and fill in client details to generate.</div>
+  <button class="gen-btn" id="genBtn" onclick="generateProposal()" disabled>Generate Proposal →</button>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────
+// LIBRARY
+// ─────────────────────────────────────────────────────────
+const LIBRARY = [
+  {
+    id: 'lattrais',
+    name: "L'attrait",
+    unit: 'Studio',
+    location: 'BKK1, Phnom Penh',
+    price: 70000,
+    priceLabel: '$70,000',
+    size: '38–42 sqm',
+    floor: 'Mid to high floors available',
+    yieldEst: '7–8% gross estimated',
+    handover: 'Q4 2026',
+    developer: "L'attrait Development",
+    tenure: 'Strata title (LMAP)',
+    highlights: [
+      "Steps from Wat Phnom — prime BKK1 address",
+      "Boutique French-influenced design, low-density building",
+      "Strong short-term rental demand, fully managed option available"
+    ],
+    tag: 'ENTRY PREMIUM · BKK1', tagColor: '#C9993F', tagBg: 'rgba(201,153,63,0.14)'
+  },
+  {
+    id: 'ts5-1br',
+    name: 'Time Square 5',
+    unit: '1-Bedroom',
+    location: 'BKK1, Phnom Penh',
+    price: 78000,
+    priceLabel: '$78,000',
+    size: '52–58 sqm',
+    floor: 'Multiple floors available',
+    yieldEst: '7–8% gross',
+    handover: 'Ready to move in',
+    developer: 'Time Square Real Estate',
+    tenure: 'Strata title (LMAP)',
+    highlights: [
+      "Established brand — 5 buildings, proven rental history across BKK1",
+      "Walking distance to embassies, international schools, and restaurants",
+      "Full facilities: pool, gym, co-working — ideal for expat long-stay tenants"
+    ],
+    tag: 'MID-RANGE · BKK1', tagColor: '#1877f2', tagBg: 'rgba(24,119,242,0.14)'
+  },
+  {
+    id: 'agile-sky',
+    name: 'Agile Sky',
+    unit: '2-Bedroom',
+    location: 'BKK3, Phnom Penh',
+    price: 125000,
+    priceLabel: '$125,000',
+    size: '78–85 sqm',
+    floor: 'High floors, panoramic city views',
+    yieldEst: '6.5–7.5% gross estimated',
+    handover: 'Q2 2027',
+    developer: 'Agile Group (regional developer)',
+    tenure: 'Strata title (LMAP)',
+    highlights: [
+      "Largest living space in this price range — ideal for families or dual-income tenants",
+      "BKK3 emerging district: strong capital appreciation upside",
+      "Developer track record: Agile Group, 50+ projects across Southeast Asia"
+    ],
+    tag: 'UPPER MID · BKK3', tagColor: '#2d9e6b', tagBg: 'rgba(45,158,107,0.14)'
+  }
+];
+
+// ─────────────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────────────
+let selected = []; // [{ lib, role: null|'anchor'|'recommended', imageUrl }]
+
+// ─────────────────────────────────────────────────────────
+// RENDER LIBRARY
+// ─────────────────────────────────────────────────────────
+function renderLibrary() {
+  document.getElementById('libGrid').innerHTML = LIBRARY.map(p => {
+    const added = selected.some(s => s.lib.id === p.id);
+    return `
+      <div class="lib-card${added ? ' added' : ''}" onclick="${added ? '' : `addProp('${p.id}')`}">
+        <div class="lib-info">
+          <div class="lib-name">${p.name} — ${p.unit}</div>
+          <div class="lib-sub">${p.location} · ${p.size} · ${p.handover}</div>
+        </div>
+        <span class="lib-tag" style="color:${p.tagColor};background:${p.tagBg};">${p.tag}</span>
+        <span class="lib-price">${p.priceLabel}</span>
+        <button class="lib-add" ${added ? 'disabled' : ''}>+</button>
+      </div>`;
+  }).join('');
+}
+
+// ─────────────────────────────────────────────────────────
+// ADD / REMOVE
+// ─────────────────────────────────────────────────────────
+function addProp(id) {
+  if (selected.length >= 6) return;
+  const p = LIBRARY.find(l => l.id === id);
+  if (!p || selected.some(s => s.lib.id === id)) return;
+  selected.push({ lib: p, role: null, imageUrl: '' });
+  refresh();
+}
+
+function removeProp(idx) {
+  selected.splice(idx, 1);
+  refresh();
+}
+
+// ─────────────────────────────────────────────────────────
+// REORDER
+// ─────────────────────────────────────────────────────────
+function moveUp(idx) {
+  if (idx === 0) return;
+  [selected[idx-1], selected[idx]] = [selected[idx], selected[idx-1]];
+  refresh();
+}
+function moveDown(idx) {
+  if (idx >= selected.length - 1) return;
+  [selected[idx], selected[idx+1]] = [selected[idx+1], selected[idx]];
+  refresh();
+}
+
+// ─────────────────────────────────────────────────────────
+// ROLES
+// ─────────────────────────────────────────────────────────
+function setRole(idx, role) {
+  selected.forEach((s, i) => { if (s.role === role && i !== idx) s.role = null; });
+  selected[idx].role = (selected[idx].role === role) ? null : role;
+  refresh();
+}
+
+function updateImg(idx, val) { selected[idx].imageUrl = val; }
+
+// ─────────────────────────────────────────────────────────
+// RENDER SELECTED
+// ─────────────────────────────────────────────────────────
+function renderSelected() {
+  const list = document.getElementById('selList');
+  document.getElementById('selBadge').textContent = `${selected.length} / 6`;
+  document.getElementById('anchorTip').classList.toggle('show', selected.length >= 2);
+
+  if (!selected.length) {
+    list.innerHTML = `<div class="empty"><div class="empty-icon">📋</div>Click properties above to add them.<br>Include 3–6 options per proposal.</div>`;
+    return;
+  }
+
+  list.innerHTML = selected.map((s, i) => {
+    const isA = s.role === 'anchor', isR = s.role === 'recommended';
+    const bc = isA ? 'rgba(201,153,63,0.38)' : isR ? 'rgba(45,158,107,0.38)' : 'rgba(255,255,255,0.08)';
+    return `
+      <div class="sel-item" style="border-color:${bc}">
+        <div class="sel-head">
+          <div class="sel-num">${i+1}</div>
+          <div class="sel-name">${s.lib.name} — ${s.lib.unit}</div>
+          <div class="sel-price">${s.lib.priceLabel}</div>
+        </div>
+        <div class="sel-controls">
+          <button class="ctrl" onclick="moveUp(${i})" ${i===0?'disabled':''}>↑</button>
+          <button class="ctrl" onclick="moveDown(${i})" ${i===selected.length-1?'disabled':''}>↓</button>
+          <button class="ctrl${isA?' on-anchor':''}" onclick="setRole(${i},'anchor')">⚓ Anchor</button>
+          <button class="ctrl${isR?' on-rec':''}" onclick="setRole(${i},'recommended')">★ Recommended</button>
+          <button class="ctrl rm" onclick="removeProp(${i})">✕ Remove</button>
+        </div>
+        <div class="sel-img">
+          <label>Image URL (optional)</label>
+          <input type="text" placeholder="https://... or leave blank" value="${s.imageUrl}" oninput="updateImg(${i},this.value)">
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ─────────────────────────────────────────────────────────
+// GEN BAR
+// ─────────────────────────────────────────────────────────
+function updateGenBar() {
+  const name = document.getElementById('clientName').value.trim();
+  const sal = document.getElementById('salutation').value;
+  const info = document.getElementById('genInfo');
+  const btn = document.getElementById('genBtn');
+
+  if (!selected.length) {
+    info.innerHTML = 'Add 1–6 properties to get started.';
+    btn.disabled = true;
+  } else if (!name) {
+    info.innerHTML = `${selected.length} propert${selected.length>1?'ies':'y'} selected — enter client name to generate.`;
+    btn.disabled = true;
+  } else {
+    info.innerHTML = `Ready: <strong>${sal} ${name}</strong> — ${selected.length} option${selected.length>1?'s':''}`;
+    btn.disabled = false;
+  }
+}
+
+function refresh() { renderLibrary(); renderSelected(); updateGenBar(); }
+
+// ─────────────────────────────────────────────────────────
+// AUTO INTRO
+// ─────────────────────────────────────────────────────────
+function autoIntro() {
+  const sal = document.getElementById('salutation').value;
+  const name = document.getElementById('clientName').value.trim() || '[CLIENT NAME]';
+  const focus = document.getElementById('investFocus').value.trim();
+  const by = document.getElementById('preparedBy').value.trim() || 'our advisory team';
+  const focusLine = focus ? `\n\nBased on our discussion — ${focus} — we have carefully selected the following options for your consideration.` : '\n\nBased on our discussion, we have carefully selected the following options for your consideration.';
+  document.getElementById('introLetter').value =
+    `Dear ${sal} ${name},\n\nThank you for your time and for sharing your investment goals with us. It is a privilege to assist you in navigating Phnom Penh\'s real estate market.${focusLine}\n\nEach property has been chosen based on location fundamentals, rental yield potential, developer credibility, and alignment with your stated objectives. Please review each option at your own pace — there is no pressure to decide immediately.\n\nWe look forward to guiding you through the next steps.\n\nWarm regards,\n${by}\nProperty Hub Cambodia\n📞 011 666 952`;
+}
+
+// ─────────────────────────────────────────────────────────
+// HTML ESCAPE
+// ─────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─────────────────────────────────────────────────────────
+// GENERATE PROPOSAL
+// ─────────────────────────────────────────────────────────
+function generateProposal() {
+  const sal = document.getElementById('salutation').value;
+  const name = document.getElementById('clientName').value.trim();
+  const by = document.getElementById('preparedBy').value.trim() || 'PHC Advisory Team';
+  const dateVal = document.getElementById('propDate').value;
+  const focus = document.getElementById('investFocus').value.trim();
+  const intro = document.getElementById('introLetter').value.trim();
+  const dateStr = dateVal
+    ? new Date(dateVal + 'T12:00:00').toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'})
+    : new Date().toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'});
+
+  const html = buildProposal({ sal, name, by, dateStr, focus, intro });
+  const w = window.open('', '_blank');
+  w.document.write(html);
+  w.document.close();
+}
+
+// ─────────────────────────────────────────────────────────
+// BUILD PROPOSAL HTML
+// ─────────────────────────────────────────────────────────
+function buildProposal({ sal, name, by, dateStr, focus, intro }) {
+  const confidential = `Confidential — Prepared for ${esc(sal)} ${esc(name)}`;
+
+  const footer = `
+    <div style="position:absolute;bottom:0;left:0;right:0;padding:10px 60px;border-top:1px solid #e8dfc8;display:flex;justify-content:space-between;align-items:center;font-size:0.63rem;color:#aaa;font-family:'JetBrains Mono',monospace;letter-spacing:0.04em;">
+      <span>${confidential}</span>
+      <span>Property Hub Cambodia &middot; BKK1, Phnom Penh</span>
+    </div>`;
+
+  // ── Overview table rows
+  const overviewRows = selected.map((s, i) => {
+    const roleTag = s.role === 'anchor'
+      ? ' <span style="color:#C9993F;font-size:0.7em;">&ensp;&#9875; ANCHOR</span>'
+      : s.role === 'recommended'
+      ? ' <span style="color:#2d9e6b;font-size:0.7em;">&ensp;&#9733; REC.</span>' : '';
+    return `<tr>
+      <td style="padding:9px 11px;border-bottom:1px solid #ede7d8;font-weight:600;color:#06264F;">${i+1}. ${esc(s.lib.name)} &mdash; ${esc(s.lib.unit)}${roleTag}</td>
+      <td style="padding:9px 11px;border-bottom:1px solid #ede7d8;color:#444;">${esc(s.lib.location)}</td>
+      <td style="padding:9px 11px;border-bottom:1px solid #ede7d8;font-weight:700;color:#C9993F;">${esc(s.lib.priceLabel)}</td>
+      <td style="padding:9px 11px;border-bottom:1px solid #ede7d8;color:#444;">${esc(s.lib.size)}</td>
+      <td style="padding:9px 11px;border-bottom:1px solid #ede7d8;color:#444;">${esc(s.lib.yieldEst)}</td>
+    </tr>`;
+  }).join('');
+
+  // ── Per-property pages
+  const propPages = selected.map((s, i) => {
+    const isA = s.role === 'anchor', isR = s.role === 'recommended';
+    const roleBar = isA
+      ? `<div style="background:rgba(201,153,63,0.1);border:1px solid rgba(201,153,63,0.35);border-radius:6px;padding:8px 15px;margin-bottom:18px;font-size:0.8rem;color:#8a6a20;"><strong>&#9875; Reference Point</strong> &mdash; This option is included as a premium reference to provide pricing context.</div>`
+      : isR
+      ? `<div style="background:rgba(45,158,107,0.07);border:1px solid rgba(45,158,107,0.3);border-radius:6px;padding:8px 15px;margin-bottom:18px;font-size:0.8rem;color:#1a6644;"><strong>&#9733; PHC Recommendation</strong> &mdash; Based on your stated objectives, this is our top-recommended option.</div>`
+      : '';
+    const imgBlock = s.imageUrl
+      ? `<img src="${esc(s.imageUrl)}" alt="${esc(s.lib.name)}" style="width:100%;height:220px;object-fit:cover;border-radius:8px;margin-bottom:22px;">`
+      : '';
+    const specRows = [
+      ['Unit Type', s.lib.unit], ['Location', s.lib.location], ['Size', s.lib.size],
+      ['Floor', s.lib.floor], ['Price', s.lib.priceLabel], ['Est. Yield', s.lib.yieldEst],
+      ['Handover', s.lib.handover], ['Developer', s.lib.developer], ['Tenure', s.lib.tenure]
+    ].map(([k,v]) => `<tr>
+      <td style="padding:6px 0;color:#888;border-bottom:1px solid #f0e8d8;font-size:0.78rem;">${esc(k)}</td>
+      <td style="padding:6px 0;color:#333;font-weight:500;border-bottom:1px solid #f0e8d8;font-size:0.78rem;">${esc(v)}</td>
+    </tr>`).join('');
+    const hlItems = s.lib.highlights.map(h =>
+      `<li style="padding:6px 0;border-bottom:1px solid #f0e8d8;color:#333;font-size:0.8rem;list-style:none;">${esc(h)}</li>`
+    ).join('');
+
+    return `
+    <div class="page" style="padding:56px 60px 80px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;padding-bottom:14px;border-bottom:2px solid #C9993F;">
+        <div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.55rem;color:#06264F;font-weight:700;">Option ${i+1}: ${esc(s.lib.name)}</div>
+          <div style="font-size:0.83rem;color:#888;margin-top:3px;">${esc(s.lib.unit)} &middot; ${esc(s.lib.location)}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:1.35rem;font-weight:700;color:#C9993F;">${esc(s.lib.priceLabel)}</div>
+          <div style="font-size:0.72rem;color:#888;margin-top:2px;">${esc(s.lib.yieldEst)} projected yield</div>
+        </div>
+      </div>
+      ${roleBar}${imgBlock}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;">
+        <div>
+          <div style="font-family:'Playfair Display',serif;font-size:0.92rem;font-weight:600;color:#06264F;margin-bottom:10px;">Property Details</div>
+          <table style="width:100%;border-collapse:collapse;">${specRows}</table>
+        </div>
+        <div>
+          <div style="font-family:'Playfair Display',serif;font-size:0.92rem;font-weight:600;color:#06264F;margin-bottom:10px;">Key Highlights</div>
+          <ul style="padding:0;margin:0;">${hlItems}</ul>
+          <div style="margin-top:22px;background:#06264F;border-radius:8px;padding:14px 18px;">
+            <div style="font-family:'Playfair Display',serif;font-size:0.82rem;color:#C9993F;font-weight:600;margin-bottom:5px;">Questions about this option?</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.72);line-height:1.65;">
+              &#128222; 011 666 952<br>&#128241; t.me/Monika_PHC<br>&#127968; t.me/PropertyHubCambodia
+            </div>
+          </div>
+        </div>
+      </div>
+      ${footer}
+    </div>`;
+  }).join('');
+
+  // ── Comparison rows
+  const compRows = selected.map((s, i) => {
+    const isA = s.role === 'anchor', isR = s.role === 'recommended';
+    const rowBg = isA ? 'rgba(201,153,63,0.05)' : isR ? 'rgba(45,158,107,0.05)' : '';
+    const roleLabel = isA
+      ? '<br><span style="font-size:0.68em;color:#C9993F;">&#9875; Anchor</span>'
+      : isR ? '<br><span style="font-size:0.68em;color:#2d9e6b;">&#9733; Recommended</span>' : '';
+    const leftBorder = isR ? '3px solid #2d9e6b' : isA ? '3px solid #C9993F' : '3px solid transparent';
+    return `<tr style="background:${rowBg}">
+      <td style="padding:9px 11px;border-bottom:1px solid #ede7d8;font-weight:600;color:#06264F;border-left:${leftBorder};">${i+1}. ${esc(s.lib.name)}${roleLabel}</td>
+      <td style="padding:9px 11px;border-bottom:1px solid #ede7d8;font-size:0.8rem;">${esc(s.lib.unit)}</td>
+      <td style="padding:9px 11px;border-bottom:1px solid #ede7d8;font-size:0.8rem;">${esc(s.lib.location)}</td>
+      <td style="padding:9px 11px;border-bottom:1px solid #ede7d8;font-weight:700;color:#C9993F;font-size:0.8rem;">${esc(s.lib.priceLabel)}</td>
+      <td style="padding:9px 11px;border-bottom:1px solid #ede7d8;font-size:0.8rem;">${esc(s.lib.size)}</td>
+      <td style="padding:9px 11px;border-bottom:1px solid #ede7d8;font-size:0.8rem;">${esc(s.lib.yieldEst)}</td>
+      <td style="padding:9px 11px;border-bottom:1px solid #ede7d8;font-size:0.8rem;">${esc(s.lib.handover)}</td>
+    </tr>`;
+  }).join('');
+
+  // ── Recommendation callout
+  const recProp = selected.find(s => s.role === 'recommended');
+  const recBlock = recProp ? `
+    <div style="margin-top:18px;background:rgba(45,158,107,0.06);border:1px solid rgba(45,158,107,0.25);border-radius:6px;padding:13px 15px;">
+      <div style="font-family:'Playfair Display',serif;font-size:0.88rem;font-weight:600;color:#1a6644;margin-bottom:4px;">&#9733; Our Recommendation</div>
+      <div style="font-size:0.8rem;color:#444;line-height:1.6;">Based on your investment profile, we recommend <strong>${esc(recProp.lib.name)} &mdash; ${esc(recProp.lib.unit)}</strong> at <strong>${esc(recProp.lib.priceLabel)}</strong>. This option offers the best balance of yield, location, and capital appreciation for your stated objectives.</div>
+    </div>` : '';
+
+  // ── Full HTML output ──────────────────────────────────
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PHC Investment Proposal &mdash; ${esc(sal)} ${esc(name)}</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:#f4ede0;color:#222;font-size:14px;line-height:1.5;}
+.page{width:794px;min-height:1123px;background:#fff;margin:24px auto;box-shadow:0 4px 24px rgba(0,0,0,0.1);position:relative;overflow:hidden;}
+@media print{
+  body{background:#fff;}
+  .page{width:100%;margin:0;box-shadow:none;page-break-after:always;min-height:100vh;}
+  .no-print{display:none!important;}
+}
+</style>
+</head>
+<body>
+
+<div class="no-print" style="text-align:center;padding:20px 0;font-family:'Inter',sans-serif;">
+  <button onclick="window.print()" style="background:#06264F;color:#C9993F;border:none;border-radius:6px;padding:10px 30px;font-family:'Playfair Display',serif;font-size:0.95rem;cursor:pointer;font-weight:600;letter-spacing:0.03em;">&#128438; Print / Save as PDF</button>
+  <div style="margin-top:7px;font-size:0.68rem;color:#999;font-family:'JetBrains Mono',monospace;">In print dialog &rarr; Save as PDF &middot; Margins: None &middot; Disable headers &amp; footers</div>
+</div>
+
+<!-- COVER PAGE -->
+<div class="page">
+  <div style="height:5px;background:linear-gradient(90deg,#C9993F,#a07828);"></div>
+  <div style="padding:62px 60px;display:flex;flex-direction:column;min-height:1060px;">
+
+    <div style="display:flex;align-items:center;gap:11px;margin-bottom:72px;">
+      <div style="width:38px;height:38px;background:#06264F;border-radius:6px;display:flex;align-items:center;justify-content:center;">
+        <div style="width:17px;height:17px;border:2px solid #C9993F;border-radius:3px;"></div>
+      </div>
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:0.95rem;color:#06264F;font-weight:700;letter-spacing:0.02em;">Property Hub Cambodia</div>
+        <div style="font-size:0.63rem;color:#aaa;font-family:'JetBrains Mono',monospace;letter-spacing:0.1em;">PREMIUM REAL ESTATE ADVISORY</div>
+      </div>
+    </div>
+
+    <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;letter-spacing:0.16em;color:#C9993F;text-transform:uppercase;margin-bottom:14px;">Investment Proposal</div>
+    <div style="font-family:'Playfair Display',serif;font-size:2.6rem;font-weight:700;color:#06264F;line-height:1.18;margin-bottom:6px;">${esc(sal)}<br>${esc(name)}</div>
+
+    ${focus ? `<div style="margin-top:10px;margin-bottom:28px;font-size:0.85rem;color:#666;border-left:3px solid #C9993F;padding-left:12px;">${esc(focus)}</div>` : '<div style="margin-bottom:28px;"></div>'}
+
+    <div style="height:1px;background:linear-gradient(90deg,#C9993F,rgba(201,153,63,0));margin-bottom:36px;"></div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:auto;">
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:#aaa;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Options</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.4rem;color:#06264F;font-weight:600;">${selected.length}</div>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:#aaa;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Date</div>
+        <div style="font-family:'Playfair Display',serif;font-size:0.95rem;color:#06264F;font-weight:600;">${esc(dateStr)}</div>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:#aaa;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Prepared By</div>
+        <div style="font-family:'Playfair Display',serif;font-size:0.95rem;color:#06264F;font-weight:600;">${esc(by)}</div>
+      </div>
+    </div>
+
+    <div style="background:#06264F;margin:-62px -60px 0;padding:24px 60px;margin-top:auto;">
+      <div style="font-size:0.72rem;color:rgba(255,255,255,0.55);font-family:'JetBrains Mono',monospace;letter-spacing:0.04em;">
+        &#128222; 011 666 952 &nbsp;&nbsp;|&nbsp;&nbsp; &#128241; t.me/Monika_PHC &nbsp;&nbsp;|&nbsp;&nbsp; &#127968; t.me/PropertyHubCambodia
+      </div>
+    </div>
+  </div>
+  ${footer}
+</div>
+
+<!-- INTRO + OVERVIEW -->
+<div class="page" style="padding:56px 60px 80px;">
+  <div style="font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:700;color:#06264F;margin-bottom:22px;padding-bottom:12px;border-bottom:2px solid #C9993F;">
+    Dear ${esc(sal)} ${esc(name)},
+  </div>
+  <div style="font-size:0.85rem;color:#333;line-height:1.85;white-space:pre-wrap;margin-bottom:30px;">${esc(intro)}</div>
+  <div style="font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:600;color:#06264F;margin-bottom:11px;">Options at a Glance</div>
+  <table style="width:100%;border-collapse:collapse;font-size:0.82rem;">
+    <thead>
+      <tr style="background:#06264F;color:#fff;">
+        <th style="padding:9px 11px;text-align:left;font-family:'Playfair Display',serif;font-weight:600;">Property</th>
+        <th style="padding:9px 11px;text-align:left;">Location</th>
+        <th style="padding:9px 11px;text-align:left;">Price</th>
+        <th style="padding:9px 11px;text-align:left;">Size</th>
+        <th style="padding:9px 11px;text-align:left;">Yield</th>
+      </tr>
+    </thead>
+    <tbody>${overviewRows}</tbody>
+  </table>
+  ${footer}
+</div>
+
+<!-- PROPERTY PAGES -->
+${propPages}
+
+<!-- COMPARISON PAGE -->
+<div class="page" style="padding:56px 60px 80px;">
+  <div style="font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:700;color:#06264F;margin-bottom:6px;">Side-by-Side Comparison</div>
+  <div style="font-size:0.8rem;color:#999;margin-bottom:20px;">All ${selected.length} options compared at a glance.</div>
+  <table style="width:100%;border-collapse:collapse;font-size:0.8rem;">
+    <thead>
+      <tr style="background:#06264F;color:#fff;">
+        <th style="padding:9px 11px;text-align:left;font-family:'Playfair Display',serif;font-weight:600;">Property</th>
+        <th style="padding:9px 11px;text-align:left;">Unit</th>
+        <th style="padding:9px 11px;text-align:left;">Location</th>
+        <th style="padding:9px 11px;text-align:left;">Price</th>
+        <th style="padding:9px 11px;text-align:left;">Size</th>
+        <th style="padding:9px 11px;text-align:left;">Yield</th>
+        <th style="padding:9px 11px;text-align:left;">Handover</th>
+      </tr>
+    </thead>
+    <tbody>${compRows}</tbody>
+  </table>
+  ${recBlock}
+  <div style="margin-top:22px;">
+    <div style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;color:#06264F;margin-bottom:10px;">Next Steps</div>
+    <div style="font-size:0.8rem;color:#444;line-height:1.85;">
+      1. Review each option at your own pace &mdash; there is no obligation to decide immediately.<br>
+      2. We can arrange site visits for any properties of interest &mdash; coordinated directly with the developer.<br>
+      3. Once you have a preference, we will prepare a full breakdown: payment plan, legal process, and projected returns.<br>
+      4. All agreements are reviewed by our legal partners before signing.
+    </div>
+  </div>
+  <div style="margin-top:24px;background:#06264F;border-radius:8px;padding:18px 22px;display:flex;justify-content:space-between;align-items:center;">
+    <div>
+      <div style="font-family:'Playfair Display',serif;font-size:0.9rem;font-weight:600;color:#C9993F;margin-bottom:5px;">We are here to help.</div>
+      <div style="font-size:0.75rem;color:rgba(255,255,255,0.65);line-height:1.7;">
+        &#128222; 011 666 952 &nbsp;&nbsp; &#128241; t.me/Monika_PHC &nbsp;&nbsp; &#127968; t.me/PropertyHubCambodia
+      </div>
+    </div>
+    <div style="font-family:'Playfair Display',serif;font-size:0.78rem;color:rgba(255,255,255,0.35);text-align:right;">Property Hub Cambodia<br>BKK1, Phnom Penh</div>
+  </div>
+  ${footer}
+</div>
+
+<!-- DISCLOSURES PAGE -->
+<div class="page" style="padding:56px 60px 80px;">
+  <div style="font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:600;color:#06264F;margin-bottom:14px;">Disclosures &amp; Important Information</div>
+  <div style="font-size:0.76rem;color:#555;line-height:1.95;">
+    <p style="margin-bottom:11px;">This proposal has been prepared by Property Hub Cambodia solely for the use of ${esc(sal)} ${esc(name)} and is strictly confidential. It may not be reproduced, distributed, or disclosed to any third party without prior written consent.</p>
+    <p style="margin-bottom:11px;">All price figures are indicative and subject to change without notice. Final pricing is confirmed by the developer at the time of reservation. Property Hub Cambodia acts as an independent real estate advisory and does not guarantee the accuracy of developer-provided data.</p>
+    <p style="margin-bottom:11px;">Yield projections are estimates based on current market rental rates and are not guaranteed. Actual yields depend on occupancy, management fees, maintenance costs, and prevailing market conditions. Past performance is not indicative of future results.</p>
+    <p style="margin-bottom:11px;">Property Hub Cambodia may receive a commission from the developer upon successful completion of a sale. This commission is paid by the developer and does not affect the price paid by the buyer.</p>
+    <p style="margin-bottom:11px;">We strongly recommend all buyers conduct independent legal and financial due diligence before committing to any purchase. Property Hub Cambodia can refer trusted legal partners upon request.</p>
+    <p>Cambodia real estate is governed by the Law on Immovable Property (2001). Foreign nationals may hold property under strata title in buildings where foreign ownership does not exceed 70% of total units. Property Hub Cambodia provides general advisory guidance and does not provide legal advice.</p>
+  </div>
+  <div style="margin-top:28px;padding-top:18px;border-top:1px solid #ede7d8;display:flex;justify-content:space-between;align-items:center;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:#aaa;letter-spacing:0.06em;">Prepared: ${esc(dateStr)} &middot; ${esc(by)} &middot; Property Hub Cambodia</div>
+    <div style="font-family:'Playfair Display',serif;font-size:0.78rem;color:#C9993F;">Property Hub Cambodia</div>
+  </div>
+  ${footer}
+</div>
+
+</body>
+</html>`;
+}
+
+// ─────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('propDate').value = new Date().toISOString().split('T')[0];
+  document.getElementById('clientName').addEventListener('input', updateGenBar);
+  document.getElementById('salutation').addEventListener('change', updateGenBar);
+  renderLibrary();
+  renderSelected();
+  updateGenBar();
+});
+</script>
+</body>
+</html>

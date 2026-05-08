@@ -1,0 +1,2236 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHC · Message Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════════ */
+:root {
+  --gold:     #c9993f;
+  --gold-lt:  #e0b86a;
+  --gold-dim: #a07a2e;
+  --gold-s:   rgba(201,153,63,.12);
+  --gold-sb:  rgba(201,153,63,.25);
+
+  --font-display: 'Playfair Display', serif;
+  --font-body:    'Inter', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  --r:    10px;
+  --r-lg: 16px;
+  --tr:   .18s cubic-bezier(.4,0,.2,1);
+}
+
+[data-theme="dark"] {
+  --bg:      #0a0f1a;
+  --bg-1:    #0f1724;
+  --bg-2:    #151e30;
+  --bg-3:    #1c2840;
+  --bg-4:    #243050;
+  --line:    rgba(255,255,255,.07);
+  --line-md: rgba(255,255,255,.13);
+  --ink:     #f0f4ff;
+  --ink-2:   #a8b8cc;
+  --ink-3:   #5d7088;
+  --ok:      #1a7a4a;
+  --ok-s:    rgba(26,122,74,.15);
+  --ok-lt:   #4cd98a;
+  --err:     #c0392b;
+  --seg-wa:  #1fbe54;
+  --seg-jp:  #e63946;
+  --seg-de:  #2d9e6b;
+  --seg-ru:  #c0392b;
+  --seg-kh:  #2196a3;
+  --seg-vip: #8b5cf6;
+}
+
+[data-theme="light"] {
+  --bg:      #f0f3f8;
+  --bg-1:    #ffffff;
+  --bg-2:    #f6f8fb;
+  --bg-3:    #edf0f5;
+  --bg-4:    #e4e9f0;
+  --line:    rgba(6,38,79,.08);
+  --line-md: rgba(6,38,79,.15);
+  --ink:     #0c1b2e;
+  --ink-2:   #374f66;
+  --ink-3:   #7490a8;
+  --ok:      #1a7a4a;
+  --ok-s:    rgba(26,122,74,.10);
+  --ok-lt:   #1a7a4a;
+  --err:     #b83030;
+  --seg-wa:  #1a8c3e;
+  --seg-jp:  #b83030;
+  --seg-de:  #1e7a52;
+  --seg-ru:  #b83030;
+  --seg-kh:  #1a6b7a;
+  --seg-vip: #6d28d9;
+}
+
+/* ═══════════════════════════════════════════════
+   RESET
+═══════════════════════════════════════════════ */
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { height:100%; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--ink);
+  height: 100%;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ═══════════════════════════════════════════════
+   TOPBAR
+═══════════════════════════════════════════════ */
+.topbar {
+  height: 52px;
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 14px;
+  position: relative;
+  z-index: 200;
+  flex-shrink: 0;
+}
+.topbar::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold) 0%, rgba(201,153,63,.2) 45%, transparent 70%);
+}
+
+.tb-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.tb-logo svg { flex-shrink: 0; }
+.tb-wordmark {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--ink);
+}
+.tb-wordmark span { color: var(--gold); }
+.tb-sep {
+  width: 1px; height: 18px;
+  background: var(--line-md);
+  flex-shrink: 0;
+}
+.tb-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-3);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  flex: 1;
+}
+
+.tb-actions { display: flex; align-items: center; gap: 8px; }
+
+.tb-btn {
+  width: 34px; height: 34px;
+  border-radius: var(--r);
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  color: var(--ink-2);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all var(--tr);
+  font-size: 14px;
+}
+.tb-btn:hover { background: var(--bg-4); color: var(--ink); border-color: var(--line-md); }
+.tb-btn.active { background: var(--gold-s); border-color: var(--gold-sb); color: var(--gold); }
+
+.search-pill {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 0 14px;
+  height: 34px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: all var(--tr);
+}
+.search-pill:hover { border-color: var(--gold-sb); color: var(--ink-2); }
+.search-pill kbd {
+  font-size: 10px;
+  background: var(--bg-4);
+  border: 1px solid var(--line-md);
+  border-radius: 4px;
+  padding: 1px 5px;
+  color: var(--ink-3);
+}
+
+/* ═══════════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════════ */
+.app-body {
+  display: flex;
+  height: calc(100vh - 52px);
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════
+   LEFT PANEL — SELECTOR
+═══════════════════════════════════════════════ */
+.panel-left {
+  width: 300px;
+  flex-shrink: 0;
+  background: var(--bg-1);
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.selector-section {
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid var(--line);
+}
+.sel-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.sel-label .step-badge {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Segment chips */
+.seg-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.seg-chip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 10px;
+  border-radius: var(--r);
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  cursor: pointer;
+  transition: all var(--tr);
+  user-select: none;
+}
+.seg-chip:hover { border-color: var(--line-md); background: var(--bg-3); }
+.seg-chip.active {
+  border-color: var(--gold-sb);
+  background: var(--gold-s);
+}
+.seg-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.seg-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-2);
+  line-height: 1.3;
+}
+.seg-chip.active .seg-name { color: var(--ink); }
+
+/* Scenario list */
+.scenario-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 10px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-md) transparent;
+}
+.scenario-list::-webkit-scrollbar { width: 3px; }
+.scenario-list::-webkit-scrollbar-thumb { background: var(--line-md); border-radius: 2px; }
+
+.sc-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all var(--tr);
+  border: 1px solid transparent;
+  margin-bottom: 3px;
+  user-select: none;
+}
+.sc-item:hover { background: var(--bg-3); }
+.sc-item.active {
+  background: var(--gold-s);
+  border-color: var(--gold-sb);
+}
+
+.sc-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--ink-3);
+  flex-shrink: 0;
+  width: 24px;
+}
+.sc-item.active .sc-num { color: var(--gold); }
+
+.sc-info { flex: 1; min-width: 0; }
+.sc-title {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 1px;
+}
+.sc-item.active .sc-title { color: var(--ink); }
+.sc-when {
+  font-size: 10.5px;
+  color: var(--ink-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sc-part-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  padding: 10px 10px 4px;
+}
+
+/* Language tabs */
+.lang-tabs {
+  padding: 12px 16px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  gap: 6px;
+  background: var(--bg-1);
+}
+.lang-tab {
+  flex: 1;
+  padding: 7px 6px;
+  border-radius: var(--r);
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-3);
+  cursor: pointer;
+  text-align: center;
+  transition: all var(--tr);
+  user-select: none;
+}
+.lang-tab:hover { border-color: var(--line-md); color: var(--ink-2); }
+.lang-tab.active {
+  border-color: var(--gold-sb);
+  background: var(--gold-s);
+  color: var(--gold);
+}
+
+/* ═══════════════════════════════════════════════
+   RIGHT PANEL — MESSAGE
+═══════════════════════════════════════════════ */
+.panel-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+/* Fill-in form */
+.fill-zone {
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--line);
+  padding: 16px 20px;
+  flex-shrink: 0;
+}
+.fill-header {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 12px;
+}
+.fill-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.fill-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 140px;
+}
+.fill-lbl {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--gold-dim);
+  letter-spacing: .04em;
+}
+.fill-input {
+  height: 32px;
+  padding: 0 10px;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 13px;
+  outline: none;
+  transition: border-color var(--tr);
+  min-width: 130px;
+}
+.fill-input:focus {
+  border-color: var(--gold-sb);
+  background: var(--bg-4);
+}
+.fill-input::placeholder { color: var(--ink-3); }
+
+/* Message display area */
+.message-zone {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-md) transparent;
+}
+.message-zone::-webkit-scrollbar { width: 4px; }
+.message-zone::-webkit-scrollbar-thumb { background: var(--line-md); border-radius: 2px; }
+
+/* Empty state */
+.empty-state {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  padding: 40px;
+}
+.empty-icon {
+  font-size: 40px;
+  opacity: .4;
+  margin-bottom: 4px;
+}
+.empty-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+.empty-sub {
+  font-size: 13px;
+  color: var(--ink-3);
+  line-height: 1.6;
+  max-width: 320px;
+}
+
+/* Message card */
+.msg-card {
+  background: var(--bg-1);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  margin-bottom: 16px;
+  animation: rise .22s cubic-bezier(.4,0,.2,1);
+}
+@keyframes rise {
+  from { opacity:0; transform:translateY(10px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* Message header */
+.msg-hdr {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-2);
+}
+.msg-seg-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  color: #fff;
+  flex-shrink: 0;
+}
+.msg-variant-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  flex: 1;
+}
+.msg-scenario-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-3);
+  flex-shrink: 0;
+}
+
+/* WhatsApp bubble */
+.wa-bubble-wrap {
+  padding: 18px 20px;
+  background: var(--bg-1);
+}
+
+.wa-bubble {
+  background: var(--bg-2);
+  border-radius: 12px 12px 12px 4px;
+  padding: 14px 16px;
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--ink);
+  white-space: pre-wrap;
+  word-break: break-word;
+  border-left: 3px solid var(--line-md);
+  position: relative;
+}
+
+/* Placeholder highlighting */
+.wa-bubble .placeholder {
+  color: var(--gold);
+  font-weight: 600;
+  background: var(--gold-s);
+  border-radius: 3px;
+  padding: 0 3px;
+}
+.wa-bubble .filled {
+  color: var(--ink);
+  font-weight: 600;
+  border-bottom: 1px dashed var(--gold-dim);
+}
+
+/* VA note */
+.va-note {
+  margin: 0 20px 16px;
+  padding: 10px 14px;
+  background: var(--bg-3);
+  border-radius: 0 0 var(--r) var(--r);
+  border: 1px solid var(--line);
+  border-top: none;
+  font-size: 12.5px;
+  color: var(--ink-3);
+  line-height: 1.6;
+}
+.va-note strong {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--gold-dim);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-right: 6px;
+}
+
+/* Copy button */
+.copy-wrap {
+  padding: 0 20px 16px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.copy-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  color: var(--ink-2);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--tr);
+}
+.copy-btn:hover { background: var(--bg-4); color: var(--ink); border-color: var(--line-md); }
+.copy-btn.copied {
+  background: var(--ok-s);
+  border-color: var(--ok);
+  color: var(--ok-lt);
+}
+.copy-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+.char-count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-3);
+  margin-left: auto;
+}
+
+/* Escalation warning */
+.escalate-box {
+  margin: 0 20px 16px;
+  padding: 11px 14px;
+  background: rgba(192,57,43,.1);
+  border: 1px solid rgba(192,57,43,.3);
+  border-left: 3px solid var(--err);
+  border-radius: 0 var(--r) var(--r) 0;
+  font-size: 12.5px;
+  color: #e07060;
+  line-height: 1.6;
+}
+.escalate-box strong {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--err);
+  margin-bottom: 4px;
+}
+
+/* JP translation tip */
+.jp-tip {
+  margin: 0 20px 16px;
+  padding: 11px 14px;
+  background: var(--gold-s);
+  border: 1px solid var(--gold-sb);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 var(--r) var(--r) 0;
+  font-size: 12.5px;
+  color: var(--ink-2);
+  line-height: 1.65;
+}
+.jp-tip strong {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: 6px;
+}
+
+/* ═══════════════════════════════════════════════
+   SEARCH OVERLAY
+═══════════════════════════════════════════════ */
+.search-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 80px;
+}
+.search-overlay.open { display: flex; }
+
+.search-modal {
+  width: 100%;
+  max-width: 580px;
+  background: var(--bg-1);
+  border: 1px solid var(--line-md);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0,0,0,.5);
+  animation: rise .18s ease;
+}
+
+.search-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line);
+}
+.search-input-wrap svg { color: var(--ink-3); flex-shrink: 0; }
+.search-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--ink);
+}
+.search-input::placeholder { color: var(--ink-3); }
+
+.search-results {
+  max-height: 360px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.search-result {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: background var(--tr);
+  border-bottom: 1px solid var(--line);
+}
+.search-result:last-child { border-bottom: none; }
+.search-result:hover, .search-result.focused { background: var(--bg-3); }
+
+.sr-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+  color: #fff;
+  flex-shrink: 0;
+}
+.sr-info { flex: 1; min-width: 0; }
+.sr-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sr-sub {
+  font-size: 11.5px;
+  color: var(--ink-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sr-lang {
+  font-size: 11px;
+  color: var(--ink-3);
+  flex-shrink: 0;
+}
+.search-empty {
+  padding: 32px 20px;
+  text-align: center;
+  color: var(--ink-3);
+  font-size: 13px;
+}
+.search-hint {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  border-top: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-3);
+}
+.search-hint kbd {
+  background: var(--bg-3);
+  border: 1px solid var(--line-md);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+/* ═══════════════════════════════════════════════
+   MOBILE
+═══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  body { overflow: auto; }
+  .app-body { flex-direction: column; height: auto; overflow: visible; }
+  .panel-left {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+    max-height: none;
+    overflow: visible;
+  }
+  .scenario-list { max-height: 220px; }
+  .panel-right { overflow: visible; }
+  .message-zone { overflow: visible; min-height: 400px; }
+  .topbar { padding: 0 14px; }
+  .tb-title { display: none; }
+  .search-pill span { display: none; }
+  .fill-grid { flex-direction: column; }
+  .fill-field { width: 100%; }
+  .fill-input { width: 100%; min-width: unset; }
+}
+
+/* ═══════════════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════════════ */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-md) transparent;
+}
+
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="tb-logo">
+    <svg width="28" height="28" viewBox="0 0 34 34" fill="none">
+      <rect width="34" height="34" rx="7" fill="#06264f"/>
+      <path d="M8 8h8c3.31 0 6 2.69 6 6s-2.69 6-6 6H8V8z" fill="#c9993f"/>
+      <rect x="8" y="22" width="4" height="4" rx="1" fill="#c9993f"/>
+      <rect x="22" y="8" width="4" height="18" rx="1" fill="rgba(201,153,63,0.45)"/>
+    </svg>
+    <div class="tb-wordmark">Property Hub <span>Cambodia</span></div>
+  </div>
+  <div class="tb-sep"></div>
+  <div class="tb-title">Message Builder</div>
+  <div class="tb-actions">
+    <div class="search-pill" onclick="openSearch()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <span>Search messages</span>
+      <kbd>⌘K</kbd>
+    </div>
+    <button class="tb-btn" onclick="toggleTheme()" id="theme-btn" title="Toggle theme">🌙</button>
+  </div>
+</div>
+
+<!-- APP BODY -->
+<div class="app-body">
+
+  <!-- LEFT PANEL -->
+  <div class="panel-left">
+
+    <!-- Step 1: Segment -->
+    <div class="selector-section">
+      <div class="sel-label">
+        <span class="step-badge">1</span>
+        Select Segment
+      </div>
+      <div class="seg-grid" id="seg-grid"></div>
+    </div>
+
+    <!-- Step 2: Scenario -->
+    <div class="selector-section" style="border-bottom:none;padding-bottom:4px;flex:1;overflow:hidden;display:flex;flex-direction:column;">
+      <div class="sel-label">
+        <span class="step-badge">2</span>
+        Select Scenario
+      </div>
+      <div class="scenario-list" id="scenario-list"></div>
+    </div>
+
+    <!-- Step 3: Language -->
+    <div class="lang-tabs" id="lang-tabs"></div>
+
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="panel-right">
+
+    <!-- Fill-in zone -->
+    <div class="fill-zone" id="fill-zone" style="display:none">
+      <div class="fill-header">
+        <span class="step-badge" style="width:16px;height:16px;border-radius:50%;background:var(--gold);color:#fff;font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;margin-right:6px;">3</span>
+        Fill in placeholders — message updates live
+      </div>
+      <div class="fill-grid" id="fill-grid"></div>
+    </div>
+
+    <!-- Message display -->
+    <div class="message-zone" id="message-zone">
+      <div class="empty-state" id="empty-state">
+        <div class="empty-icon">💬</div>
+        <div class="empty-title">Select a scenario</div>
+        <div class="empty-sub">Choose a client segment, pick a scenario, and select a language. Your message will appear here ready to personalise and copy.</div>
+      </div>
+      <div id="msg-output" style="display:none"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SEARCH OVERLAY -->
+<div class="search-overlay" id="search-overlay" onclick="closeSearchOnBg(event)">
+  <div class="search-modal">
+    <div class="search-input-wrap">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input class="search-input" id="search-input" placeholder="Search scenarios, keywords, segments..." autocomplete="off" oninput="doSearch(this.value)" onkeydown="searchKeyNav(event)">
+    </div>
+    <div class="search-results" id="search-results"></div>
+    <div class="search-hint">
+      <span><kbd>↑↓</kbd> navigate</span>
+      <span><kbd>↵</kbd> select</span>
+      <span><kbd>Esc</kbd> close</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════
+const SEGMENTS = [
+  { id:'en',  label:'🇬🇧 EN',  name:'English',         color:'#1877f2', desc:'Local / Overseas KH' },
+  { id:'jp',  label:'🇯🇵 JP',  name:'Japanese',        color:'#e63946', desc:'JP investors' },
+  { id:'de',  label:'🇩🇪 DE',  name:'German / EU',     color:'#2d9e6b', desc:'European buyers' },
+  { id:'ru',  label:'🇷🇺 RU',  name:'Russian / CN',    color:'#c0392b', desc:'Yield-focused' },
+  { id:'kh',  label:'🇰🇭 KH',  name:'Khmer',           color:'#2196a3', desc:'Local Khmer' },
+  { id:'vip', label:'⭐ VIP', name:'VIP $300K+',       color:'#8b5cf6', desc:'Director handoff' },
+];
+
+const PARTS = [
+  { id:'p0', label:'PART 0 — FIRST CONTACT' },
+  { id:'p1', label:'PART 1 — FOLLOW-UP SEQUENCE' },
+  { id:'p2', label:'PART 2 — INBOUND QUESTIONS' },
+  { id:'p3', label:'PART 3 — OBJECTIONS & STALLS' },
+  { id:'p4', label:'PART 4 — BOOKING & MILESTONES' },
+  { id:'p5', label:'PART 5 — SEGMENT-SPECIFIC' },
+];
+
+// Each scenario: id, part, title, when, segments array with variant per segment
+// Each variant: lang, langLabel, segColor, tag, fields[], lines[], vaNote?, jpTip?, escalate?
+const SCENARIOS = [
+  {
+    id:'s1', part:'p1', title:'Day 2 — First Follow-Up', when:'48 hours after first contact if no reply',
+    segments: {
+      en: [
+        { lang:'🇬🇧 English', tag:'S1-A', color:'#1877f2', label:'General — Local / Overseas Cambodian',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Sokha'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Time Square 9'},{key:'UNIT_TYPE',label:'[UNIT TYPE]',ph:'e.g. 1-bedroom'}],
+          lines:['Hi [FIRST_NAME] 👋','','Just checking the property overview for [PROJECT] reached you — I sent it through a couple of days ago.','','I also confirmed the [UNIT_TYPE] units are still available at the pricing I shared.','','Is there a specific part you would like me to walk through — the payment plan, rental income estimate, or the legal ownership structure?','','Happy to answer here on WhatsApp or jump on a quick call.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Casual and helpful. Goal is one reply — not a commitment. Do not mention price again here.',
+        },
+        { lang:'🇬🇧 Score A', tag:'S1-B', color:'#c0392b', label:'Score A — Budget confirmed, timeline ≤3 months',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. David'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Time Square 9'}],
+          lines:['Hi [FIRST_NAME],','','Following up on [PROJECT] — I have checked current availability and there are units in your budget range still open.','','Given your timeline, I\'d suggest we arrange a site visit or a detailed walkthrough call this week so you have everything you need to make a well-informed decision.','','What works best — a call, a site visit, or shall I send the full SPA overview first?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'⚠️ Score A only. Budget confirmed + timeline ≤3 months. Never send this to Score B or C.',
+        },
+      ],
+      jp: [
+        { lang:'🇯🇵 Japanese', tag:'S1-C', color:'#e63946', label:'Japanese investor — formal, patient, no ask',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'},{key:'BUKKEN',label:'[物件名]',ph:'e.g. Time Square 9'}],
+          lines:['[ONAMAE]様','','先日は[BUKKEN]についてお問い合わせいただき、誠にありがとうございます。','','ご送付した物件概要資料はご確認いただけましたでしょうか。','','お支払いプラン、賃貸収益の見込み、外国人所有権の詳細など、\nご不明な点がございましたら、どうぞお気軽にご返信ください。','','ご連絡をお待ちしております。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Do NOT ask for a meeting or decision in Day 2 Japanese. Simply confirm receipt and offer to answer questions.',
+          jpTip:'Thank you for your enquiry about [Project]. I wanted to check you received the overview I sent. Please feel free to reply with any questions — payment plan, rental estimates, or ownership details. Looking forward to hearing from you.',
+        },
+      ],
+      de: [
+        { lang:'🇩🇪 German / EU', tag:'S1-D', color:'#2d9e6b', label:'European investor — first follow-up',
+          fields:[{key:'LAST_NAME',label:'[LAST NAME]',ph:'e.g. Schmidt'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Le Condé BKK1'}],
+          lines:['Dear [LAST_NAME],','','I am following up on the investment overview I sent for [PROJECT].','','The document covers net yield after all costs, the full acquisition cost breakdown, the legal ownership structure for foreign nationals, and the relevant CGT implications.','','If you have any questions about the figures — or would like me to model a more conservative scenario — please let me know.','','Best regards,\nProperty Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Use formal surname address for German/European buyers. Lead with data, not warmth.',
+        },
+      ],
+    }
+  },
+  {
+    id:'s2', part:'p1', title:'Day 5 — Value-Add Follow-Up', when:'No reply after Day 2 — always add new information',
+    segments: {
+      en: [
+        { lang:'🇬🇧 English', tag:'S2-A', color:'#1877f2', label:'General — share a real data point',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Sokha'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Time Square 9'},{key:'DATA_POINT',label:'[DATA POINT]',ph:'e.g. BKK1 1BR: $750–$900/month'}],
+          lines:['Hi [FIRST_NAME],','','I wanted to share something that might be useful for your decision.','','[DATA_POINT]','','This is relevant to [PROJECT] because the rental potential we discussed sits within this range.','','No pressure — just making sure you have the most current picture.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'⚠️ Replace [DATA POINT] with a real, verified fact. Never fabricate data.',
+        },
+        { lang:'🇰🇭 Overseas KH', tag:'S2-B', color:'#2196a3', label:'Overseas Cambodian — offer shareable family document',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Chenda'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Royal Platinum'}],
+          lines:['Hi [FIRST_NAME],','','Following up on [PROJECT] — I know decisions like this often involve family, and I want to make that conversation as easy as possible for you.','','I can prepare a simple document — developer track record, payment plan, and the monthly cost — that you can share with your family before deciding.','','Would that be helpful?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Overseas Cambodians almost always involve family. Offering a shareable document removes the burden from them.',
+        },
+      ],
+      jp: [
+        { lang:'🇯🇵 Japanese', tag:'S2-C', color:'#e63946', label:'Japanese — one data point, brief, no ask',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'},{key:'BUKKEN',label:'[物件名]',ph:'e.g. Time Square 9'}],
+          lines:['[ONAMAE]様','','[BUKKEN]に関連して、参考になりそうなデータをお送りします。','','プノンペンBKK1エリアでは、1LDKの賃貸需要が堅調で、\n管理の行き届いた物件では月750〜900ドル程度が見込まれています。','','引き続きご検討の際のご参考にしていただければ幸いです。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Brief. One fact. No ask. No meeting request.',
+          jpTip:'Sharing data related to [Project]. Rental demand in BKK1 remains strong — well-managed 1BR units achieving $750–$900/month. Please use as a reference for your consideration.',
+        },
+      ],
+      de: [
+        { lang:'🇩🇪 German / EU', tag:'S2-D', color:'#2d9e6b', label:'European — REAKH verified case study',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Thomas'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. J Tower 2'}],
+          lines:['Hi [FIRST_NAME],','','I wanted to share one data point relevant to your consideration of [PROJECT].','','According to the REAKH Investment & Market Analysis Report (2025), a verified 5-year transaction on a comparable BKK1 2-bedroom unit achieved 34.27% total return — combining rental income and capital appreciation — averaging 6.85% per year.','','This is a real, documented transaction. I can share the full report extract if useful.','','No pressure — just ensuring your decision is based on verified data.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Lead with the REAKH case study. Never use emotional language with European clients.',
+        },
+      ],
+    }
+  },
+  {
+    id:'s3', part:'p1', title:'Day 10 — Re-Qualification', when:'Still no reply after Day 5 — find the real blocker',
+    segments: {
+      en: [
+        { lang:'🇬🇧 English', tag:'S3-A', color:'#1877f2', label:'General — find the blocker',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Sokha'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Time Square 9'}],
+          lines:['Hi [FIRST_NAME],','','I have sent a couple of messages about [PROJECT] and I don\'t want to keep following up if the timing isn\'t right.','','I just have one question — is there something specific that hasn\'t been answered yet? I\'d rather address something real than keep sending general updates.','','If the timing has changed, no problem at all — just let me know and I\'ll check back in a few months.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Give them an easy way to disengage — this builds trust. Most leads who reply here will share the real blocker.',
+        },
+      ],
+      ru: [
+        { lang:'🇷🇺 Russian / CN', tag:'S3-B', color:'#c0392b', label:'Yield-focused — direct re-qualification',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Alexei'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Le Condé'}],
+          lines:['Hi [FIRST_NAME],','','Quick question on [PROJECT] — is it the yield numbers that need more clarity, or is it another factor?','','I can prepare a direct comparison: projected net yield, management fee, occupancy assumption, and realistic exit timeline.','','If the numbers work for you, we can move quickly. If they don\'t, I\'d rather tell you now.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Russian/Chinese investors are direct. Skip pleasantries. Offer a clear, data-based comparison.',
+        },
+      ],
+      jp: [
+        { lang:'🇯🇵 Japanese', tag:'S3-C', color:'#e63946', label:'Japanese — respectful, permission to disengage',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'},{key:'BUKKEN',label:'[物件名]',ph:'e.g. Time Square 9'}],
+          lines:['[ONAMAE]様','','[BUKKEN]について、何度かご連絡を差し上げておりますが、\nご連絡が届いていないかもしれません。','','もし何かご不明な点や、まだお答えしていないご質問がございましたら、\nぜひお知らせいただけますと幸いです。','','ご検討のタイミングがまだでしたら、それはまったく問題ございません。\n準備が整いましたら、またいつでもご連絡ください。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'⚠️ Explicit permission to disengage is culturally critical for Japanese. Never chase.',
+          jpTip:'I sent a few messages about [Project] — perhaps they haven\'t reached you. If there\'s an unanswered question, please let me know. If timing isn\'t right, that\'s completely fine — contact me whenever you\'re ready.',
+        },
+      ],
+    }
+  },
+  {
+    id:'s4', part:'p1', title:'Day 21 — Final Check-In', when:'Last active follow-up before Mailchimp-only nurture',
+    segments: {
+      en: [
+        { lang:'🇬🇧 English', tag:'S4-A', color:'#1877f2', label:'General — park cleanly, no pressure',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Sokha'}],
+          lines:['Hi [FIRST_NAME],','','I want to reach out one more time — not to push, but just to check if anything has changed in your timeline or situation.','','If you are still considering Phnom Penh property, I am happy to help whenever you are ready.','','If the timing has changed, no problem — I\'ll stay in touch with occasional market updates.','','Wishing you well either way.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'After sending: tag as Parked in Platform V2. Add to Mailchimp nurture. No more manual follow-up until they re-engage.',
+        },
+      ],
+      jp: [
+        { lang:'🇯🇵 Japanese', tag:'S4-B', color:'#e63946', label:'Japanese — graceful close with brand signature',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'}],
+          lines:['[ONAMAE]様','','最後にもう一度だけご連絡させていただきます。','','もしご検討のタイミングや状況に変化がございましたら、\nいつでもお気軽にご連絡ください。','','今後もカンボジア不動産市場に関する情報をお送りすることがございますが、\nご不要の場合はいつでもおっしゃってください。','','どうぞお元気でお過ごしください。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Use the Japanese brand name in the signature. After sending: tag as Parked.',
+          jpTip:'I\'m reaching out one final time. If timing or situation changes, please contact me anytime. I may share occasional market updates — let me know if you\'d prefer not to receive them. Wishing you well.',
+        },
+      ],
+    }
+  },
+  {
+    id:'s5', part:'p1', title:'Post Site-Visit Follow-Up', when:'Send within 2 hours of the visit ending — every time',
+    segments: {
+      en: [
+        { lang:'🇬🇧 Standard', tag:'S5-A', color:'#1877f2', label:'Standard — all segments',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. David'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Time Square 9'},{key:'UNIT',label:'[UNIT]',ph:'e.g. Floor 17, Unit A'},{key:'NEXT_STEP',label:'[NEXT STEP]',ph:'e.g. SPA review this week'}],
+          lines:['Hi [FIRST_NAME],','','Thank you for visiting [PROJECT] today — it was great to show you [UNIT] in person.','','Based on our conversation, I am preparing a written summary that covers:\n• Unit details and pricing\n• Payment plan breakdown\n• Rental income estimate and net yield\n• Any open questions we discussed','','You will receive that within 2 hours.','','Suggested next step: [NEXT_STEP].','','Let me know if you have questions in the meantime.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Send within 2 hours. The summary = the Advisory Report. If you can\'t deliver today, still send this and give a realistic time.',
+        },
+        { lang:'🇬🇧 Objection raised', tag:'S5-B', color:'#a07a2e', label:'Concern raised — address it with data',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. David'},{key:'CONCERN',label:'[CONCERN]',ph:'e.g. unit size too small'},{key:'RESPONSE',label:'[DATA RESPONSE]',ph:'e.g. 2BR same building 78sqm...'}],
+          lines:['Hi [FIRST_NAME],','','Following up on our visit — you mentioned [CONCERN] and I wanted to address that directly.','','[RESPONSE]','','I have included this comparison in the written summary I am sending you.','','If there is anything else you want me to look into before you decide, just ask.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Only use when a specific concern was raised. Address with data — never dismiss or minimise it.',
+        },
+      ],
+      jp: [
+        { lang:'🇯🇵 Japanese', tag:'S5-C', color:'#e63946', label:'Japanese — structured, no next step ask',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'},{key:'BUKKEN',label:'[物件名]',ph:'e.g. Time Square 9'},{key:'UNIT',label:'[ユニット]',ph:'e.g. 17階 Aユニット'}],
+          lines:['[ONAMAE]様','','本日は[BUKKEN]の[UNIT]をご見学いただき、誠にありがとうございました。','','ご見学の内容をもとに、以下の情報をまとめた資料をお送りいたします：\n・ユニットの詳細と価格\n・お支払いプランの内訳\n・賃貸収益の見込みと実質利回り\n・本日ご質問いただいた内容への回答','','2時間以内にご送付いたします。','','引き続きどうぞよろしくお願いいたします。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Do NOT propose a next step or ask for a decision here. Let them read the report first.',
+          jpTip:'Thank you for visiting [Unit] at [Project] today. Preparing a document with: unit details, payment plan, rental income estimate, answers to your questions. Will send within 2 hours.',
+        },
+      ],
+    }
+  },
+  {
+    id:'s6', part:'p1', title:'After Sending Advisory Report', when:'3–4 hours after the report is delivered',
+    segments: {
+      en: [
+        { lang:'🇬🇧 General', tag:'S6-A', color:'#1877f2', label:'Confirm receipt, invite questions',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Sokha'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Time Square 9'}],
+          lines:['Hi [FIRST_NAME],','','Just checking the investment overview for [PROJECT] reached you.','','The document covers net yield, full cost breakdown, payment plan, and the legal ownership structure for foreign buyers.','','If you\'ve had a chance to read it and want to discuss any of the numbers — or adjust anything for your specific situation — I\'m happy to do that.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Short. The report does the heavy lifting. This message just opens the door.',
+        },
+        { lang:'🇬🇧 Score A', tag:'S6-B', color:'#c0392b', label:'Score A — propose SPA review',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. David'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Time Square 9'}],
+          lines:['Hi [FIRST_NAME],','','Following up on the [PROJECT] overview — I hope the numbers are clear.','','Given your timeline, the most useful next step would be to review the Sale and Purchase Agreement with our legal team. It takes about 45 minutes and gives you full clarity on what you\'re committing to before any deposit is paid.','','There is no obligation — it\'s simply the most informed way to decide.','','Would this week work for you?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Score A only. SPA review is a service, not a close.',
+        },
+      ],
+      jp: [
+        { lang:'🇯🇵 Japanese', tag:'S6-C', color:'#e63946', label:'Japanese — confirm receipt, invite questions only',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'},{key:'BUKKEN',label:'[物件名]',ph:'e.g. Time Square 9'}],
+          lines:['[ONAMAE]様','','[BUKKEN]の投資概要資料はご確認いただけましたでしょうか。','','資料には、実質利回り、総費用の内訳、お支払いプラン、\n外国人による所有権の法的構造について記載しております。','','ご不明な点がございましたら、どうぞお気軽にご連絡ください。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Post-report Japanese: confirm contents, invite questions. Never propose a next step or meeting. Let them lead.',
+          jpTip:'I hope you received the investment overview for [Project]. Document covers net yield, cost breakdown, payment plan, and legal ownership structure. Please feel free to contact me with any questions.',
+        },
+      ],
+    }
+  },
+  {
+    id:'s7', part:'p2', title:'Pricing & Payment Plan', when:'Lead asks "how much?" or "what are the payments?"',
+    segments: {
+      en: [
+        { lang:'🇬🇧 English', tag:'S7-A', color:'#1877f2', label:'Full cost breakdown — transparent',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Sokha'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Time Square 9'},{key:'PRICE',label:'[PRICE]',ph:'e.g. from $97,760'},{key:'MONTHLY',label:'[MONTHLY]',ph:'e.g. $1,715/month'},{key:'BOOKING',label:'[BOOKING]',ph:'e.g. $1,000'}],
+          lines:['Hi [FIRST_NAME],','','Here is the current pricing for [PROJECT]:','','Entry price: from [PRICE]\nBooking deposit to secure the unit: [BOOKING] (refundable)\nMonthly payment: [MONTHLY] over 45 months','','On top of the unit price, the main one-time costs are:\n• Transfer tax: 4% of assessed value\n• Legal / SPA review: ~0.5–1% (recommended)\n• Furniture / fit-out: $5K–$15K typical for rental-ready','','Total all-in cost is typically 5–6% above the listed unit price.','','Would you like me to prepare a full cost breakdown for a specific unit?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'⚠️ Always verify figures in Platform V2 before sending. Never quote from memory.',
+        },
+      ],
+      jp: [
+        { lang:'🇯🇵 Japanese', tag:'S7-B', color:'#e63946', label:'Japanese — structured, all costs included',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'},{key:'BUKKEN',label:'[物件名]',ph:'e.g. Time Square 9'},{key:'KAKAKU',label:'[価格]',ph:'e.g. 97,760ドルより'},{key:'TSUKIGAKE',label:'[月払い]',ph:'e.g. 1,715ドル'}],
+          lines:['[ONAMAE]様','','[BUKKEN]の現在の価格についてご案内いたします。','','販売価格：[KAKAKU]\n予約金（返金可）：1,000ドル\n月々のお支払い：[TSUKIGAKE]（45ヶ月払い）','','物件価格に加え、主な一回限りの費用は以下のとおりです：\n・譲渡税：物件評価額の4%\n・法務・SPA審査費用：評価額の約0.5〜1%（推奨）','','合計費用は通常、表示価格の5〜6%増となります。','','特定のユニットの詳細なコスト内訳が必要でしたら、\nお気軽にお申し付けください。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Japanese buyers expect a complete cost picture. Always include transfer tax and legal fees.',
+          jpTip:'Current pricing for [Project]: Entry from [Price] / Booking $1,000 refundable / Monthly [Monthly] over 45 months. Additional one-time costs: Transfer tax 4% / Legal ~0.5–1%. Total all-in typically 5–6% above listed price.',
+        },
+      ],
+    }
+  },
+  {
+    id:'s8', part:'p2', title:'Foreign Ownership Rules', when:'Lead asks "can foreigners buy?" or "is it legal?"',
+    segments: {
+      en: [
+        { lang:'🇬🇧 English', tag:'S8-A', color:'#1877f2', label:'Clear, confident, complete — 3 rules',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Sokha'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Time Square 9'}],
+          lines:['Hi [FIRST_NAME],','','Yes, foreigners can legally own property in Cambodia. Here is how it works for [PROJECT]:','','✅ Strata title — [PROJECT] has full strata title (freehold). This is the legal framework that allows foreign nationals to own their unit outright, registered with the Ministry of Land.','','✅ Floor requirement — Foreigners can own units on the 1st floor and above. Ground floor units cannot be owned by foreign nationals.','','✅ Foreign quota — By law, no more than 70% of units in any building can be held by foreign nationals. I can confirm the current quota status for [PROJECT] before you proceed.','','All PHC-recommended projects have confirmed strata title and are within the foreign ownership limit.','','Do you have a specific nationality or ownership structure question I can help with?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'⚠️ If they ask about nominee structures — do NOT discuss. Escalate to Director.',
+          escalate:'If the lead asks about nominee structures or ground floor ownership workarounds — do not respond. Reply: "PHC does not advise on nominee structures. I can connect you with our Director for compliant ownership options." Then alert Director.',
+        },
+      ],
+      jp: [
+        { lang:'🇯🇵 Japanese', tag:'S8-B', color:'#e63946', label:'Japanese — formal, complete legal explanation',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'},{key:'BUKKEN',label:'[物件名]',ph:'e.g. Time Square 9'}],
+          lines:['[ONAMAE]様','','外国人によるカンボジアでの不動産所有についてご説明いたします。','','✅ ストラタタイトル（分譲所有権）\n[BUKKEN]はフルストラタタイトルを取得しており、\n外国人が土地省に登録された形で正式に所有権を持つことができます。','','✅ 階数の制限\n外国人が所有できるのは1階より上のユニットに限られます。\n（1階ユニットは外国人所有の対象外となります）','','✅ 外国人所有枠\n法律上、1棟あたりの外国人所有比率は70%が上限です。\n[BUKKEN]の現在の残枠についてはご案内可能です。','','ご不明な点がございましたら、どうぞお気軽にお知らせください。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Always confirm strata title and quota status before sending this.',
+          jpTip:'Foreign ownership explanation for [Project]. Strata title confirmed — foreigners can own registered with Ministry of Land. Floor rule: above ground floor only. Quota: max 70% foreign per building — current quota available.',
+        },
+      ],
+    }
+  },
+  {
+    id:'s9', part:'p2', title:'Comparing Two Projects', when:'Lead asks "which is better?" or "help me choose"',
+    segments: {
+      en: [
+        { lang:'🇬🇧 English', tag:'S9-A', color:'#1877f2', label:'Goal-based comparison — not spec-based',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. David'},{key:'GOAL',label:'[THEIR GOAL]',ph:'e.g. stable rental income'},{key:'PROJECT_A',label:'[PROJECT A]',ph:'e.g. Time Square 9'},{key:'FIT_A',label:'[WHY A FITS]',ph:'e.g. BKK1, completed, strata title'},{key:'PROJECT_B',label:'[PROJECT B]',ph:'e.g. Le Condé'},{key:'FIT_B',label:'[WHY B FITS]',ph:'e.g. Hopetree Japan management'}],
+          lines:['Hi [FIRST_NAME],','','Happy to help you compare. Based on your goal of [GOAL], here is how I see it:','','[PROJECT_A]\nBest for: [FIT_A]\nMain consideration: [honest limitation — fill before sending]','','[PROJECT_B]\nBest for: [FIT_B]\nMain consideration: [honest limitation — fill before sending]','','My honest recommendation based on what you have told me: [PROJECT A or B — state which] — because [one clear reason tied to their goal].','','Would you like a written comparison I can send you?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'⚠️ Fill in ALL placeholders before sending. Always include one honest limitation per project. Never say both are great without a clear recommendation.',
+        },
+      ],
+    }
+  },
+  {
+    id:'s10', part:'p3', title:'Lead Gone Cold After Proposal', when:'No reply for 7–10 days after sending the advisory report',
+    segments: {
+      en: [
+        { lang:'🇬🇧 English', tag:'S10-A', color:'#1877f2', label:'Re-engage with a specific question',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Sokha'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Time Square 9'}],
+          lines:['Hi [FIRST_NAME],','','Following up on the [PROJECT] proposal I sent — I wanted to ask one direct question:','','Is there a specific number in the report that doesn\'t look right to you, or a question I haven\'t answered yet?','','I would rather address something specific than keep sending general follow-ups.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Direct and respectful. Most leads who respond here will share the real blocker.',
+        },
+      ],
+      de: [
+        { lang:'🇩🇪 German / EU', tag:'S10-B', color:'#2d9e6b', label:'European — offer conservative scenario remodel',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Thomas'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Le Condé'}],
+          lines:['Hi [FIRST_NAME],','','Following up on the [PROJECT] proposal.','','I wanted to offer something concrete: if any of the assumptions in the report — rental income, occupancy rate, or exit timeline — do not match your expectations, I can rerun the numbers with your own figures.','','A more conservative scenario may give you a clearer picture of the downside — which I think is more useful than a best-case projection.','','Would that be helpful?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'European investors respond to downside scenarios — this builds more trust than repeating the upside.',
+        },
+      ],
+    }
+  },
+  {
+    id:'s11', part:'p3', title:'Lead Says: I Need to Discuss with Family', when:'Normal part of the process — support it, never rush it',
+    segments: {
+      en: [
+        { lang:'🇰🇭 Khmer / Overseas', tag:'S11-A', color:'#2196a3', label:'Offer a shareable family document',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Chenda'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Time Square 11'}],
+          lines:['Hi [FIRST_NAME],','','That is completely normal — and a very good approach.','','To help that conversation, I can prepare a simple, clean summary that you can share with your family:\n• Developer name and track record\n• Project name and location\n• Unit price and monthly payment\n• What the building includes\n• Key facts about ownership and legal title','','It is designed to be easy to read for someone who has not seen the project before.','','Would you like me to send that to you today?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Follow through same day. A family that has the document is far more likely to support the decision.',
+        },
+      ],
+      jp: [
+        { lang:'🇯🇵 Japanese', tag:'S11-B', color:'#e63946', label:'Japanese — formal, provide materials, no pressure',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'},{key:'BUKKEN',label:'[物件名]',ph:'e.g. Time Square 9'}],
+          lines:['[ONAMAE]様','','ご家族とご相談されるとのこと、それは大変大切なことと存じます。','','ご家族との話し合いをスムーズに進めていただけるよう、\n以下の内容をまとめた資料をご用意することができます：','','・デベロッパーの実績と信頼性\n・物件名・所在地・価格\n・お支払いプランの概要\n・外国人所有権の法的根拠','','ご家族の方がご覧になりやすい形式でお送りいたします。\nご希望でしたらお知らせください。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Family consensus is normal and respected. Provide materials without asking for a timeline.',
+          jpTip:'It\'s important to consult your family — I understand completely. I can prepare materials for the family discussion: developer track record, project details, payment plan, and legal ownership basis. Please let me know if you\'d like me to send these.',
+        },
+      ],
+    }
+  },
+  {
+    id:'s12', part:'p3', title:'Lead Says: I Found a Cheaper Option', when:'Never dismiss — ask what they\'re comparing, then engage honestly',
+    segments: {
+      en: [
+        { lang:'🇬🇧 English', tag:'S12-A', color:'#1877f2', label:'Welcome the comparison — ask for specifics',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Sokha'}],
+          lines:['Hi [FIRST_NAME],','','That is genuinely useful to know — thank you for sharing it.','','Could you tell me a bit more about it? Specifically:\n• Is it the same district / location?\n• Is it completed or off-plan?\n• Does it have confirmed strata title?\n• Who is the developer and do they have a delivery track record?','','I am not asking to dismiss it — some cheaper options are excellent. But price alone does not tell the full story, and I\'d rather help you compare properly than just defend our projects.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'If they share competitor details — research before responding. Never guess on strata title status.',
+        },
+      ],
+      ru: [
+        { lang:'🇷🇺 Russian / CN', tag:'S12-B', color:'#c0392b', label:'Direct — offer a side-by-side yield comparison',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Alexei'}],
+          lines:['Hi [FIRST_NAME],','','No problem — cheaper can be better. Can you send me the details?','','I can put together a side-by-side: entry price, net yield after all costs, management quality, and realistic exit options.','','If theirs wins on the numbers — I will tell you. If ours wins — you will see why.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Confident, not defensive. Deliver the comparison within 24 hours.',
+        },
+      ],
+    }
+  },
+  {
+    id:'s13', part:'p4', title:'Lead Is Ready to Book', when:'Lead confirms they want to proceed — clear next steps',
+    segments: {
+      en: [
+        { lang:'🇬🇧 English', tag:'S13-A', color:'#1877f2', label:'Clear 4-step process — no pressure',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. David'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Time Square 9'},{key:'UNIT',label:'[UNIT]',ph:'e.g. Floor 17, Unit A'},{key:'BOOKING',label:'[BOOKING $]',ph:'e.g. $1,000'}],
+          lines:['Hi [FIRST_NAME],','','Excellent — here is exactly what happens next:','','Step 1 — Booking deposit: [BOOKING] to secure [UNIT] at [PROJECT].\nThis removes the unit from availability and locks in your price.\nThe deposit is refundable if you change your mind before signing the SPA.','','Step 2 — Sale & Purchase Agreement (SPA):\nWe will send you the SPA within 3–5 business days.\nI strongly recommend having an independent legal advisor review it before signing.\nPHC can refer you to a trusted legal firm if needed.','','Step 3 — Payment schedule begins:\nMonthly payments start as per the schedule I sent you.','','Step 4 — Strata title registration:\nAfter handover and final payment, your strata title is registered\nin your name with Cambodia\'s Ministry of Land.','','What is the best way to receive the payment details — bank transfer or another method?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'⚠️ Escalate to Director BEFORE confirming any booking. Director must be aware. Do not accept deposits independently.',
+          escalate:'Alert Nick (Director) immediately — 📞 011 666 952 or Telegram @PropertyHubCambodia — the moment the client confirms intent to book. Director must approve before you send payment details.',
+        },
+      ],
+      jp: [
+        { lang:'🇯🇵 Japanese', tag:'S13-B', color:'#e63946', label:'Japanese — formal, complete, calm',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'},{key:'BUKKEN',label:'[物件名]',ph:'e.g. Time Square 9'},{key:'UNIT',label:'[ユニット]',ph:'e.g. 17階Aユニット'},{key:'YOYAKIN',label:'[予約金]',ph:'e.g. 1,000ドル'}],
+          lines:['[ONAMAE]様','','ご決断いただき、誠にありがとうございます。\n以下の手順でお手続きを進めてまいります。','','ステップ1 — 予約金のお支払い\n[BUKKEN]の[UNIT]を確保するため、[YOYAKIN]をお支払いいただきます。\nご契約前のキャンセルは全額返金の対象となります。','','ステップ2 — 売買契約書（SPA）の確認\n3〜5営業日以内にSPAをご送付いたします。\n署名前に独立した法律顧問によるレビューを強くお勧めします。','','ステップ3 — お支払いスケジュール開始\nご送付済みのスケジュールに従い、月々のお支払いが始まります。','','ステップ4 — ストラタタイトル登録\n引き渡し後、お客様名義でカンボジア土地省への\nストラタタイトル登録を行います。','','お支払い方法についてご確認いただけますでしょうか。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'⚠️ Escalate to Director BEFORE sending this. Japanese booking must include independent legal review recommendation.',
+          escalate:'Alert Nick (Director) before sending — 📞 011 666 952. Director must approve all booking communications.',
+        },
+      ],
+    }
+  },
+  {
+    id:'s14', part:'p4', title:'Post-Booking Welcome Message', when:'Send within 24 hours of deposit received',
+    segments: {
+      en: [
+        { lang:'🇬🇧 English', tag:'S14-A', color:'#1877f2', label:'Warm welcome — all segments',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. David'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Time Square 9'},{key:'UNIT',label:'[UNIT]',ph:'e.g. Floor 17, Unit A'},{key:'AGENT',label:'[YOUR NAME]',ph:'e.g. Monika'}],
+          lines:['Hi [FIRST_NAME],','','Your booking for [UNIT] at [PROJECT] is confirmed. Welcome to Property Hub Cambodia. 🎉','','Here is what happens from here:','','📄 SPA — You will receive the Sale and Purchase Agreement within 5 business days.','','📞 Your dedicated contact — I am [AGENT] and I am your point of contact for everything from here through to handover. You can reach me on this number anytime.','','🏗️ Construction updates — I will send you regular updates on construction progress.','','🔑 Handover — When your unit is ready, I will coordinate the full handover and title registration process for you.','','If at any point you have questions — just message me here.','','Thank you for trusting Property Hub Cambodia with this decision.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Warm but professional. The client made a significant financial decision — tone should reassure, not over-celebrate.',
+        },
+      ],
+      jp: [
+        { lang:'🇯🇵 Japanese', tag:'S14-B', color:'#e63946', label:'Japanese — formal, clear responsibilities',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'},{key:'BUKKEN',label:'[物件名]',ph:'e.g. Time Square 9'},{key:'UNIT',label:'[ユニット]',ph:'e.g. 17階Aユニット'},{key:'TANTO',label:'[担当者名]',ph:'e.g. Monika'}],
+          lines:['[ONAMAE]様','','[BUKKEN]の[UNIT]のご予約が確定いたしました。\nProperty Hub Cambodiaをお選びいただき、誠にありがとうございます。','','今後の流れについてご案内いたします。','','📄 売買契約書（SPA）\n5営業日以内にお送りいたします。','','📞 担当者のご紹介\n私、[TANTO]が引き渡しまで一貫してご対応いたします。\nご不明な点はいつでもこちらにご連絡ください。','','🏗️ 工事進捗のご報告\n定期的に工事状況をご報告いたします。','','🔑 引き渡し\n完成後の引き渡しおよびタイトル登録手続きをサポートいたします。','','ご不明な点がございましたら、いつでもお知らせください。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Japanese post-booking: assign a clear point of contact, outline every step formally. Structure and certainty are essential.',
+        },
+      ],
+    }
+  },
+  {
+    id:'s15', part:'p4', title:'Re-Engagement After 3+ Months', when:'Parked lead re-activates, or reactivating a cold lead',
+    segments: {
+      en: [
+        { lang:'🇬🇧 English', tag:'S15-A', color:'#1877f2', label:'New information — no trace of chase',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Sokha'},{key:'UPDATE',label:'[MARKET UPDATE]',ph:'e.g. TS9 now at floor 28, pricing held...'}],
+          lines:['Hi [FIRST_NAME],','','I hope you have been well.','','I wanted to reach out because something has changed in the market that I thought might be relevant to you:','','[UPDATE]','','If your timeline or situation has shifted and you would like to revisit the options, I am happy to put together a current picture for you.','','No pressure — just wanted to make sure you had the latest.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Never reference how long it has been. Lead with new information, not relationship history. Verify all updates before sending.',
+        },
+      ],
+      jp: [
+        { lang:'🇯🇵 Japanese', tag:'S15-B', color:'#e63946', label:'Japanese — market update, respectful return',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'},{key:'UPDATE',label:'[更新情報]',ph:'e.g. TS9が28階まで建設進行中...'}],
+          lines:['[ONAMAE]様','','ご無沙汰しております。お変わりなくお過ごしでしょうか。','','市場に関して、ご参考になる情報をお届けしたく、ご連絡いたしました。','','[UPDATE]','','もしご状況やご検討のタイミングに変化がございましたら、\n最新の情報をもとに改めてご提案することも可能です。','','どうぞお気軽にご連絡ください。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Completely pressure-free. Lead with information. They will reach out when ready.',
+          jpTip:'I hope you\'ve been well. Sharing a market update that may be of interest: [Update]. If your situation has changed and you\'d like an updated overview, I\'d be happy to assist. Please feel free to reach out anytime.',
+        },
+      ],
+    }
+  },
+  {
+    id:'s16', part:'p4', title:'Referral Acknowledgement', when:'Client refers a friend — same day acknowledgement',
+    segments: {
+      en: [
+        { lang:'🇬🇧 English', tag:'S16-A', color:'#1877f2', label:'Warm, professional, brief',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. David'},{key:'FRIEND',label:'[FRIEND\'S NAME]',ph:'e.g. Thomas'}],
+          lines:['Hi [FIRST_NAME],','','Thank you for introducing [FRIEND] to us — that genuinely means a lot.','','I will take good care of them and make sure they get the same quality of information you received.','','If there is anything specific you would like me to focus on for them, just let me know.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Short and genuine. Do not offer a referral commission without Director approval.',
+        },
+      ],
+      jp: [
+        { lang:'🇯🇵 Japanese', tag:'S16-B', color:'#e63946', label:'Japanese — formal acknowledgement',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'},{key:'SHOKAISHA',label:'[紹介者名]',ph:'e.g. 鈴木'}],
+          lines:['[ONAMAE]様','','[SHOKAISHA]様をご紹介いただき、誠にありがとうございます。','','大切なご関係の方をご紹介いただいたことを、大変光栄に存じます。','','同様に丁寧に対応させていただき、適切な情報をご提供いたします。','','引き続き、何かご不明な点がございましたら、\nいつでもお気軽にご連絡ください。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Japanese referrals carry significant cultural weight. Acknowledge formally and commit to service quality.',
+          jpTip:'Thank you very much for introducing [Friend] to us. We are deeply honoured that you\'ve referred someone important to you. We will provide the same high standard of service.',
+        },
+      ],
+      vip: [
+        { lang:'⭐ VIP', tag:'S16-VIP', color:'#8b5cf6', label:'VIP referral — Director handoff',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. David'},{key:'FRIEND',label:'[FRIEND\'S NAME]',ph:'e.g. Alexander'},{key:'DIRECTOR',label:'[DIRECTOR]',ph:'e.g. Nick'}],
+          lines:['Hi [FIRST_NAME],','','Thank you for introducing [FRIEND] — that is a generous referral and I want to make sure they receive the right level of attention.','','Given their profile, I have already alerted [DIRECTOR] who will be in touch with them directly today.','','Thank you again for your trust in us.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'⚠️ Alert Director BEFORE sending this message. VIP referrals must be handled by Director.',
+          escalate:'Alert Nick (Director) immediately — 📞 011 666 952 or Telegram @PropertyHubCambodia — upon identifying a VIP referral. Do not handle independently.',
+        },
+      ],
+    }
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // PART 0 — FIRST CONTACT
+  // ══════════════════════════════════════════════════════════════════════════
+  {
+    id:'s0', part:'p0', title:'First Inquiry Response', when:'Within 30 minutes of receiving any new lead — every time, no exceptions',
+    segments: {
+      en: [
+        {
+          lang:'🇬🇧 English', tag:'S0-A', color:'#1877f2', label:'General — qualify before sending anything',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. David'},{key:'AGENT_NAME',label:'[YOUR NAME]',ph:'e.g. Monika'}],
+          lines:['Hi [FIRST_NAME] 👋','','Thanks for reaching out to Property Hub Cambodia.','','I\'m [AGENT_NAME] and I\'ll be your dedicated advisor for this enquiry.','','Before I send you anything, can I ask three quick questions:','','• What is your approximate budget?','• Are you investing for rental income, capital growth, or personal use?','• Is there a particular area of Phnom Penh you\'re interested in?','','Once I know, I\'ll send you a focused shortlist with current pricing and availability — not a generic brochure.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Send within 30 minutes of receiving any lead. 3 qualifying questions — no more. Do NOT send a project list before you know their budget and goal.',
+        },
+        {
+          lang:'🇰🇭 Overseas KH', tag:'S0-B', color:'#2196a3', label:'Overseas Cambodian — warm, family-aware',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Chenda'},{key:'AGENT_NAME',label:'[YOUR NAME]',ph:'e.g. Monika'}],
+          lines:['Hi [FIRST_NAME] 👋','','Thank you for reaching out to Property Hub Cambodia.','','I\'m [AGENT_NAME] — I\'ll be looking after your enquiry personally.','','Many of our clients are overseas Cambodians investing back home, so I understand the considerations involved — especially around family input and making a decision from abroad.','','A couple of quick questions to get started:','','• What is your approximate budget?','• Is this for personal use, rental income, or long-term investment?','','I\'ll put together something specific for you — no generic lists.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Overseas Cambodians often involve family in the decision. Acknowledge this early. Do not push for speed.',
+        }
+      ],
+      jp: [
+        {
+          lang:'🇯🇵 Japanese', tag:'S0-C', color:'#e63946', label:'First inquiry — polite qualification',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'},{key:'TANTO',label:'[担当者名]',ph:'e.g. Monika'}],
+          lines:['[ONAMAE]様','','この度はProperty Hub Cambodiaへのお問い合わせ、誠にありがとうございます。','','担当の[TANTO]と申します。','','よりご提案を絞り込むために、いくつかお伺いできますでしょうか：','','・ご予算の目安はいかほどでしょうか？','・賃貸収益・値上がり益・ご自身のご利用、いずれをご希望ですか？','・プノンペンのご希望エリアはございますか？','','ご回答いただけましたら、最適な物件をお選びして改めてご連絡いたします。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Japanese: polite, structured, brief. Do NOT send project lists before qualifying.',
+          jpTip:'Thank you for your enquiry. Three qualifying questions: budget / investment goal / preferred area. Will follow up with a curated shortlist.',
+        }
+      ],
+      de: [
+        {
+          lang:'🇩🇪 German / EU', tag:'S0-D', color:'#2d9e6b', label:'European — direct qualification',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Thomas'},{key:'AGENT_NAME',label:'[YOUR NAME]',ph:'e.g. Monika'}],
+          lines:['Hi [FIRST_NAME],','','Thank you for your enquiry to Property Hub Cambodia.','','I\'m [AGENT_NAME], your dedicated advisor. Before sending you a list of properties, I\'d like to ask three brief questions to make sure I recommend options that are actually relevant:','','1. What is your approximate budget?','2. Are you focused on rental yield, capital growth, or personal use?','3. Do you have a preferred area or property type in mind?','','European investors usually prefer data over brochures — I\'ll provide verified figures, not marketing claims.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Europeans value efficiency and precision. Ask qualifying questions first. Never send marketing materials without knowing their criteria.',
+        }
+      ],
+      ru: [
+        {
+          lang:'🇷🇺 Russian', tag:'S0-E', color:'#c0392b', label:'Russian — direct, numbers-led',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Alexei'},{key:'AGENT_NAME',label:'[YOUR NAME]',ph:'e.g. Monika'}],
+          lines:['Hi [FIRST_NAME],','','I\'m [AGENT_NAME] at Property Hub Cambodia.','','Three quick questions before I send options:','','• Budget?','• Goal — yield income or capital exit?','• Timeline to decide?','','I\'ll send numbers, not brochures.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Russian leads respond to directness. Skip pleasantries. Qualify immediately. Never send project lists before knowing their criteria.',
+        }
+      ]
+    }
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // PART 2 — INBOUND QUESTIONS (expanded)
+  // ══════════════════════════════════════════════════════════════════════════
+  {
+    id:'s17', part:'p2', title:'Rental Yield — How Is It Calculated?', when:'Lead asks "what is the yield?" or "how much rental income will I make?"',
+    segments: {
+      en: [
+        {
+          lang:'🇬🇧 English', tag:'S17-A', color:'#1877f2', label:'General — yield explained simply',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Sokha'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Time Square 9'},{key:'PRICE',label:'[PURCHASE PRICE]',ph:'e.g. $120,000'},{key:'RENT',label:'[MONTHLY RENT]',ph:'e.g. $750'}],
+          lines:['Hi [FIRST_NAME],','','Great question — rental yield is simply the annual rent divided by the purchase price.','','For [PROJECT]:','• Purchase price: [PURCHASE PRICE]','• Estimated monthly rent: [MONTHLY RENT]','• Annual rent: [MONTHLY RENT] × 12','• Gross yield: (Annual rent ÷ [PURCHASE PRICE]) × 100','','In BKK1, well-managed units typically achieve 5–7% gross yield.','','Would you like me to run the exact calculation for this unit?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Always use real numbers from the project. Never estimate if you don\'t have verified data — say "let me confirm the latest rental data for this project."',
+        }
+      ],
+      jp: [
+        {
+          lang:'🇯🇵 Japanese', tag:'S17-B', color:'#e63946', label:'Yield calculation — Japanese',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'},{key:'BUKKEN',label:'[物件名]',ph:'e.g. Time Square 9'}],
+          lines:['[ONAMAE]様','','ご質問ありがとうございます。賃貸利回りの計算方法についてご説明いたします。','','【表面利回りの計算式】','年間賃料 ÷ 購入価格 × 100 ＝ 表面利回り（%）','','[BUKKEN]の場合：','• 購入価格：[購入価格]','• 想定月額賃料：[月額賃料]','• 年間賃料：[月額賃料] × 12ヶ月','• 表面利回り：（年間賃料 ÷ 購入価格）× 100','','BKK1エリアの管理の行き届いた物件では、年間5〜7%程度が標準的な水準です。','','詳細な計算をご希望でしたら、お知らせください。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Use verified rental data only. If you don\'t have confirmed figures, say so and follow up with the correct data.',
+          jpTip:'Gross yield = Annual rent ÷ Purchase price × 100. BKK1 well-managed units typically 5–7%.',
+        }
+      ],
+      de: [
+        {
+          lang:'🇩🇪 German / EU', tag:'S17-C', color:'#2d9e6b', label:'Yield — gross vs net distinction',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Thomas'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. J Tower 2'}],
+          lines:['Hi [FIRST_NAME],','','Rental yield is calculated as: (Annual Rent ÷ Purchase Price) × 100.','','For [PROJECT], the figures are:','• Purchase price: [PURCHASE PRICE]','• Estimated monthly rent: [MONTHLY RENT] (based on comparable BKK1 units)','• Gross yield: approximately [YIELD]%','','Important distinction: gross yield does not deduct management fees (~10%), maintenance, or vacancy. Net yield on PHC-vetted projects typically runs 5–6.5% after costs.','','I can share verified comparable transaction data from the REAKH 2025 report if useful.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'European investors always want gross vs net distinction. Never present gross yield as the full picture.',
+        }
+      ],
+      ru: [
+        {
+          lang:'🇷🇺 Russian', tag:'S17-D', color:'#c0392b', label:'Yield — numbers direct',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Alexei'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. J Tower 2'}],
+          lines:['Hi [FIRST_NAME],','','Yield formula: Annual Rent ÷ Purchase Price × 100.','','[PROJECT]:','• Price: [PURCHASE PRICE]','• Est. monthly rent: [MONTHLY RENT]','• Gross yield: ~[YIELD]%','• Net yield after management (~10%): ~[NET YIELD]%','','PHC only presents verified rental data. No inflated projections.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Lead with real numbers. Do not present gross without net for Russian clients.',
+        }
+      ]
+    }
+  },
+
+  {
+    id:'s18', part:'p2', title:'Developer Track Record — Verification', when:'Lead asks "is this developer reliable?" or "have they completed projects before?"',
+    segments: {
+      en: [
+        {
+          lang:'🇬🇧 English', tag:'S18-A', color:'#1877f2', label:'Developer track record — reassure with facts',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. David'},{key:'DEVELOPER',label:'[DEVELOPER]',ph:'e.g. Prince Real Estate'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Prince Happiness Plaza'}],
+          lines:['Hi [FIRST_NAME],','','Great question — developer track record is one of the most important things to check before committing.','','For [DEVELOPER], here\'s what we know:','• Completed projects delivered on time: [NUMBER]','• Years operating in Cambodia: [YEARS]','• Notable completed projects: [LIST]','• Title delivery record: [RECORD]','','PHC only works with developers who have a verifiable completion history. We have walked away from projects where the track record was insufficient.','','Would you like me to put together a one-page developer summary for [DEVELOPER]?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Never fabricate track record data. Only state what is verified. If unsure, say: "Let me confirm this with our research team and send you a verified summary."',
+        }
+      ],
+      jp: [
+        {
+          lang:'🇯🇵 Japanese', tag:'S18-B', color:'#e63946', label:'Developer track record — Japanese reassurance',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'},{key:'DEVELOPER',label:'[デベロッパー名]',ph:'e.g. Prince Real Estate'}],
+          lines:['[ONAMAE]様','','デベロッパーの実績は、投資判断において非常に重要なポイントです。ご確認いただいて正解です。','','[DEVELOPER]の実績：','• カンボジアでの竣工実績：[件数]件','• 操業年数：[年数]年','• 主な完成済みプロジェクト：[物件リスト]','• タイトル（権利書）の交付実績：[実績]','','PHCは、竣工実績が確認できないデベロッパーのプロジェクトは取り扱っておりません。','','[DEVELOPER]の詳細資料をまとめてお送りすることも可能です。ご希望でしたらお知らせください。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Verified data only. If data is unavailable, say so and offer to follow up with confirmed information.',
+          jpTip:'Developer track record check: completed projects / years operating / notable completions / title delivery record. PHC only works with verified developers.',
+        }
+      ]
+    }
+  },
+
+  {
+    id:'s19', part:'p2', title:'Off-Plan vs Resale — Which Is Right for Me?', when:'Lead asks "should I buy off-plan or completed?" or "what\'s the difference?"',
+    segments: {
+      en: [
+        {
+          lang:'🇬🇧 English', tag:'S19-A', color:'#1877f2', label:'Off-plan vs resale — balanced comparison',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Sokha'}],
+          lines:['Hi [FIRST_NAME],','','Good question — both have distinct advantages depending on your goals.','','OFF-PLAN:','✅ Lower entry price (pre-construction discount)','✅ Instalment payments over 24–60 months','✅ Capital growth potential during construction','⚠️ Delivery risk — depends on developer track record','⚠️ No rental income during construction','','RESALE (COMPLETED):','✅ Immediate rental income','✅ What you see is what you get — no delivery risk','✅ Faster title transfer','⚠️ Higher entry price than equivalent off-plan','⚠️ Limited instalment options','','For investment: off-plan from a verified developer often gives better yield on cost.','For immediate income or personal use: resale is usually better.','','What is your primary goal — yield, capital growth, or immediate use?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Never push one over the other — let the client\'s goals determine the recommendation.',
+        }
+      ],
+      de: [
+        {
+          lang:'🇩🇪 German / EU', tag:'S19-B', color:'#2d9e6b', label:'Off-plan vs resale — European risk framing',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Thomas'}],
+          lines:['Hi [FIRST_NAME],','','The key difference comes down to risk profile and timing.','','Off-plan: lower entry price and instalment flexibility, but you are exposed to delivery risk. PHC only recommends off-plan from developers with a verified completion record.','','Resale: higher price, but zero delivery risk. Rental income starts immediately. Title transfer is faster.','','For data-driven investors: off-plan from a track-record developer can yield 6–8% on cost. Resale from the same developer typically yields 5–6.5% on purchase price.','','I can run a direct comparison on specific units if you share your budget and target yield.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'European clients care about risk-adjusted returns. Lead with risk framing, then yield numbers.',
+        }
+      ],
+      jp: [
+        {
+          lang:'🇯🇵 Japanese', tag:'S19-C', color:'#e63946', label:'Off-plan vs resale — Japanese comparison',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'}],
+          lines:['[ONAMAE]様','','プレセール（オフプラン）と中古・完成済み物件の違いについてご説明します。','','【プレセール（オフプラン）】','✅ 竣工前価格のため購入価格が低い','✅ 24〜60ヶ月の分割払いが可能','✅ 完成までの値上がり益が見込める','⚠️ 工期遅延・引き渡しリスクがある（デベロッパー次第）','⚠️ 完成まで賃貸収入なし','','【中古・完成済み物件】','✅ 即時入居・賃貸収入が得られる','✅ 実物確認ができる（デリバリーリスクなし）','✅ 権利書（タイトル）の移転が早い','⚠️ 購入価格がオフプランより高い','','ご投資目的（利回り重視・値上がり益・即時利用）をお聞かせいただければ、最適なタイプをご提案いたします。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Let client goals drive the recommendation. Ask about their priority before recommending.',
+          jpTip:'Off-plan: lower price, instalment, capital growth potential but delivery risk. Resale: immediate income, no delivery risk, higher price. Ask client\'s primary goal first.',
+        }
+      ]
+    }
+  },
+
+  {
+    id:'s20', part:'p2', title:'Tax & Capital Gains — What Do I Pay?', when:'Lead asks about taxes, CGT, or ownership costs in Cambodia',
+    segments: {
+      en: [
+        {
+          lang:'🇬🇧 English', tag:'S20-A', color:'#1877f2', label:'Tax and CGT — foreign buyer overview',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. David'}],
+          lines:['Hi [FIRST_NAME],','','Good question — Cambodia has a relatively straightforward tax environment for foreign property investors.','','KEY TAXES:','• Rental income tax: 14% withholding tax on gross rental income (often handled by management company)','• Capital Gains Tax (CGT): 20% on gains — introduced in 2020, implementation has been phased','• Transfer tax: 4% of property value on title transfer','• Annual property tax: 0.1% of assessed value above $25,000 threshold','','Important: tax laws evolve. PHC always recommends working with a Cambodia-registered accountant or tax advisor before purchase.','','Would you like a referral to a trusted Cambodia tax professional?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'This is general guidance only. Always recommend a qualified accountant. Never provide specific tax advice — that is outside PHC\'s scope.',
+          escalate:'If client asks for specific tax advice or wants numbers applied to their personal situation, refer to Nick (Director) — 📞 011 666 952 — or recommend a Cambodia tax professional.',
+        }
+      ],
+      de: [
+        {
+          lang:'🇩🇪 German / EU', tag:'S20-B', color:'#2d9e6b', label:'Tax — European detail-oriented overview',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Thomas'}],
+          lines:['Hi [FIRST_NAME],','','For European investors, here is a structured overview of Cambodia property taxes:','','PURCHASE:','• Transfer tax: 4% of registered value (title transfer)','','OWNERSHIP:','• Annual property tax: 0.1% of assessed value exceeding $25,000','','RENTAL INCOME:','• Withholding tax: 14% on gross rent (deducted by management company if applicable)','','CAPITAL GAINS (ON SALE):','• CGT: 20% on realised gains (Cambodia introduced CGT in 2020 — consult a local tax advisor for current application)','','Double taxation treaties: Cambodia has limited DTTs — consult your home-country tax advisor for treaty coverage.','','PHC recommends engaging a Cambodia-registered CPA before purchase.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'European clients will want precise, structured information. Provide the framework clearly but always recommend professional advice for their specific situation.',
+        }
+      ],
+      jp: [
+        {
+          lang:'🇯🇵 Japanese', tag:'S20-C', color:'#e63946', label:'Tax — Japanese overview',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'}],
+          lines:['[ONAMAE]様','','カンボジア不動産に関連する主な税金についてご説明します。','','【購入時】','• 登録移転税（物件価格の4%）','','【保有中】','• 不動産税：評価額が$25,000を超える部分に対して年間0.1%','','【賃貸収入】','• 源泉徴収税：賃貸総収入の14%（管理会社が代行することが多い）','','【売却時】','• キャピタルゲイン税（CGT）：売却益の20%（2020年に導入、詳細は税理士にご確認ください）','','日本とカンボジア間の租税条約の適用については、税理士または会計士へのご相談をお勧めします。','','PHCは、購入前にカンボジア登録の税理士への相談を強くお勧めしております。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Provide the framework. Always recommend a Cambodia-registered tax professional for specifics.',
+          jpTip:'Cambodia property taxes: 4% transfer tax / 0.1% annual property tax / 14% rental withholding / 20% CGT. Recommend Cambodia CPA before purchase.',
+        }
+      ]
+    }
+  },
+
+  {
+    id:'s21', part:'p2', title:'Property Management — How Does It Work?', when:'Lead asks "how will my property be managed?" or "I live abroad — can you manage it?"',
+    segments: {
+      en: [
+        {
+          lang:'🇬🇧 English', tag:'S21-A', color:'#1877f2', label:'Property management — how it works',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Sokha'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. J Tower 2'}],
+          lines:['Hi [FIRST_NAME],','','For overseas investors, property management is essential. Here\'s how it works in Phnom Penh:','','WHAT A MANAGEMENT COMPANY DOES:','• Markets your unit to tenants','• Screens and manages tenants','• Collects rent and handles maintenance','• Pays utility bills and handles check-in/out','• Remits net rental income to your bank account','','TYPICAL FEES:','• Management fee: 8–12% of monthly rent','• Leasing fee (finding a new tenant): 0.5–1 month\'s rent','','For [PROJECT], we can connect you with a vetted management partner used by other PHC investors.','','Would you like a management fee comparison for this project?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Never name a specific management company as "the best." Offer to connect them with vetted options and let them decide.',
+        }
+      ],
+      jp: [
+        {
+          lang:'🇯🇵 Japanese', tag:'S21-B', color:'#e63946', label:'Property management — Japanese explanation',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'},{key:'BUKKEN',label:'[物件名]',ph:'e.g. J Tower 2'}],
+          lines:['[ONAMAE]様','','海外在住の投資家の方にとって、信頼できる物件管理会社の選定は非常に重要です。','','【管理会社の主な業務】','• 入居者の募集・審査','• 家賃の回収と送金','• 維持管理・修繕の手配','• 入退去時の対応','• 光熱費などの支払い代行','','【一般的な手数料】','• 管理手数料：月額賃料の8〜12%','• 入居者手配手数料（新規入居時）：賃料0.5〜1ヶ月分','','[BUKKEN]については、PHCが実績を確認した管理会社をご紹介することが可能です。','','管理手数料の比較資料をご希望でしたら、お送りいたします。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Offer multiple vetted options. Do not recommend a single company exclusively.',
+          jpTip:'Property management: tenant sourcing, rent collection, maintenance, remittance. Fees: 8–12% management + 0.5–1 month leasing fee. PHC can introduce vetted partners.',
+        }
+      ]
+    }
+  },
+
+  {
+    id:'s22', part:'p2', title:'Can I Visit the Property?', when:'Lead asks about visiting the project, viewing units, or getting a virtual tour',
+    segments: {
+      en: [
+        {
+          lang:'🇬🇧 English', tag:'S22-A', color:'#1877f2', label:'Site visit — in-person viewing',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. David'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Time Square 9'},{key:'AGENT_NAME',label:'[YOUR NAME]',ph:'e.g. Monika'}],
+          lines:['Hi [FIRST_NAME],','','Absolutely — a site visit is always recommended before committing.','','For [PROJECT], here\'s what we can arrange:','• A guided viewing of the showroom / completed units','• A walkthrough of the BKK1 neighbourhood','• Meeting with the developer sales team (if you\'d like)','• A post-visit debrief with me to answer any questions','','When are you planning to be in Phnom Penh? I\'ll arrange everything.','','[AGENT_NAME] | Property Hub Cambodia','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Always offer to accompany the client or arrange the visit. Never just send an address and leave them to figure it out.',
+        },
+        {
+          lang:'🇬🇧 English (Remote)', tag:'S22-B', color:'#1877f2', label:'Remote viewing — video tour option',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Sokha'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. J Tower 2'},{key:'AGENT_NAME',label:'[YOUR NAME]',ph:'e.g. Monika'}],
+          lines:['Hi [FIRST_NAME],','','Not a problem — many of our clients purchase remotely. Here\'s what I can arrange:','','• Live video walkthrough of the unit / showroom via WhatsApp or Zoom','• 360° photos and video of the project','• Neighbourhood video (BKK1 surroundings, access roads, nearby amenities)','• Developer virtual presentation (for off-plan projects)','','I can schedule the live video tour at a time that suits your timezone.','','What timezone are you in, and when are you available?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Remote buyers need extra reassurance. Offer the most comprehensive remote viewing package possible. Follow up with photos, video, and a written summary after the virtual tour.',
+        }
+      ],
+      jp: [
+        {
+          lang:'🇯🇵 Japanese', tag:'S22-C', color:'#e63946', label:'Site visit — Japanese (in-person or remote)',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'},{key:'BUKKEN',label:'[物件名]',ph:'e.g. Time Square 9'}],
+          lines:['[ONAMAE]様','','現地視察のご希望、承りました。ぜひご案内いたします。','','【現地訪問の場合】','• ショールーム・完成済み住戸のご内覧','• BKK1エリアのご案内','• デベロッパーとのご面談（ご希望の場合）','• 視察後のご質問対応','','【オンラインの場合】','• WhatsAppまたはZoomによるライブ内覧','• 360度写真・動画の提供','• 周辺環境の動画','','プノンペンご訪問のご予定、またはご都合のよいお時間をお知らせください。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Japanese clients often want in-person visits before committing. Accommodate both in-person and remote options.',
+          jpTip:'Can arrange: in-person showroom tour + neighbourhood walkthrough, or WhatsApp/Zoom live video tour + 360 photos. Ask for availability / timezone.',
+        }
+      ]
+    }
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // PART 3 — OBJECTIONS & STALLS
+  // ══════════════════════════════════════════════════════════════════════════
+  {
+    id:'s23', part:'p3', title:'I Want to Wait / Prices Will Drop', when:'Lead says they want to wait, or expects prices to fall before buying',
+    segments: {
+      en: [
+        {
+          lang:'🇬🇧 English', tag:'S23-A', color:'#1877f2', label:'Waiting — reframe timing',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Sokha'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Time Square 9'}],
+          lines:['Hi [FIRST_NAME],','','I understand — timing matters, and I never want to push you faster than is comfortable.','','That said, I want to make sure you have the right information to make that call:','','For [PROJECT], the current pricing is [PRICE]. Projects at this developer\'s price point have historically not reduced after launch — they increase as units sell.','','Waiting for prices to drop in BKK1 is a reasonable idea in some markets. In Phnom Penh\'s off-plan segment, it has not been the pattern.','','No pressure — I just want you to be making the timing decision with accurate data, not assumptions.','','When you\'re ready to revisit, I\'m here.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Do NOT pressure the client. Provide data, not urgency. If they want to wait, respect it and schedule a follow-up.',
+        }
+      ],
+      de: [
+        {
+          lang:'🇩🇪 German / EU', tag:'S23-B', color:'#2d9e6b', label:'Waiting — data-led response for European',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Thomas'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. J Tower 2'}],
+          lines:['Hi [FIRST_NAME],','','That\'s a reasonable position. Let me share the data that is relevant to that decision.','','In the BKK1 off-plan segment, prices at launch rarely decrease post-launch. Historical data shows that developer pricing for completed-and-delivered units typically runs 10–25% above original launch price.','','For [PROJECT], the current price is [PRICE]. That price is likely to remain or increase as the project sells through.','','If you\'re waiting for a broader Phnom Penh market correction, that is a macro call I can\'t make for you — but I can share the REAKH 2025 market data if that would help you form a view.','','If the timing doesn\'t work, no problem. I\'ll check back in when conditions change.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Europeans want data, not persuasion. Present the facts and let them decide. Offer the REAKH report if they want supporting data.',
+        }
+      ],
+      jp: [
+        {
+          lang:'🇯🇵 Japanese', tag:'S23-C', color:'#e63946', label:'Waiting — respectful timing response',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'},{key:'BUKKEN',label:'[物件名]',ph:'e.g. Time Square 9'}],
+          lines:['[ONAMAE]様','','ご検討のお気持ち、十分に理解しております。焦ってご判断いただく必要はございません。','','一点、ご参考までにお伝えいたします。','','BKK1エリアのオフプラン物件は、販売開始後に価格が下がるケースは非常に稀です。むしろ、竣工に向けて段階的に価格が上昇するケースが多く見られます。','','[BUKKEN]についても、現在の価格はご検討のタイミングとして合理的な水準かと存じます。','','引き続きご検討いただければ幸いです。ご準備が整いましたら、いつでもお声がけください。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Never pressure Japanese clients. Provide one data point gently and leave the door open. Follow up after 2–3 weeks.',
+          jpTip:'Respectful timing response: BKK1 off-plan prices rarely drop post-launch, typically increase toward completion. No pressure — here whenever ready.',
+        }
+      ]
+    }
+  },
+
+  {
+    id:'s24', part:'p3', title:'Cambodia Feels Risky — I\'m Not Sure', when:'Lead expresses concern about Cambodia\'s political stability, legal system, or general risk',
+    segments: {
+      en: [
+        {
+          lang:'🇬🇧 English', tag:'S24-A', color:'#1877f2', label:'Cambodia risk — acknowledge, then reframe',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. David'}],
+          lines:['Hi [FIRST_NAME],','','Cambodia\'s risk profile is a fair thing to scrutinise — and I want to address it honestly, not defensively.','','What the concerns usually are:','• Political stability: Cambodia has been stable under a consistent government since 1998. The 2023 transition was managed without disruption.','• Currency risk: Cambodia is a fully dollarised economy. USD is the transaction and rental currency — no local currency exposure.','• Legal risk for foreign buyers: strata title ownership for foreigners is written into Cambodian law. Title is registered with the Ministry of Land. PHC only works with developers who have completed title delivery on previous projects.','• Developer risk: real — which is why PHC only recommends developers with a verified completion record.','','No market is risk-free. The question is whether the risk is understood and mitigated. PHC\'s role is to make sure it is.','','Would you like me to send you a PHC market risk overview document?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Never dismiss risk concerns. Acknowledge them, provide facts, and let the client decide. This response builds trust.',
+        }
+      ],
+      ru: [
+        {
+          lang:'🇷🇺 Russian', tag:'S24-B', color:'#c0392b', label:'Cambodia risk — direct risk breakdown',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Alexei'}],
+          lines:['Hi [FIRST_NAME],','','Fair concern. Here\'s the honest breakdown:','','✅ CURRENCY: USD economy. No FX exposure.','✅ POLITICAL: Stable since 1998. 2023 transition went smoothly.','✅ LEGAL OWNERSHIP: Strata title for foreigners — registered with Ministry of Land. Not leasehold, not nominee.','✅ DEVELOPER RISK: PHC only works with developers who have delivered on previous projects.','','❌ WHAT IS REAL RISK: Off-plan delivery if developer has no track record. PHC screens for this.','','Cambodia is not a zero-risk market. It is a high-growth emerging market with specific risks that can be mitigated by proper due diligence — which is PHC\'s job.','','Want the PHC risk overview document?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Russian clients respond to direct, honest risk disclosure. Acknowledge real risks while demonstrating PHC\'s screening process.',
+        }
+      ]
+    }
+  },
+
+  {
+    id:'s25', part:'p3', title:'I Need to Check with My Accountant First', when:'Lead says they need to consult an accountant or tax advisor before proceeding',
+    segments: {
+      en: [
+        {
+          lang:'🇬🇧 English', tag:'S25-A', color:'#1877f2', label:'Accountant stall — support without pushing',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Sokha'}],
+          lines:['Hi [FIRST_NAME],','','That\'s a sensible step — getting your accountant involved before committing is always a good idea.','','To make that conversation as efficient as possible, I can put together a summary document with:','• Purchase price and payment schedule','• Estimated rental yield (gross and net)','• Cambodia tax overview (transfer tax, rental withholding, CGT)','• Title structure for foreign buyers','','That way your accountant has everything in one place without back-and-forth.','','Would that be helpful? I can send it within 24 hours.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Support the process, don\'t fight it. Offer a summary document that makes the accountant\'s job easier — this moves the deal forward while respecting the client\'s process.',
+        }
+      ],
+      jp: [
+        {
+          lang:'🇯🇵 Japanese', tag:'S25-B', color:'#e63946', label:'Accountant stall — Japanese support',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'}],
+          lines:['[ONAMAE]様','','税理士・会計士へのご確認は、非常に賢明なご判断です。','','ご相談をスムーズに進めていただくために、以下の内容をまとめた資料をお送りすることが可能です：','','• 購入価格・支払いスケジュール','• 想定賃貸利回り（表面・実質）','• カンボジア税制の概要（移転税・源泉徴収・CGT）','• 外国人による所有権構造（ストラタタイトル）','','税理士の先生がスムーズにご確認いただけるよう、必要な情報を1つの資料にまとめます。','','ご希望でしたら、24時間以内にお送りいたします。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Support the accountant consultation. A well-prepared summary document moves the deal forward.',
+          jpTip:'Supporting accountant consultation. Offering a summary: price/payment schedule, yield gross/net, Cambodia tax overview, title structure. Can send within 24 hours.',
+        }
+      ],
+      de: [
+        {
+          lang:'🇩🇪 German / EU', tag:'S25-C', color:'#2d9e6b', label:'Accountant / tax advisor stall — European',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Thomas'}],
+          lines:['Hi [FIRST_NAME],','','Completely reasonable — consulting a tax advisor before a cross-border investment is exactly the right approach.','','I can prepare a structured briefing pack for your advisor covering:','• Purchase price, payment schedule, and currency structure (USD)','• Gross and net yield projections with assumptions stated','• Cambodia tax summary: 4% transfer tax, 0.1% annual property tax, 14% rental withholding, 20% CGT','• Foreign ownership structure: strata title registered with Cambodia Ministry of Land','• PHC\'s legal partner contacts in Phnom Penh if your advisor needs a local counterpart','','This should give your advisor everything needed to assess the structure efficiently.','','I can have it ready within 24 hours. Does that work?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'European clients often have accountants and tax advisors involved. A structured briefing pack is standard practice — offer it proactively.',
+        }
+      ]
+    }
+  },
+
+  {
+    id:'s26', part:'p3', title:'I Want Guaranteed Returns', when:'Lead insists on guaranteed rental returns or asks for a return guarantee',
+    segments: {
+      en: [
+        {
+          lang:'🇬🇧 English', tag:'S26-A', color:'#1877f2', label:'Guaranteed returns — honest response',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. David'}],
+          lines:['Hi [FIRST_NAME],','','I want to be completely honest with you on this.','','Some developers in Cambodia do offer guaranteed rental return (GRR) products — typically 6–8% for 2–3 years. These are legal and some investors do choose them.','','However, PHC\'s position is clear: a guarantee is only as strong as the company behind it. When GRR products are offered by developers, the "guarantee" is an obligation of that developer — not an independent financial instrument.','','What PHC offers instead:','• Properties with verified actual rental data from comparable units','• Management partners with real occupancy track records','• Conservative yield projections based on market data — not marketing claims','','A real 5.5% yield from verified comparable transactions is, in our view, more reliable than a "guaranteed" 8% from a developer\'s own payment.','','Would you like me to share the verified rental data for the projects I\'m recommending?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Never promise guaranteed returns. If a client insists on GRR products, escalate to Director before proceeding.',
+          escalate:'If client insists on guaranteed return products, escalate to Nick (Director) before responding further — 📞 011 666 952. PHC has a specific policy on GRR product recommendations.',
+        }
+      ],
+      de: [
+        {
+          lang:'🇩🇪 German / EU', tag:'S26-B', color:'#2d9e6b', label:'Guaranteed returns — European risk framing',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Thomas'}],
+          lines:['Hi [FIRST_NAME],','','I understand the appeal — guaranteed returns reduce perceived uncertainty.','','The honest risk assessment: a guaranteed rental return (GRR) in Cambodia is a contractual obligation of the developer, not a regulated financial guarantee. If the developer faces cash flow issues, the guarantee is as strong as their balance sheet.','','PHC does not recommend GRR products as the primary investment rationale. We believe verified actual market yield — transparently calculated — is a more reliable basis for investment decisions.','','Current BKK1 market data: comparable 1BR units in PHC-vetted projects are achieving 5.5–7% gross yield based on actual signed leases.','','I can share the underlying data if that\'s more useful than a headline guarantee number.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'European investors often find data-driven responses more persuasive than rejecting guarantees outright. Lead with verified yield data.',
+          escalate:'If client insists on GRR products specifically, escalate to Nick (Director) — 📞 011 666 952.',
+        }
+      ]
+    }
+  },
+
+  {
+    id:'s27', part:'p3', title:'I\'m Already Working with Another Agent', when:'Lead says they have another agent or already connected with a different agency',
+    segments: {
+      en: [
+        {
+          lang:'🇬🇧 English', tag:'S27-A', color:'#1877f2', label:'Already with another agent — respectful positioning',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. David'}],
+          lines:['Hi [FIRST_NAME],','','Completely understood — and I respect that.','','I\'m not here to pull you away from a relationship that\'s working.','','One thing worth knowing: PHC specialises exclusively in Phnom Penh residential investment — BKK1 and surrounding districts. Our database includes off-market and pre-release inventory that isn\'t always accessible through general agencies.','','If at any point you want a second opinion on a specific project — pricing, developer track record, or rental projections — I\'m happy to provide that, with no obligation.','','No pressure. I\'ll check back in a few months.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Never criticise another agent. Position PHC\'s specialist knowledge as an asset. Leave the door open. Schedule a follow-up for 2–3 months.',
+        }
+      ],
+      ru: [
+        {
+          lang:'🇷🇺 Russian', tag:'S27-B', color:'#c0392b', label:'Already with another agent — direct positioning',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Alexei'}],
+          lines:['Hi [FIRST_NAME],','','Understood. No problem.','','One thing to keep in mind: PHC operates exclusively in Phnom Penh residential investment. We have direct access to pre-release inventory and verified developer relationships that general agencies don\'t always have.','','If you ever want a second opinion on pricing or a developer\'s track record — no charge, no commitment.','','I\'ll check back in.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Brief and respectful. Do not push. Russian clients value directness over pleasantries.',
+        }
+      ]
+    }
+  },
+
+  {
+    id:'s28', part:'p3', title:'Can You Do Better on the Price?', when:'Lead asks for a discount, better price, or price negotiation',
+    segments: {
+      en: [
+        {
+          lang:'🇬🇧 English', tag:'S28-A', color:'#1877f2', label:'Price negotiation — honest positioning',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Sokha'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. J Tower 2'}],
+          lines:['Hi [FIRST_NAME],','','I appreciate you asking directly — that makes this easier.','','For [PROJECT], the developer pricing is [PRICE]. Here\'s an honest answer:','','• Off-plan projects in Cambodia are typically set at fixed launch prices. Discounts are rare and are usually reserved for bulk buyers (3+ units) or very early-stage commitments.','• PHC does not inflate prices to create the appearance of a discount — what you see is the real developer price.','• What we can sometimes negotiate: furniture packages, management fee waivers for the first year, or unit selection priority.','','I\'ll ask the developer directly what flexibility, if any, exists on [PROJECT] for a single-unit purchase.','','Can I come back to you with their response?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Never fabricate discounts. If there is no room to negotiate on price, say so honestly. Focus on non-price value adds instead.',
+        }
+      ],
+      ru: [
+        {
+          lang:'🇷🇺 Russian', tag:'S28-B', color:'#c0392b', label:'Price negotiation — direct response',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Alexei'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. J Tower 2'}],
+          lines:['Hi [FIRST_NAME],','','[PROJECT] is priced at [PRICE]. Here\'s the direct answer on negotiation:','','Off-plan developer pricing in Phnom Penh is generally fixed at launch. Price discounts on single units are uncommon.','','What is sometimes negotiable: furniture package, first-year management fee, payment schedule flexibility.','','I\'ll go directly to the developer and ask what\'s available for your situation. What is your unit preference and payment plan?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Russian clients want direct answers. Do not hedge. State what is negotiable and what isn\'t. Get the developer\'s response before coming back.',
+        }
+      ]
+    }
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // PART 4 — BOOKING & MILESTONES (expanded)
+  // ══════════════════════════════════════════════════════════════════════════
+  {
+    id:'s29', part:'p4', title:'Client Is Delaying After Confirming Interest', when:'Client verbally committed or asked to reserve but has gone quiet or is stalling on paperwork',
+    segments: {
+      en: [
+        {
+          lang:'🇬🇧 English', tag:'S29-A', color:'#1877f2', label:'Client delays after confirming — gentle accountability',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. David'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Time Square 9'},{key:'DEADLINE',label:'[DEADLINE]',ph:'e.g. Friday 9 May'}],
+          lines:['Hi [FIRST_NAME],','','I wanted to follow up on [PROJECT] — we\'d discussed moving forward and I want to make sure I haven\'t missed anything on my end.','','The booking requires the following to proceed:','• Signed reservation form','• Booking deposit: [DEPOSIT AMOUNT]','','The unit is currently being held, but I want to be transparent: that hold has a time limit. If the booking isn\'t confirmed by [DEADLINE], the unit goes back to open availability.','','Is there anything I can help clarify or move forward on?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Be honest about unit hold deadlines. Never fabricate urgency — only mention a real deadline if one exists. If there is no deadline, do not invent one.',
+          escalate:'If the client has paid a deposit but is delaying contract signing, escalate to Nick (Director) immediately — 📞 011 666 952.',
+        }
+      ],
+      jp: [
+        {
+          lang:'🇯🇵 Japanese', tag:'S29-B', color:'#e63946', label:'Client delays — Japanese follow-up',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'},{key:'BUKKEN',label:'[物件名]',ph:'e.g. Time Square 9'}],
+          lines:['[ONAMAE]様','','[BUKKEN]についてのご確認のご連絡です。','','ご予約手続きには以下が必要です：','• 予約書へのご署名','• 予約金のお支払い：[予約金額]','','現在、該当ユニットは仮押さえの状態ですが、[締め切り日]までにご確認いただけない場合は、一般販売に戻る可能性があります。','','ご不明な点やご確認事項がございましたら、いつでもご連絡ください。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'State the real deadline only. Do not create false urgency. Follow up politely — Japanese clients may need more time.',
+          jpTip:'Following up on [Project] reservation. Required: signed form + booking deposit. Current hold has a time limit — [deadline]. Available to clarify anything.',
+          escalate:'If deposit paid but contract signing delayed, escalate to Nick (Director) — 📞 011 666 952.',
+        }
+      ]
+    }
+  },
+
+  {
+    id:'s30', part:'p4', title:'Construction Progress Update', when:'Send a proactive construction progress update to an existing off-plan buyer',
+    segments: {
+      en: [
+        {
+          lang:'🇬🇧 English', tag:'S30-A', color:'#1877f2', label:'Construction update — proactive communication',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Sokha'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Prince Happiness Plaza'},{key:'FLOOR',label:'[FLOOR/UNIT]',ph:'e.g. Floor 12, Unit 1203'}],
+          lines:['Hi [FIRST_NAME],','','Construction update for [PROJECT] — [FLOOR]:','','📸 Current progress: [PROGRESS DETAILS]','🏗️ Estimated completion: [COMPLETION DATE]','✅ On schedule: [YES/NO — explain if delayed]','','[Include 1–2 photos or a video if available]','','Any questions? I\'m always happy to arrange a site visit if you\'d like to see progress in person.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Send construction updates proactively — don\'t wait for clients to ask. Always include photos or video if available. Be honest if there is a delay.',
+        }
+      ],
+      jp: [
+        {
+          lang:'🇯🇵 Japanese', tag:'S30-B', color:'#e63946', label:'Construction update — Japanese proactive report',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'},{key:'BUKKEN',label:'[物件名]',ph:'e.g. Prince Happiness Plaza'},{key:'UNIT',label:'[ユニット]',ph:'e.g. 12階 1203号'}],
+          lines:['[ONAMAE]様','','[BUKKEN] / [UNIT] の工事進捗をご報告いたします。','','📸 現在の進捗状況：[工事状況の詳細]','🏗️ 竣工予定：[竣工予定日]','✅ スケジュール：[順調に進んでいます / 変更がある場合は理由を記載]','','[写真・動画がある場合は添付]','','ご質問がございましたら、いつでもお知らせください。','ご希望の場合は現地視察のご手配も可能です。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Japanese buyers expect regular, proactive updates. Send monthly at minimum. Always include photos. Disclose delays honestly.',
+          jpTip:'Construction progress report for [Project/Unit]. Current status / estimated completion / on schedule or reason for delay. Photos/video attached. Site visit available on request.',
+        }
+      ]
+    }
+  },
+
+  {
+    id:'s31', part:'p4', title:'Handover Notification — Unit is Ready', when:'Developer has confirmed handover date — notify the buyer and prepare them for the process',
+    segments: {
+      en: [
+        {
+          lang:'🇬🇧 English', tag:'S31-A', color:'#1877f2', label:'Handover notification — owner preparation',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. David'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. J Tower 2'},{key:'UNIT',label:'[UNIT]',ph:'e.g. Unit 1205'},{key:'HANDOVER_DATE',label:'[HANDOVER DATE]',ph:'e.g. 15 June 2026'}],
+          lines:['Hi [FIRST_NAME],','','Great news — [PROJECT] / [UNIT] is scheduled for handover on [HANDOVER DATE].','','Here\'s what happens next:','','BEFORE HANDOVER:','• Final payment: [AMOUNT] due by [DATE]','• Confirm attendance or appoint a representative with Power of Attorney','• Prepare identification documents (passport copy)','','ON HANDOVER DAY:','• Unit inspection with developer representative','• Key collection and meter readings','• Title transfer initiation (timeline: 4–8 weeks after handover)','','POST-HANDOVER:','• Introduce to property management partner (if required)','• Management company can begin tenant sourcing within 2–4 weeks of handover','','Please confirm whether you\'ll attend personally or appoint a representative.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'⚠️ Escalate to Director BEFORE sending. Confirm final payment amount and title transfer timeline with developer and legal team first.',
+          escalate:'Nick (Director) must approve all handover communications — 📞 011 666 952. Confirm payment schedule and title delivery timeline with developer before sending.',
+        }
+      ],
+      jp: [
+        {
+          lang:'🇯🇵 Japanese', tag:'S31-B', color:'#e63946', label:'Handover — Japanese client preparation',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'},{key:'BUKKEN',label:'[物件名]',ph:'e.g. J Tower 2'},{key:'UNIT',label:'[ユニット]',ph:'e.g. 1205号'},{key:'HIKIWATASHI',label:'[引き渡し日]',ph:'e.g. 2026年6月15日'}],
+          lines:['[ONAMAE]様','','おめでとうございます。[BUKKEN] / [UNIT] の引き渡し日が確定しましたのでご連絡いたします。','','引き渡し予定日：[HIKIWATASHI]','','【引き渡し前のご準備】','• 最終支払い：[金額]（支払期限：[日付]）','• ご本人のご参加、または委任状による代理人のご手配','• 本人確認書類のご準備（パスポートのコピー）','','【引き渡し当日】','• デベロッパー担当者との物件確認','• 鍵の受け渡しとメーター確認','• タイトル（権利書）移転手続き開始（引き渡し後4〜8週間が目安）','','【引き渡し後】','• 管理会社へのご紹介（ご希望の場合）','• [MGMT_CO]が引き渡し後2〜4週間以内に入居者募集を開始できます。','','引き渡しについて、ご参加いただくか、代理人を立てるかをお知らせいただけますでしょうか。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'⚠️ Escalate to Director BEFORE sending. Confirm title timeframe with legal team first.',
+          escalate:'Nick (Director) must approve all handover communications — 📞 011 666 952 or Telegram @PropertyHubCambodia. Alert before sending.',
+        }
+      ]
+    }
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // PART 5 — SEGMENT-SPECIFIC
+  // ══════════════════════════════════════════════════════════════════════════
+  {
+    id:'s32', part:'p5', title:'VIP First Contact — Director Opener', when:'Lead identified as $300K+ budget on initial contact — Director sends personally',
+    segments: {
+      vip: [
+        {
+          lang:'⭐ VIP EN', tag:'S32-A', color:'#8b5cf6', label:'Director-level first contact — English',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Alexander'},{key:'DIRECTOR',label:'[DIRECTOR NAME]',ph:'e.g. Nick'}],
+          lines:['Hi [FIRST_NAME],','','Thank you for reaching out to Property Hub Cambodia.','','I\'m [DIRECTOR], Director at PHC. Given your investment profile, I\'d like to handle your enquiry personally rather than pass it to a junior advisor.','','Before discussing any specific options, I\'d like to understand your objectives properly:','','• What is the approximate total you are considering — single unit or building exposure?','• Is your primary focus income yield, capital preservation, or exit liquidity within a defined timeframe?','• Do you have existing Southeast Asian exposure, or is this your first position in the region?','','I\'m available for a direct call this week if you prefer to discuss rather than exchange messages.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'⚠️ This message is for Director use ONLY. Junior VAs must never send this. Identify $300K+ leads immediately and escalate to Director before any further communication.',
+          escalate:'Alert Nick (Director) immediately — 📞 011 666 952 or Telegram @PropertyHubCambodia — the moment a VIP lead is identified. Do not send any project materials. Do not reply independently. Nick takes over immediately.',
+        },
+        {
+          lang:'⭐ VIP JP', tag:'S32-B', color:'#8b5cf6', label:'Director-level first contact — Japanese',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'},{key:'DIRECTOR',label:'[ディレクター名]',ph:'e.g. Nick'}],
+          lines:['[ONAMAE]様','','この度はProperty Hub Cambodiaへのお問い合わせ、誠にありがとうございます。','','ディレクターの[DIRECTOR]と申します。お客様のご投資プロファイルを拝見し、私が直接ご対応させていただきたく存じます。','','より適切なご提案のために、いくつかお伺いできますでしょうか：','','・ご検討されているご投資の総額はどのくらいでしょうか？','・賃貸収益・資産保全・キャピタルゲイン、いずれをご優先されますか？','・東南アジア不動産への投資は今回が初めてでしょうか？','','よろしければ、今週中にお電話でご相談することも可能です。ご都合のよい日時をお知らせください。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'⚠️ Director use ONLY. Escalate all VIP JP leads immediately.',
+          escalate:'Alert Nick (Director) immediately — 📞 011 666 952. Do not send any other message before Nick takes over.',
+        }
+      ]
+    }
+  },
+
+  {
+    id:'s33', part:'p5', title:'Local Cambodian Buyer — First Contact', when:'Lead is identified as a local Cambodian buyer (Khmer-speaking or local number)',
+    segments: {
+      kh: [
+        {
+          lang:'🇰🇭 Khmer', tag:'S33-A', color:'#2196a3', label:'Local buyer — Khmer first contact',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Sokha'},{key:'AGENT_NAME',label:'[YOUR NAME]',ph:'e.g. Monika'}],
+          lines:['សួស្ដី [FIRST_NAME] 👋','','អរគុណច្រើនដែលបានទំនាក់ទំនងមក Property Hub Cambodia ។','','ខ្ញុំឈ្មោះ [AGENT_NAME] ហើយខ្ញុំនឹងជួយបង/ប្អូនក្នុងការស្វែងរកអចលនទ្រព្យ។','','ដើម្បីណែនាំបានត្រឹមត្រូវ សូមប្រាប់ខ្ញុំ៖','','• តើបង/ប្អូនកំពុងស្វែងរកអ្វី? (ស្នាក់នៅដោយខ្លួនឯង ឬ វិនិយោគ/ជួល?)','• ថវិការប្រហែលប៉ុន្មាន?','• តើចូលចិត្តតំបន់ណាក្នុងភ្នំពេញ?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Use Khmer for local buyers. Local Cambodians often buy for personal use or for children — do not assume investment intent. Keep it warm and simple.',
+        },
+        {
+          lang:'🇰🇭 English (KH)', tag:'S33-B', color:'#2196a3', label:'Local Cambodian comfortable in English',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Sokha'},{key:'AGENT_NAME',label:'[YOUR NAME]',ph:'e.g. Monika'}],
+          lines:['Hi [FIRST_NAME] 👋','','Thanks for reaching out to Property Hub Cambodia.','','I\'m [AGENT_NAME] — I\'ll be looking after your enquiry.','','For local Cambodian buyers, we focus especially on title security and long-term value — not just price or location.','','A couple of quick questions:','','• Is this for your own use, your family, or as a rental investment?','• What is your approximate budget?','• Is there a specific area of Phnom Penh you prefer?','','Once I know, I\'ll put together a focused shortlist for you.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Local buyers often have strong area preferences (near family, school, workplace). Ask about location early. Title security is a key concern — mention it proactively.',
+        }
+      ]
+    }
+  },
+
+  {
+    id:'s34', part:'p5', title:'Japanese — Cambodia Market Education', when:'Japanese lead who is new to Cambodia and needs market context before any project discussion',
+    segments: {
+      jp: [
+        {
+          lang:'🇯🇵 Market Intro', tag:'S34-A', color:'#e63946', label:'New to Cambodia — market overview before any project',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'},{key:'TANTO',label:'[担当者名]',ph:'e.g. Monika'}],
+          lines:['[ONAMAE]様','','この度はProperty Hub Cambodiaへのお問い合わせ、誠にありがとうございます。','','担当の[TANTO]と申します。カンボジア不動産市場についてご説明いたします。','','【プノンペン市場の主な特徴】','','💵 取引通貨','米ドル建て（カンボジアリエルではなくUSDが標準です）','','✅ 外国人所有権','ストラタタイトル制度により、外国人が合法的に完全所有権を取得可能。カンボジア土地省への登録により保護されています。','','📈 賃貸需要','駐在員・外資企業社員・観光客など、BKK1エリアでは多様な需要層が存在します。','','💹 実質利回り','BKK1エリアの完成済み物件で年間実質5〜7%が標準的な水準です。','','🏢 PHCについて','PHCはプノンペンBKK1に拠点を置く専門の不動産アドバイザリー会社です。日本語対応を含む多言語サービスを提供しており、外国人投資家の購入をトータルでサポートしています。','','まずはご投資の目的とご予算についてお聞かせいただけますでしょうか。それに合った物件をご提案いたします。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Use this ONLY for JP leads who are genuinely new to Cambodia. If they already know the market, skip to their specific question. Do not assume ignorance.',
+          jpTip:'Cambodia market overview for new JP investor: USD economy / foreign ownership via strata title (Ministry of Land) / BKK1 rental demand: expats & corporate / Net yield 5–7%. PHC is multilingual advisory in BKK1. Please share investment goals and budget.',
+        }
+      ]
+    }
+  },
+
+  {
+    id:'s35', part:'p5', title:'Russian / CN — Yield-First Opening', when:'RU/CN lead responding to a listing or ad — lead with numbers immediately',
+    segments: {
+      ru: [
+        {
+          lang:'🇷🇺 Yield Opener', tag:'S35-A', color:'#c0392b', label:'Numbers-first — no pleasantries',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Alexei'},{key:'AGENT_NAME',label:'[YOUR NAME]',ph:'e.g. Monika'}],
+          lines:['Hi [FIRST_NAME],','','I\'m [AGENT_NAME] at Property Hub Cambodia. Quick overview:','','📍 BKK1, Phnom Penh — prime expat rental district','💵 USD market — no currency conversion risk','📈 Net yield: 5–7% after management on PHC-vetted projects','🏗️ Off-plan: 24–60 month payment schedules available','🔑 Full foreign ownership via strata title — registered with Ministry of Land','','No rental guarantee products. Real yield data from real comparable transactions.','','Budget and timeline?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'RU/CN buyers: skip the warm-up. Qualify immediately with budget and timeline. Never send project details before qualifying.',
+        }
+      ]
+    }
+  }
+];
+
+// Build search index
+const SEARCH_INDEX = [];
+SCENARIOS.forEach(sc => {
+  Object.entries(sc.segments).forEach(([segId, variants]) => {
+    variants.forEach(v => {
+      SEARCH_INDEX.push({
+        scId: sc.id, segId, variantTag: v.tag,
+        title: sc.title, variantLabel: v.label,
+        lang: v.lang, when: sc.when,
+        text: v.lines.join(' ') + ' ' + sc.title + ' ' + v.label + ' ' + sc.when,
+        color: v.color,
+      });
+    });
+  });
+});
+
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+let state = {
+  seg: null,
+  scId: null,
+  variantIdx: 0,
+  fills: {},
+};
+
+// ═══════════════════════════════════════════════════════
+// THEME
+// ═══════════════════════════════════════════════════════
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('theme-btn').textContent = isDark ? '🌙' : '☀️';
+}
+
+// ═══════════════════════════════════════════════════════
+// RENDER SEGMENT CHIPS
+// ═══════════════════════════════════════════════════════
+function renderSegments() {
+  const grid = document.getElementById('seg-grid');
+  grid.innerHTML = SEGMENTS.map(seg => `
+    <div class="seg-chip ${state.seg === seg.id ? 'active' : ''}"
+         onclick="selectSegment('${seg.id}')" style="--dot:${seg.color}">
+      <span class="seg-dot" style="background:${seg.color}"></span>
+      <div>
+        <div class="seg-name">${seg.label}</div>
+        <div style="font-size:10px;color:var(--ink-3)">${seg.desc}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// RENDER SCENARIO LIST
+// ═══════════════════════════════════════════════════════
+function renderScenarios() {
+  const list = document.getElementById('scenario-list');
+  if (!state.seg) {
+    list.innerHTML = '<div style="padding:16px 10px;font-size:12px;color:var(--ink-3);text-align:center">Select a segment above to see available scenarios</div>';
+    return;
+  }
+
+  // Filter scenarios that have variants for this segment
+  const available = SCENARIOS.filter(sc => sc.segments[state.seg]);
+
+  let html = '';
+  let lastPart = null;
+  available.forEach((sc, i) => {
+    if (sc.part !== lastPart) {
+      const part = PARTS.find(p => p.id === sc.part);
+      html += `<div class="sc-part-label">${part?.label || sc.part}</div>`;
+      lastPart = sc.part;
+    }
+    html += `
+      <div class="sc-item ${state.scId === sc.id ? 'active' : ''}"
+           onclick="selectScenario('${sc.id}')">
+        <div class="sc-num">S${sc.id.replace('s','')}</div>
+        <div class="sc-info">
+          <div class="sc-title">${sc.title}</div>
+          <div class="sc-when">${sc.when}</div>
+        </div>
+      </div>`;
+  });
+  list.innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════
+// RENDER LANGUAGE TABS
+// ═══════════════════════════════════════════════════════
+function renderLangTabs() {
+  const tabs = document.getElementById('lang-tabs');
+  if (!state.scId || !state.seg) { tabs.innerHTML = ''; return; }
+
+  const sc = SCENARIOS.find(s => s.id === state.scId);
+  const variants = sc?.segments[state.seg] || [];
+
+  tabs.innerHTML = variants.map((v, i) => `
+    <div class="lang-tab ${state.variantIdx === i ? 'active' : ''}"
+         onclick="selectVariant(${i})">${v.lang}</div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// RENDER FILL-IN FORM
+// ═══════════════════════════════════════════════════════
+function renderFillForm() {
+  const zone = document.getElementById('fill-zone');
+  const grid = document.getElementById('fill-grid');
+
+  const variant = getVariant();
+  if (!variant) { zone.style.display = 'none'; return; }
+
+  zone.style.display = 'block';
+  grid.innerHTML = variant.fields.map(f => `
+    <div class="fill-field">
+      <div class="fill-lbl">${f.label}</div>
+      <input class="fill-input"
+             type="text"
+             id="fill-${f.key}"
+             placeholder="${f.ph}"
+             value="${state.fills[f.key] || ''}"
+             oninput="onFillChange('${f.key}', this.value)"
+             autocomplete="off">
+    </div>
+  `).join('');
+}
+
+function onFillChange(key, val) {
+  state.fills[key] = val;
+  renderMessage();
+}
+
+// ═══════════════════════════════════════════════════════
+// RENDER MESSAGE
+// ═══════════════════════════════════════════════════════
+function getVariant() {
+  if (!state.scId || !state.seg) return null;
+  const sc = SCENARIOS.find(s => s.id === state.scId);
+  const variants = sc?.segments[state.seg] || [];
+  return variants[state.variantIdx] || null;
+}
+
+function applyFills(lines, fills, fields) {
+  // Returns HTML string with placeholders highlighted or filled
+  return lines.map(line => {
+    if (!line) return '';
+    let result = line;
+    // Replace each field
+    fields.forEach(f => {
+      const val = fills[f.key];
+      const bracketKey = f.label; // e.g. [FIRST NAME]
+      const rawKey = f.key; // e.g. FIRST_NAME
+
+      if (val && val.trim()) {
+        // Filled — show filled value with dashed underline
+        result = result.split(rawKey).join(`\x00FILLED:${val}\x00`);
+        result = result.split(bracketKey).join(`\x00FILLED:${val}\x00`);
+      } else {
+        // Empty — show placeholder in gold
+        result = result.split(rawKey).join(`\x00PH:${bracketKey}\x00`);
+      }
+    });
+    // Escape HTML
+    result = result.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    // Render markers
+    result = result.replace(/\x00FILLED:([^\x00]+)\x00/g,
+      (_,v) => `<span class="filled">${v.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>`);
+    result = result.replace(/\x00PH:([^\x00]+)\x00/g,
+      (_,v) => `<span class="placeholder">${v}</span>`);
+    return result;
+  }).join('\n');
+}
+
+function getPlainText(lines, fills, fields) {
+  return lines.map(line => {
+    if (!line) return '';
+    let result = line;
+    fields.forEach(f => {
+      const val = fills[f.key];
+      if (val && val.trim()) {
+        result = result.split(f.key).join(val);
+        result = result.split(f.label).join(val);
+      }
+    });
+    return result;
+  }).join('\n');
+}
+
+function renderMessage() {
+  const empty = document.getElementById('empty-state');
+  const out   = document.getElementById('msg-output');
+  const variant = getVariant();
+
+  if (!variant) {
+    empty.style.display = 'flex';
+    out.style.display = 'none';
+    return;
+  }
+
+  empty.style.display = 'none';
+  out.style.display = 'block';
+
+  const sc = SCENARIOS.find(s => s.id === state.scId);
+  const msgHTML = applyFills(variant.lines, state.fills, variant.fields);
+  const charCount = getPlainText(variant.lines, state.fills, variant.fields).length;
+
+  out.innerHTML = `
+    <div class="msg-card">
+      <div class="msg-hdr">
+        <div class="msg-seg-badge" style="background:${variant.color}">${variant.lang}</div>
+        <div class="msg-variant-title">${variant.label}</div>
+        <div class="msg-scenario-tag">${variant.tag}</div>
+      </div>
+
+      <div class="wa-bubble-wrap">
+        <div class="wa-bubble">${msgHTML}</div>
+      </div>
+
+      ${variant.escalate ? `
+        <div class="escalate-box">
+          <strong>⚠️ Escalate to Director</strong>
+          ${variant.escalate}
+        </div>` : ''}
+
+      ${variant.vaNote ? `
+        <div class="va-note"><strong>VA NOTE</strong>${variant.vaNote}</div>` : ''}
+
+      ${variant.jpTip ? `
+        <div class="jp-tip"><strong>💡 JP Translation (reference)</strong>${variant.jpTip}</div>` : ''}
+
+      <div class="copy-wrap">
+        <button class="copy-btn" id="copy-btn" onclick="copyMessage()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+          Copy message
+        </button>
+        <span class="char-count">${charCount} characters</span>
+      </div>
+    </div>
+
+    <div style="margin-top:8px;padding:12px 0;border-top:1px solid var(--line)">
+      <div style="font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px">When to send</div>
+      <div style="font-size:13px;color:var(--ink-2);line-height:1.6">${sc.when}</div>
+    </div>
+  `;
+}
+
+function copyMessage() {
+  const variant = getVariant();
+  if (!variant) return;
+  const text = getPlainText(variant.lines, state.fills, variant.fields);
+  const btn = document.getElementById('copy-btn');
+
+  const doCopy = () => {
+    btn.classList.add('copied');
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy message`;
+    }, 2200);
+  };
+
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(doCopy);
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    doCopy();
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// SELECTION HANDLERS
+// ═══════════════════════════════════════════════════════
+function selectSegment(segId) {
+  state.seg = segId;
+  state.scId = null;
+  state.variantIdx = 0;
+  state.fills = {};
+  renderSegments();
+  renderScenarios();
+  renderLangTabs();
+  renderFillForm();
+  renderMessage();
+}
+
+function selectScenario(scId) {
+  state.scId = scId;
+  state.variantIdx = 0;
+  state.fills = {};
+  renderScenarios();
+  renderLangTabs();
+  renderFillForm();
+  renderMessage();
+}
+
+function selectVariant(idx) {
+  state.variantIdx = idx;
+  state.fills = {};
+  renderLangTabs();
+  renderFillForm();
+  renderMessage();
+}
+
+// ═══════════════════════════════════════════════════════
+// SEARCH
+// ═══════════════════════════════════════════════════════
+let searchFocused = -1;
+
+function openSearch() {
+  document.getElementById('search-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('search-input').focus(), 60);
+  doSearch('');
+}
+
+function closeSearch() {
+  document.getElementById('search-overlay').classList.remove('open');
+  document.getElementById('search-input').value = '';
+  searchFocused = -1;
+}
+
+function closeSearchOnBg(e) {
+  if (e.target === document.getElementById('search-overlay')) closeSearch();
+}
+
+function doSearch(q) {
+  const results = document.getElementById('search-results');
+  searchFocused = -1;
+  const query = q.trim().toLowerCase();
+
+  let matches = query
+    ? SEARCH_INDEX.filter(item => item.text.toLowerCase().includes(query) ||
+        item.title.toLowerCase().includes(query) ||
+        item.lang.toLowerCase().includes(query))
+    : SEARCH_INDEX.slice(0, 12);
+
+  if (!matches.length) {
+    results.innerHTML = '<div class="search-empty">No messages match that search</div>';
+    return;
+  }
+
+  results.innerHTML = matches.map((m, i) => `
+    <div class="search-result" data-idx="${i}"
+         onclick="searchSelect('${m.scId}','${m.segId}','${m.variantTag}')">
+      <div class="sr-tag" style="background:${m.color}">${m.lang}</div>
+      <div class="sr-info">
+        <div class="sr-title">${m.title}</div>
+        <div class="sr-sub">${m.variantLabel}</div>
+      </div>
+      <div class="sr-lang" style="font-family:var(--font-mono);font-size:10px">${m.variantTag}</div>
+    </div>
+  `).join('');
+}
+
+function searchSelect(scId, segId, variantTag) {
+  const sc = SCENARIOS.find(s => s.id === scId);
+  const variants = sc?.segments[segId] || [];
+  const vIdx = variants.findIndex(v => v.tag === variantTag);
+
+  state.seg = segId;
+  state.scId = scId;
+  state.variantIdx = Math.max(0, vIdx);
+  state.fills = {};
+
+  renderSegments();
+  renderScenarios();
+  renderLangTabs();
+  renderFillForm();
+  renderMessage();
+  closeSearch();
+}
+
+function searchKeyNav(e) {
+  const results = document.getElementById('search-results');
+  const items = results.querySelectorAll('.search-result');
+  if (!items.length) return;
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    searchFocused = Math.min(searchFocused + 1, items.length - 1);
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    searchFocused = Math.max(searchFocused - 1, 0);
+  } else if (e.key === 'Enter' && searchFocused >= 0) {
+    e.preventDefault();
+    items[searchFocused].click();
+    return;
+  } else if (e.key === 'Escape') {
+    closeSearch();
+    return;
+  }
+
+  items.forEach((el, i) => el.classList.toggle('focused', i === searchFocused));
+  if (searchFocused >= 0) items[searchFocused].scrollIntoView({block:'nearest'});
+}
+
+// ═══════════════════════════════════════════════════════
+// KEYBOARD SHORTCUTS
+// ═══════════════════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    openSearch();
+  }
+  if (e.key === 'Escape' && document.getElementById('search-overlay').classList.contains('open')) {
+    closeSearch();
+  }
+});
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+renderSegments();
+renderScenarios();
+renderLangTabs();
+renderMessage();
+</script>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PHC Tools · Quick Launch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#06264f;--navy-d:#040f24;--navy-m:#0b3d7a;
+  --gold:#c9993f;--gold-lt:#e0b86a;
+  --bg:#060e1e;--card:#0b1829;--card-h:#0f2035;
+  --border:rgba(201,153,63,.15);--border-h:rgba(201,153,63,.35);
+  --text:#e8edf5;--muted:rgba(232,237,245,.45);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;}
+
+header{background:var(--navy-d);border-bottom:1px solid var(--border);padding:20px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.logo-row{display:flex;align-items:center;gap:12px;}
+.logo-mark{width:36px;height:36px;border-radius:9px;background:rgba(201,153,63,.12);border:1px solid rgba(201,153,63,.28);display:flex;align-items:center;justify-content:center;}
+.logo-mark svg{color:var(--gold);}
+.brand{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#fff;}
+.brand span{color:var(--gold);}
+.meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.05em;}
+
+main{max-width:960px;margin:0 auto;padding:40px 24px 64px;}
+
+.page-title{margin-bottom:32px;}
+.page-title h1{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:#fff;margin-bottom:6px;}
+.page-title p{font-size:13px;color:var(--muted);line-height:1.6;}
+
+.section{margin-bottom:36px;}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.section-label::after{content:"";flex:1;height:1px;background:var(--border);}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;}
+
+.card{display:block;text-decoration:none;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;transition:all .18s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;}
+.card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent);opacity:0;transition:opacity .18s;}
+.card:hover{background:var(--card-h);border-color:var(--border-h);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.4);}
+.card:hover::before{opacity:1;}
+
+.card-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;flex-shrink:0;}
+.card-title{font-size:14px;font-weight:600;color:#fff;margin-bottom:4px;line-height:1.3;}
+.card-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+.card-tag{display:inline-flex;align-items:center;margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.07em;padding:2px 8px;border-radius:10px;border:1px solid;}
+
+/* Tag colours */
+.tag-agent{background:rgba(24,119,242,.12);color:#5b9ef7;border-color:rgba(24,119,242,.25);}
+.tag-director{background:rgba(201,153,63,.1);color:var(--gold);border-color:rgba(201,153,63,.25);}
+.tag-client{background:rgba(33,150,163,.1);color:#4ec7d6;border-color:rgba(33,150,163,.25);}
+
+/* Icon bg colours */
+.ic-blue{background:rgba(24,119,242,.12);color:#5b9ef7;}
+.ic-gold{background:rgba(201,153,63,.12);color:var(--gold);}
+.ic-green{background:rgba(26,122,74,.12);color:#3ecf8e;}
+.ic-purple{background:rgba(139,92,246,.12);color:#a78bfa;}
+.ic-red{background:rgba(230,57,70,.12);color:#f87171;}
+.ic-teal{background:rgba(33,150,163,.12);color:#4ec7d6;}
+
+footer{text-align:center;padding:20px;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,.2);border-top:1px solid var(--border);letter-spacing:.05em;}
+
+@media(max-width:600px){
+  header{padding:16px 18px;}
+  main{padding:24px 16px 48px;}
+  .grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-row">
+    <div class="logo-mark">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.5L14 4.5V11.5L8 14.5L2 11.5V4.5L8 1.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.2"/></svg>
+    </div>
+    <div>
+      <div class="brand">Property Hub <span>Cambodia</span></div>
+      <div class="meta">Internal Tools · Quick Launch</div>
+    </div>
+  </div>
+  <div class="meta">11 Tools · Active</div>
+</header>
+
+<main>
+  <div class="page-title">
+    <h1>Quick <span style="color:var(--gold)">Launch</span></h1>
+    <p>Click any tool to open it. Agent tools are for daily use · Director tools are Nick-only.</p>
+  </div>
+
+  <!-- AGENT TOOLS -->
+  <div class="section">
+    <div class="section-label">Agent Tools</div>
+    <div class="grid">
+
+      <a class="card" href="PHC_Message_Builder.html" target="_blank">
+        <div class="card-icon ic-blue">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="3" width="14" height="11" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5 7.5h8M5 10.5h5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </div>
+        <div class="card-title">Message Builder</div>
+        <div class="card-desc">36 WhatsApp templates across 6 segments and 5 conversation stages.</div>
+        <div class="card-tag tag-agent">Agent</div>
+      </a>
+
+      <a class="card" href="PHC_Agent_Training_v3.html" target="_blank">
+        <div class="card-icon ic-gold">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2L15.5 5.5V12.5L9 16L2.5 12.5V5.5L9 2Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 8v4M9 6v.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </div>
+        <div class="card-title">Agent Training</div>
+        <div class="card-desc">20-lesson interactive training — scripts, objections, market knowledge.</div>
+        <div class="card-tag tag-agent">Agent</div>
+      </a>
+
+      <a class="card" href="PHC_Lead_Tracker.html" target="_blank">
+        <div class="card-icon ic-green">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5 9h8M5 6h8M5 12h5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </div>
+        <div class="card-title">Lead Tracker</div>
+        <div class="card-desc">CRM pipeline with kanban view, auto-scoring, and CSV export.</div>
+        <div class="card-tag tag-agent">Agent</div>
+      </a>
+
+      <a class="card" href="PHC_Investment_Explorer.html" target="_blank">
+        <div class="card-icon ic-purple">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 14L7 9l3 3 5-7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="card-title">Investment Explorer</div>
+        <div class="card-desc">Client-facing budget-tier guide with WhatsApp CTAs per project.</div>
+        <div class="card-tag tag-agent">Agent</div>
+      </a>
+
+      <a class="card" href="PHC_Proposal_Generator.html" target="_blank">
+        <div class="card-icon ic-teal">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="2" width="12" height="14" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M6 6h6M6 9h6M6 12h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </div>
+        <div class="card-title">Proposal Generator</div>
+        <div class="card-desc">3-property client proposals with anchoring effect — print-ready PDF.</div>
+        <div class="card-tag tag-agent">Agent</div>
+      </a>
+
+      <a class="card" href="PHC_Market_Intelligence_Cheat_Sheet.html" target="_blank">
+        <div class="card-icon ic-gold">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M9 5.5v4l2.5 2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </div>
+        <div class="card-title">Market Intelligence</div>
+        <div class="card-desc">Quick-reference market data, yields, and project comparisons.</div>
+        <div class="card-tag tag-agent">Agent</div>
+      </a>
+
+      <a class="card" href="PHC_Lead_Magnet.html" target="_blank">
+        <div class="card-icon ic-blue">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="3" width="14" height="12" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 7h8M5 10h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </div>
+        <div class="card-title">Cambodia Guide 2026</div>
+        <div class="card-desc">8-page client-facing investment lead magnet — send to warm prospects.</div>
+        <div class="card-tag tag-client">Client-Facing</div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- DIRECTOR TOOLS -->
+  <div class="section">
+    <div class="section-label">Director Tools · Nick Only</div>
+    <div class="grid">
+
+      <a class="card" href="PHC_Setup_Tracker.html" target="_blank">
+        <div class="card-icon ic-red">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M9 2v2M9 14v2M2 9h2M14 9h2M4.22 4.22l1.41 1.41M12.37 12.37l1.41 1.41M4.22 13.78l1.41-1.41M12.37 5.63l1.41-1.41" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </div>
+        <div class="card-title">Setup Tracker</div>
+        <div class="card-desc">Step-by-step ManyChat, Make.com, and Mailchimp setup guides.</div>
+        <div class="card-tag tag-director">Director</div>
+      </a>
+
+      <a class="card" href="PHC_CEO_Business_Plan.html" target="_blank">
+        <div class="card-icon ic-gold">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5 9h8M5 6h6M5 12h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </div>
+        <div class="card-title">CEO Business Plan</div>
+        <div class="card-desc">Business plan dashboard with revenue targets and strategic KPIs.</div>
+        <div class="card-tag tag-director">Director</div>
+      </a>
+
+      <a class="card" href="PHC_Client_Manager.html" target="_blank">
+        <div class="card-icon ic-green">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6.5" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M3 15c0-3.31 2.69-6 6-6s6 2.69 6 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </div>
+        <div class="card-title">Client Manager</div>
+        <div class="card-desc">After-sale dashboard — payment alerts, update generator, Make.com templates.</div>
+        <div class="card-tag tag-director">Director</div>
+      </a>
+
+      <a class="card" href="PHC_System_Map.html" target="_blank">
+        <div class="card-icon ic-purple">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="2" stroke="currentColor" stroke-width="1.4"/><circle cx="3" cy="5" r="1.5" stroke="currentColor" stroke-width="1.2"/><circle cx="15" cy="5" r="1.5" stroke="currentColor" stroke-width="1.2"/><circle cx="3" cy="13" r="1.5" stroke="currentColor" stroke-width="1.2"/><circle cx="15" cy="13" r="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 5.5L7.5 8M10.5 8l3-2.5M4.5 12.5L7.5 10M10.5 10l3 2.5" stroke="currentColor" stroke-width="1.2"/></svg>
+        </div>
+        <div class="card-title">System Map</div>
+        <div class="card-desc">Full PHC architecture — all channels, tools, automations, and lifecycle.</div>
+        <div class="card-tag tag-director">Director</div>
+      </a>
+
+    </div>
+  </div>
+
+</main>
+
+<footer>Property Hub Cambodia · Internal Use Only · 011 666 952</footer>
+
+</body>
+</html>

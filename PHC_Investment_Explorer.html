@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHC · Investment Explorer</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#F4F1EC;
+  --white:#FFFFFF;
+  --dark:#141414;
+  --mid:#5A5A5A;
+  --light:#A0A0A0;
+  --border:#E5E0D8;
+  --radius:14px;
+  --gold:#C9993F;
+}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;display:flex;flex-direction:column;font-size:14px;}
+
+/* TOPBAR */
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 1px 0 var(--border);}
+.logo{display:flex;align-items:center;gap:11px;}
+.logo-mark{width:32px;height:32px;background:var(--dark);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.logo-wordmark{display:flex;flex-direction:column;gap:1px;}
+.logo-name{font-size:0.82rem;font-weight:700;letter-spacing:-0.02em;color:var(--dark);}
+.logo-tagline{font-size:0.58rem;color:var(--light);letter-spacing:0.06em;text-transform:uppercase;}
+.topbar-right{display:flex;align-items:center;gap:14px;}
+.topbar-contact{font-size:0.7rem;color:var(--mid);display:flex;align-items:center;gap:5px;}
+.topbar-badge{font-size:0.62rem;background:#F0EBE1;color:var(--gold);border:1px solid #E2D5C0;padding:5px 12px;border-radius:20px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;}
+
+/* LAYOUT */
+.main{display:flex;flex:1;height:calc(100vh - 60px);overflow:hidden;}
+
+/* SIDEBAR */
+.sidebar{width:268px;min-width:268px;background:var(--white);border-right:1px solid var(--border);overflow-y:auto;padding:14px 10px 24px;display:flex;flex-direction:column;gap:2px;}
+.sidebar-label{font-size:0.58rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--light);padding:8px 10px 5px;font-weight:600;}
+.tier-btn{display:flex;align-items:center;gap:11px;padding:10px 11px;border-radius:10px;cursor:pointer;transition:all 0.15s;border:1.5px solid transparent;background:transparent;width:100%;text-align:left;position:relative;}
+.tier-btn:hover{background:var(--bg);}
+.tier-btn.active{background:var(--bg);border-color:var(--ac,#ccc);}
+.tier-btn.active .t-icon{background:var(--acbg,#eee);}
+.tier-btn.active .t-icon svg{color:var(--ac,#888);}
+.t-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#F0EDE8;transition:background 0.15s;}
+.t-icon svg{width:16px;height:16px;color:var(--light);transition:color 0.15s;}
+.t-info{flex:1;min-width:0;}
+.t-amount{font-size:0.8rem;font-weight:700;letter-spacing:-0.02em;line-height:1.1;color:var(--dark);}
+.t-name{font-size:0.63rem;color:var(--light);margin-top:2px;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.t-dot{width:6px;height:6px;border-radius:50%;background:var(--ac,#ccc);opacity:0;transition:opacity 0.15s;flex-shrink:0;}
+.tier-btn.active .t-dot{opacity:1;}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;padding:30px 38px 60px;max-width:860px;}
+.panel{display:none;animation:fu 0.22s ease;}
+.panel.active{display:block;}
+@keyframes fu{from{opacity:0;transform:translateY(7px);}to{opacity:1;transform:translateY(0);}}
+
+/* WELCOME */
+.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;height:62vh;text-align:center;gap:13px;}
+.welcome-icon{width:60px;height:60px;background:var(--dark);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto;}
+.welcome-icon svg{width:28px;height:28px;color:white;}
+.welcome h2{font-family:'Lora',serif;font-size:1.65rem;font-weight:600;color:var(--dark);letter-spacing:-0.02em;}
+.welcome p{font-size:0.84rem;color:var(--mid);max-width:340px;line-height:1.75;}
+.welcome-hint{font-size:0.67rem;color:var(--light);display:flex;align-items:center;gap:5px;margin-top:2px;}
+.welcome-hint svg{width:13px;height:13px;}
+
+/* HERO BANNER */
+.panel-hero{border-radius:16px;padding:30px 34px;margin-bottom:22px;position:relative;overflow:hidden;color:white;}
+.hero-wm{position:absolute;right:-8px;bottom:-18px;opacity:0.07;}
+.hero-wm svg{width:150px;height:150px;color:white;}
+.hero-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;font-size:0.62rem;font-weight:700;letter-spacing:0.13em;text-transform:uppercase;background:rgba(255,255,255,0.18);padding:5px 11px;border-radius:20px;}
+.hero-tag svg{width:11px;height:11px;}
+.hero-lvl{font-size:0.64rem;font-weight:700;background:rgba(0,0,0,0.2);padding:5px 11px;border-radius:20px;letter-spacing:0.06em;}
+.hero-amount{font-family:'Lora',serif;font-size:2.7rem;font-weight:600;line-height:1;letter-spacing:-0.03em;margin-bottom:6px;}
+.hero-title{font-size:0.9rem;font-weight:500;opacity:0.88;margin-bottom:14px;}
+.hero-analogy{font-family:'Lora',serif;font-style:italic;font-size:0.93rem;opacity:0.85;border-left:2px solid rgba(255,255,255,0.38);padding-left:15px;line-height:1.65;max-width:520px;}
+
+/* ELI5 */
+.eli5{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;margin-bottom:16px;}
+.eli5-hd{display:flex;align-items:center;gap:7px;margin-bottom:10px;}
+.eli5-hd svg{width:14px;height:14px;color:var(--gold);}
+.eli5-hd span{font-size:0.59rem;font-weight:700;letter-spacing:0.17em;text-transform:uppercase;color:var(--gold);}
+.eli5 p{font-size:0.86rem;line-height:1.8;color:var(--dark);}
+.eli5 p strong{font-weight:600;}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:16px;}
+.stat-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:16px 14px;text-align:center;}
+.sv{font-family:'Lora',serif;font-size:1.45rem;font-weight:600;line-height:1;margin-bottom:4px;display:block;}
+.sl{font-size:0.59rem;color:var(--light);text-transform:uppercase;letter-spacing:0.09em;font-weight:600;line-height:1.3;display:block;}
+
+/* SECTION HDR */
+.sec-hdr{display:flex;align-items:center;gap:7px;margin-bottom:11px;}
+.sec-hdr svg{width:13px;height:13px;color:var(--light);}
+.sec-hdr span{font-size:0.59rem;font-weight:700;letter-spacing:0.17em;text-transform:uppercase;color:var(--light);}
+
+/* OPTIONS */
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:16px;}
+.opt{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:18px;transition:box-shadow 0.18s,border-color 0.18s;}
+.opt:hover{box-shadow:0 4px 14px rgba(0,0,0,0.06);border-color:#D8D3CB;}
+.opt-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:9px;}
+.o-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.o-icon svg{width:15px;height:15px;}
+.o-ret{font-size:0.61rem;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:2px;}
+.opt-title{font-size:0.81rem;font-weight:700;margin-bottom:5px;color:var(--dark);}
+.opt-desc{font-size:0.75rem;color:var(--mid);line-height:1.7;}
+.opt-desc strong{color:var(--dark);font-weight:600;}
+
+/* RISK */
+.risk-sec{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:18px 22px;margin-bottom:16px;}
+.risk-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.risk-lv{font-size:0.67rem;font-weight:700;padding:4px 10px;border-radius:20px;}
+.risk-track{position:relative;height:7px;background:linear-gradient(90deg,#52C48A,#F5C842,#F07B3F,#D63030);border-radius:7px;}
+.risk-mk{position:absolute;top:50%;transform:translate(-50%,-50%);width:18px;height:18px;background:white;border:2.5px solid var(--dark);border-radius:50%;box-shadow:0 2px 5px rgba(0,0,0,0.14);}
+.risk-lbs{display:flex;justify-content:space-between;margin-top:7px;}
+.risk-lbs span{font-size:0.59rem;color:var(--light);font-weight:600;}
+
+/* WATCHOUT */
+.wo{background:#FDFAF3;border:1px solid #EDE5C8;border-radius:var(--radius);padding:16px 20px;margin-bottom:16px;}
+.wo-hd{display:flex;align-items:center;gap:7px;margin-bottom:11px;}
+.wo-hd svg{width:14px;height:14px;color:#B5860E;flex-shrink:0;}
+.wo-hd span{font-size:0.6rem;font-weight:700;letter-spacing:0.13em;text-transform:uppercase;color:#8A6500;}
+.wo ul{list-style:none;display:flex;flex-direction:column;gap:7px;}
+.wo li{font-size:0.77rem;color:#5C4500;padding-left:16px;position:relative;line-height:1.6;}
+.wo li::before{content:'';position:absolute;left:0;top:7px;width:5px;height:5px;border-radius:50%;background:var(--gold);}
+.wo li strong{color:#3D2E00;font-weight:600;}
+
+/* CTA */
+.cta{border-radius:var(--radius);padding:20px 26px;display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:7px;background:var(--dark);}
+.cta-tx{font-size:0.87rem;color:white;font-weight:600;line-height:1.2;}
+.cta-sb{font-size:0.68rem;color:rgba(255,255,255,0.42);margin-top:3px;}
+.cta-btn{background:white;color:var(--dark);border:none;padding:10px 20px;border-radius:9px;font-family:'Sora',sans-serif;font-size:0.74rem;font-weight:700;cursor:pointer;transition:all 0.15s;white-space:nowrap;flex-shrink:0;display:flex;align-items:center;gap:5px;}
+.cta-btn:hover{background:#F0F0F0;transform:translateY(-1px);}
+.cta-btn svg{width:12px;height:12px;}
+.nav-hint{font-size:0.63rem;color:var(--light);text-align:center;padding:9px 0 0;display:flex;align-items:center;justify-content:center;gap:4px;}
+.nav-hint svg{width:11px;height:11px;}
+
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+@media(max-width:760px){
+  .main{flex-direction:column;height:auto;overflow:visible;}
+  .sidebar{width:100%;min-width:unset;height:auto;flex-direction:row;overflow-x:auto;padding:10px;border-right:none;border-bottom:1px solid var(--border);gap:5px;}
+  .sidebar-label,.t-dot{display:none;}
+  .tier-btn{min-width:118px;flex-direction:column;align-items:center;text-align:center;padding:10px 8px;gap:6px;}
+  .t-info{min-width:unset;}
+  .t-amount{font-size:0.68rem;}
+  .t-name{font-size:0.58rem;}
+  .content{padding:18px 14px 40px;max-width:100%;}
+  .opts{grid-template-columns:1fr;}
+  .hero-amount{font-size:1.9rem;}
+  .hero-wm{display:none;}
+  .cta{flex-direction:column;}
+  .cta-btn{width:100%;justify-content:center;}
+  .topbar-contact{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- INLINE SVG SPRITES -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol>
+  <symbol id="i-sprout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V12"/><path d="M12 12C12 7 8 4 3 4c0 5 3 8 9 8z"/><path d="M12 12c0-5 4-8 9-8c0 5-3 8-9 8z"/></symbol>
+  <symbol id="i-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="18"/><rect x="14" y="8" width="7" height="13"/><line x1="3" y1="21" x2="21" y2="21"/></symbol>
+  <symbol id="i-brief" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></symbol>
+  <symbol id="i-hotel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16"/><path d="M1 21h22"/><rect x="9" y="9" width="6" height="5" rx="1"/></symbol>
+  <symbol id="i-crane" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20"/><path d="M10 20V8"/><path d="M10 8L4 14"/><path d="M10 8h10"/><path d="M16 8v5"/><path d="M20 8v12"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></symbol>
+  <symbol id="i-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+  <symbol id="i-arrl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></symbol>
+  <symbol id="i-shake" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol>
+  <symbol id="i-ban" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></symbol>
+  <symbol id="i-ware" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 20V8l-10-6L2 8v12"/><rect x="8" y="14" width="8" height="6"/><path d="M2 20h20"/></symbol>
+  <symbol id="i-town" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><rect x="9" y="10" width="2" height="3"/><rect x="13" y="14" width="2" height="7"/></symbol>
+  <symbol id="i-trend" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></symbol>
+  <symbol id="i-land" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></symbol>
+  <symbol id="i-ship" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1 .6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M19.38 20A11.6 11.6 0 0 0 21 14l-9-4-9 4c0 2.23.62 4.32 1.61 6"/><path d="M12 2v6"/><path d="M8 6h8"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></symbol>
+  <symbol id="i-road" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-2"/><polygon points="12 15 17 21 7 21 12 15"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.36 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 5.45 5.45l.91-.91a2 2 0 0 1 2.11-.45c.907.34 1.85.573 2.81.7A2 2 0 0 1 21 16.92z"/></symbol>
+</svg>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-mark">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-home"/></svg>
+    </div>
+    <div class="logo-wordmark">
+      <span class="logo-name">Property Hub Cambodia</span>
+      <span class="logo-tagline">Investment Explorer</span>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="topbar-contact"><svg width="13" height="13"><use href="#i-phone"/></svg>011 666 952</div>
+    <div class="topbar-badge">8 Levels</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-label">Select your budget</div>
+
+    <button class="tier-btn" data-tier="t1" onclick="show('t1')" style="--ac:#5B7CC4;--acbg:#EEF2FF">
+      <div class="t-icon"><svg><use href="#i-sprout"/></svg></div>
+      <div class="t-info"><div class="t-amount">$10,000</div><div class="t-name">The First Step</div></div>
+      <div class="t-dot"></div>
+    </button>
+
+    <button class="tier-btn" data-tier="t2" onclick="show('t2')" style="--ac:#2E8B5A;--acbg:#EDFAF3">
+      <div class="t-icon"><svg><use href="#i-home"/></svg></div>
+      <div class="t-info"><div class="t-amount">$50,000</div><div class="t-name">The Starter</div></div>
+      <div class="t-dot"></div>
+    </button>
+
+    <button class="tier-btn" data-tier="t3" onclick="show('t3')" style="--ac:#C45A18;--acbg:#FFF5EC">
+      <div class="t-icon"><svg><use href="#i-building"/></svg></div>
+      <div class="t-info"><div class="t-amount">$100,000</div><div class="t-name">The Entry Investor</div></div>
+      <div class="t-dot"></div>
+    </button>
+
+    <button class="tier-btn" data-tier="t4" onclick="show('t4')" style="--ac:#9A6E08;--acbg:#FFFBEC">
+      <div class="t-icon"><svg><use href="#i-brief"/></svg></div>
+      <div class="t-info"><div class="t-amount">$500,000</div><div class="t-name">The Serious Player</div></div>
+      <div class="t-dot"></div>
+    </button>
+
+    <button class="tier-btn" data-tier="t5" onclick="show('t5')" style="--ac:#B83228;--acbg:#FFF0EE">
+      <div class="t-icon"><svg><use href="#i-chart"/></svg></div>
+      <div class="t-info"><div class="t-amount">$1,000,000</div><div class="t-name">The Investor</div></div>
+      <div class="t-dot"></div>
+    </button>
+
+    <button class="tier-btn" data-tier="t6" onclick="show('t6')" style="--ac:#7B3FA8;--acbg:#F8EEFF">
+      <div class="t-icon"><svg><use href="#i-hotel"/></svg></div>
+      <div class="t-info"><div class="t-amount">$5,000,000</div><div class="t-name">The Deal Maker</div></div>
+      <div class="t-dot"></div>
+    </button>
+
+    <button class="tier-btn" data-tier="t7" onclick="show('t7')" style="--ac:#0A5E4A;--acbg:#EDFAF6">
+      <div class="t-icon"><svg><use href="#i-crane"/></svg></div>
+      <div class="t-info"><div class="t-amount">$20,000,000</div><div class="t-name">The Developer</div></div>
+      <div class="t-dot"></div>
+    </button>
+
+    <button class="tier-btn" data-tier="t8" onclick="show('t8')" style="--ac:#1A1A1A;--acbg:#F0F0F0">
+      <div class="t-icon"><svg><use href="#i-globe"/></svg></div>
+      <div class="t-info"><div class="t-amount">$100M+</div><div class="t-name">The Anchor Investor</div></div>
+      <div class="t-dot"></div>
+    </button>
+  </nav>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- WELCOME -->
+    <div id="welcome" class="panel active">
+      <div class="welcome">
+        <div class="welcome-icon"><svg width="28" height="28"><use href="#i-pin"/></svg></div>
+        <h2>How much do you want to invest?</h2>
+        <p>Pick a budget on the left. Every tier shows you what's actually happening in Cambodia's market right now — real numbers, real risks, no brochure language.</p>
+        <div class="welcome-hint"><svg><use href="#i-arrl"/></svg> Choose your level to begin</div>
+      </div>
+    </div>
+
+    <!-- T1 $10K -->
+    <div id="t1" class="panel">
+      <div class="panel-hero" style="background:linear-gradient(135deg,#4B6FBE,#6B8FD4)">
+        <div class="hero-wm"><svg width="150" height="150"><use href="#i-sprout"/></svg></div>
+        <div class="hero-top">
+          <div class="hero-tag"><svg width="11" height="11"><use href="#i-sprout"/></svg> Level 1 · First Step</div>
+          <div class="hero-lvl">$10,000</div>
+        </div>
+        <div class="hero-amount">$10,000</div>
+        <div class="hero-title">Too Small to Buy. Smart Enough to Learn.</div>
+        <div class="hero-analogy">"Like tasting a dish before ordering the whole meal. Use this budget to understand how Cambodia works before you commit real money."</div>
+      </div>
+      <div class="eli5"><div class="eli5-hd"><svg><use href="#i-info"/></svg><span>Explain it like I'm 5</span></div><p>$10,000 is <strong>not enough to buy a condo in Phnom Penh</strong> — cheapest ones start around $50,000. But you can lend this money to a developer who IS building one, and they pay you back with extra interest. Think of it as being a <strong>tiny bank</strong> for someone else's project. Your main job now: don't lose it, and learn the market.</p></div>
+      <div class="stats-row">
+        <div class="stat-card"><span class="sv" style="color:#5B7CC4">~6%</span><span class="sl">Realistic annual return</span></div>
+        <div class="stat-card"><span class="sv" style="color:#5B7CC4">1–2 yr</span><span class="sl">Time frame</span></div>
+        <div class="stat-card"><span class="sv" style="color:#5B7CC4">Low</span><span class="sl">Complexity</span></div>
+      </div>
+      <div class="sec-hdr"><svg><use href="#i-layers"/></svg><span>What to do with it</span></div>
+      <div class="opts">
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#EEF2FF"><svg style="color:#5B7CC4"><use href="#i-shake"/></svg></div><span class="o-ret" style="background:#EEF2FF;color:#5B7CC4">Option value</span></div>
+          <div class="opt-title">Developer reservation deposit</div>
+          <div class="opt-desc">Some developers accept $10K to reserve a future unit. You're not buying — you're reserving the right to buy later. <strong>Exit if the project looks shaky before committing more.</strong></div>
+        </div>
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#EEF2FF"><svg style="color:#5B7CC4"><use href="#i-book"/></svg></div><span class="o-ret" style="background:#EEF2FF;color:#5B7CC4">Best ROI at this level</span></div>
+          <div class="opt-title">Invest in market knowledge</div>
+          <div class="opt-desc">Fly to Phnom Penh. Walk BKK1. Visit 10 projects. Talk to expats who live there. The $10K you spend learning <strong>will save you $100K in mistakes</strong> when you commit bigger capital.</div>
+        </div>
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#EEF2FF"><svg style="color:#5B7CC4"><use href="#i-town"/></svg></div><span class="o-ret" style="background:#EEF2FF;color:#5B7CC4">5yr+ capital gain</span></div>
+          <div class="opt-title">Borey plot deposit</div>
+          <div class="opt-desc">Some gated housing estate (borey) developers accept small deposits on suburban plots. Long payment plans. Best for buyers who can monitor progress in person.</div>
+        </div>
+        <div class="opt" style="border-color:#FDDDD8">
+          <div class="opt-top"><div class="o-icon" style="background:#FFF0EE"><svg style="color:#C0392B"><use href="#i-ban"/></svg></div><span class="o-ret" style="background:#FFF0EE;color:#C0392B">Avoid these traps</span></div>
+          <div class="opt-title">What NOT to do</div>
+          <div class="opt-desc">Don't fall for <strong>"guaranteed 10–12% returns"</strong> from unknown developers. Don't buy in Sihanoukville — oversupply is severe. Don't skip legal advice to save $300.</div>
+        </div>
+      </div>
+      <div class="risk-sec">
+        <div class="risk-top"><div class="sec-hdr" style="margin-bottom:0"><svg><use href="#i-trend"/></svg><span>Risk level</span></div><span class="risk-lv" style="background:#E8F5EE;color:#2E7D52">Low</span></div>
+        <div class="risk-track"><div class="risk-mk" style="left:15%"></div></div>
+        <div class="risk-lbs"><span>Low</span><span>Medium</span><span>High</span></div>
+      </div>
+      <div class="wo"><div class="wo-hd"><svg><use href="#i-alert"/></svg><span>Ground truth · 2025–2026</span></div><ul>
+        <li>Phnom Penh has ~72,000 condo units with ~15% vacancy — oversupply, especially in luxury segment</li>
+        <li>Capital Gains Tax (20% on profits) in effect since <strong>January 2026</strong> — factor into all exit scenarios</li>
+        <li>Net rental yields after fees and tax are <strong>4.5–6%, not the 8–10%</strong> you'll see in developer brochures</li>
+        <li>At $10K, your best investment is education and relationships — not a transaction</li>
+      </ul></div>
+      <div class="cta"><div><div class="cta-tx">Not ready to buy yet? That's smart.</div><div class="cta-sb">Nick can walk you through what to look for before committing bigger capital</div></div><button class="cta-btn" onclick="wa('Hi, I\'d like to book a free consultation call with Nick.')"><svg><use href="#i-phone"/></svg>Book Free Call</button></div>
+      <div class="nav-hint"><svg><use href="#i-arr"/></svg> Next: $50,000 — The Starter</div>
+    </div>
+
+    <!-- T2 $50K -->
+    <div id="t2" class="panel">
+      <div class="panel-hero" style="background:linear-gradient(135deg,#2E8B5A,#45A874)">
+        <div class="hero-wm"><svg width="150" height="150"><use href="#i-home"/></svg></div>
+        <div class="hero-top">
+          <div class="hero-tag"><svg width="11" height="11"><use href="#i-home"/></svg> Level 2 · Starter</div>
+          <div class="hero-lvl">$50,000</div>
+        </div>
+        <div class="hero-amount">$50,000</div>
+        <div class="hero-title">Your First Real Asset in Cambodia</div>
+        <div class="hero-analogy">"Like buying your first car. It won't be a Ferrari — but you're a real owner now, not just a spectator."</div>
+      </div>
+      <div class="eli5"><div class="eli5-hd"><svg><use href="#i-info"/></svg><span>Explain it like I'm 5</span></div><p>$50,000 can buy you a <strong>small studio condo</strong> in parts of Phnom Penh. Someone rents it from you each month. After paying the building's management fee and a small rental tax, you keep roughly <strong>$200–$280 per month net</strong>. It's not retirement money — but it's a real start and a real asset you own.</p></div>
+      <div class="stats-row">
+        <div class="stat-card"><span class="sv" style="color:#2E8B5A">6–7%</span><span class="sl">Gross yield (realistic)</span></div>
+        <div class="stat-card"><span class="sv" style="color:#2E8B5A">~$240/mo</span><span class="sl">Est. net rental income</span></div>
+        <div class="stat-card"><span class="sv" style="color:#2E8B5A">70–85%</span><span class="sl">Expected occupancy</span></div>
+      </div>
+      <div class="sec-hdr"><svg><use href="#i-layers"/></svg><span>What to do with it</span></div>
+      <div class="opts">
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#EDFAF3"><svg style="color:#2E8B5A"><use href="#i-building"/></svg></div><span class="o-ret" style="background:#EDFAF3;color:#2E8B5A">~6.5% gross</span></div>
+          <div class="opt-title">Mid-range studio, Phnom Penh</div>
+          <div class="opt-desc">Toul Tom Poung, Sen Sok, Chroy Changvar. $1,500–$2,200/sqm. Rent to young professionals or budget expats. <strong>Choose 2-bed over studio</strong> — higher demand, lower vacancy.</div>
+        </div>
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#EDFAF3"><svg style="color:#2E8B5A"><use href="#i-trend"/></svg></div><span class="o-ret" style="background:#EDFAF3;color:#2E8B5A">15–25% if it works</span></div>
+          <div class="opt-title">Pre-construction deposit play</div>
+          <div class="opt-desc">Put $10–15K down on a unit launching at $180–220K. If the project succeeds, sell your purchase rights before completion. <strong>Developer track record is everything. Verify 3+ completed projects.</strong></div>
+        </div>
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#EDFAF3"><svg style="color:#2E8B5A"><use href="#i-hotel"/></svg></div><span class="o-ret" style="background:#EDFAF3;color:#2E8B5A">Developer deal: 7–9%</span></div>
+          <div class="opt-title">Siem Reap — proceed carefully</div>
+          <div class="opt-desc">Tourism hit 6.7M visitors in 2024 — above pre-COVID. New airport opened 2024. But <strong>self-managed yield is only 2–3% net</strong>. Developer-backed rental guarantee schemes are more interesting than going it alone.</div>
+        </div>
+        <div class="opt" style="border-color:#FDDDD8">
+          <div class="opt-top"><div class="o-icon" style="background:#FFF0EE"><svg style="color:#C0392B"><use href="#i-ban"/></svg></div><span class="o-ret" style="background:#FFF0EE;color:#C0392B">Skip it</span></div>
+          <div class="opt-title">Sihanoukville — avoid for now</div>
+          <div class="opt-desc">Market crashed post-2019 and hasn't recovered. Structural oversupply of unfinished buildings. Even distressed pricing doesn't compensate for lack of exit buyers. <strong>Revisit 2028+.</strong></div>
+        </div>
+      </div>
+      <div class="risk-sec">
+        <div class="risk-top"><div class="sec-hdr" style="margin-bottom:0"><svg><use href="#i-trend"/></svg><span>Risk level</span></div><span class="risk-lv" style="background:#E8F5EE;color:#2E7D52">Low–Medium</span></div>
+        <div class="risk-track"><div class="risk-mk" style="left:28%"></div></div>
+        <div class="risk-lbs"><span>Low</span><span>Medium</span><span>High</span></div>
+      </div>
+      <div class="wo"><div class="wo-hd"><svg><use href="#i-alert"/></svg><span>Ground truth · 2025–2026</span></div><ul>
+        <li>Foreigners own <strong>strata title only</strong> — above ground floor, max 70% of any building. Confirm before signing</li>
+        <li>Factor all costs: 10% withholding tax on rent + 1% transfer tax + 8–12% property management fee</li>
+        <li>Luxury segment vacancy was 42% in 2024. Mid-range buildings near local demand have better occupancy</li>
+        <li>CGT (20% on gains) in effect since <strong>January 2026</strong> — plan exit timing accordingly</li>
+        <li>Always ask for an <strong>LMAP-registered title document</strong> before paying any deposit</li>
+      </ul></div>
+      <div class="cta"><div><div class="cta-tx">Want a shortlist of $50K properties?</div><div class="cta-sb">Curated from active Phnom Penh listings — developer-verified</div></div><button class="cta-btn" onclick="wa('Hi, I\'d like a personalised property shortlist.')"><svg><use href="#i-arr"/></svg>Get the Shortlist</button></div>
+      <div class="nav-hint"><svg><use href="#i-arr"/></svg> Next: $100,000 — The Entry Investor</div>
+    </div>
+
+    <!-- T3 $100K -->
+    <div id="t3" class="panel">
+      <div class="panel-hero" style="background:linear-gradient(135deg,#C45A18,#E07830)">
+        <div class="hero-wm"><svg width="150" height="150"><use href="#i-building"/></svg></div>
+        <div class="hero-top">
+          <div class="hero-tag"><svg width="11" height="11"><use href="#i-building"/></svg> Level 3 · Entry Investor</div>
+          <div class="hero-lvl">$100,000</div>
+        </div>
+        <div class="hero-amount">$100,000</div>
+        <div class="hero-title">A Real Condo in a Real Location</div>
+        <div class="hero-analogy">"Like buying a decent apartment in a growing city — not the penthouse, but a real asset in a real building that real tenants want to rent."</div>
+      </div>
+      <div class="eli5"><div class="eli5-hd"><svg><use href="#i-info"/></svg><span>Explain it like I'm 5</span></div><p>$100,000 buys you a <strong>1-bedroom condo in a good Phnom Penh building</strong> — in BKK1 or Daun Penh, where expats and diplomats actually want to live. Or you can <strong>split the money</strong>: one unit for rental income, plus a pre-construction bet for upside. You're now thinking like an investor.</p></div>
+      <div class="stats-row">
+        <div class="stat-card"><span class="sv" style="color:#C45A18">$1,800–2,650</span><span class="sl">Price/sqm in BKK1</span></div>
+        <div class="stat-card"><span class="sv" style="color:#C45A18">6–8%</span><span class="sl">Gross yield</span></div>
+        <div class="stat-card"><span class="sv" style="color:#C45A18">~$550/mo</span><span class="sl">Typical 1-bed rent, BKK1</span></div>
+      </div>
+      <div class="sec-hdr"><svg><use href="#i-layers"/></svg><span>What to do with it</span></div>
+      <div class="opts">
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#FFF5EC"><svg style="color:#C45A18"><use href="#i-building"/></svg></div><span class="o-ret" style="background:#FFF5EC;color:#C45A18">Net ~4.5–5.5%</span></div>
+          <div class="opt-title">1-bed condo, BKK1 or Daun Penh</div>
+          <div class="opt-desc">Prime location = lower vacancy. Expats, NGO workers, Korean/Japanese professionals pay $500–$700/month. <strong>Buildings with management companies outperform self-managed significantly.</strong> Ask for current occupancy data before buying.</div>
+        </div>
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#FFF5EC"><svg style="color:#C45A18"><use href="#i-hotel"/></svg></div><span class="o-ret" style="background:#FFF5EC;color:#C45A18">Gross 7–8%, rising</span></div>
+          <div class="opt-title">Serviced apartment unit</div>
+          <div class="opt-desc">Buy into a managed serviced apartment project. Grade A buildings saw rents rise <strong>12.6% in H1 2025</strong>. Operator handles everything. Grade A yields are outperforming regular condos right now — occupancy improving steadily.</div>
+        </div>
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#FFF5EC"><svg style="color:#C45A18"><use href="#i-land"/></svg></div><span class="o-ret" style="background:#FFF5EC;color:#C45A18">Speculative, 5yr+</span></div>
+          <div class="opt-title">Land, Techo Airport corridor</div>
+          <div class="opt-desc">Techo International Airport opened <strong>September 2025</strong>. Land along Hun Sen Boulevard (Kandal Province) showing fresh price momentum. Must hold via Cambodian Trust structure. Minimum 5–7 year hold.</div>
+        </div>
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#FFF5EC"><svg style="color:#C45A18"><use href="#i-chart"/></svg></div><span class="o-ret" style="background:#FFF5EC;color:#C45A18">Income + upside</span></div>
+          <div class="opt-title">70/30 split approach</div>
+          <div class="opt-desc">$70K in a mid-range rental condo for income. $30K as deposit on a pre-launch unit for growth. Balanced strategy for first-time investors who want both cash flow and a capital gain bet.</div>
+        </div>
+      </div>
+      <div class="risk-sec">
+        <div class="risk-top"><div class="sec-hdr" style="margin-bottom:0"><svg><use href="#i-trend"/></svg><span>Risk level</span></div><span class="risk-lv" style="background:#FFF5EC;color:#C45A18">Medium</span></div>
+        <div class="risk-track"><div class="risk-mk" style="left:37%"></div></div>
+        <div class="risk-lbs"><span>Low</span><span>Medium</span><span>High</span></div>
+      </div>
+      <div class="wo"><div class="wo-hd"><svg><use href="#i-alert"/></svg><span>Ground truth · 2025–2026</span></div><ul>
+        <li>Luxury condo occupancy was <strong>58% in 2024</strong> — down from 63%. Stay mid-market, not luxury</li>
+        <li>Gross 6–8% sounds great vs Bangkok (3–4%). After 10% rental tax + mgmt fees, net is <strong>4.5–5.5%</strong></li>
+        <li>Techo Airport is real and operational — land on its corridor is a legitimate medium-term play</li>
+        <li>Transaction volumes on REAKH rose <strong>25% in 2025</strong> — market liquidity is improving</li>
+      </ul></div>
+      <div class="cta"><div><div class="cta-tx">Model your 70/30 split portfolio</div><div class="cta-sb">Nick builds a 3-option comparison at this budget — no obligation</div></div><button class="cta-btn" onclick="wa('Hi, I\'d like Nick to model my portfolio options at this budget.')"><svg><use href="#i-arr"/></svg>Model My Portfolio</button></div>
+      <div class="nav-hint"><svg><use href="#i-arr"/></svg> Next: $500,000 — The Serious Player</div>
+    </div>
+
+    <!-- T4 $500K -->
+    <div id="t4" class="panel">
+      <div class="panel-hero" style="background:linear-gradient(135deg,#9A6E08,#C49010)">
+        <div class="hero-wm"><svg width="150" height="150"><use href="#i-brief"/></svg></div>
+        <div class="hero-top">
+          <div class="hero-tag"><svg width="11" height="11"><use href="#i-brief"/></svg> Level 4 · Serious Player</div>
+          <div class="hero-lvl">$500,000</div>
+        </div>
+        <div class="hero-amount">$500,000</div>
+        <div class="hero-title">Build a Portfolio — or Fund a Small Project</div>
+        <div class="hero-analogy">"Like going from buying one shop to owning a small retail strip. The economics change — and so does who takes your calls."</div>
+      </div>
+      <div class="eli5"><div class="eli5-hd"><svg><use href="#i-info"/></svg><span>Explain it like I'm 5</span></div><p>Half a million in Cambodia gives you <strong>real options</strong>. Buy 4–5 condos across buildings and collect rent from multiple tenants at once. Or fund a small building project alongside a local developer and <strong>share the profits when the units sell</strong>. The best off-market deals start appearing at this budget level.</p></div>
+      <div class="stats-row">
+        <div class="stat-card"><span class="sv" style="color:#9A6E08">4–6 units</span><span class="sl">Portfolio size possible</span></div>
+        <div class="stat-card"><span class="sv" style="color:#9A6E08">$2,500–4,500/mo</span><span class="sl">Est. net income</span></div>
+        <div class="stat-card"><span class="sv" style="color:#9A6E08">QIP eligible</span><span class="sl">Govt. structure available</span></div>
+      </div>
+      <div class="sec-hdr"><svg><use href="#i-layers"/></svg><span>What to do with it</span></div>
+      <div class="opts">
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#FFFBEC"><svg style="color:#9A6E08"><use href="#i-building"/></svg></div><span class="o-ret" style="background:#FFFBEC;color:#9A6E08">Net ~$3,000–4,500/mo</span></div>
+          <div class="opt-title">Multi-unit condo portfolio</div>
+          <div class="opt-desc">Buy 4–6 condos across two buildings in different districts. One manager handles everything. <strong>Spread vacancy risk</strong> — if one unit sits empty, the others still pay. Stick to 1–2 bed, mid-range buildings.</div>
+        </div>
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#FFFBEC"><svg style="color:#9A6E08"><use href="#i-shake"/></svg></div><span class="o-ret" style="background:#FFFBEC;color:#9A6E08">Target: 15–20% profit</span></div>
+          <div class="opt-title">JV with a local developer</div>
+          <div class="opt-desc">Co-fund a 10–20 unit boutique building with a licensed developer. You provide capital, they provide land and construction. Profit split on unit sales. <strong>Requires SIAC arbitration clause in the contract — non-negotiable.</strong></div>
+        </div>
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#FFFBEC"><svg style="color:#9A6E08"><use href="#i-ware"/></svg></div><span class="o-ret" style="background:#FFFBEC;color:#9A6E08">Net 8–10% yield</span></div>
+          <div class="opt-title">Industrial warehouse, approved SEZ</div>
+          <div class="opt-desc">Cambodia has 26 operating SEZs. Industrial sector added 1,900ha in 2025. Lease to manufacturers — garment, electronics, EV components. Stable USD income, 3–5yr leases. <strong>Confirm CDC approval of the SEZ before committing.</strong></div>
+        </div>
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#FFFBEC"><svg style="color:#9A6E08"><use href="#i-home"/></svg></div><span class="o-ret" style="background:#FFFBEC;color:#9A6E08">8–11% right property</span></div>
+          <div class="opt-title">Villa conversion, Phnom Penh</div>
+          <div class="opt-desc">Colonial and modern villas in central PP converted to boutique offices, cafes, embassy residences. High demand from NGOs and corporate tenants. Triple-net lease possible. Requires Cambodian trust for the land component.</div>
+        </div>
+      </div>
+      <div class="risk-sec">
+        <div class="risk-top"><div class="sec-hdr" style="margin-bottom:0"><svg><use href="#i-trend"/></svg><span>Risk level</span></div><span class="risk-lv" style="background:#FFFBEC;color:#9A6E08">Medium</span></div>
+        <div class="risk-track"><div class="risk-mk" style="left:44%"></div></div>
+        <div class="risk-lbs"><span>Low</span><span>Medium</span><span>High</span></div>
+      </div>
+      <div class="wo"><div class="wo-hd"><svg><use href="#i-alert"/></svg><span>Ground truth · 2025–2026</span></div><ul>
+        <li>JV contracts must be in English AND Khmer. <strong>Always include SIAC arbitration clause</strong></li>
+        <li>At $500K+ you can register a <strong>QIP with Cambodia's CDC</strong> — tax holidays, duty exemptions, repatriation rights</li>
+        <li>Industrial is the strongest-performing sector — real manufacturer demand, not speculative</li>
+        <li><strong>US 36% tariff on Cambodian exports</strong> threatens manufacturing inflows. Assess each tenant's end-market</li>
+        <li>Office vacancy in Phnom Penh is 35%+ — avoid office-only plays entirely</li>
+      </ul></div>
+      <div class="cta"><div><div class="cta-tx">Access off-market JV opportunities</div><div class="cta-sb">Nick maintains active developer relationships at this level</div></div><button class="cta-btn" onclick="wa('Hi, I\'d like to access off-market deal flow at this investment level.')"><svg><use href="#i-arr"/></svg>Request Deal Flow</button></div>
+      <div class="nav-hint"><svg><use href="#i-arr"/></svg> Next: $1,000,000 — The Investor</div>
+    </div>
+
+    <!-- T5 $1M -->
+    <div id="t5" class="panel">
+      <div class="panel-hero" style="background:linear-gradient(135deg,#9E2820,#C03228)">
+        <div class="hero-wm"><svg width="150" height="150"><use href="#i-chart"/></svg></div>
+        <div class="hero-top">
+          <div class="hero-tag"><svg width="11" height="11"><use href="#i-chart"/></svg> Level 5 · The Investor</div>
+          <div class="hero-lvl">$1,000,000</div>
+        </div>
+        <div class="hero-amount">$1,000,000</div>
+        <div class="hero-title">Now You're Building, Not Just Buying</div>
+        <div class="hero-analogy">"Like going from owning a few shops to owning the shopping street. You start creating value, not just collecting it. At this level, developers call you — you don't chase them."</div>
+      </div>
+      <div class="eli5"><div class="eli5-hd"><svg><use href="#i-info"/></svg><span>Explain it like I'm 5</span></div><p>One million dollars means you can be the <strong>lead investor</strong> in a real building project. Instead of buying units someone else built, you fund the building — and take the bigger share of profits when it sells. Or you acquire a small hotel that's already earning. Your money is now working on <strong>multiple floors at once.</strong></p></div>
+      <div class="stats-row">
+        <div class="stat-card"><span class="sv" style="color:#C03228">12–18%</span><span class="sl">Realistic dev. IRR</span></div>
+        <div class="stat-card"><span class="sv" style="color:#C03228">5–7yr</span><span class="sl">Investment horizon</span></div>
+        <div class="stat-card"><span class="sv" style="color:#C03228">SG HoldCo</span><span class="sl">Recommended structure</span></div>
+      </div>
+      <div class="sec-hdr"><svg><use href="#i-layers"/></svg><span>What to do with it</span></div>
+      <div class="opts">
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#FFF0EE"><svg style="color:#C03228"><use href="#i-hotel"/></svg></div><span class="o-ret" style="background:#FFF0EE;color:#C03228">NOI: 8–10% if real</span></div>
+          <div class="opt-title">Boutique hotel acquisition, Siem Reap</div>
+          <div class="opt-desc">15–25 room hotel near Angkor Wat. Tourism hit record 6.7M visitors in 2024. New Siem Reap airport opened 2024. <strong>Request 24 months of bank statements</strong> — stated occupancy is routinely inflated 15–20%.</div>
+        </div>
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#FFF0EE"><svg style="color:#C03228"><use href="#i-building"/></svg></div><span class="o-ret" style="background:#FFF0EE;color:#C03228">Target IRR: 15–20%</span></div>
+          <div class="opt-title">Lead developer, boutique tower</div>
+          <div class="opt-desc">Fund and co-develop a 20–40 unit residential tower with a licensed developer. You are anchor investor. Target mid-range pricing ($130–180K/unit) — <strong>that's where real absorption happens</strong>. Luxury segment has 42% vacancy.</div>
+        </div>
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#FFF0EE"><svg style="color:#C03228"><use href="#i-ware"/></svg></div><span class="o-ret" style="background:#FFF0EE;color:#C03228">Net 9–11% yield</span></div>
+          <div class="opt-title">Industrial park, small scale</div>
+          <div class="opt-desc">Build 5–10 warehouse units near an operating SEZ in Kampong Speu or Kandal. BYD's Sihanoukville plant signals real industrial demand. Lease to garment, electronics, or EV component manufacturers. 3–5yr NNN leases.</div>
+        </div>
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#FFF0EE"><svg style="color:#C03228"><use href="#i-land"/></svg></div><span class="o-ret" style="background:#FFF0EE;color:#C03228">2–4× if timing right</span></div>
+          <div class="opt-title">Land banking, airport corridor</div>
+          <div class="opt-desc">Techo Airport operational since Sept 2025. Land values along Hun Sen Boulevard already moving. Hold 5–8 years for rezoning. <strong>Use a Cambodian Trust with a reputable trustee firm — not a verbal agreement.</strong></div>
+        </div>
+      </div>
+      <div class="risk-sec">
+        <div class="risk-top"><div class="sec-hdr" style="margin-bottom:0"><svg><use href="#i-trend"/></svg><span>Risk level</span></div><span class="risk-lv" style="background:#FFF0EE;color:#C03228">Medium–High</span></div>
+        <div class="risk-track"><div class="risk-mk" style="left:56%"></div></div>
+        <div class="risk-lbs"><span>Low</span><span>Medium</span><span>High</span></div>
+      </div>
+      <div class="wo"><div class="wo-hd"><svg><use href="#i-alert"/></svg><span>Ground truth · 2025–2026</span></div><ul>
+        <li>Structure through <strong>Singapore HoldCo → Cambodian OpCo</strong> for tax efficiency and dividend repatriation</li>
+        <li>Hotel acquisitions: request 24 months of actual bank statements, not reported occupancy figures</li>
+        <li>Development lead role: build <strong>20% contingency</strong> into the budget. Cambodian construction timelines always slip</li>
+        <li>Use <strong>DFDL or Sciaroni & Associates</strong> — Cambodia's two most established international real estate law firms</li>
+        <li>Borey (housing estate) is fastest-moving residential segment — mid-range units ($100–150K) absorbing well</li>
+      </ul></div>
+      <div class="cta"><div><div class="cta-tx">$1M investor advisory session</div><div class="cta-sb">Private 60-min consultation with deal structuring included</div></div><button class="cta-btn" onclick="wa('Hi, I\'d like to schedule a private advisory session.')"><svg><use href="#i-phone"/></svg>Schedule Now</button></div>
+      <div class="nav-hint"><svg><use href="#i-arr"/></svg> Next: $5,000,000 — The Deal Maker</div>
+    </div>
+
+    <!-- T6 $5M -->
+    <div id="t6" class="panel">
+      <div class="panel-hero" style="background:linear-gradient(135deg,#5C2A80,#7B3FA8)">
+        <div class="hero-wm"><svg width="150" height="150"><use href="#i-hotel"/></svg></div>
+        <div class="hero-top">
+          <div class="hero-tag"><svg width="11" height="11"><use href="#i-hotel"/></svg> Level 6 · Deal Maker</div>
+          <div class="hero-lvl">$5,000,000</div>
+        </div>
+        <div class="hero-amount">$5,000,000</div>
+        <div class="hero-title">You Define the Terms — Not the Developer</div>
+        <div class="hero-analogy">"Like being the banker at the poker table. Everyone else needs your chips to play. You choose which game you join and set the conditions when you sit down."</div>
+      </div>
+      <div class="eli5"><div class="eli5-hd"><svg><use href="#i-info"/></svg><span>Explain it like I'm 5</span></div><p>Five million means you can <strong>build a full condo tower</strong>, buy a hotel outright, or own an entire industrial estate. You're not sharing profits on someone else's project — <strong>you ARE the project</strong>. The CDC knows your name. You get QIP status, tax holidays, and the ability to repatriate profits freely.</p></div>
+      <div class="stats-row">
+        <div class="stat-card"><span class="sv" style="color:#7B3FA8">QIP registered</span><span class="sl">CDC status available</span></div>
+        <div class="stat-card"><span class="sv" style="color:#7B3FA8">5–8yr</span><span class="sl">Investment horizon</span></div>
+        <div class="stat-card"><span class="sv" style="color:#7B3FA8">$4.9B</span><span class="sl">CDC-approved projects 2023</span></div>
+      </div>
+      <div class="sec-hdr"><svg><use href="#i-layers"/></svg><span>What to do with it</span></div>
+      <div class="opts">
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#F8EEFF"><svg style="color:#7B3FA8"><use href="#i-building"/></svg></div><span class="o-ret" style="background:#F8EEFF;color:#7B3FA8">20–28% on invested capital</span></div>
+          <div class="opt-title">Full residential tower, lead position</div>
+          <div class="opt-desc">Fund a 60–120 unit mid-range tower in Phnom Penh. Cambodian developer partner handles construction. Sell 80% at $130–180K/unit, retain 20% for rental income. <strong>This is the model OCIC and Prince Real Estate use.</strong></div>
+        </div>
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#F8EEFF"><svg style="color:#7B3FA8"><use href="#i-hotel"/></svg></div><span class="o-ret" style="background:#F8EEFF;color:#7B3FA8">Stabilized NOI: 9–12%</span></div>
+          <div class="opt-title">International branded hotel, Phnom Penh</div>
+          <div class="opt-desc">Acquire or develop a 40–80 room property and franchise with a regional brand (Wyndham, IHG). Grade A serviced apartment rents rose <strong>12.6% in H1 2025</strong>. Requires separate operator agreement from ownership structure.</div>
+        </div>
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#F8EEFF"><svg style="color:#7B3FA8"><use href="#i-ware"/></svg></div><span class="o-ret" style="background:#F8EEFF;color:#7B3FA8">Net lease: 9–12%</span></div>
+          <div class="opt-title">SEZ industrial campus</div>
+          <div class="opt-desc">Build 15–25 warehouse units within one of Cambodia's 26 operating SEZs. Long-term leases to manufacturers. <strong>US tariff risk (36%) is real — focus on domestic-market tenants and ASEAN-serving factories, not US exporters.</strong></div>
+        </div>
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#F8EEFF"><svg style="color:#7B3FA8"><use href="#i-building"/></svg></div><span class="o-ret" style="background:#F8EEFF;color:#7B3FA8">Stable 8–10% NNN</span></div>
+          <div class="opt-title">Healthcare or education real estate</div>
+          <div class="opt-desc">Build and lease a private clinic, international school, or specialist medical centre. Cambodia's middle class is growing and under-served. Triple-net leases to operators. <strong>Real demand from Cambodian families — not dependent on tourist flows.</strong></div>
+        </div>
+      </div>
+      <div class="risk-sec">
+        <div class="risk-top"><div class="sec-hdr" style="margin-bottom:0"><svg><use href="#i-trend"/></svg><span>Risk level</span></div><span class="risk-lv" style="background:#F8EEFF;color:#7B3FA8">Medium–High</span></div>
+        <div class="risk-track"><div class="risk-mk" style="left:62%"></div></div>
+        <div class="risk-lbs"><span>Low</span><span>Medium</span><span>High</span></div>
+      </div>
+      <div class="wo"><div class="wo-hd"><svg><use href="#i-alert"/></svg><span>Ground truth · 2025–2026</span></div><ul>
+        <li>Register as a <strong>QIP with the CDC</strong> — tax holidays, import duty exemptions, profit repatriation rights</li>
+        <li>Full tower development: biggest risk is <strong>contractor quality, not market demand</strong>. Use independent project supervisors</li>
+        <li>Cambodia ranked 158/180 on corruption index — <strong>SIAC arbitration clause</strong> in all key contracts is not optional</li>
+        <li>Cambodia's Trust Law (2019) is working — 552 of 683 registered trusts in 2023 were foreign-held</li>
+        <li>Don't invest in luxury condos — oversupply is most severe there. <strong>Mid-range is where real absorption happens</strong></li>
+      </ul></div>
+      <div class="cta"><div><div class="cta-tx">Off-market tower sites and hotel acquisition targets</div><div class="cta-sb">Nick maintains active developer and institutional networks at this level</div></div><button class="cta-btn" onclick="wa('Hi, I\'d like to request a private investment briefing.')"><svg><use href="#i-arr"/></svg>Request Private Briefing</button></div>
+      <div class="nav-hint"><svg><use href="#i-arr"/></svg> Next: $20,000,000 — The Developer</div>
+    </div>
+
+    <!-- T7 $20M -->
+    <div id="t7" class="panel">
+      <div class="panel-hero" style="background:linear-gradient(135deg,#0A5445,#0E6A56)">
+        <div class="hero-wm"><svg width="150" height="150"><use href="#i-crane"/></svg></div>
+        <div class="hero-top">
+          <div class="hero-tag"><svg width="11" height="11"><use href="#i-crane"/></svg> Level 7 · The Developer</div>
+          <div class="hero-lvl">$20,000,000</div>
+        </div>
+        <div class="hero-amount">$20,000,000</div>
+        <div class="hero-title">You're Operating at Corporate Scale</div>
+        <div class="hero-analogy">"You're not a private investor anymore — you're a company. Think OCIC, Prince Real Estate, Borey Peng Huoth. These are the people you're now competing with and partnering with."</div>
+      </div>
+      <div class="eli5"><div class="eli5-hd"><svg><use href="#i-info"/></svg><span>Explain it like I'm 5</span></div><p>$20 million can <strong>build an entire neighbourhood</strong> — 200–500 homes in a gated community, or a whole industrial estate with 20+ factories. You sell or lease to hundreds of buyers. <strong>You're not just an investor — you are the developer.</strong> This is exactly how Cambodia's biggest property companies operate. You're joining that tier.</p></div>
+      <div class="stats-row">
+        <div class="stat-card"><span class="sv" style="color:#0E6A56">$7.32B</span><span class="sl">Construction approved, Cambodia 2025</span></div>
+        <div class="stat-card"><span class="sv" style="color:#0E6A56">93,573</span><span class="sl">Borey units in PP (H2 2024)</span></div>
+        <div class="stat-card"><span class="sv" style="color:#0E6A56">8.2%</span><span class="sl">Borey supply growth 2024</span></div>
+      </div>
+      <div class="sec-hdr"><svg><use href="#i-layers"/></svg><span>What to do with it</span></div>
+      <div class="opts">
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#EDFAF6"><svg style="color:#0E6A56"><use href="#i-town"/></svg></div><span class="o-ret" style="background:#EDFAF6;color:#0E6A56">ROE: 20–35% over cycle</span></div>
+          <div class="opt-title">Borey township development</div>
+          <div class="opt-desc">Build a 200–500 unit gated housing estate in suburban Phnom Penh — Sen Sok, Chbar Ampov, or Kandal near Techo Airport. Sell to Cambodia's middle class on instalment plans. Borey supply grew 8.2% in 2024. <strong>OCIC, Borey Peng Huoth, Prince Real Estate are your benchmark competitors.</strong></div>
+        </div>
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#EDFAF6"><svg style="color:#0E6A56"><use href="#i-ware"/></svg></div><span class="o-ret" style="background:#EDFAF6;color:#0E6A56">Stabilized: 10–13%</span></div>
+          <div class="opt-title">Full SEZ industrial park</div>
+          <div class="opt-desc">Develop a multi-tenant industrial park of 20–40 units within an approved SEZ. Real tenants: garment, EV components (BYD in Sihanoukville), electronics. Revenue: ground lease + facility management. <strong>Assess each tenant's export market — US tariff (36%) is a real headwind for US-serving manufacturers.</strong></div>
+        </div>
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#EDFAF6"><svg style="color:#0E6A56"><use href="#i-grid"/></svg></div><span class="o-ret" style="background:#EDFAF6;color:#0E6A56">Blended: 15–22% IRR</span></div>
+          <div class="opt-title">Mixed-use block, Phnom Penh</div>
+          <div class="opt-desc">Develop a retail podium + residential tower on a prime PP site. Sell residential units, retain commercial floors for long-term rental income. Active models in Chamkarmon and Daun Penh. Requires Cambodian construction partner and independent project manager.</div>
+        </div>
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#EDFAF6"><svg style="color:#0E6A56"><use href="#i-ship"/></svg></div><span class="o-ret" style="background:#EDFAF6;color:#0E6A56">Net 11–14% stabilized</span></div>
+          <div class="opt-title">Logistics hub, port-adjacent</div>
+          <div class="opt-desc">Near Sihanoukville or Phnom Penh port: develop cold storage, multi-tenant warehousing, 3PL facilities. SEZ export value hit $5B in 2024. <strong>Real demand from supply chain operators who need modern logistics infrastructure that doesn't yet exist at scale.</strong></div>
+        </div>
+      </div>
+      <div class="risk-sec">
+        <div class="risk-top"><div class="sec-hdr" style="margin-bottom:0"><svg><use href="#i-trend"/></svg><span>Risk level</span></div><span class="risk-lv" style="background:#FFF3E0;color:#C06000">High</span></div>
+        <div class="risk-track"><div class="risk-mk" style="left:70%"></div></div>
+        <div class="risk-lbs"><span>Low</span><span>Medium</span><span>High</span></div>
+      </div>
+      <div class="wo"><div class="wo-hd"><svg><use href="#i-alert"/></svg><span>Ground truth · 2025–2026</span></div><ul>
+        <li>Borey sales velocity: model <strong>conservatively at 5–8 units/month</strong>. Developers sometimes report 20+ — that's marketing, not real absorption</li>
+        <li>Construction approvals hit $7.32B in 2025 — up 69% vs 2024. Competition for sites and <strong>qualified contractors is intensifying</strong></li>
+        <li>US tariff (36% on Cambodian exports). <strong>Vietnam pays only 20%</strong> — assess each industrial tenant's end-market carefully</li>
+        <li>Large project permitting: budget <strong>12–24 months</strong>, not 6. Factor this into your IRR model explicitly</li>
+        <li>NPL rate in Cambodian banks hit <strong>7.9% in 2025</strong> — local buyers may struggle for mortgages. Offer instalment plans directly</li>
+        <li>Engage DFDL or Sciaroni & Associates for legal structuring + an independent monitor for construction</li>
+      </ul></div>
+      <div class="cta"><div><div class="cta-tx">Corporate-scale advisory available</div><div class="cta-sb">Nick coordinates with legal, CDC registration, and active developer partners</div></div><button class="cta-btn" onclick="wa('Hi, I\'d like to arrange a private briefing for a corporate-scale investment.')"><svg><use href="#i-arr"/></svg>Arrange Private Briefing</button></div>
+      <div class="nav-hint"><svg><use href="#i-arr"/></svg> Next: $100M+ — The Anchor Investor</div>
+    </div>
+
+    <!-- T8 $100M+ -->
+    <div id="t8" class="panel">
+      <div class="panel-hero" style="background:linear-gradient(135deg,#141414,#2E2E2E)">
+        <div class="hero-wm"><svg width="150" height="150"><use href="#i-globe"/></svg></div>
+        <div class="hero-top">
+          <div class="hero-tag"><svg width="11" height="11"><use href="#i-globe"/></svg> Level 8 · Anchor Investor</div>
+          <div class="hero-lvl">$100M+</div>
+        </div>
+        <div class="hero-amount">$100M+</div>
+        <div class="hero-title">You Are a Market-Level Decision</div>
+        <div class="hero-analogy">"You're not choosing between projects — you're choosing between sectors of the economy. Cambodia approved $748M of FDI in January 2025 alone. Capital at your scale shapes which districts get built and which roads get funded."</div>
+      </div>
+      <div class="eli5"><div class="eli5-hd"><svg><use href="#i-info"/></svg><span>Explain it like I'm 5</span></div><p>$100 million can build a <strong>whole city district</strong> — homes, shops, offices, a school, roads. You sell everything, keep the best parts, and collect income for decades. The Cambodian government <strong>adjusts its plans to accommodate yours</strong>. You don't ask what land is available — you say what you want, and people make it happen.</p></div>
+      <div class="stats-row">
+        <div class="stat-card"><span class="sv">$6.9B</span><span class="sl">FDI into Cambodia 2024</span></div>
+        <div class="stat-card"><span class="sv">47%</span><span class="sl">China share of FDI</span></div>
+        <div class="stat-card"><span class="sv">$27B</span><span class="sl">Cambodia's foreign reserves</span></div>
+      </div>
+      <div class="sec-hdr"><svg><use href="#i-layers"/></svg><span>What to do with it</span></div>
+      <div class="opts">
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#F0F0F0"><svg style="color:#1A1A1A"><use href="#i-grid"/></svg></div><span class="o-ret" style="background:#F0F0F0;color:#1A1A1A">Generational income</span></div>
+          <div class="opt-title">Master-planned urban district</div>
+          <div class="opt-desc">Develop 50–200 hectares into a self-contained urban precinct — boreys, retail, offices, school, clinic. This is exactly how <strong>Koh Pich, OCIC's satellite cities, and Chinese-backed districts in Sen Sok were built</strong>. Sell residential progressively to fund the build. Retain commercial for 30-year income. Real, proven model — not theoretical.</div>
+        </div>
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#F0F0F0"><svg style="color:#1A1A1A"><use href="#i-road"/></svg></div><span class="o-ret" style="background:#F0F0F0;color:#1A1A1A">PPA: 20–25yr USD income</span></div>
+          <div class="opt-title">Infrastructure concession</div>
+          <div class="opt-desc">Cambodia has ~$36B in infrastructure committed through 2033. Power generation and port expansion require private capital. Government <strong>Power Purchase Agreements (PPAs)</strong> offer USD-denominated income over 20–25 year terms. Chinese and Korean conglomerates are current participants — this is the peer group you'd join.</div>
+        </div>
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#F0F0F0"><svg style="color:#1A1A1A"><use href="#i-ware"/></svg></div><span class="o-ret" style="background:#F0F0F0;color:#1A1A1A">50yr ground lease</span></div>
+          <div class="opt-title">Anchor SEZ — full zone development</div>
+          <div class="opt-desc">Apply for a government SEZ licence and develop the land from scratch. CDC approved 10 new SEZs in 2024 ($850M registered capital). Model: develop zone, attract 30–100 manufacturers, collect ground rent + services over 50 years. <strong>Phnom Penh SEZ and PPSEZ are the established comps</strong> your zone would compete with.</div>
+        </div>
+        <div class="opt">
+          <div class="opt-top"><div class="o-icon" style="background:#F0F0F0"><svg style="color:#1A1A1A"><use href="#i-hotel"/></svg></div><span class="o-ret" style="background:#F0F0F0;color:#1A1A1A">Hospitality NOI + villa sales</span></div>
+          <div class="opt-title">Large-scale hospitality + residential</div>
+          <div class="opt-desc">Cambodia welcomed 6.7M tourists in 2024 — a record. A 200+ key integrated resort with branded villa sales is a proven regional model. <strong>Kep, Kampot, and Koh Kong are underdeveloped</strong> relative to demand. Not Sihanoukville — avoid until 2028 at earliest.</div>
+        </div>
+      </div>
+      <div class="risk-sec">
+        <div class="risk-top"><div class="sec-hdr" style="margin-bottom:0"><svg><use href="#i-trend"/></svg><span>Risk level</span></div><span class="risk-lv" style="background:#FFF0EE;color:#C03228">High — Frontier</span></div>
+        <div class="risk-track"><div class="risk-mk" style="left:82%"></div></div>
+        <div class="risk-lbs"><span>Low</span><span>Medium</span><span>High</span></div>
+      </div>
+      <div class="wo"><div class="wo-hd"><svg><use href="#i-alert"/></svg><span>Ground truth · 2025–2026</span></div><ul>
+        <li><strong>Sovereign risk is real.</strong> Cambodia ranked 158/180 on corruption index. Allocate no more than 15–20% of a global portfolio here regardless of confidence level</li>
+        <li>Structure through <strong>Singapore HoldCo with ICSID arbitration clauses</strong> — Cambodia has BITs with 27 countries; confirm yours is active</li>
+        <li>China accounts for <strong>47% of all FDI</strong> — at this scale you're entering a competitive environment dominated by Chinese state-backed capital</li>
+        <li>Public debt below 30% GDP, reserves at $27B — macro base is stable, but <strong>banking NPLs at 7.9%</strong> warn against mortgage-dependent exit strategies</li>
+        <li>Hun Manet transition (2023) was smooth and deliberate. Commercial Court (2024) is unproven — <strong>build arbitration rights contractually, not institutionally</strong></li>
+        <li>CGT (20% on gains) in effect since <strong>January 2026</strong> — factor into project milestone exit timing</li>
+      </ul></div>
+      <div class="cta" style="background:linear-gradient(135deg,#141414,#2A2A2A)"><div><div class="cta-tx">This conversation starts in person.</div><div class="cta-sb">Anchor-scale advisory — Phnom Penh, in private</div></div><button class="cta-btn" onclick="wa('Hi, I\'d like to arrange an in-person meeting to discuss an anchor-scale investment.')"><svg><use href="#i-phone"/></svg>Arrange a Meeting</button></div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+function show(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tier-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelector('[data-tier="'+id+'"]').classList.add('active');
+  document.querySelector('.content').scrollTop=0;
+}
+</script>
+<script>function wa(m){window.open('https://wa.me/85511666952?text='+encodeURIComponent(m),'_blank');}</script>
+</body>
+</html>
