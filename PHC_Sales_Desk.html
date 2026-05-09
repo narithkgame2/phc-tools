@@ -408,7 +408,7 @@
         padding: 11px 13px;
         border: 1px solid rgba(14, 30, 53, 0.1);
         border-radius: 10px;
-        background: linear-gradient(180deg, #fdfbf7, #f7f3ea);
+        background: var(--bg);
         font-size: 11px;
         color: var(--tx2);
         line-height: 1.6;
@@ -441,10 +441,10 @@
       }
       .inventory-pill.active,
       .inventory-filter.active {
-        border-color: rgba(200, 164, 90, 0.42);
-        background: rgba(200, 164, 90, 0.1);
-        color: var(--navy);
-        box-shadow: inset 0 0 0 1px rgba(200, 164, 90, 0.14);
+        border-color: rgba(124,92,191,.35);
+        background: rgba(124,92,191,.08);
+        color: var(--purple);
+        box-shadow: inset 0 0 0 1px rgba(124,92,191,.12);
       }
       .inventory-search {
         width: 100%;
@@ -471,7 +471,7 @@
         font-family: "DM Serif Display", serif;
         font-size: 2rem;
         line-height: 1;
-        color: var(--navy);
+        color: var(--tx);
       }
       .inventory-stat .lbl {
         margin-top: 8px;
@@ -517,8 +517,8 @@
         cursor: pointer;
       }
       .inventory-chip.active {
-        background: var(--navy);
-        border-color: var(--navy);
+        background: var(--purple);
+        border-color: var(--purple);
         color: #fff;
       }
       .inventory-search {
@@ -558,7 +558,7 @@
         font-family: "DM Serif Display", serif;
         font-size: 2rem;
         line-height: 1;
-        color: var(--navy);
+        color: var(--tx);
       }
       .inventory-side-type {
         margin-top: 8px;
@@ -1100,7 +1100,7 @@
       .card-title {
         font-size: 11px;
         letter-spacing: 2.5px;
-        color: var(--navy2);
+        color: var(--text-s);
         text-transform: uppercase;
         font-weight: 700;
         margin-bottom: 14px;
@@ -1161,7 +1161,7 @@
       .field select:focus,
       .field input:focus,
       .field textarea:focus {
-        border-color: var(--navy3);
+        border-color: var(--purple);
         background: #fff;
       }
       .cpills {
@@ -1185,8 +1185,8 @@
         align-items: center;
       }
       .cpill.active {
-        background: var(--navy);
-        border-color: var(--navy);
+        background: var(--purple);
+        border-color: var(--purple);
         color: #fff;
       }
       .promo-banner {
@@ -1236,10 +1236,10 @@
         transition: all 0.15s;
       }
       .plan-pill.active {
-        border-color: var(--navy);
-        color: var(--navy);
-        background: rgba(21, 40, 67, 0.04);
-        box-shadow: 0 0 0 3px rgba(21, 40, 67, 0.06);
+        border-color: var(--purple);
+        color: var(--purple);
+        background: rgba(124,92,191,.06);
+        box-shadow: 0 0 0 3px rgba(124,92,191,.1);
       }
       .custom-fields {
         display: none;
@@ -1284,13 +1284,13 @@
         border-radius: 10px;
       }
       .ovr-chip.active {
-        background: rgba(200, 164, 90, 0.1);
-        border-color: rgba(200, 164, 90, 0.35);
-        color: var(--goldd);
+        background: rgba(124,92,191,.1);
+        border-color: rgba(124,92,191,.3);
+        color: var(--purple);
       }
       .ovr-panel {
-        background: rgba(200, 164, 90, 0.04);
-        border: 1px solid rgba(200, 164, 90, 0.14);
+        background: rgba(124,92,191,.04);
+        border: 1px solid rgba(124,92,191,.12);
         border-radius: 8px;
         padding: 14px;
         margin: 10px 0;
@@ -1318,7 +1318,7 @@
       }
       .calc-btn {
         width: 100%;
-        background: linear-gradient(135deg, var(--navy3), var(--navy));
+        background: var(--purple);
         border: none;
         color: #fff;
         font-size: 12px;
@@ -1330,7 +1330,7 @@
         border-radius: 9px;
         transition: all 0.2s;
         margin-top: 14px;
-        box-shadow: 0 6px 18px rgba(14, 30, 53, 0.22);
+        box-shadow: 0 4px 14px rgba(124,92,191,.35);
         min-height: 50px;
       }
       .calc-btn:active {
@@ -1380,12 +1380,12 @@
       .unit-id {
         font-family: "DM Serif Display", serif;
         font-size: 2.4rem;
-        color: var(--navy);
+        color: var(--tx);
         line-height: 1;
       }
       .unit-badge {
         display: inline-block;
-        background: var(--navy);
+        background: var(--purple);
         color: #fff;
         font-size: 11px;
         font-weight: 700;
@@ -1432,9 +1432,9 @@
         text-align: center;
       }
       .price-box.hero {
-        background: linear-gradient(135deg, var(--navy3), var(--navy));
-        border-color: var(--navy);
-        box-shadow: 0 4px 16px rgba(14, 30, 53, 0.18);
+        background: linear-gradient(135deg, var(--purple-l), var(--purple));
+        border-color: var(--purple);
+        box-shadow: 0 4px 16px rgba(124,92,191,.25);
         grid-column: span 2;
       }
       @media (min-width: 500px) {
@@ -1478,7 +1478,7 @@
       .schtitle {
         font-size: 11px;
         letter-spacing: 2.5px;
-        color: var(--navy2);
+        color: var(--text-s);
         text-transform: uppercase;
         font-weight: 700;
         margin-bottom: 8px;
@@ -1509,11 +1509,11 @@
       }
       .schrow:hover {
         background: var(--cream3);
-        border-left-color: var(--goldd);
+        border-left-color: var(--purple);
       }
       .schrow.tot {
-        background: linear-gradient(90deg, var(--navy), var(--navy3));
-        border-left-color: var(--gold);
+        background: linear-gradient(90deg, #1e2030, #2a2d3e);
+        border-left-color: var(--purple);
       }
       .sn {
         width: 26px;
@@ -1525,7 +1525,7 @@
         font-size: 11px;
         font-weight: 700;
         flex-shrink: 0;
-        background: var(--navy);
+        background: var(--purple);
         color: #fff;
       }
       .sn.gold {
@@ -1551,7 +1551,7 @@
       .samt {
         font-family: "DM Serif Display", serif;
         font-size: 1.1rem;
-        color: var(--navy);
+        color: var(--tx);
         white-space: nowrap;
       }
       .schrow.tot .samt {
@@ -1632,25 +1632,25 @@
         height: 18px;
       }
       .doc-btn:hover {
-        border-color: var(--gold);
-        color: var(--goldd);
-        background: rgba(200, 164, 90, 0.06);
+        border-color: var(--purple);
+        color: var(--purple);
+        background: rgba(124,92,191,.06);
       }
       .doc-btn.primary {
-        border-color: var(--gold);
-        color: var(--goldd);
-        background: rgba(200, 164, 90, 0.08);
+        border-color: var(--purple);
+        color: var(--purple);
+        background: rgba(124,92,191,.08);
       }
       .doc-btn.primary span {
-        background: rgba(200, 164, 90, 0.12);
+        background: rgba(124,92,191,.12);
       }
       .doc-btn.tracker-btn {
-        border-color: var(--navy3);
-        color: var(--navy);
-        background: rgba(21, 40, 67, 0.04);
+        border-color: rgba(124,92,191,.3);
+        color: var(--purple);
+        background: rgba(124,92,191,.06);
       }
       .doc-btn.tracker-btn span {
-        background: rgba(21, 40, 67, 0.08);
+        background: rgba(124,92,191,.1);
       }
       .doc-btn.library-btn {
         border-color: rgba(26, 122, 74, 0.18);
@@ -1694,7 +1694,7 @@
         transform: scale(0.96);
       }
       .abtn.save {
-        background: linear-gradient(135deg, #1d3557, var(--navy));
+        background: linear-gradient(135deg, var(--purple-l), var(--purple));
         color: #fff;
       }
       .abtn.save.saved {
@@ -1744,7 +1744,7 @@
       .slider-val {
         font-family: "DM Serif Display", serif;
         font-size: 1.35rem;
-        color: var(--navy);
+        color: var(--tx);
       }
       .slider-wrap {
         position: relative;
@@ -1763,15 +1763,15 @@
         width: 22px;
         height: 22px;
         border-radius: 50%;
-        background: var(--navy);
+        background: var(--purple);
         cursor: pointer;
-        box-shadow: 0 2px 8px rgba(14, 30, 53, 0.3);
+        box-shadow: 0 2px 8px rgba(124,92,191,.3);
         border: 3px solid #fff;
       }
       .slider-fill {
         height: 5px;
         border-radius: 3px;
-        background: linear-gradient(90deg, var(--gold), var(--navy3));
+        background: linear-gradient(90deg, var(--purple-l), var(--purple));
         position: absolute;
         top: 6px;
         left: 0;
@@ -1809,14 +1809,14 @@
         cursor: pointer;
       }
       .analysis-preset.active {
-        border-color: rgba(200, 164, 90, 0.4);
-        background: rgba(200, 164, 90, 0.08);
-        color: var(--navy);
+        border-color: rgba(124,92,191,.35);
+        background: rgba(124,92,191,.08);
+        color: var(--purple);
       }
       .analysis-step {
         border: 1px solid var(--bd);
         border-radius: 14px;
-        background: linear-gradient(180deg, #fff, #faf7f0);
+        background: #fff;
         padding: 14px;
       }
       .analysis-step-hd {
@@ -1829,7 +1829,7 @@
         width: 28px;
         height: 28px;
         border-radius: 50%;
-        background: var(--navy);
+        background: var(--purple);
         color: #fff;
         display: inline-flex;
         align-items: center;
@@ -1843,7 +1843,7 @@
         font-weight: 800;
         letter-spacing: 1.8px;
         text-transform: uppercase;
-        color: var(--navy2);
+        color: var(--text-s);
       }
       .analysis-step-copy {
         margin-top: 3px;
@@ -1877,8 +1877,8 @@
         padding: 12px;
       }
       .analysis-kpi.primary {
-        background: linear-gradient(135deg, var(--navy3), var(--navy));
-        border-color: var(--navy);
+        background: linear-gradient(135deg, var(--purple-l), var(--purple));
+        border-color: var(--purple);
       }
       .analysis-kpi-k {
         font-size: 11px;
@@ -1894,7 +1894,7 @@
         margin-top: 6px;
         font-family: "DM Serif Display", serif;
         font-size: 1.35rem;
-        color: var(--navy);
+        color: var(--tx);
       }
       .analysis-kpi.primary .analysis-kpi-v {
         color: #fff;
@@ -1931,7 +1931,7 @@
       }
       .analysis-advanced summary::after {
         content: "+";
-        color: var(--goldd);
+        color: var(--purple-l);
         font-size: 16px;
       }
       .analysis-advanced[open] summary::after {
@@ -1969,8 +1969,8 @@
         padding: 12px;
       }
       .loan-scenario.featured {
-        background: linear-gradient(135deg, var(--navy3), var(--navy));
-        border-color: var(--navy);
+        background: linear-gradient(135deg, var(--purple-l), var(--purple));
+        border-color: var(--purple);
       }
       .loan-scenario-k {
         font-size: 11px;
@@ -1986,7 +1986,7 @@
         margin-top: 7px;
         font-family: "DM Serif Display", serif;
         font-size: 1.25rem;
-        color: var(--navy);
+        color: var(--tx);
       }
       .loan-scenario.featured .loan-scenario-v {
         color: #fff;
@@ -2049,8 +2049,8 @@
       }
       .loan-segment button.active {
         background: #fff;
-        color: var(--navy);
-        box-shadow: 0 1px 0 rgba(15, 25, 40, 0.06);
+        color: var(--purple);
+        box-shadow: 0 1px 0 rgba(124,92,191,.1);
       }
       .loan-summary-shell {
         background: #fff;
