@@ -316,28 +316,28 @@ select.vt-sel{padding:4px 8px;border:1px solid var(--border);border-radius:6px;b
       <div class="ws-name">PHC CRM</div>
       <div class="ws-sub">Property Hub Cambodia</div>
     </div>
-    <button class="collapse-btn" onclick="toggleSidebar()" title="Toggle sidebar">&#8249;</button>
+    <button class="collapse-btn" onclick="toggleSidebar()" title="Toggle sidebar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg></button>
   </div>
 
   <div class="sb-search">
-    <span class="sb-search-icon">&#128269;</span>
+    <span class="sb-search-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
     <input type="text" placeholder="Search..." oninput="sbSearch(this.value)"/>
   </div>
 
   <nav class="sb-nav">
     <a class="sb-item" onclick="goDash()">
-      <span class="sb-icon">&#9635;</span><span class="sb-label">Home</span>
+      <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg></span><span class="sb-label">Home</span>
     </a>
     <a class="sb-item" id="sbInboxItem" onclick="goOverdue()">
-      <span class="sb-icon">&#9993;</span><span class="sb-label">Inbox</span>
+      <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span><span class="sb-label">Inbox</span>
       <span class="sb-badge zero" id="overdueBadge">0</span>
     </a>
 
     <div class="sb-section-label">SPACES</div>
 
     <div class="sb-space-hdr" onclick="toggleSpace(this)">
-      <span class="sb-space-toggle">&#9660;</span>
-      <span class="sb-icon">&#9671;</span>
+      <span class="sb-space-toggle"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,9 12,15 18,9"/></svg></span>
+      <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 2,7 12,12 22,7"/><polyline points="2,17 12,22 22,17"/><polyline points="2,12 12,17 22,12"/></svg></span>
       <span class="sb-label" style="flex:1;font-size:12px;font-weight:500;color:var(--sb-text-s)">PHC Leads</span>
     </div>
     <div class="sb-space-items" id="spaceItems">
@@ -355,13 +355,13 @@ select.vt-sel{padding:4px 8px;border:1px solid var(--border);border-radius:6px;b
     </div>
 
     <div class="sb-section-label">COMING SOON</div>
-    <a class="sb-item sb-disabled"><span class="sb-icon">&#128101;</span><span class="sb-label">Clients</span></a>
-    <a class="sb-item sb-disabled"><span class="sb-icon">&#128176;</span><span class="sb-label">Deals</span></a>
-    <a class="sb-item sb-disabled"><span class="sb-icon">&#128202;</span><span class="sb-label">Commissions</span></a>
+    <a class="sb-item sb-disabled"><span class="sb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="sb-label">Clients</span></a>
+    <a class="sb-item sb-disabled"><span class="sb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span><span class="sb-label">Deals</span></a>
+    <a class="sb-item sb-disabled"><span class="sb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="sb-label">Commissions</span></a>
 
     <div class="sb-section-label">AGENTS</div>
     <a class="sb-item" id="sbAgentAll" onclick="sbSetAgent('',this)">
-      <span class="sb-icon" style="font-size:11px">&#128101;</span><span class="sb-label">All Agents</span>
+      <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="sb-label">All Agents</span>
     </a>
     <a class="sb-item" id="sbAgentNick" onclick="sbSetAgent('Nick',this)">
       <div class="av-ring" style="background:var(--av-nick)">NK</div><span class="sb-label">Nick</span>
@@ -379,7 +379,7 @@ select.vt-sel{padding:4px 8px;border:1px solid var(--border);border-radius:6px;b
 
   <div class="sb-footer">
     <a class="sb-item" onclick="toggleSetup()">
-      <span class="sb-icon">&#9881;</span>
+      <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
       <span class="sb-label">Setup Sheets</span>
       <div class="api-dot" id="apiDot"></div>
     </a>
@@ -392,24 +392,24 @@ select.vt-sel{padding:4px 8px;border:1px solid var(--border);border-radius:6px;b
   <!-- TOPBAR -->
   <div class="topbar">
     <span class="breadcrumb">PHC Leads</span>
-    <span class="bc-sep">&#8250;</span>
+    <span class="bc-sep">/</span>
     <span class="bc-active" id="bcCurrent">All Leads</span>
     <div class="topbar-right">
       <span class="api-status-txt" id="apiTxt">Local mode</span>
-      <button class="tb-icon-btn" onclick="loadLeads()" title="Refresh">&#8635;</button>
+      <button class="tb-icon-btn" onclick="loadLeads()" title="Refresh"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23,4 23,10 17,10"/><polyline points="1,20 1,14 7,14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></button>
     </div>
   </div>
 
   <!-- VIEW TOOLBAR -->
   <div class="view-toolbar">
     <div class="vsw-group">
-      <button class="vsw on" id="vKanban" onclick="setView('kanban')">&#9635; Board</button>
-      <button class="vsw" id="vList" onclick="setView('list')">&#8801; List</button>
-      <button class="vsw" id="vDash" onclick="setView('dash')">&#9685; Dashboard</button>
+      <button class="vsw on" id="vKanban" onclick="setView('kanban')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Board</button>
+      <button class="vsw" id="vList" onclick="setView('list')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> List</button>
+      <button class="vsw" id="vDash" onclick="setView('dash')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg> Dashboard</button>
     </div>
     <div class="vt-sep"></div>
     <div class="filter-wrap">
-      <span style="color:var(--text-m);font-size:11px">&#128269;</span>
+      <span style="color:var(--text-m)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
       <input type="text" id="srchQ" placeholder="Filter leads..." oninput="render()"/>
     </div>
     <select class="vt-sel" id="fltNat" onchange="render()">
@@ -419,8 +419,8 @@ select.vt-sel{padding:4px 8px;border:1px solid var(--border);border-radius:6px;b
       <option>British</option><option>Other</option>
     </select>
     <div class="vt-right">
-      <button class="csv-btn" onclick="exportCSV()">&#8595; CSV</button>
-      <button class="add-btn" onclick="openAdd()">&#65291; New Lead</button>
+      <button class="csv-btn" onclick="exportCSV()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> CSV</button>
+      <button class="add-btn" onclick="openAdd()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> New Lead</button>
     </div>
   </div>
 
@@ -436,7 +436,7 @@ select.vt-sel{padding:4px 8px;border:1px solid var(--border);border-radius:6px;b
 
   <!-- OVERDUE BANNER -->
   <div class="overdue-bar hidden" id="overdueBanner">
-    <span>&#9888;</span><span id="overdueMsg"></span>
+    <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><span id="overdueMsg"></span>
   </div>
 
   <!-- BOARD -->
@@ -464,7 +464,7 @@ select.vt-sel{padding:4px 8px;border:1px solid var(--border);border-radius:6px;b
     <div class="dr-hdr">
       <div class="dr-hdr-top">
         <div class="dr-name" id="drName">-</div>
-        <button class="dr-close" onclick="closeDrawer()">&#10005;</button>
+        <button class="dr-close" onclick="closeDrawer()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       </div>
       <div class="dr-stage-bar" id="drStageBar"></div>
     </div>
@@ -485,7 +485,7 @@ select.vt-sel{padding:4px 8px;border:1px solid var(--border);border-radius:6px;b
   <div class="modal">
     <div class="modal-hdr">
       <h2>New Lead</h2>
-      <button class="modal-x" onclick="closeModal()">&#10005;</button>
+      <button class="modal-x" onclick="closeModal()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <div class="modal-body">
       <div class="m-grid">
@@ -566,7 +566,13 @@ const STAGES = [
 ];
 
 const ACTIVITY_ICONS = {
-  'Call':'📞','WhatsApp':'💬','Email':'📧','Viewing':'🏠','Note':'📝','Meeting':'🤝','Other':'📌'
+  'Call':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-1.87 2A19.79 19.79 0 0 1 10 17.93 19.47 19.47 0 0 1 4.07 12 19.79 19.79 0 0 1 2.12 2.09 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+  'WhatsApp':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>',
+  'Email':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',
+  'Viewing':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
+  'Note':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>',
+  'Meeting':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  'Other':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>'
 };
 
 const AGENT_AV = {
@@ -753,7 +759,7 @@ function renderKanban(){
         (pv>0?'<span class="k-col-val">'+fmtUSD(pv)+'</span>':'')+
       '</div>'+
       '<div class="k-cards" id="col_'+stage.k.replace(/\s/g,'_')+'">'+
-        (cards.length?cards.map(function(l){return renderCard(l);}).join(''):'<div class="empty"><div class="ei">&#43;</div><p>No leads</p></div>')+
+        (cards.length?cards.map(function(l){return renderCard(l);}).join(''):'<div class="empty"><div class="ei"><svg width=\"28\" height=\"28\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"><line x1=\"12\" y1=\"5\" x2=\"12\" y2=\"19\"/><line x1=\"5\" y1=\"12\" x2=\"19\" y2=\"12\"/></svg></div><p>No leads</p></div>')+
       '</div>'+
       '<div class="k-col-add" onclick="openAddForStage(\''+stage.k+'\')">&#43; Add lead</div>'+
     '</div>';
@@ -785,7 +791,7 @@ function renderCard(l){
       '<div class="k-card-footer">'+
         '<div class="k-due '+fu.cls+'">'+fu.txt+'</div>'+
         '<div class="k-footer-right">'+
-          (acts?'<span class="k-acts">&#128172; '+acts+'</span>':'')+
+          (acts?'<span class="k-acts"><svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z\"/></svg> '+acts+'</span>':'')+
           '<div class="avatar-sm" style="background:'+av.bg+'">'+av.initials+'</div>'+
         '</div>'+
       '</div>'+
@@ -798,7 +804,7 @@ function renderList(){
   var tbody=document.getElementById('listBody');
   var filtered=getFiltered();
   if(!filtered.length){
-    tbody.innerHTML='<tr><td colspan="7"><div class="empty"><div class="ei">&#128269;</div><p>No leads match filters</p></div></td></tr>';
+    tbody.innerHTML='<tr><td colspan="7"><div class="empty"><div class="ei"><svg width=\"28\" height=\"28\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><line x1=\"21\" y1=\"21\" x2=\"16.65\" y2=\"16.65\"/></svg></div><p>No leads match filters</p></div></td></tr>';
     return;
   }
   tbody.innerHTML=filtered.map(function(l){
@@ -969,7 +975,7 @@ function renderDrawerDetails(l){
 function renderDrawerActivity(l){
   var actHTML=(l.activities||[]).length?
     (l.activities||[]).map(function(a){
-      return '<div class="act-item"><div class="act-icon">'+(ACTIVITY_ICONS[a.type]||'📌')+'</div><div><div class="act-text"><strong>'+escHtml(a.type)+'</strong> — '+escHtml(a.note)+'</div><div class="act-time">'+new Date(a.ts).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})+'</div></div></div>';
+      return '<div class="act-item"><div class="act-icon">'+(ACTIVITY_ICONS[a.type]||'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>')+'</div><div><div class="act-text"><strong>'+escHtml(a.type)+'</strong> — '+escHtml(a.note)+'</div><div class="act-time">'+new Date(a.ts).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})+'</div></div></div>';
     }).join(''):
     '<div class="no-act">No activities yet.</div>';
   document.getElementById('drBody').innerHTML=
@@ -1145,15 +1151,15 @@ function goOverdue(){ sbSetFilter('__overdue__','Overdue',document.getElementByI
 function toggleSidebar(){
   sidebarCollapsed=!sidebarCollapsed;
   document.getElementById('sidebar').classList.toggle('collapsed',sidebarCollapsed);
-  document.querySelector('.collapse-btn').textContent=sidebarCollapsed?'›':'‹';
+  document.querySelector('.collapse-btn').innerHTML=sidebarCollapsed?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,18 15,12 9,6"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>';
 }
 
 function toggleSpace(hdr){
   var items=document.getElementById('spaceItems');
   var toggle=hdr.querySelector('.sb-space-toggle');
   var isOpen=items.style.maxHeight!=='0px'&&items.style.maxHeight!=='';
-  if(isOpen){items.style.maxHeight='0px';toggle.textContent='▶';}
-  else{items.style.maxHeight='400px';toggle.textContent='▼';}
+  if(isOpen){items.style.maxHeight='0px';toggle.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,18 15,12 9,6"/></svg>';}
+  else{items.style.maxHeight='400px';toggle.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,9 12,15 18,9"/></svg>';}
 }
 
 function toggleSetup(){
