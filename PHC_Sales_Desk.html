@@ -4693,6 +4693,100 @@
       .cta-pipe.in-pipe{background:var(--acc);color:#fff;border-color:var(--acc)}
       .cta-save.saved{background:#edf8f2;border-color:rgba(16,185,129,.3);color:var(--grn)}
       .cta-remind{color:var(--amber);border-color:rgba(245,158,11,.3)}
+    
+      /* ═══════════════════════════════════════════════
+         NEW APP SHELL — top-bar, 3-mode layout
+         ═══════════════════════════════════════════ */
+
+      /* Reset old sidebar-based layout */
+      .sidebar{display:none!important}
+      .topbar{display:none!important}
+      .sd-main{display:flex;flex-direction:column;flex:1;overflow:hidden;background:var(--bg)}
+
+      /* App shell */
+      .app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+      /* ── Top bar ── */
+      .app-topbar{background:#191b23;height:52px;display:flex;align-items:center;padding:0 12px 0 14px;gap:0;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.06);z-index:400}
+      .atb-brand{display:flex;align-items:center;gap:8px;flex-shrink:0;text-decoration:none}
+      .atb-logo{width:28px;height:28px;border-radius:7px;background:var(--acc);display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:14px;color:#fff;font-weight:700;flex-shrink:0}
+      .atb-name{font-size:12px;font-weight:600;color:rgba(255,255,255,.55);white-space:nowrap;letter-spacing:.02em}
+      .atb-div{width:1px;height:18px;background:rgba(255,255,255,.1);margin:0 10px;flex-shrink:0}
+      .atb-proj-wrap{display:flex;align-items:center;gap:6px;flex-shrink:0}
+      .atb-proj-icon{color:rgba(255,255,255,.35);flex-shrink:0}
+      .atb-proj-sel{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;font-size:12px;font-weight:600;padding:5px 10px;outline:none;cursor:pointer;font-family:'Inter',sans-serif;max-width:170px;-webkit-appearance:none;appearance:none}
+      .atb-proj-sel option{background:#1f2333;color:#fff}
+      .atb-nav{display:flex;align-items:center;gap:2px;margin:0 auto}
+      .atb-mode{background:none;border:none;color:rgba(255,255,255,.45);font-size:13px;font-weight:600;padding:6px 16px;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:6px;transition:all .15s;white-space:nowrap;position:relative}
+      .atb-mode:hover{color:rgba(255,255,255,.8);background:rgba(255,255,255,.06)}
+      .atb-mode.active{color:#fff;background:rgba(124,92,191,.28)}
+      .atb-mode svg{opacity:.7}
+      .atb-mode.active svg{opacity:1}
+      .atb-badge{background:var(--red);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:8px;min-width:16px;text-align:center;line-height:1.4}
+      .atb-right{display:flex;align-items:center;gap:2px;margin-left:8px;flex-shrink:0}
+      .atb-icon-btn{background:none;border:none;color:rgba(255,255,255,.45);cursor:pointer;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;position:relative;transition:all .15s;font-family:'Inter',sans-serif;flex-direction:column;gap:1px}
+      .atb-icon-btn:hover{background:rgba(255,255,255,.08);color:#fff}
+      .atb-icon-btn.has-agent{color:var(--acc)}
+      .atb-agent-name{font-size:8px;font-weight:700;max-width:34px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1;color:inherit}
+
+      /* ── Content area ── */
+      .app-content{flex:1;overflow:hidden;display:flex;flex-direction:column}
+      .mode-panel{display:none;flex:1;flex-direction:column;overflow-y:auto;overflow-x:hidden}
+      .mode-panel.active{display:flex}
+
+      /* ── Quote mode ── */
+      #mode-panel-quote .container{flex:1}
+
+      /* ── Pipeline mode ── */
+      .pipe-mode-content{flex:1;padding:16px;display:flex;flex-direction:column;gap:12px;max-width:1400px;width:100%;margin:0 auto}
+      .pipe-agent-bar{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:10px 14px}
+      .pab-label{font-size:11px;font-weight:600;color:var(--tx2)}
+      .pab-select{border:1.5px solid var(--bd);background:var(--bg);border-radius:6px;color:var(--tx);font-size:11px;font-weight:600;padding:4px 8px;outline:none;cursor:pointer;font-family:'Inter',sans-serif}
+      .pab-select:focus{border-color:var(--acc)}
+
+      /* Kanban full-width in pipeline mode */
+      #mode-panel-pipeline .kanban{grid-template-columns:repeat(5,minmax(180px,1fr))}
+      @media(max-width:900px){#mode-panel-pipeline .kanban{grid-template-columns:repeat(3,minmax(160px,1fr))}}
+      @media(max-width:600px){#mode-panel-pipeline .kanban{grid-template-columns:repeat(2,minmax(150px,1fr))}}
+
+      /* ── Tools mode ── */
+      .tools-subnav{background:#fff;border-bottom:1px solid var(--bd);padding:0 16px;display:flex;align-items:center;gap:2px;flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+      .tools-subnav::-webkit-scrollbar{display:none}
+      .t-tab{background:none;border:none;border-bottom:2px solid transparent;color:var(--tx3);font-size:12px;font-weight:600;padding:11px 14px;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;transition:all .15s}
+      .t-tab:hover{color:var(--tx2)}
+      .t-tab.active{color:var(--acc);border-bottom-color:var(--acc)}
+      .tools-body{flex:1;overflow-y:auto;overflow-x:hidden}
+      .tools-body .tab-panel{display:none}
+      .tools-body .tab-panel.active{display:block}
+
+      /* ── Onboarding banner ── */
+      #onboardingBanner{flex-shrink:0}
+
+      /* ── Agent picker modal ── */
+      .agent-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9000;display:none;align-items:center;justify-content:center}
+      .agent-modal-bg.open{display:flex}
+      .agent-modal{background:#fff;border-radius:14px;padding:28px 24px;width:340px;max-width:90vw;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+      .am-title{font-size:17px;font-weight:700;color:var(--tx);margin-bottom:4px}
+      .am-sub{font-size:12px;color:var(--tx3);margin-bottom:20px;line-height:1.5}
+      .am-agents{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+      .am-agent-btn{background:var(--bg);border:1.5px solid var(--bd);border-radius:8px;padding:10px 14px;font-size:13px;font-weight:600;color:var(--tx);cursor:pointer;text-align:left;font-family:'Inter',sans-serif;transition:all .15s;display:flex;align-items:center;gap:8px}
+      .am-agent-btn:hover{border-color:var(--acc);color:var(--acc);background:rgba(124,92,191,.06)}
+      .am-agent-btn.selected{border-color:var(--acc);background:rgba(124,92,191,.08);color:var(--acc)}
+      .am-agent-icon{width:28px;height:28px;border-radius:50%;background:var(--bd);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+      .am-nick{background:rgba(124,92,191,.08);border-color:rgba(124,92,191,.3)}
+      .am-nick .am-agent-icon{background:var(--acc);color:#fff}
+      .am-custom-wrap{display:flex;gap:8px}
+      .am-custom-input{flex:1;border:1.5px solid var(--bd);border-radius:8px;padding:9px 12px;font-size:13px;font-family:'Inter',sans-serif;outline:none;color:var(--tx)}
+      .am-custom-input:focus{border-color:var(--acc)}
+      .am-confirm{background:var(--acc);color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
+
+      @media(max-width:640px){
+        .atb-name{display:none}
+        .atb-div{display:none}
+        .atb-mode{padding:6px 10px;font-size:12px}
+        .atb-proj-sel{max-width:120px}
+      }
+
     </style>
   </head>
   <body>
@@ -5190,99 +5284,82 @@ B1 = East | Gross 50㎡ | Net 45㎡
     <!-- ── APP SHELL ── -->
     <div class="app">
 
-    <!-- ── SIDEBAR ── -->
-    <aside class="sidebar" id="sdSidebar">
-      <div class="ws-header">
-        <div class="ws-logo">P</div>
-        <div class="ws-info">
-          <div class="ws-name">Sales Desk</div>
-          <div class="ws-sub">Property Hub Cambodia</div>
-        </div>
-        <button class="collapse-btn" onclick="toggleSdSidebar()" title="Toggle sidebar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg></button>
+    <!-- ── TOP BAR ── -->
+    <header class="app-topbar" id="appTopbar">
+
+      <!-- Brand -->
+      <div class="atb-brand">
+        <div class="atb-logo">P</div>
+        <span class="atb-name">PHC Sales Desk</span>
       </div>
-      <div class="sb-search">
-        <span class="sb-search-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
-        <input type="text" placeholder="Search..." />
+
+      <!-- Divider -->
+      <div class="atb-div"></div>
+
+      <!-- Project switcher -->
+      <div class="atb-proj-wrap">
+        <span class="atb-proj-icon">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </span>
+        <select class="atb-proj-sel" id="projTabsSb" onchange="switchProjSb(this.value)">
+          <option value="">Select project…</option>
+        </select>
       </div>
-      <nav class="sb-nav">
-        <div class="sb-section-label">Primary</div>
-        <button class="sb-item active" id="sdNav-calculator" onclick="goTab('calculator',1)">
-          <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></svg></span>
-          <span class="sb-label">Calculator</span>
+
+      <!-- Mode nav (centred via margin:auto on .atb-nav) -->
+      <nav class="atb-nav">
+        <button class="atb-mode active" id="mode-btn-quote" onclick="setMode('quote')">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></svg>
+          Quote
         </button>
-        <button class="sb-item" id="sdNav-inventory" onclick="goTab('inventory',0)">
-          <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5h18M3 12h18M3 16.5h18M7.5 4.5v15M16.5 4.5v15"/></svg></span>
-          <span class="sb-label">Inventory</span>
+        <button class="atb-mode" id="mode-btn-pipeline" onclick="setMode('pipeline')">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="4" height="18" rx="1"/><rect x="10" y="6" width="4" height="15" rx="1"/><rect x="17" y="9" width="4" height="12" rx="1"/></svg>
+          Pipeline
+          <span class="atb-badge" id="sdNavAlert" style="display:none">!</span>
         </button>
-        <button class="sb-item" id="sdNav-pipeline" onclick="goTab('pipeline',2)">
-          <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="7" r="3"/><circle cx="16.5" cy="8.5" r="2.5"/><path d="M3.5 19a4.5 4.5 0 0 1 9 0"/><path d="M13.5 18.5a3.5 3.5 0 0 1 7 0"/></svg></span>
-          <span class="sb-label">Pipeline</span>
-          <span class="sb-badge" id="sdNavAlert" style="display:none">!</span>
-        </button>
-        <button class="sb-item" id="sdNav-saved" onclick="goTab('saved',3)">
-          <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21 12 17 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"/></svg></span>
-          <span class="sb-label">Saved</span>
-        </button>
-        <div class="sb-section-label">Tools</div>
-        <button class="sb-item" id="sdNav-roi" onclick="goTab('roi',4)">
-          <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18.5 9 11l3.5 3.5L17 7l3 3.5"/><path d="M4 20.5h16"/></svg></span>
-          <span class="sb-label">ROI Calculator</span>
-        </button>
-        <button class="sb-item" id="sdNav-mortgage" onclick="goTab('mortgage',5)">
-          <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 9.5 12 3l8.5 6.5M5.5 9.5v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-10M10 20.5v-6h4v6"/></svg></span>
-          <span class="sb-label">Loan Calculator</span>
-        </button>
-        <button class="sb-item" id="sdNav-compare" onclick="goTab('compare',6)">
-          <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 19V9M12 19V5M18 19v-7M4 19.5h16"/></svg></span>
-          <span class="sb-label">Compare Units</span>
-        </button>
-        <button class="sb-item" id="sdNav-resale" onclick="goTab('resale',7)">
-          <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3 7 21"/><circle cx="7.5" cy="6.5" r="2.5"/><circle cx="16.5" cy="17.5" r="2.5"/></svg></span>
-          <span class="sb-label">Resale</span>
+        <button class="atb-mode" id="mode-btn-tools" onclick="setMode('tools')">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Tools
         </button>
       </nav>
-      <!-- Project picker -->
-      <div class="sd-proj-wrap">
-        <span class="sd-proj-lbl">Active Project</span>
-        <select class="sd-proj-sel" id="projTabsSb" onchange="switchProjSb(this.value)"></select>
-      </div>
-      <!-- Footer: Configure -->
-      <div class="sb-footer">
-        <button class="sb-item" onclick="openCfg()">
-          <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
-          <span class="sb-label">Configure</span>
-          <span id="cfgWarningDot" style="display:none;width:7px;height:7px;background:var(--amber);border-radius:50%;flex-shrink:0"></span>
+
+      <!-- Right actions -->
+      <div class="atb-right">
+        <!-- Agent picker -->
+        <button class="atb-icon-btn" id="agentBtn" onclick="openAgentPicker()" title="Set your name">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          <span class="atb-agent-name" id="agentNameChip"></span>
+        </button>
+        <!-- Configure -->
+        <button class="atb-icon-btn" onclick="openCfg()" title="Configure" style="position:relative">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span id="cfgWarningDot" style="display:none;position:absolute;top:4px;right:4px;width:7px;height:7px;background:var(--amber);border-radius:50%"></span>
         </button>
       </div>
-    </aside>
 
-    <!-- ── MAIN ── -->
-    <div class="sd-main">
+    </header><!-- /app-topbar -->
 
-      <!-- TOPBAR -->
-      <div class="topbar">
-        <span class="breadcrumb">Sales Desk</span>
-        <span class="bc-sep">/</span>
-        <span class="bc-active" id="sdBcCurrent">Calculator</span>
-      </div>
-
-      <!-- ONBOARDING BANNER -->
-      <div id="onboardingBanner" style="display:none;background:var(--sb);color:#fff;padding:10px 14px;border-bottom:1px solid var(--sb-border);flex-shrink:0">
-        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-          <div style="flex:1;min-width:200px">
-            <div style="font-size:12px;font-weight:600;margin-bottom:2px">Welcome to PHC Sales Desk</div>
-            <div style="font-size:11px;opacity:.65">Select a project &rarr; Pick a unit &rarr; Calculate payment plan</div>
-          </div>
-          <div style="display:flex;gap:8px;flex-shrink:0">
-            <button onclick="openCfg()" style="background:rgba(124,92,191,.3);border:1px solid rgba(124,92,191,.5);color:#fff;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Set Up Profile</button>
-            <button onclick="dismissOnboarding()" style="background:none;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);padding:5px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif">Dismiss</button>
-          </div>
+    <!-- ── ONBOARDING BANNER ── -->
+    <div id="onboardingBanner" style="display:none;background:var(--sb);color:#fff;padding:10px 14px;border-bottom:1px solid var(--sb-border);flex-shrink:0">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <div style="flex:1;min-width:200px">
+          <div style="font-size:12px;font-weight:600;margin-bottom:2px">Welcome to PHC Sales Desk</div>
+          <div style="font-size:11px;opacity:.65">Set your name &rarr; Select a project &rarr; Pick a unit &rarr; Calculate</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-shrink:0">
+          <button onclick="openAgentPicker()" style="background:rgba(124,92,191,.3);border:1px solid rgba(124,92,191,.5);color:#fff;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Set Name</button>
+          <button onclick="openCfg()" style="background:rgba(124,92,191,.3);border:1px solid rgba(124,92,191,.5);color:#fff;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Configure</button>
+          <button onclick="dismissOnboarding()" style="background:none;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);padding:5px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif">Dismiss</button>
         </div>
       </div>
+    </div>
 
-      <!-- CONTENT -->
-      <div class="sd-content">
-    <div class="container">
+    <!-- ── CONTENT ── -->
+    <div class="app-content">
+
+      <!-- ══ QUOTE MODE ══ -->
+      <div class="mode-panel active" id="mode-panel-quote">
+        <div class="container">
       <!-- ═══ CALCULATOR ═══ -->
       <div id="tab-calculator" class="tab-panel active">
         <div class="calc-layout">
@@ -5470,32 +5547,21 @@ B1 = East | Gross 50㎡ | Net 45㎡
           </div><!-- /calc-right -->
         </div><!-- /calc-layout -->
       </div><!-- /tab-calculator -->
+        </div><!-- /container quote -->
+      </div><!-- /mode-panel-quote -->
 
-      <!-- ═══ INVENTORY ═══ -->
-      <div id="tab-inventory" class="tab-panel">
-        <div class="card">
-          <div class="card-title">Inventory</div>
-          <div class="inventory-layout">
-            <div>
-              <div class="inventory-toolbar">
-                <div class="inventory-tools" id="inventoryFilters"></div>
-                <input
-                  class="inventory-search"
-                  id="inventorySearch"
-                  type="text"
-                  placeholder="Search unit, type, bed, size, direction"
-                  oninput="renderInventory()"
-                />
-              </div>
-              <div class="inventory-grid" id="inventoryGrid"></div>
-            </div>
-            <aside class="inventory-side" id="inventorySide"></aside>
+      <!-- ══ PIPELINE MODE ══ -->
+      <div class="mode-panel" id="mode-panel-pipeline">
+        <div class="pipe-mode-content">
+
+          <!-- Agent filter bar (Nick-only full view) -->
+          <div class="pipe-agent-bar" id="pipeAgentBar" style="display:none">
+            <span class="pab-label">Viewing pipeline for:</span>
+            <select class="pab-select" id="pipeAgentFilter" onchange="applyAgentFilter()">
+              <option value="">All Agents</option>
+            </select>
           </div>
-        </div>
-      </div>
 
-      <!-- ═══ PIPELINE ═══ -->
-      <div id="tab-pipeline" class="tab-panel">
         <div class="card" style="margin-bottom: 12px">
           <div class="card-title">Commission Tracker</div>
           <div class="comm-panel" id="commPanel"></div>
@@ -5528,6 +5594,45 @@ B1 = East | Gross 50㎡ | Net 45㎡
         </div>
       </div>
 
+        </div><!-- /pipe-mode-content -->
+      </div><!-- /mode-panel-pipeline -->
+
+      <!-- ══ TOOLS MODE ══ -->
+      <div class="mode-panel" id="mode-panel-tools">
+
+        <div class="tools-subnav">
+          <button class="t-tab active" id="ttab-inventory" onclick="setTool('inventory')">Inventory</button>
+          <button class="t-tab" id="ttab-roi" onclick="setTool('roi')">ROI Calculator</button>
+          <button class="t-tab" id="ttab-mortgage" onclick="setTool('mortgage')">Loan Calculator</button>
+          <button class="t-tab" id="ttab-compare" onclick="setTool('compare')">Compare Units</button>
+          <button class="t-tab" id="ttab-saved" onclick="setTool('saved')">Saved Quotes</button>
+          <button class="t-tab" id="ttab-resale" onclick="setTool('resale')">Resale</button>
+        </div>
+
+        <div class="tools-body">
+          <div class="container">
+      <!-- ═══ INVENTORY ═══ -->
+      <div id="tab-inventory" class="tab-panel active">
+        <div class="card">
+          <div class="card-title">Inventory</div>
+          <div class="inventory-layout">
+            <div>
+              <div class="inventory-toolbar">
+                <div class="inventory-tools" id="inventoryFilters"></div>
+                <input
+                  class="inventory-search"
+                  id="inventorySearch"
+                  type="text"
+                  placeholder="Search unit, type, bed, size, direction"
+                  oninput="renderInventory()"
+                />
+              </div>
+              <div class="inventory-grid" id="inventoryGrid"></div>
+            </div>
+            <aside class="inventory-side" id="inventorySide"></aside>
+          </div>
+        </div>
+      </div>
       <!-- ═══ ROI ═══ -->
       <div id="tab-roi" class="tab-panel">
         <div class="card">
@@ -5770,7 +5875,6 @@ B1 = East | Gross 50㎡ | Net 45㎡
           </div>
         </div>
       </div>
-
       <!-- ═══ MORTGAGE ═══ -->
       <div id="tab-mortgage" class="tab-panel">
         <div class="card">
@@ -5890,7 +5994,6 @@ B1 = East | Gross 50㎡ | Net 45㎡
           </div>
         </div>
       </div>
-
       <!-- ═══ COMPARE ═══ -->
       <div id="tab-compare" class="tab-panel">
         <div class="g2" style="gap: 10px">
@@ -5965,7 +6068,6 @@ B1 = East | Gross 50㎡ | Net 45㎡
           ></div>
         </div>
       </div>
-
       <!-- ═══ SAVED ═══ -->
       <div id="tab-saved" class="tab-panel">
         <div class="card">
@@ -5990,7 +6092,6 @@ B1 = East | Gross 50㎡ | Net 45㎡
           </div>
         </div>
       </div>
-
       <!-- ═══ RESALE CALCULATOR ═══ -->
       <div id="tab-resale" class="tab-panel">
 
@@ -6085,10 +6186,27 @@ B1 = East | Gross 50㎡ | Net 45㎡
       </div>
       <!-- /resale -->
     </div>
-    <!-- /container -->
-      </div><!-- /sd-content -->
-    </div><!-- /sd-main -->
+          </div><!-- /container tools -->
+        </div><!-- /tools-body -->
+      </div><!-- /mode-panel-tools -->
+
+    </div><!-- /app-content -->
+
+    <!-- ── AGENT PICKER MODAL ── -->
+    <div class="agent-modal-bg" id="agentModalBg" onclick="if(event.target===this)closeAgentPicker()">
+      <div class="agent-modal">
+        <div class="am-title">Who are you?</div>
+        <div class="am-sub">Your name is saved on this device. Nick unlocks the full pipeline view across all agents.</div>
+        <div class="am-agents" id="amAgentList"></div>
+        <div class="am-custom-wrap">
+          <input type="text" class="am-custom-input" id="amCustomInput" placeholder="Other name…" />
+          <button class="am-confirm" onclick="confirmAgentName()">Confirm</button>
+        </div>
+      </div>
+    </div>
+
     </div><!-- /app -->
+
 
 
     <script>
@@ -8902,6 +9020,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
           spaDate = $("spaDate").value,
           handoverDate = $("handoverDate").value;
         const calcState = captureCalcState();
+        const dealAgent = typeof phcCurrentAgent !== 'undefined' ? phcCurrentAgent : '';
         const schedRows = buildScheduleRows(
           lastCalc,
           bookingDate,
@@ -8930,6 +9049,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
           calcState,
           schedRows,
           notes: "",
+          agent: typeof phcCurrentAgent !== 'undefined' ? phcCurrentAgent : '',
         };
         pipeline.push(deal);
         $("pipeBtn").classList.add("in-pipe");
@@ -9066,7 +9186,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
           const notesHtml = d.notes
             ? `<div class="k-notes has-notes"><span class="inline-icon">${uiIcon("note", "ui-icon sm")}${d.notes}</span></div>`
             : "";
-          return `<div class="${cardCls}" onclick="openDealModal(${d.id})">
+          return `<div class="${cardCls}" data-agent="${d.agent||''}" onclick="openDealModal(${d.id})">
           <div class="k-menu"><button class="k-menu-btn" onclick="event.stopPropagation();removeDeal(${d.id})" title="Remove">${uiIcon("x", "ui-icon sm")}</button></div>
           <div style="font-size:7.5px;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:var(--tx3);margin-bottom:2px">${d.projName.split(" ").slice(-1)[0]}</div>
           <div class="k-unit">${d.uid}</div>
@@ -11164,6 +11284,157 @@ tr:nth-child(even) td{background:#faf8f4}
         var upd = function() { ph.style.display = rc.classList.contains('visible') ? 'none' : ''; };
         new MutationObserver(upd).observe(rc, {attributes:true, attributeFilter:['class']});
       })();
+    </script>
+
+
+    <script>
+      /* ═══ MODE SWITCHING ═══ */
+      var MODES = ['quote','pipeline','tools'];
+      var TOOLS = ['inventory','roi','mortgage','compare','saved','resale'];
+      var currentMode = 'quote';
+      var currentTool = 'inventory';
+
+      function setMode(mode) {
+        MODES.forEach(function(m) {
+          var p = document.getElementById('mode-panel-' + m);
+          var b = document.getElementById('mode-btn-' + m);
+          if (p) p.classList.toggle('active', m === mode);
+          if (b) b.classList.toggle('active', m === mode);
+        });
+        currentMode = mode;
+        if (mode === 'pipeline') {
+          renderPipeline();
+          renderCommPanel();
+          applyAgentFilter();
+        }
+        if (mode === 'tools') {
+          setTool(currentTool);
+        }
+        localStorage.setItem('phcMode', mode);
+      }
+
+      function setTool(tool) {
+        TOOLS.forEach(function(t) {
+          var p = document.getElementById('tab-' + t);
+          var b = document.getElementById('ttab-' + t);
+          if (p) p.classList.toggle('active', t === tool);
+          if (b) b.classList.toggle('active', t === tool);
+        });
+        currentTool = tool;
+        if (tool === 'inventory') renderInventory();
+        localStorage.setItem('phcTool', tool);
+      }
+
+      /* Override goTab so existing internal calls route to new modes */
+      (function() {
+        var _orig = typeof goTab === 'function' ? goTab : null;
+        goTab = function(id, idx) {
+          if (id === 'calculator') { setMode('quote'); return; }
+          if (id === 'pipeline')   { setMode('pipeline'); return; }
+          if (TOOLS.indexOf(id) >= 0) { setMode('tools'); setTool(id); return; }
+          if (_orig) _orig(id, idx);
+        };
+      })();
+
+      /* ═══ AGENT IDENTITY ═══ */
+      var NICK_NAMES = ['nick', 'nicholas'];
+      var AGENT_NAMES = ['Nick','Monika','Narith','Sophea','Ratanak'];
+      var phcCurrentAgent = localStorage.getItem('phcAgent') || '';
+
+      function isNick() {
+        return NICK_NAMES.indexOf(phcCurrentAgent.toLowerCase()) >= 0;
+      }
+
+      function updateAgentUI() {
+        var btn = document.getElementById('agentBtn');
+        var chip = document.getElementById('agentNameChip');
+        if (btn) btn.classList.toggle('has-agent', !!phcCurrentAgent);
+        if (chip) chip.textContent = phcCurrentAgent ? phcCurrentAgent.split(' ')[0] : '';
+        /* Show agent filter bar only for Nick */
+        var bar = document.getElementById('pipeAgentBar');
+        if (bar) bar.style.display = isNick() ? 'flex' : 'none';
+      }
+
+      function openAgentPicker() {
+        var bg = document.getElementById('agentModalBg');
+        var list = document.getElementById('amAgentList');
+        var inp = document.getElementById('amCustomInput');
+        if (!bg) return;
+        /* Build agent buttons */
+        list.innerHTML = '';
+        AGENT_NAMES.forEach(function(name) {
+          var btn = document.createElement('button');
+          btn.className = 'am-agent-btn' + (name.toLowerCase() === 'nick' ? ' am-nick' : '') + (phcCurrentAgent === name ? ' selected' : '');
+          btn.innerHTML = '<div class="am-agent-icon">' + name[0] + '</div>' + name + (name.toLowerCase() === 'nick' ? ' <span style="font-size:10px;opacity:.6;font-weight:400">(Director)</span>' : '');
+          btn.onclick = function() { setAgent(name); closeAgentPicker(); };
+          list.appendChild(btn);
+        });
+        inp.value = '';
+        bg.classList.add('open');
+        setTimeout(function() { inp.focus(); }, 100);
+      }
+
+      function closeAgentPicker() {
+        var bg = document.getElementById('agentModalBg');
+        if (bg) bg.classList.remove('open');
+      }
+
+      function confirmAgentName() {
+        var inp = document.getElementById('amCustomInput');
+        var name = inp ? inp.value.trim() : '';
+        if (name) { setAgent(name); closeAgentPicker(); }
+      }
+
+      function setAgent(name) {
+        phcCurrentAgent = name;
+        localStorage.setItem('phcAgent', name);
+        updateAgentUI();
+        if (currentMode === 'pipeline') applyAgentFilter();
+      }
+
+      /* ═══ PIPELINE AGENT FILTER ═══ */
+      function buildAgentFilterOptions() {
+        var sel = document.getElementById('pipeAgentFilter');
+        if (!sel) return;
+        var names = {};
+        if (typeof pipeline !== 'undefined') {
+          pipeline.forEach(function(d) { if (d.agent) names[d.agent] = true; });
+        }
+        sel.innerHTML = '<option value="">All Agents</option>';
+        Object.keys(names).sort().forEach(function(n) {
+          sel.innerHTML += '<option value="' + n + '">' + n + '</option>';
+        });
+      }
+
+      function applyAgentFilter() {
+        if (!isNick() && phcCurrentAgent) {
+          /* Non-Nick: hide all deals not belonging to current agent */
+          document.querySelectorAll('.k-card').forEach(function(card) {
+            var agent = card.dataset.agent || '';
+            /* Show if no agent recorded (legacy) or matches current agent */
+            card.style.display = (!agent || agent === phcCurrentAgent) ? '' : 'none';
+          });
+        } else {
+          /* Nick: apply dropdown filter */
+          var filterVal = '';
+          var sel = document.getElementById('pipeAgentFilter');
+          if (sel) filterVal = sel.value;
+          document.querySelectorAll('.k-card').forEach(function(card) {
+            var agent = card.dataset.agent || '';
+            card.style.display = (!filterVal || agent === filterVal) ? '' : 'none';
+          });
+          buildAgentFilterOptions();
+        }
+      }
+
+      /* Restore last mode on load */
+      document.addEventListener('DOMContentLoaded', function() {
+        var savedMode = localStorage.getItem('phcMode');
+        var savedTool = localStorage.getItem('phcTool');
+        updateAgentUI();
+        if (savedMode && MODES.indexOf(savedMode) >= 0) setMode(savedMode);
+        if (savedTool && TOOLS.indexOf(savedTool) >= 0) currentTool = savedTool;
+      });
     </script>
 
   </body>
