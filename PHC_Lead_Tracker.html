@@ -633,7 +633,7 @@ async function apiGET(q){
 }
 async function apiPOST(body){
   if(!API_URL) return null;
-  try{ var r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body)}); return await r.json(); }catch{return null;}
+  try{ await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body),mode:'no-cors'}); return {ok:true}; }catch{return null;}
 }
 async function loadLeads(){
   if(!API_URL){
