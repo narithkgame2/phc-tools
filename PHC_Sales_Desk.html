@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PHC · Sales Desk</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
     <style>
@@ -17,25 +17,19 @@
         --gold: #c8a45a;
         --goldl: #dbbe85;
         --goldd: #9a7a3e;
-        --cream: #f7f8fa;
-        --cream2: #f0f1f5;
-        --cream3: #e3e5ea;
-        --tx: #1f2437;
-        --tx2: #5e6882;
-        --tx3: #9ca3af;
-        --bd: #e3e5ea;
-        --grn: #10b981;
-        --red: #ef4444;
-        --amber: #f59e0b;
-        --purple: #7c5cbf;
-        --purple-l: #9d8ef0;
-        --sh: 0 2px 8px rgba(0,0,0,.08);
-        --r: 10px;
-        /* ── ClickUp shell ── */
-        --sb:#191b23;--sb-hover:rgba(255,255,255,.05);--sb-active:rgba(255,255,255,.09);
-        --sb-text:#a8b0c8;--sb-text-s:#ffffff;--sb-icon:#5a6180;--sb-border:rgba(255,255,255,.06);
-        --bg:#f7f8fa;
-        --acc:#7c5cbf;--acc-d:#5a3fa0;
+        --cream: #faf8f4;
+        --cream2: #f3efe8;
+        --cream3: #ede7dd;
+        --tx: #1a2535;
+        --tx2: #4a5e75;
+        --tx3: #8a9aac;
+        --bd: #d8e0ea;
+        --grn: #1a7a4a;
+        --red: #b03030;
+        --amber: #b87010;
+        --purple: #6d28d9;
+        --sh: 0 4px 16px rgba(14, 30, 53, 0.1);
+        --r: 12px;
       }
       * {
         margin: 0;
@@ -43,11 +37,118 @@
         box-sizing: border-box;
         -webkit-tap-highlight-color: transparent;
       }
-      body{font-family:'Inter','DM Sans',sans-serif;background:var(--bg);color:var(--tx);height:100vh;overflow:hidden;-webkit-font-smoothing:antialiased}
-      input,select,button,textarea{font-family:'Inter','DM Sans',sans-serif}
-      /* ── APP SHELL ── */
-      .app{display:flex;height:100vh;overflow:hidden}
+      body {
+        background: var(--cream);
+        color: var(--tx);
+        font-family: "DM Sans", sans-serif;
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+      input,
+      select,
+      button,
+      textarea {
+        font-family: "DM Sans", sans-serif;
+      }
 
+      /* NAV */
+      .proj-bar {
+        background: var(--navy);
+        border-bottom: 2px solid rgba(200, 164, 90, 0.2);
+        display: flex;
+        align-items: stretch;
+        position: sticky;
+        top: 0;
+        z-index: 300;
+        box-shadow: 0 4px 20px rgba(14, 30, 53, 0.35);
+      }
+      .proj-logo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 14px;
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        flex-shrink: 0;
+      }
+      .logo-mark {
+        width: 32px;
+        height: 32px;
+        border-radius: 7px;
+        background: linear-gradient(135deg, var(--gold), var(--goldd));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "DM Serif Display", serif;
+        font-size: 16px;
+        color: var(--navy);
+        flex-shrink: 0;
+      }
+      .logo-text .lt1 {
+        font-size: 12px;
+        font-weight: 700;
+        color: #fff;
+        line-height: 1.2;
+      }
+      .logo-text .lt2 {
+        font-size: 11px;
+        color: var(--gold);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      .proj-tabs {
+        display: flex;
+        overflow-x: auto;
+        flex: 1;
+        scrollbar-width: none;
+      }
+      .proj-tabs::-webkit-scrollbar {
+        display: none;
+      }
+      .proj-tab {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 0 14px;
+        height: 52px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        color: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        border-bottom: 2.5px solid transparent;
+        white-space: nowrap;
+        transition: all 0.18s;
+        flex-shrink: 0;
+        background: none;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+      }
+      .proj-tab:hover {
+        color: rgba(255, 255, 255, 0.7);
+      }
+      .proj-tab.active {
+        color: var(--gold);
+        border-bottom-color: var(--gold);
+      }
+      .proj-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        flex-shrink: 0;
+      }
+      .proj-tab.active .proj-dot {
+        background: var(--gold);
+      }
+      .proj-bar-right {
+        display: flex;
+        align-items: center;
+        padding: 0 10px;
+        gap: 6px;
+        flex-shrink: 0;
+      }
       .cfg-btn {
         background: linear-gradient(
           135deg,
@@ -58,7 +159,7 @@
         color: #fff;
         font-size: 11px;
         font-weight: 700;
-        letter-spacing: 0.02em;
+        letter-spacing: 1px;
         text-transform: uppercase;
         padding: 8px 13px;
         border-radius: 10px;
@@ -84,14 +185,186 @@
         color: #fff;
         transform: translateY(-1px);
       }
+      .hub-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        color: rgba(255,255,255,0.55);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        text-decoration: none;
+        padding: 7px 11px;
+        border-radius: 8px;
+        transition: all 0.18s;
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+      .hub-link:hover {
+        color: rgba(255,255,255,0.85);
+        background: rgba(255,255,255,0.07);
+        border-color: rgba(255,255,255,0.18);
+      }
 
+      /* MAIN TABS */
+      .main-tabs {
+        background: #fff;
+        border-bottom: 1px solid var(--bd);
+        position: sticky;
+        top: 52px;
+        z-index: 200;
+        box-shadow: 0 2px 8px rgba(14, 30, 53, 0.06);
+      }
+      @media (max-width: 700px) {
+        .main-tabs {
+          display: none;
+        }
+      }
+      .main-tabs-inner {
+        display: flex;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      .mtab {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        padding: 10px 4px 8px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        color: var(--tx3);
+        cursor: pointer;
+        border-bottom: 2.5px solid transparent;
+        margin-bottom: -1px;
+        transition: all 0.18s;
+        position: relative;
+      }
+      .mtab svg {
+        width: 15px;
+        height: 15px;
+      }
+      .mtab.tool {
+        opacity: 0.72;
+      }
+      .mtab.active {
+        color: var(--navy);
+        border-bottom-color: var(--gold);
+      }
+      .mtab.tool.active {
+        opacity: 1;
+      }
+      .mtab.active svg {
+        color: var(--goldd);
+      }
+      .mtab-badge {
+        position: absolute;
+        top: 6px;
+        right: calc(50% - 22px);
+        background: var(--red);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        min-width: 14px;
+        height: 14px;
+        border-radius: 7px;
+        padding: 0 3px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .bot-nav {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 300;
+        background: #fff;
+        border-top: 1px solid var(--bd);
+        box-shadow: 0 -4px 16px rgba(14, 30, 53, 0.1);
+      }
+      @media (max-width: 700px) {
+        .bot-nav {
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
+        }
+      }
+      .bnav {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        padding: 6px 2px 9px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        text-transform: uppercase;
+        color: var(--tx3);
+        cursor: pointer;
+        position: relative;
+        background: none;
+        border: none;
+      }
+      .bnav svg {
+        width: 22px;
+        height: 22px;
+      }
+      .bnav.active {
+        color: var(--navy);
+      }
+      .bnav.active svg {
+        color: var(--goldd);
+      }
+      .bnav::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 20%;
+        right: 20%;
+        height: 2.5px;
+        background: var(--gold);
+        border-radius: 0 0 3px 3px;
+        transform: scaleX(0);
+        transition: transform 0.2s;
+      }
+      .bnav.active::after {
+        transform: scaleX(1);
+      }
+      .bnav-badge {
+        position: absolute;
+        top: 4px;
+        right: calc(50% - 18px);
+        background: var(--red);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        min-width: 13px;
+        height: 13px;
+        border-radius: 7px;
+        padding: 0 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
 
       .container {
         max-width: 1100px;
         margin: 0 auto;
-        padding: 16px 12px 32px;
+        padding: 16px 12px 96px;
+      }
+      @media (min-width: 701px) {
+        .container {
+          padding-bottom: 32px;
+        }
       }
       @media (min-width: 1280px) {
+        .main-tabs-inner {
+          max-width: 1380px;
+        }
         .container {
           max-width: 1380px;
           padding-left: 18px;
@@ -123,7 +396,7 @@
         padding: 11px 13px;
         border: 1px solid rgba(14, 30, 53, 0.1);
         border-radius: 10px;
-        background: var(--bg);
+        background: linear-gradient(180deg, #fdfbf7, #f7f3ea);
         font-size: 11px;
         color: var(--tx2);
         line-height: 1.6;
@@ -144,26 +417,26 @@
         padding: 9px 13px;
         font-size: 11px;
         font-weight: 700;
-        letter-spacing: 0.02em;
+        letter-spacing: 0.8px;
         text-transform: uppercase;
         cursor: pointer;
         transition: all 0.18s;
       }
       .inventory-pill strong,
       .inventory-filter strong {
-        color: var(--tx);
+        color: var(--navy);
         margin-left: 4px;
       }
       .inventory-pill.active,
       .inventory-filter.active {
-        border-color: rgba(124,92,191,.35);
-        background: rgba(124,92,191,.08);
-        color: var(--purple);
-        box-shadow: inset 0 0 0 1px rgba(124,92,191,.12);
+        border-color: rgba(200, 164, 90, 0.42);
+        background: rgba(200, 164, 90, 0.1);
+        color: var(--navy);
+        box-shadow: inset 0 0 0 1px rgba(200, 164, 90, 0.14);
       }
       .inventory-search {
         width: 100%;
-        background: var(--bg);
+        background: var(--cream2);
         border: 1.5px solid var(--bd);
         border-radius: 10px;
         color: var(--tx);
@@ -186,12 +459,12 @@
         font-family: "DM Serif Display", serif;
         font-size: 2rem;
         line-height: 1;
-        color: var(--tx);
+        color: var(--navy);
       }
       .inventory-stat .lbl {
         margin-top: 8px;
         font-size: 11px;
-        letter-spacing: 0.04em;
+        letter-spacing: 1.8px;
         text-transform: uppercase;
         color: var(--tx3);
         font-weight: 700;
@@ -227,13 +500,13 @@
         padding: 7px 11px;
         font-size: 11px;
         font-weight: 700;
-        letter-spacing: 0.02em;
+        letter-spacing: 0.8px;
         text-transform: uppercase;
         cursor: pointer;
       }
       .inventory-chip.active {
-        background: var(--purple);
-        border-color: var(--purple);
+        background: var(--navy);
+        border-color: var(--navy);
         color: #fff;
       }
       .inventory-search {
@@ -263,7 +536,7 @@
       }
       .inventory-side-k {
         font-size: 11px;
-        letter-spacing: 0.03em;
+        letter-spacing: 1.4px;
         text-transform: uppercase;
         color: var(--tx3);
         font-weight: 700;
@@ -273,7 +546,7 @@
         font-family: "DM Serif Display", serif;
         font-size: 2rem;
         line-height: 1;
-        color: var(--tx);
+        color: var(--navy);
       }
       .inventory-side-type {
         margin-top: 8px;
@@ -299,7 +572,7 @@
       }
       .inventory-side-box .k {
         font-size: 11px;
-        letter-spacing: 0.03em;
+        letter-spacing: 1.2px;
         text-transform: uppercase;
         color: var(--tx3);
         font-weight: 700;
@@ -307,7 +580,7 @@
       .inventory-side-box .v {
         margin-top: 4px;
         font-size: 11px;
-        color: var(--tx);
+        color: var(--navy);
         font-weight: 700;
       }
       .inventory-side-price {
@@ -323,7 +596,7 @@
         font-family: "DM Serif Display", serif;
         font-size: 1.55rem;
         line-height: 1;
-        color: var(--tx);
+        color: var(--navy);
       }
       .inventory-side-cta {
         width: 100%;
@@ -331,11 +604,11 @@
         border: none;
         border-radius: 10px;
         padding: 11px 12px;
-        background: linear-gradient(135deg, var(--acc-d), var(--acc));
+        background: linear-gradient(135deg, var(--navy3), var(--navy));
         color: #fff;
         font-size: 11px;
         font-weight: 700;
-        letter-spacing: 0.02em;
+        letter-spacing: 1px;
         text-transform: uppercase;
         cursor: pointer;
       }
@@ -361,7 +634,7 @@
         color: var(--tx3);
         text-align: center;
         padding: 5px 0 8px;
-        letter-spacing: 0;
+        letter-spacing: 0.3px;
       }
       @media (max-width: 700px) { .inv-scroll-hint { display: block; } }
       .inventory-table {
@@ -385,10 +658,10 @@
         color: #fff;
         font-size: 11px;
         font-weight: 700;
-        letter-spacing: 0.02em;
+        letter-spacing: 0.8px;
       }
       .inventory-group-row .corner {
-        background: linear-gradient(180deg, var(--acc), var(--acc-d));
+        background: linear-gradient(180deg, var(--navy), var(--navy2));
         min-width: 76px;
       }
       .inventory-type-row th {
@@ -401,10 +674,10 @@
         position: sticky;
         left: 0;
         z-index: 4;
-        background: linear-gradient(180deg, var(--acc), var(--acc-d));
+        background: linear-gradient(180deg, var(--navy), var(--navy2));
         color: #fff;
         font-size: 11px;
-        letter-spacing: 0.03em;
+        letter-spacing: 1.4px;
         text-transform: uppercase;
       }
       .inventory-size-row th {
@@ -420,11 +693,11 @@
       .inventory-unit-head .code {
         font-size: 13px;
         font-weight: 700;
-        color: var(--tx);
+        color: var(--navy);
       }
       .inventory-unit-head .dir {
         font-size: 11px;
-        letter-spacing: 0.01em;
+        letter-spacing: 0.6px;
         text-transform: uppercase;
         color: var(--tx3);
         font-weight: 700;
@@ -436,7 +709,7 @@
       }
       .inventory-detail-head .beds {
         font-size: 11px;
-        color: var(--tx);
+        color: var(--navy);
         font-weight: 700;
       }
       .inventory-detail-head .size {
@@ -451,17 +724,17 @@
         min-width: 76px;
         text-align: center;
         background: #f4ede0;
-        color: var(--tx);
+        color: var(--navy);
         font-size: 12px;
         font-weight: 800;
-        letter-spacing: 0.02em;
+        letter-spacing: 0.8px;
       }
       .inventory-floor small {
         display: block;
         margin-top: 2px;
         font-size: 11px;
         color: var(--tx3);
-        letter-spacing: 0.03em;
+        letter-spacing: 1.4px;
         text-transform: uppercase;
       }
       .inventory-unit {
@@ -496,7 +769,7 @@
       .inventory-unit .u-code {
         font-size: 11px;
         font-weight: 800;
-        letter-spacing: 0.01em;
+        letter-spacing: 0.4px;
       }
       .inventory-unit .u-price {
         margin-top: 4px;
@@ -507,7 +780,7 @@
         margin-top: 4px;
         font-size: 11px;
         font-weight: 700;
-        letter-spacing: 0.01em;
+        letter-spacing: 0.7px;
         text-transform: uppercase;
       }
       .inventory-unit .u-size {
@@ -595,14 +868,14 @@
         font-family: "DM Serif Display", serif;
         font-size: 1.55rem;
         line-height: 1;
-        color: var(--tx);
+        color: var(--navy);
       }
       .inventory-type {
         margin-top: 4px;
         font-size: 11px;
         color: var(--tx3);
         font-weight: 700;
-        letter-spacing: 0.02em;
+        letter-spacing: 1px;
         text-transform: uppercase;
       }
       .inventory-badge {
@@ -610,7 +883,7 @@
         padding: 6px 9px;
         font-size: 11px;
         font-weight: 700;
-        letter-spacing: 0.02em;
+        letter-spacing: 0.8px;
         text-transform: uppercase;
       }
       .inventory-badge.available {
@@ -638,7 +911,7 @@
       }
       .inventory-meta-box .k {
         font-size: 11px;
-        letter-spacing: 0.04em;
+        letter-spacing: 1.6px;
         text-transform: uppercase;
         color: var(--tx3);
         font-weight: 700;
@@ -663,7 +936,7 @@
         color: var(--tx2);
       }
       .inventory-price-row strong {
-        color: var(--tx);
+        color: var(--navy);
         font-size: 16px;
       }
       .inventory-price-row .sub {
@@ -682,7 +955,7 @@
         padding: 7px 8px;
         font-size: 11px;
         font-weight: 700;
-        letter-spacing: 0.01em;
+        letter-spacing: 0.7px;
         text-transform: uppercase;
         cursor: pointer;
         color: var(--tx2);
@@ -718,9 +991,9 @@
       .inventory-cta .action {
         font-size: 11px;
         font-weight: 800;
-        letter-spacing: 0.02em;
+        letter-spacing: 1px;
         text-transform: uppercase;
-        color: var(--amber);
+        color: var(--goldd);
       }
       @media (max-width: 700px) {
         .inventory-stats {
@@ -753,17 +1026,17 @@
       }
       .inventory-pill strong,
       .inventory-filter strong {
-        color: var(--tx);
+        color: var(--navy);
       }
       .inventory-pill.active,
       .inventory-filter.active {
         background: rgba(200, 164, 90, 0.1);
         border-color: rgba(200, 164, 90, 0.42);
-        color: var(--tx);
+        color: var(--navy);
         box-shadow: inset 0 0 0 1px rgba(200, 164, 90, 0.14);
       }
       .inventory-search {
-        background: var(--bg);
+        background: var(--cream2);
         border-color: var(--bd);
         color: var(--tx);
       }
@@ -814,8 +1087,8 @@
       }
       .card-title {
         font-size: 11px;
-        letter-spacing: 0.06em;
-        color: var(--tx2);
+        letter-spacing: 2.5px;
+        color: var(--navy2);
         text-transform: uppercase;
         font-weight: 700;
         margin-bottom: 14px;
@@ -851,7 +1124,7 @@
       .field label {
         display: block;
         font-size: 11px;
-        letter-spacing: 0.03em;
+        letter-spacing: 1.2px;
         color: var(--tx2);
         text-transform: uppercase;
         font-weight: 600;
@@ -861,7 +1134,7 @@
       .field input,
       .field textarea {
         width: 100%;
-        background: var(--bg);
+        background: var(--cream2);
         border: 1.5px solid var(--bd);
         border-radius: 8px;
         color: var(--tx);
@@ -876,7 +1149,7 @@
       .field select:focus,
       .field input:focus,
       .field textarea:focus {
-        border-color: var(--purple);
+        border-color: var(--navy3);
         background: #fff;
       }
       .cpills {
@@ -900,8 +1173,8 @@
         align-items: center;
       }
       .cpill.active {
-        background: var(--purple);
-        border-color: var(--purple);
+        background: var(--navy);
+        border-color: var(--navy);
         color: #fff;
       }
       .promo-banner {
@@ -926,7 +1199,7 @@
         color: #fff;
         font-size: 11px;
         font-weight: 700;
-        letter-spacing: 0.03em;
+        letter-spacing: 1.2px;
         padding: 3px 9px;
         border-radius: 20px;
         white-space: nowrap;
@@ -939,7 +1212,7 @@
         margin-top: 8px;
       }
       .plan-pill {
-        background: var(--bg);
+        background: var(--cream2);
         border: 1.5px solid var(--bd);
         border-radius: 8px;
         padding: 10px 14px;
@@ -951,16 +1224,16 @@
         transition: all 0.15s;
       }
       .plan-pill.active {
-        border-color: var(--purple);
-        color: var(--purple);
-        background: rgba(124,92,191,.06);
-        box-shadow: 0 0 0 3px rgba(124,92,191,.1);
+        border-color: var(--navy);
+        color: var(--navy);
+        background: rgba(21, 40, 67, 0.04);
+        box-shadow: 0 0 0 3px rgba(21, 40, 67, 0.06);
       }
       .custom-fields {
         display: none;
         margin-top: 10px;
         padding: 14px;
-        background: var(--bg);
+        background: var(--cream2);
         border: 1px solid var(--bd);
         border-radius: 8px;
       }
@@ -982,7 +1255,7 @@
       }
       .ovr-label {
         font-size: 11px;
-        letter-spacing: 0.04em;
+        letter-spacing: 1.5px;
         text-transform: uppercase;
         color: var(--tx2);
         font-weight: 600;
@@ -990,22 +1263,22 @@
       .ovr-chip {
         display: inline-flex;
         align-items: center;
-        background: var(--bg);
+        background: var(--cream2);
         border: 1px solid var(--bd);
         color: var(--tx3);
         font-size: 11px;
-        letter-spacing: 0.02em;
+        letter-spacing: 1px;
         padding: 2px 8px;
         border-radius: 10px;
       }
       .ovr-chip.active {
-        background: rgba(124,92,191,.1);
-        border-color: rgba(124,92,191,.3);
-        color: var(--purple);
+        background: rgba(200, 164, 90, 0.1);
+        border-color: rgba(200, 164, 90, 0.35);
+        color: var(--goldd);
       }
       .ovr-panel {
-        background: rgba(124,92,191,.04);
-        border: 1px solid rgba(124,92,191,.12);
+        background: rgba(200, 164, 90, 0.04);
+        border: 1px solid rgba(200, 164, 90, 0.14);
         border-radius: 8px;
         padding: 14px;
         margin: 10px 0;
@@ -1023,7 +1296,7 @@
         font-size: 11px;
         color: var(--tx3);
         cursor: pointer;
-        letter-spacing: 0.02em;
+        letter-spacing: 1px;
         padding: 3px 8px;
         border: 1px solid var(--bd);
         border-radius: 4px;
@@ -1033,19 +1306,19 @@
       }
       .calc-btn {
         width: 100%;
-        background: var(--purple);
+        background: linear-gradient(135deg, var(--navy3), var(--navy));
         border: none;
         color: #fff;
         font-size: 12px;
         font-weight: 700;
-        letter-spacing: 0.04em;
+        letter-spacing: 1.5px;
         text-transform: uppercase;
         padding: 15px;
         cursor: pointer;
         border-radius: 9px;
         transition: all 0.2s;
         margin-top: 14px;
-        box-shadow: 0 4px 14px rgba(124,92,191,.35);
+        box-shadow: 0 6px 18px rgba(14, 30, 53, 0.22);
         min-height: 50px;
       }
       .calc-btn:active {
@@ -1095,16 +1368,16 @@
       .unit-id {
         font-family: "DM Serif Display", serif;
         font-size: 2.4rem;
-        color: var(--tx);
+        color: var(--navy);
         line-height: 1;
       }
       .unit-badge {
         display: inline-block;
-        background: var(--purple);
+        background: var(--navy);
         color: #fff;
         font-size: 11px;
         font-weight: 700;
-        letter-spacing: 0.04em;
+        letter-spacing: 1.5px;
         padding: 3px 10px;
         border-radius: 20px;
         margin-bottom: 4px;
@@ -1119,11 +1392,11 @@
         align-items: center;
         gap: 5px;
         background: rgba(200, 164, 90, 0.12);
-        color: var(--amber);
+        color: var(--goldd);
         border: 1px solid rgba(200, 164, 90, 0.3);
         font-size: 11px;
         font-weight: 700;
-        letter-spacing: 0.03em;
+        letter-spacing: 1.2px;
         padding: 2px 9px;
         border-radius: 20px;
         margin-top: 4px;
@@ -1140,16 +1413,16 @@
         }
       }
       .price-box {
-        background: var(--bg);
+        background: var(--cream2);
         border: 1px solid var(--bd);
         border-radius: 10px;
         padding: 12px 14px;
         text-align: center;
       }
       .price-box.hero {
-        background: linear-gradient(135deg, var(--purple-l), var(--purple));
-        border-color: var(--purple);
-        box-shadow: 0 4px 16px rgba(124,92,191,.25);
+        background: linear-gradient(135deg, var(--navy3), var(--navy));
+        border-color: var(--navy);
+        box-shadow: 0 4px 16px rgba(14, 30, 53, 0.18);
         grid-column: span 2;
       }
       @media (min-width: 500px) {
@@ -1159,7 +1432,7 @@
       }
       .plbl {
         font-size: 11px;
-        letter-spacing: 0.04em;
+        letter-spacing: 1.5px;
         color: var(--tx3);
         text-transform: uppercase;
         font-weight: 600;
@@ -1192,8 +1465,8 @@
       }
       .schtitle {
         font-size: 11px;
-        letter-spacing: 0.06em;
-        color: var(--tx2);
+        letter-spacing: 2.5px;
+        color: var(--navy2);
         text-transform: uppercase;
         font-weight: 700;
         margin-bottom: 8px;
@@ -1217,18 +1490,18 @@
         grid-template-columns: 30px 1fr auto;
         align-items: center;
         gap: 10px;
-        background: var(--bg);
+        background: var(--cream2);
         padding: 10px 12px;
         border-radius: 7px;
         border-left: 3px solid transparent;
       }
       .schrow:hover {
         background: var(--cream3);
-        border-left-color: var(--purple);
+        border-left-color: var(--goldd);
       }
       .schrow.tot {
-        background: linear-gradient(90deg, #1e2030, #2a2d3e);
-        border-left-color: var(--purple);
+        background: linear-gradient(90deg, var(--navy), var(--navy3));
+        border-left-color: var(--gold);
       }
       .sn {
         width: 26px;
@@ -1240,12 +1513,12 @@
         font-size: 11px;
         font-weight: 700;
         flex-shrink: 0;
-        background: var(--purple);
+        background: var(--navy);
         color: #fff;
       }
       .sn.gold {
         background: var(--gold);
-        color: var(--tx);
+        color: var(--navy);
       }
       .slab {
         font-size: 11px;
@@ -1266,11 +1539,11 @@
       .samt {
         font-family: "DM Serif Display", serif;
         font-size: 1.1rem;
-        color: var(--tx);
+        color: var(--navy);
         white-space: nowrap;
       }
       .schrow.tot .samt {
-        color: var(--tx3);
+        color: var(--goldl);
         font-size: 1.2rem;
       }
       .promo-note {
@@ -1316,7 +1589,7 @@
         }
       }
       .doc-btn {
-        background: var(--bg);
+        background: var(--cream2);
         border: 1px solid var(--bd);
         border-radius: 8px;
         padding: 14px 14px;
@@ -1347,25 +1620,25 @@
         height: 18px;
       }
       .doc-btn:hover {
-        border-color: var(--purple);
-        color: var(--purple);
-        background: rgba(124,92,191,.06);
+        border-color: var(--gold);
+        color: var(--goldd);
+        background: rgba(200, 164, 90, 0.06);
       }
       .doc-btn.primary {
-        border-color: var(--purple);
-        color: var(--purple);
-        background: rgba(124,92,191,.08);
+        border-color: var(--gold);
+        color: var(--goldd);
+        background: rgba(200, 164, 90, 0.08);
       }
       .doc-btn.primary span {
-        background: rgba(124,92,191,.12);
+        background: rgba(200, 164, 90, 0.12);
       }
       .doc-btn.tracker-btn {
-        border-color: rgba(124,92,191,.3);
-        color: var(--purple);
-        background: rgba(124,92,191,.06);
+        border-color: var(--navy3);
+        color: var(--navy);
+        background: rgba(21, 40, 67, 0.04);
       }
       .doc-btn.tracker-btn span {
-        background: rgba(124,92,191,.1);
+        background: rgba(21, 40, 67, 0.08);
       }
       .doc-btn.library-btn {
         border-color: rgba(26, 122, 74, 0.18);
@@ -1394,7 +1667,7 @@
         padding: 12px 6px;
         font-size: 11px;
         font-weight: 700;
-        letter-spacing: 0.01em;
+        letter-spacing: 0.5px;
         text-transform: uppercase;
         cursor: pointer;
         transition: all 0.2s;
@@ -1409,7 +1682,7 @@
         transform: scale(0.96);
       }
       .abtn.save {
-        background: linear-gradient(135deg, var(--purple-l), var(--purple));
+        background: linear-gradient(135deg, #1d3557, var(--navy));
         color: #fff;
       }
       .abtn.save.saved {
@@ -1437,7 +1710,7 @@
 
       /* SLIDERS */
       .slider-card {
-        background: var(--bg);
+        background: var(--cream2);
         border: 1px solid var(--bd);
         border-radius: 10px;
         padding: 14px;
@@ -1451,7 +1724,7 @@
       }
       .slider-title {
         font-size: 11px;
-        letter-spacing: 0.02em;
+        letter-spacing: 1px;
         color: var(--tx2);
         text-transform: uppercase;
         font-weight: 600;
@@ -1459,7 +1732,7 @@
       .slider-val {
         font-family: "DM Serif Display", serif;
         font-size: 1.35rem;
-        color: var(--tx);
+        color: var(--navy);
       }
       .slider-wrap {
         position: relative;
@@ -1478,15 +1751,15 @@
         width: 22px;
         height: 22px;
         border-radius: 50%;
-        background: var(--purple);
+        background: var(--navy);
         cursor: pointer;
-        box-shadow: 0 2px 8px rgba(124,92,191,.3);
+        box-shadow: 0 2px 8px rgba(14, 30, 53, 0.3);
         border: 3px solid #fff;
       }
       .slider-fill {
         height: 5px;
         border-radius: 3px;
-        background: linear-gradient(90deg, var(--purple-l), var(--purple));
+        background: linear-gradient(90deg, var(--gold), var(--navy3));
         position: absolute;
         top: 6px;
         left: 0;
@@ -1519,19 +1792,19 @@
         padding: 9px 12px;
         font-size: 11px;
         font-weight: 700;
-        letter-spacing: 0.02em;
+        letter-spacing: 1px;
         text-transform: uppercase;
         cursor: pointer;
       }
       .analysis-preset.active {
-        border-color: rgba(124,92,191,.35);
-        background: rgba(124,92,191,.08);
-        color: var(--purple);
+        border-color: rgba(200, 164, 90, 0.4);
+        background: rgba(200, 164, 90, 0.08);
+        color: var(--navy);
       }
       .analysis-step {
         border: 1px solid var(--bd);
         border-radius: 14px;
-        background: #fff;
+        background: linear-gradient(180deg, #fff, #faf7f0);
         padding: 14px;
       }
       .analysis-step-hd {
@@ -1544,21 +1817,21 @@
         width: 28px;
         height: 28px;
         border-radius: 50%;
-        background: var(--purple);
+        background: var(--navy);
         color: #fff;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         font-size: 11px;
         font-weight: 800;
-        letter-spacing: 0.02em;
+        letter-spacing: 0.8px;
       }
       .analysis-step-title {
         font-size: 11px;
         font-weight: 800;
-        letter-spacing: 0.04em;
+        letter-spacing: 1.8px;
         text-transform: uppercase;
-        color: var(--tx2);
+        color: var(--navy2);
       }
       .analysis-step-copy {
         margin-top: 3px;
@@ -1592,13 +1865,13 @@
         padding: 12px;
       }
       .analysis-kpi.primary {
-        background: linear-gradient(135deg, var(--purple-l), var(--purple));
-        border-color: var(--purple);
+        background: linear-gradient(135deg, var(--navy3), var(--navy));
+        border-color: var(--navy);
       }
       .analysis-kpi-k {
         font-size: 11px;
         font-weight: 800;
-        letter-spacing: 0.04em;
+        letter-spacing: 1.6px;
         text-transform: uppercase;
         color: var(--tx3);
       }
@@ -1609,7 +1882,7 @@
         margin-top: 6px;
         font-family: "DM Serif Display", serif;
         font-size: 1.35rem;
-        color: var(--tx);
+        color: var(--navy);
       }
       .analysis-kpi.primary .analysis-kpi-v {
         color: #fff;
@@ -1634,9 +1907,9 @@
         padding: 14px;
         font-size: 11px;
         font-weight: 800;
-        letter-spacing: 0.04em;
+        letter-spacing: 1.5px;
         text-transform: uppercase;
-        color: var(--tx);
+        color: var(--navy);
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -1646,7 +1919,7 @@
       }
       .analysis-advanced summary::after {
         content: "+";
-        color: var(--purple-l);
+        color: var(--goldd);
         font-size: 16px;
       }
       .analysis-advanced[open] summary::after {
@@ -1684,13 +1957,13 @@
         padding: 12px;
       }
       .loan-scenario.featured {
-        background: linear-gradient(135deg, var(--purple-l), var(--purple));
-        border-color: var(--purple);
+        background: linear-gradient(135deg, var(--navy3), var(--navy));
+        border-color: var(--navy);
       }
       .loan-scenario-k {
         font-size: 11px;
         font-weight: 800;
-        letter-spacing: 0.04em;
+        letter-spacing: 1.5px;
         text-transform: uppercase;
         color: var(--tx3);
       }
@@ -1701,7 +1974,7 @@
         margin-top: 7px;
         font-family: "DM Serif Display", serif;
         font-size: 1.25rem;
-        color: var(--tx);
+        color: var(--navy);
       }
       .loan-scenario.featured .loan-scenario-v {
         color: #fff;
@@ -1742,7 +2015,7 @@
         gap: 4px;
         padding: 4px;
         border-radius: 12px;
-        background: var(--bg);
+        background: var(--cream2);
         border: 1px solid var(--bd);
         width: 100%;
         min-width: 0;
@@ -1764,8 +2037,8 @@
       }
       .loan-segment button.active {
         background: #fff;
-        color: var(--purple);
-        box-shadow: 0 1px 0 rgba(124,92,191,.1);
+        color: var(--navy);
+        box-shadow: 0 1px 0 rgba(15, 25, 40, 0.06);
       }
       .loan-summary-shell {
         background: #fff;
@@ -1817,7 +2090,7 @@
       .loan-monthly {
         font-family: "DM Serif Display", serif;
         font-size: 2.2rem;
-        color: var(--tx);
+        color: var(--navy);
         line-height: 1.05;
       }
       .loan-monthly-sub {
@@ -1858,7 +2131,7 @@
       }
       .loan-break-meta {
         font-size: 11px;
-        letter-spacing: 0.01em;
+        letter-spacing: 0.6px;
         text-transform: uppercase;
         color: var(--tx3);
         white-space: nowrap;
@@ -1959,7 +2232,7 @@
       }
       .loan-schedule-table thead th {
         font-size: 11px;
-        letter-spacing: 0.03em;
+        letter-spacing: 1.4px;
         text-transform: uppercase;
         color: var(--tx3);
         background: rgba(143, 189, 242, 0.22);
@@ -2005,19 +2278,19 @@
         }
       }
       .roi-box {
-        background: var(--bg);
+        background: var(--cream2);
         border: 1px solid var(--bd);
         border-radius: 10px;
         padding: 12px;
         text-align: center;
       }
       .roi-box.hl {
-        background: linear-gradient(135deg, var(--acc-d), var(--acc));
-        border-color: var(--acc-d);
+        background: linear-gradient(135deg, var(--navy3), var(--navy));
+        border-color: var(--navy);
       }
       .roi-lbl {
         font-size: 11px;
-        letter-spacing: 0.02em;
+        letter-spacing: 1px;
         color: var(--tx3);
         text-transform: uppercase;
         font-weight: 600;
@@ -2032,7 +2305,7 @@
         color: var(--tx);
       }
       .roi-box.hl .roi-val {
-        color: var(--tx3);
+        color: var(--goldl);
       }
       .roi-sub {
         font-size: 11px;
@@ -2040,7 +2313,7 @@
         margin-top: 3px;
       }
       .bar-wrap {
-        background: var(--bg);
+        background: var(--cream2);
         border: 1px solid var(--bd);
         border-radius: 10px;
         padding: 13px;
@@ -2075,12 +2348,12 @@
         margin-top: 4px;
       }
       .proj-table th {
-        background: var(--acc);
+        background: var(--navy);
         color: rgba(255, 255, 255, 0.7);
         padding: 7px 10px;
         text-align: left;
         font-size: 11px;
-        letter-spacing: 0.02em;
+        letter-spacing: 1px;
         text-transform: uppercase;
         font-weight: 600;
       }
@@ -2089,7 +2362,7 @@
         border-bottom: 1px solid var(--bd);
       }
       .proj-table tr:hover td {
-        background: var(--bg);
+        background: var(--cream2);
       }
       .proj-table td.pos {
         color: var(--grn);
@@ -2104,7 +2377,7 @@
       }
       .timeline-note-h {
         font-size: 11px;
-        letter-spacing: 0.05em;
+        letter-spacing: 2px;
         color: var(--navy2);
         text-transform: uppercase;
         font-weight: 700;
@@ -2113,7 +2386,7 @@
       .timeline-note-v {
         font-size: 13px;
         font-weight: 700;
-        color: var(--tx);
+        color: var(--navy);
       }
       .timeline-note-s {
         font-size: 11px;
@@ -2228,7 +2501,7 @@
         color: var(--amber);
         font-size: 11px;
         font-weight: 700;
-        letter-spacing: 0.01em;
+        letter-spacing: 0.5px;
         text-transform: uppercase;
       }
       .price-ref-top {
@@ -2272,7 +2545,7 @@
       }
       .mini-btn.alt {
         background: rgba(14, 30, 53, 0.08);
-        color: var(--tx);
+        color: var(--navy);
       }
       .gallery-modal {
         position: fixed;
@@ -2298,7 +2571,7 @@
       }
       .gallery-hd {
         padding: 14px 18px;
-        background: var(--acc);
+        background: var(--navy);
         color: #fff;
         display: flex;
         align-items: center;
@@ -2318,7 +2591,7 @@
         border: 1px solid var(--bd);
         border-radius: 14px;
         overflow: hidden;
-        background: var(--bg);
+        background: var(--cream2);
       }
       .gallery-item img {
         width: 100%;
@@ -2365,19 +2638,19 @@
         }
       }
       .mort-box {
-        background: var(--bg);
+        background: var(--cream2);
         border: 1px solid var(--bd);
         border-radius: 10px;
         padding: 13px;
         text-align: center;
       }
       .mort-box.hero {
-        background: linear-gradient(135deg, var(--acc-d), var(--acc));
-        border-color: var(--acc-d);
+        background: linear-gradient(135deg, var(--navy3), var(--navy));
+        border-color: var(--navy);
       }
       .mort-lbl {
         font-size: 11px;
-        letter-spacing: 0.02em;
+        letter-spacing: 1px;
         color: var(--tx3);
         text-transform: uppercase;
         font-weight: 600;
@@ -2392,7 +2665,7 @@
         color: var(--tx);
       }
       .mort-box.hero .mort-val {
-        color: var(--tx3);
+        color: var(--goldl);
       }
 
       /* COMPARE */
@@ -2405,9 +2678,9 @@
       .cmp-hd {
         font-size: 11px;
         font-weight: 700;
-        letter-spacing: 0.04em;
+        letter-spacing: 1.5px;
         text-transform: uppercase;
-        color: var(--tx);
+        color: var(--navy);
         margin-bottom: 10px;
         padding-bottom: 9px;
         border-bottom: 1px solid var(--bd);
@@ -2419,7 +2692,7 @@
       }
       .crown {
         background: linear-gradient(135deg, var(--gold), var(--goldd));
-        color: var(--tx);
+        color: var(--navy);
         font-size: 11px;
         font-weight: 800;
         padding: 2px 9px;
@@ -2471,8 +2744,8 @@
         white-space: nowrap;
       }
       .pipe-filter.active {
-        background: var(--acc);
-        border-color: var(--acc);
+        background: var(--navy);
+        border-color: var(--navy);
         color: #fff;
       }
       .pipe-search {
@@ -2487,7 +2760,7 @@
         outline: none;
       }
       .pipe-search:focus {
-        border-color: var(--acc);
+        border-color: var(--navy3);
       }
       .pipe-stats {
         display: grid;
@@ -2508,8 +2781,8 @@
         text-align: center;
       }
       .pipe-stat.hl {
-        background: var(--acc);
-        border-color: var(--acc-d, #5a3fa0);
+        background: linear-gradient(135deg, var(--navy3), var(--navy));
+        border-color: var(--navy);
       }
       .ps-val {
         font-family: "DM Serif Display", serif;
@@ -2517,11 +2790,11 @@
         color: var(--tx);
       }
       .pipe-stat.hl .ps-val {
-        color: #fff;
+        color: var(--goldl);
       }
       .ps-lbl {
         font-size: 11px;
-        letter-spacing: 0.04em;
+        letter-spacing: 1px;
         color: var(--tx3);
         text-transform: uppercase;
         margin-top: 3px;
@@ -2549,7 +2822,7 @@
         }
       }
       .k-col {
-        background: var(--bg);
+        background: var(--cream2);
         border: 1px solid var(--bd);
         border-radius: 10px;
         padding: 10px;
@@ -2557,7 +2830,7 @@
       }
       .k-head {
         font-size: 11px;
-        letter-spacing: 0.05em;
+        letter-spacing: 2px;
         text-transform: uppercase;
         font-weight: 700;
         color: var(--tx2);
@@ -2567,7 +2840,7 @@
         justify-content: space-between;
       }
       .k-count {
-        background: var(--acc);
+        background: var(--navy);
         color: #fff;
         font-size: 11px;
         font-weight: 700;
@@ -2595,7 +2868,7 @@
         position: relative;
       }
       .k-card:hover {
-        border-color: var(--acc);
+        border-color: var(--navy);
         box-shadow: var(--sh);
       }
       .k-card.overdue {
@@ -2609,7 +2882,7 @@
       .k-unit {
         font-family: "DM Serif Display", serif;
         font-size: 1.3rem;
-        color: var(--tx);
+        color: var(--navy);
         line-height: 1;
       }
       .k-client {
@@ -2654,7 +2927,7 @@
         color: var(--grn);
       }
       .k-next.future {
-        background: var(--bg);
+        background: var(--cream2);
         color: var(--tx3);
       }
       /* Notes on card */
@@ -2663,7 +2936,7 @@
         color: var(--tx3);
         margin-top: 5px;
         padding: 4px 6px;
-        background: var(--bg);
+        background: var(--cream2);
         border-radius: 4px;
         line-height: 1.5;
         white-space: nowrap;
@@ -2688,7 +2961,7 @@
       }
       .k-aging.mid {
         background: rgba(200, 164, 90, 0.1);
-        color: var(--amber);
+        color: var(--goldd);
       }
       .k-aging.stale {
         background: rgba(176, 48, 48, 0.08);
@@ -2718,7 +2991,7 @@
       }
       .k-menu-btn:hover {
         opacity: 1;
-        background: var(--bg);
+        background: var(--cream2);
       }
 
       /* Commission panel */
@@ -2734,7 +3007,7 @@
         }
       }
       .comm-box {
-        background: var(--bg);
+        background: var(--cream2);
         border: 1px solid var(--bd);
         border-radius: 10px;
         padding: 12px;
@@ -2745,8 +3018,8 @@
         border-color: var(--grn);
       }
       .comm-box.pend {
-        background: linear-gradient(135deg, var(--acc-d), var(--acc));
-        border-color: var(--acc-d);
+        background: linear-gradient(135deg, var(--navy3), var(--navy));
+        border-color: var(--navy);
       }
       .cb-val {
         font-family: "DM Serif Display", serif;
@@ -2759,7 +3032,7 @@
       }
       .cb-lbl {
         font-size: 11px;
-        letter-spacing: 0.02em;
+        letter-spacing: 1px;
         color: var(--tx3);
         text-transform: uppercase;
         margin-top: 3px;
@@ -2807,7 +3080,7 @@
       .deal-modal-title {
         font-family: "DM Serif Display", serif;
         font-size: 1.2rem;
-        color: var(--tx);
+        color: var(--navy);
       }
       .deal-modal-body {
         padding: 18px;
@@ -2835,8 +3108,8 @@
         transition: all 0.15s;
       }
       .ss-btn.active {
-        border-color: var(--tx);
-        background: var(--acc);
+        border-color: var(--navy);
+        background: var(--navy);
         color: #fff;
       }
       .deal-stat-row {
@@ -2882,7 +3155,7 @@
       }
       .deal-action-btn:hover {
         border-color: var(--gold);
-        color: var(--amber);
+        color: var(--goldd);
       }
       .deal-action-btn.danger:hover {
         border-color: var(--red);
@@ -2907,7 +3180,7 @@
         padding: 5px 10px;
         font-size: 11px;
         font-weight: 700;
-        letter-spacing: 0.02em;
+        letter-spacing: 0.8px;
         text-transform: uppercase;
         border: 1.5px solid var(--bd);
         border-radius: 6px;
@@ -2917,12 +3190,12 @@
         transition: all 0.15s;
       }
       .wa-stage-tab.active {
-        background: var(--acc);
-        border-color: var(--tx);
+        background: var(--navy);
+        border-color: var(--navy);
         color: #fff;
       }
       .wa-tmpl {
-        background: var(--bg);
+        background: var(--cream2);
         border: 1px solid var(--bd);
         border-radius: 8px;
         padding: 12px;
@@ -2956,7 +3229,7 @@
         color: #fff;
       }
       .wa-tmpl-btn.secondary {
-        background: var(--bg);
+        background: var(--cream2);
         color: var(--tx2);
         border: 1px solid var(--bd);
       }
@@ -2975,7 +3248,7 @@
         transition: all 0.15s;
       }
       .saved-row:hover {
-        border-color: var(--tx);
+        border-color: var(--navy);
         box-shadow: 0 2px 8px rgba(14, 30, 53, 0.07);
       }
 
@@ -3023,7 +3296,7 @@
       .modal h3 {
         font-family: "DM Serif Display", serif;
         font-size: 1.25rem;
-        color: var(--tx);
+        color: var(--navy);
         margin-bottom: 3px;
       }
       .modal-sub {
@@ -3032,7 +3305,7 @@
         margin-bottom: 12px;
       }
       .modal-preview {
-        background: var(--bg);
+        background: var(--cream2);
         border: 1px solid var(--bd);
         border-radius: 8px;
         padding: 11px;
@@ -3062,7 +3335,7 @@
         color: #fff;
       }
       .modal-btn.secondary {
-        background: var(--bg);
+        background: var(--cream2);
         color: var(--tx2);
         border: 1px solid var(--bd);
       }
@@ -3078,7 +3351,7 @@
         padding: 6px 12px;
         font-size: 11px;
         font-weight: 700;
-        letter-spacing: 0.01em;
+        letter-spacing: 0.5px;
         border: 1.5px solid var(--bd);
         border-radius: 6px;
         cursor: pointer;
@@ -3152,7 +3425,7 @@
         border: 1px solid var(--bd);
         color: var(--tx3);
         font-size: 11px;
-        letter-spacing: 0.02em;
+        letter-spacing: 1px;
         text-transform: uppercase;
         padding: 8px 12px;
         border-radius: 8px;
@@ -3199,7 +3472,7 @@
       .drawer-tab {
         padding: 10px 14px;
         font-size: 11px;
-        letter-spacing: 0.04em;
+        letter-spacing: 1.5px;
         text-transform: uppercase;
         color: var(--tx3);
         cursor: pointer;
@@ -3213,13 +3486,13 @@
         border-right: none;
       }
       .drawer-tab.active {
-        color: var(--tx);
+        color: var(--navy);
         border-bottom-color: var(--gold);
       }
       .drawer-sec {
         font-size: 11px;
-        letter-spacing: 0.06em;
-        color: var(--amber);
+        letter-spacing: 2.5px;
+        color: var(--goldd);
         text-transform: uppercase;
         font-weight: 700;
         margin: 18px 0 14px;
@@ -3259,9 +3532,9 @@
       .cfg-preview-title {
         font-size: 11px;
         font-weight: 800;
-        letter-spacing: 0.04em;
+        letter-spacing: 1.8px;
         text-transform: uppercase;
-        color: var(--tx);
+        color: var(--navy);
       }
       .cfg-origin-badge {
         border-radius: 999px;
@@ -3270,7 +3543,7 @@
         color: var(--tx2);
         font-size: 11px;
         font-weight: 700;
-        letter-spacing: 0.01em;
+        letter-spacing: 0.5px;
       }
       .cfg-preview-grid {
         display: grid;
@@ -3286,7 +3559,7 @@
       .cfg-preview-k {
         font-size: 11px;
         font-weight: 800;
-        letter-spacing: 0.04em;
+        letter-spacing: 1.6px;
         text-transform: uppercase;
         color: var(--tx3);
       }
@@ -3294,7 +3567,7 @@
         margin-top: 7px;
         font-size: 12px;
         font-weight: 700;
-        color: var(--tx);
+        color: var(--navy);
         line-height: 1.45;
         white-space: pre-line;
       }
@@ -3317,9 +3590,9 @@
         padding: 14px 16px;
         font-size: 11px;
         font-weight: 800;
-        letter-spacing: 0.04em;
+        letter-spacing: 1.5px;
         text-transform: uppercase;
-        color: var(--tx);
+        color: var(--navy);
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -3332,7 +3605,7 @@
         content: "+";
         font-size: 16px;
         line-height: 1;
-        color: var(--amber);
+        color: var(--goldd);
       }
       .cfg-advanced[open] summary::after {
         content: "−";
@@ -3374,19 +3647,19 @@
         text-align: center;
         cursor: pointer;
         transition: all 0.2s;
-        background: var(--bg);
+        background: var(--cream2);
       }
       .logo-drop:hover {
         border-color: var(--gold);
       }
       .drawer-save {
         width: 100%;
-        background: linear-gradient(135deg, var(--acc-d), var(--acc));
+        background: linear-gradient(135deg, var(--navy3), var(--navy));
         border: none;
         color: #fff;
         font-size: 11px;
         font-weight: 700;
-        letter-spacing: 0.05em;
+        letter-spacing: 2px;
         text-transform: uppercase;
         padding: 13px;
         cursor: pointer;
@@ -3411,7 +3684,7 @@
         display: block;
       }
       .doc-nav-bar {
-        background: var(--acc);
+        background: var(--navy);
         padding: 10px 18px;
         display: flex;
         align-items: center;
@@ -3425,7 +3698,7 @@
         border: 1px solid rgba(255, 255, 255, 0.2);
         color: #fff;
         font-size: 11px;
-        letter-spacing: 0.02em;
+        letter-spacing: 1px;
         text-transform: uppercase;
         padding: 6px 12px;
         border-radius: 6px;
@@ -3434,7 +3707,7 @@
       }
       .doc-nav-type {
         font-size: 11px;
-        letter-spacing: 0.05em;
+        letter-spacing: 2px;
         text-transform: uppercase;
         color: rgba(255, 255, 255, 0.45);
         margin-right: auto;
@@ -3442,10 +3715,10 @@
       .doc-nav-print {
         background: var(--gold);
         border: none;
-        color: var(--tx);
+        color: var(--navy);
         font-size: 11px;
         font-weight: 700;
-        letter-spacing: 0.02em;
+        letter-spacing: 1px;
         text-transform: uppercase;
         padding: 7px 16px;
         border-radius: 6px;
@@ -3484,12 +3757,12 @@
       .lh-logo-text {
         font-family: "DM Serif Display", serif;
         font-size: 1.4rem;
-        color: var(--tx);
+        color: var(--navy);
         font-style: italic;
       }
       .lh-sub-text {
         font-size: 11px;
-        letter-spacing: 0.06em;
+        letter-spacing: 2.5px;
         color: var(--tx3);
         text-transform: uppercase;
         margin-top: 2px;
@@ -3507,7 +3780,7 @@
         color: var(--tx);
         font-size: 11px;
         font-family: "DM Sans", sans-serif;
-        letter-spacing: 0.04em;
+        letter-spacing: 1.6px;
         text-transform: uppercase;
         margin-bottom: 4px;
       }
@@ -3529,20 +3802,20 @@
         font-family: "DM Serif Display", serif;
         font-size: 1.6rem;
         font-weight: 400;
-        letter-spacing: 0.05em;
-        color: var(--tx);
+        letter-spacing: 2px;
+        color: var(--navy);
         margin-bottom: 3px;
         text-transform: uppercase;
       }
       .doc-subtitle {
         font-size: 11px;
         color: var(--tx3);
-        letter-spacing: 0.06em;
+        letter-spacing: 2.5px;
         text-transform: uppercase;
         margin-bottom: 18px;
       }
       .doc-unit-badge {
-        background: var(--bg);
+        background: var(--cream2);
         border-left: 3px solid var(--gold);
         padding: 10px 14px;
         margin-bottom: 16px;
@@ -3555,7 +3828,7 @@
       .doc-uid {
         font-family: "DM Mono", monospace;
         font-size: 1.5rem;
-        color: var(--amber);
+        color: var(--goldd);
         font-weight: 500;
       }
       .doc-ud {
@@ -3572,7 +3845,7 @@
       .quote-unit-card,
       .quote-client-card,
       .quote-kpi-card {
-        background: var(--bg);
+        background: var(--cream2);
         border: 1px solid rgba(14, 30, 53, 0.08);
         border-radius: 10px;
         padding: 14px 16px;
@@ -3584,7 +3857,7 @@
         font-family: "DM Serif Display", serif;
         font-size: 2rem;
         line-height: 1;
-        color: var(--amber);
+        color: var(--goldd);
       }
       .quote-unit-main {
         margin-top: 8px;
@@ -3600,7 +3873,7 @@
       }
       .quote-client-label {
         font-size: 11px;
-        letter-spacing: 0.05em;
+        letter-spacing: 2px;
         text-transform: uppercase;
         color: var(--tx3);
         margin-bottom: 8px;
@@ -3608,7 +3881,7 @@
       .quote-client-name {
         font-size: 14px;
         font-weight: 700;
-        color: var(--tx);
+        color: var(--navy);
         line-height: 1.3;
       }
       .quote-client-dates {
@@ -3626,7 +3899,7 @@
       }
       .quote-kpi-k {
         font-size: 11px;
-        letter-spacing: 0.05em;
+        letter-spacing: 2px;
         text-transform: uppercase;
         color: var(--tx3);
         margin-bottom: 8px;
@@ -3634,7 +3907,7 @@
       .quote-kpi-v {
         font-family: "DM Mono", monospace;
         font-size: 15px;
-        color: var(--tx);
+        color: var(--navy);
         line-height: 1.2;
       }
       .quote-kpi-card.discount .quote-kpi-v {
@@ -3645,7 +3918,7 @@
         border-color: rgba(200, 164, 90, 0.25);
       }
       .quote-kpi-card.final .quote-kpi-v {
-        color: var(--amber);
+        color: var(--goldd);
         font-size: 18px;
         font-weight: 700;
       }
@@ -3660,7 +3933,7 @@
       .quote-meta-item {
         font-size: 11px;
         color: var(--tx3);
-        letter-spacing: 0.03em;
+        letter-spacing: 1.2px;
         text-transform: uppercase;
       }
       .quote-meta-item strong {
@@ -3678,9 +3951,9 @@
       }
       .dsec {
         font-size: 11px;
-        letter-spacing: 0.06em;
+        letter-spacing: 2.5px;
         text-transform: uppercase;
-        color: var(--amber);
+        color: var(--goldd);
         margin-bottom: 6px;
         font-weight: 700;
         margin-top: 16px;
@@ -3693,7 +3966,7 @@
         font-size: 11px;
       }
       .dpr.hl {
-        background: var(--bg);
+        background: var(--cream2);
         margin: 0 -4px;
         padding: 6px 4px;
         font-weight: 600;
@@ -3706,10 +3979,10 @@
         font-size: 11px;
       }
       .dtbl th {
-        background: var(--acc);
+        background: var(--navy);
         color: rgba(255, 255, 255, 0.7);
         font-size: 11px;
-        letter-spacing: 0.04em;
+        letter-spacing: 1.5px;
         text-transform: uppercase;
         padding: 7px 10px;
         text-align: left;
@@ -3730,12 +4003,12 @@
         color: var(--tx);
       }
       .dtbl tr.tot td {
-        background: var(--bg);
+        background: var(--cream2);
         font-weight: 600;
         border-top: 1.5px solid var(--gold);
       }
       .dtbl tr.tot td.dr {
-        color: var(--amber);
+        color: var(--goldd);
       }
       .doc-foot {
         border-top: 1px solid var(--cream3);
@@ -3766,11 +4039,11 @@
       .sig-name {
         font-family: "DM Serif Display", serif;
         font-size: 0.95rem;
-        color: var(--amber);
+        color: var(--goldd);
       }
       .sig-role {
         font-size: 11px;
-        letter-spacing: 0.04em;
+        letter-spacing: 1.5px;
         color: var(--tx3);
         text-transform: uppercase;
         margin-top: 2px;
@@ -3888,7 +4161,7 @@
         font-size: 11px;
         letter-spacing: 3px;
         text-transform: uppercase;
-        color: var(--tx3);
+        color: var(--goldl);
         margin-bottom: 4px;
       }
       .cpl-name {
@@ -3932,7 +4205,7 @@
       }
       .cover-meta-item .cm-lbl {
         font-size: 11px;
-        letter-spacing: 0.05em;
+        letter-spacing: 2px;
         text-transform: uppercase;
         color: rgba(255, 255, 255, 0.35);
         margin-bottom: 4px;
@@ -3944,18 +4217,18 @@
       }
       .cover-meta-item .cm-sub {
         font-size: 11px;
-        color: var(--tx3);
+        color: var(--goldl);
       }
       .cover-conf {
         font-size: 11px;
         color: rgba(255, 255, 255, 0.25);
         margin-top: 16px;
-        letter-spacing: 0.02em;
+        letter-spacing: 1px;
       }
 
       /* Tracker */
       .prog-section {
-        background: var(--bg);
+        background: var(--cream2);
         border: 1px solid var(--bd);
         border-radius: 8px;
         padding: 14px;
@@ -3972,12 +4245,12 @@
       .prog-pct {
         font-family: "DM Serif Display", serif;
         font-size: 2rem;
-        color: var(--tx);
+        color: var(--navy);
       }
       .prog-sub {
         font-size: 11px;
         color: var(--tx3);
-        letter-spacing: 0.02em;
+        letter-spacing: 1px;
         text-transform: uppercase;
       }
       .prog-bar-outer {
@@ -4005,13 +4278,13 @@
       .prog-stat-val {
         font-family: "DM Mono", monospace;
         font-size: 11px;
-        color: var(--tx);
+        color: var(--navy);
         font-weight: 600;
       }
       .prog-stat-lbl {
         font-size: 11px;
         color: var(--tx3);
-        letter-spacing: 0.02em;
+        letter-spacing: 0.8px;
         text-transform: uppercase;
         margin-top: 2px;
       }
@@ -4021,12 +4294,12 @@
         font-size: 11px;
       }
       .trkr-tbl th {
-        background: var(--acc);
+        background: var(--navy);
         color: rgba(255, 255, 255, 0.7);
         padding: 7px 8px;
         text-align: left;
         font-size: 11px;
-        letter-spacing: 0.03em;
+        letter-spacing: 1.2px;
         text-transform: uppercase;
         font-weight: 600;
       }
@@ -4060,7 +4333,7 @@
         font-weight: 700;
       }
       .trkr-tbl tr.tot-row td.amt {
-        color: var(--tx3);
+        color: var(--goldl);
       }
       .status-dot {
         width: 8px;
@@ -4089,10 +4362,10 @@
       .today-badge-tbl {
         display: inline-block;
         background: var(--gold);
-        color: var(--tx);
+        color: var(--navy);
         font-size: 11px;
         font-weight: 800;
-        letter-spacing: 0.02em;
+        letter-spacing: 1px;
         padding: 1px 6px;
         border-radius: 10px;
         vertical-align: middle;
@@ -4105,7 +4378,7 @@
         border: 1px solid rgba(176, 48, 48, 0.3);
         font-size: 11px;
         font-weight: 700;
-        letter-spacing: 0.02em;
+        letter-spacing: 1px;
         padding: 1px 6px;
         border-radius: 10px;
       }
@@ -4127,13 +4400,13 @@
         border-radius: 8px;
         padding: 16px;
         margin-top: 18px;
-        background: var(--bg);
+        background: var(--cream2);
       }
       .ack-title {
         font-size: 11px;
-        letter-spacing: 0.06em;
+        letter-spacing: 2.5px;
         text-transform: uppercase;
-        color: var(--amber);
+        color: var(--goldd);
         font-weight: 700;
         margin-bottom: 12px;
       }
@@ -4160,7 +4433,7 @@
       .ack-sig-lbl {
         font-size: 11px;
         color: var(--tx3);
-        letter-spacing: 0.01em;
+        letter-spacing: 0.5px;
       }
       .ack-sig-name {
         font-size: 11px;
@@ -4171,7 +4444,7 @@
       .proj-render-strip {
         width: 100%;
         height: 130px;
-        background: linear-gradient(135deg, var(--acc-d), var(--acc));
+        background: linear-gradient(135deg, var(--navy3), var(--navy));
         border-radius: 8px;
         display: flex;
         align-items: center;
@@ -4216,7 +4489,7 @@
         margin-top: 3px;
       }
       .adv-verdict {
-        background: var(--bg);
+        background: var(--cream2);
         border-left: 3px solid var(--gold);
         padding: 11px 14px;
         margin: 10px 0;
@@ -4232,7 +4505,7 @@
         border: 1px solid rgba(26, 122, 74, 0.4);
         color: var(--grn);
         font-size: 11px;
-        letter-spacing: 0.05em;
+        letter-spacing: 2px;
         border-radius: 20px;
         text-transform: uppercase;
       }
@@ -4249,11 +4522,11 @@
         padding: 9px 8px;
       }
       .scn-cell.base {
-        background: var(--bg);
+        background: var(--cream2);
       }
       .scn-n {
         font-size: 11px;
-        letter-spacing: 0.05em;
+        letter-spacing: 2px;
         text-transform: uppercase;
         color: var(--tx3);
         margin-bottom: 7px;
@@ -4290,7 +4563,7 @@
         align-items: center;
         justify-content: center;
         margin-bottom: 10px;
-        color: var(--amber);
+        color: var(--goldd);
       }
       .empty-icon svg {
         width: 34px;
@@ -4299,7 +4572,7 @@
       .empty-h {
         font-family: "DM Serif Display", serif;
         font-size: 1.15rem;
-        color: var(--tx);
+        color: var(--navy);
         margin-bottom: 5px;
       }
       .empty-s {
@@ -4363,139 +4636,6 @@
           page-break-inside: avoid;
         }
       }
-    
-      /* ═══ 2-COL CALCULATOR ═══ */
-      .calc-layout{display:grid;grid-template-columns:360px 1fr;gap:14px;align-items:start}
-      @media(max-width:860px){.calc-layout{grid-template-columns:1fr}}
-      .calc-left{display:flex;flex-direction:column;gap:10px;position:sticky;top:0;max-height:calc(100vh - 60px);overflow-y:auto;scrollbar-width:none}
-      .calc-left::-webkit-scrollbar{display:none}
-      .calc-right{display:flex;flex-direction:column;gap:10px}
-      .ci-wrap{background:#fff;border:1.5px solid var(--bd);border-radius:var(--r);padding:14px 16px}
-      .ci-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--tx2);margin-bottom:6px}
-      .ci-input{display:block;width:100%;border:none;outline:none;font-size:18px;font-weight:600;color:var(--tx);background:transparent;font-family:'Inter',sans-serif}
-      .ci-input::placeholder{color:var(--tx3);font-weight:400}
-      .dates-section{background:#fff;border:1px solid var(--bd);border-radius:var(--r);overflow:hidden}
-      .dates-summary{padding:12px 16px;font-size:12px;font-weight:600;color:var(--tx2);cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;user-select:none;-webkit-user-select:none}
-      .dates-summary::-webkit-details-marker{display:none}
-      .dates-summary::after{content:"›";margin-left:auto;font-size:16px;transition:transform .15s;color:var(--tx3)}
-      details[open]>.dates-summary::after{transform:rotate(90deg)}
-      .dates-opt{font-weight:400;font-size:11px;color:var(--tx3)}
-      .dates-body{padding:12px 16px 16px;border-top:1px solid var(--bd)}
-      .calc-placeholder{background:#fff;border:1.5px dashed var(--bd);border-radius:var(--r);padding:52px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px}
-      .cp-icon{width:56px;height:56px;border-radius:14px;background:var(--bg);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;color:var(--tx3)}
-      .cp-title{font-size:15px;font-weight:700;color:var(--tx)}
-      .cp-sub{font-size:12px;color:var(--tx3);line-height:1.6;max-width:240px}
-      .calc-right .result-card{display:none}
-      .calc-right .result-card.visible{display:block}
-      #calcCTA{display:none}
-      #resultCard.visible #calcCTA{display:block}
-      .cta-pdf-wrap{position:relative;margin-top:20px;margin-bottom:8px}
-      .cta-generate{width:100%;background:var(--acc);color:#fff;border:none;border-radius:10px;padding:14px 16px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;transition:background .15s}
-      .cta-generate:hover{background:var(--acc-d)}
-      .cta-pdf-menu{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--bd);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.14);z-index:300;overflow:hidden;display:none}
-      .cta-pdf-menu.open{display:block}
-      .cta-pdf-item{padding:11px 14px;font-size:13px;color:var(--tx);cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--bg);transition:background .12s}
-      .cta-pdf-item:last-child{border-bottom:none}
-      .cta-pdf-item:hover{background:var(--bg);color:var(--acc)}
-      #scheduleDocBtn[style*=".5"]{opacity:.45;pointer-events:none}
-      .cta-wa{width:100%;background:linear-gradient(135deg,#25d366,#1da851);color:#fff;border:none;border-radius:10px;padding:12px 16px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;margin-bottom:8px;transition:opacity .15s}
-      .cta-wa:hover{opacity:.9}
-      .cta-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-      .cta-btn{border:1.5px solid var(--bd);background:#fff;border-radius:8px;padding:10px 6px;font-size:11px;font-weight:700;color:var(--tx2);cursor:pointer;text-align:center;font-family:'Inter',sans-serif;transition:all .15s}
-      .cta-btn:hover{border-color:var(--acc);color:var(--acc)}
-      .cta-pipe{border-color:rgba(124,92,191,.3);color:var(--acc);background:rgba(124,92,191,.06)}
-      .cta-pipe.in-pipe{background:var(--acc);color:#fff;border-color:var(--acc)}
-      .cta-save.saved{background:#edf8f2;border-color:rgba(16,185,129,.3);color:var(--grn)}
-      .cta-remind{color:var(--amber);border-color:rgba(245,158,11,.3)}
-    
-      /* ═══════════════════════════════════════════════
-         NEW APP SHELL — top-bar, 3-mode layout
-         ═══════════════════════════════════════════ */
-
-      /* App shell */
-      .app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
-
-      /* ── Top bar ── */
-      .app-topbar{background:#191b23;height:52px;display:flex;align-items:center;padding:0 12px 0 14px;gap:0;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.06);z-index:400}
-      .atb-brand{display:flex;align-items:center;gap:8px;flex-shrink:0;text-decoration:none}
-      .atb-logo{width:28px;height:28px;border-radius:7px;background:var(--acc);display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:14px;color:#fff;font-weight:700;flex-shrink:0}
-      .atb-name{font-size:12px;font-weight:600;color:rgba(255,255,255,.55);white-space:nowrap;letter-spacing:.02em}
-      .atb-div{width:1px;height:18px;background:rgba(255,255,255,.1);margin:0 10px;flex-shrink:0}
-      .atb-proj-wrap{display:flex;align-items:center;gap:6px;flex-shrink:0}
-      .atb-proj-icon{color:rgba(255,255,255,.35);flex-shrink:0}
-      .atb-proj-sel{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;font-size:12px;font-weight:600;padding:5px 10px;outline:none;cursor:pointer;font-family:'Inter',sans-serif;max-width:170px;-webkit-appearance:none;appearance:none}
-      .atb-proj-sel option{background:#1f2333;color:#fff}
-      .atb-nav{display:flex;align-items:center;gap:2px;margin:0 auto}
-      .atb-mode{background:none;border:none;color:rgba(255,255,255,.45);font-size:13px;font-weight:600;padding:6px 16px;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:6px;transition:all .15s;white-space:nowrap;position:relative}
-      .atb-mode:hover{color:rgba(255,255,255,.8);background:rgba(255,255,255,.06)}
-      .atb-mode.active{color:#fff;background:rgba(124,92,191,.28)}
-      .atb-mode svg{opacity:.7}
-      .atb-mode.active svg{opacity:1}
-      .atb-badge{background:var(--red);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:8px;min-width:16px;text-align:center;line-height:1.4}
-      .atb-right{display:flex;align-items:center;gap:2px;margin-left:8px;flex-shrink:0}
-      .atb-icon-btn{background:none;border:none;color:rgba(255,255,255,.45);cursor:pointer;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;position:relative;transition:all .15s;font-family:'Inter',sans-serif;flex-direction:column;gap:1px}
-      .atb-icon-btn:hover{background:rgba(255,255,255,.08);color:#fff}
-      .atb-icon-btn.has-agent{color:var(--acc)}
-      .atb-agent-name{font-size:10px;font-weight:700;max-width:40px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1;color:inherit}
-
-      /* ── Content area ── */
-      .app-content{flex:1;overflow:hidden;display:flex;flex-direction:column}
-      .mode-panel{display:none;flex:1;flex-direction:column;overflow-y:auto;overflow-x:hidden}
-      .mode-panel.active{display:flex}
-
-      /* ── Quote mode ── */
-      #mode-panel-quote .container{flex:1}
-
-      /* ── Pipeline mode ── */
-      .pipe-mode-content{flex:1;padding:16px;display:flex;flex-direction:column;gap:12px;max-width:1400px;width:100%;margin:0 auto}
-      .pipe-agent-bar{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:10px 14px}
-      .pab-label{font-size:11px;font-weight:600;color:var(--tx2)}
-      .pab-select{border:1.5px solid var(--bd);background:var(--bg);border-radius:6px;color:var(--tx);font-size:11px;font-weight:600;padding:4px 8px;outline:none;cursor:pointer;font-family:'Inter',sans-serif}
-      .pab-select:focus{border-color:var(--acc)}
-
-      /* Kanban full-width in pipeline mode */
-      #mode-panel-pipeline .kanban{grid-template-columns:repeat(5,minmax(180px,1fr))}
-      @media(max-width:900px){#mode-panel-pipeline .kanban{grid-template-columns:repeat(3,minmax(160px,1fr))}}
-      @media(max-width:600px){#mode-panel-pipeline .kanban{grid-template-columns:repeat(2,minmax(150px,1fr))}}
-
-      /* ── Tools mode ── */
-      .tools-subnav{background:#fff;border-bottom:1px solid var(--bd);padding:0 16px;display:flex;align-items:center;gap:2px;flex-shrink:0;overflow-x:auto;scrollbar-width:none}
-      .tools-subnav::-webkit-scrollbar{display:none}
-      .t-tab{background:none;border:none;border-bottom:2px solid transparent;color:var(--tx3);font-size:12px;font-weight:600;padding:11px 14px;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;transition:all .15s}
-      .t-tab:hover{color:var(--tx2)}
-      .t-tab.active{color:var(--acc);border-bottom-color:var(--acc)}
-      .tools-body{flex:1;overflow-y:auto;overflow-x:hidden}
-      .tools-body .tab-panel{display:none}
-      .tools-body .tab-panel.active{display:block}
-
-      /* ── Onboarding banner ── */
-      #onboardingBanner{flex-shrink:0}
-
-      /* ── Agent picker modal ── */
-      .agent-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9000;display:none;align-items:center;justify-content:center}
-      .agent-modal-bg.open{display:flex}
-      .agent-modal{background:#fff;border-radius:14px;padding:28px 24px;width:340px;max-width:90vw;box-shadow:0 20px 60px rgba(0,0,0,.25)}
-      .am-title{font-size:17px;font-weight:700;color:var(--tx);margin-bottom:4px}
-      .am-sub{font-size:12px;color:var(--tx3);margin-bottom:20px;line-height:1.5}
-      .am-agents{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
-      .am-agent-btn{background:var(--bg);border:1.5px solid var(--bd);border-radius:8px;padding:10px 14px;font-size:13px;font-weight:600;color:var(--tx);cursor:pointer;text-align:left;font-family:'Inter',sans-serif;transition:all .15s;display:flex;align-items:center;gap:8px}
-      .am-agent-btn:hover{border-color:var(--acc);color:var(--acc);background:rgba(124,92,191,.06)}
-      .am-agent-btn.selected{border-color:var(--acc);background:rgba(124,92,191,.08);color:var(--acc)}
-      .am-agent-icon{width:28px;height:28px;border-radius:50%;background:var(--bd);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
-      .am-nick{background:rgba(124,92,191,.08);border-color:rgba(124,92,191,.3)}
-      .am-nick .am-agent-icon{background:var(--acc);color:#fff}
-      .am-custom-wrap{display:flex;gap:8px}
-      .am-custom-input{flex:1;border:1.5px solid var(--bd);border-radius:8px;padding:9px 12px;font-size:13px;font-family:'Inter',sans-serif;outline:none;color:var(--tx)}
-      .am-custom-input:focus{border-color:var(--acc)}
-      .am-confirm{background:var(--acc);color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
-
-      @media(max-width:640px){
-        .atb-name{display:none}
-        .atb-div{display:none}
-        .atb-mode{padding:6px 10px;font-size:12px}
-        .atb-proj-sel{max-width:120px}
-      }
-
     </style>
   </head>
   <body>
@@ -4877,7 +5017,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
               >
                 <div>
                   <div
-                    style="font-size: 11px; font-weight: 700; color: var(--tx)"
+                    style="font-size: 11px; font-weight: 700; color: var(--navy)"
                   >
                     Price List Image Library
                   </div>
@@ -4990,338 +5130,624 @@ B1 = East | Gross 50㎡ | Net 45㎡
       </div>
     </div>
 
-    <!-- ── APP SHELL ── -->
-    <div class="app">
-
-    <!-- ── TOP BAR ── -->
-    <header class="app-topbar" id="appTopbar">
-
-      <!-- Brand -->
-      <div class="atb-brand">
-        <div class="atb-logo">P</div>
-        <span class="atb-name">PHC Sales Desk</span>
-      </div>
-
-      <!-- Divider -->
-      <div class="atb-div"></div>
-
-      <!-- Project switcher -->
-      <div class="atb-proj-wrap">
-        <span class="atb-proj-icon">
-          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        </span>
-        <select class="atb-proj-sel" id="projTabsSb" onchange="switchProjSb(this.value)">
-          <option value="">Select project…</option>
-        </select>
-      </div>
-
-      <!-- Mode nav (centred via margin:auto on .atb-nav) -->
-      <nav class="atb-nav">
-        <button class="atb-mode active" id="mode-btn-quote" onclick="setMode('quote')">
-          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></svg>
-          Quote
-        </button>
-        <button class="atb-mode" id="mode-btn-pipeline" onclick="setMode('pipeline')">
-          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="4" height="18" rx="1"/><rect x="10" y="6" width="4" height="15" rx="1"/><rect x="17" y="9" width="4" height="12" rx="1"/></svg>
-          Pipeline
-          <span class="atb-badge" id="sdNavAlert" style="display:none">!</span>
-        </button>
-        <button class="atb-mode" id="mode-btn-tools" onclick="setMode('tools')">
-          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-          Tools
-        </button>
-      </nav>
-
-      <!-- Right actions -->
-      <div class="atb-right">
-        <!-- Agent picker -->
-        <button class="atb-icon-btn" id="agentBtn" onclick="openAgentPicker()" title="Set your name">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-          <span class="atb-agent-name" id="agentNameChip"></span>
-        </button>
-        <!-- Configure -->
-        <button class="atb-icon-btn" onclick="openCfg()" title="Configure" style="position:relative">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-          <span id="cfgWarningDot" style="display:none;position:absolute;top:4px;right:4px;width:7px;height:7px;background:var(--amber);border-radius:50%"></span>
-        </button>
-      </div>
-
-    </header><!-- /app-topbar -->
-
-    <!-- ── ONBOARDING BANNER ── -->
-    <div id="onboardingBanner" style="display:none;background:var(--sb);color:#fff;padding:10px 14px;border-bottom:1px solid var(--sb-border);flex-shrink:0">
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+    <!-- ONBOARDING BANNER -->
+    <div id="onboardingBanner" style="display:none;background:linear-gradient(135deg,var(--navy),var(--navy3));color:#fff;padding:14px 16px;border-bottom:1px solid rgba(200,164,90,.2)">
+      <div style="max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
         <div style="flex:1;min-width:200px">
-          <div style="font-size:12px;font-weight:600;margin-bottom:2px">Welcome to PHC Sales Desk</div>
-          <div style="font-size:11px;opacity:.65">Set your name &rarr; Select a project &rarr; Pick a unit &rarr; Calculate</div>
+          <div style="font-size:13px;font-weight:700;margin-bottom:3px">👋 Welcome to Property Hub Sales Desk</div>
+          <div style="font-size:12px;opacity:.8">Get started: <strong>1. Select a project</strong> → <strong>2. Pick a unit</strong> → <strong>3. Calculate payment plan</strong></div>
         </div>
         <div style="display:flex;gap:8px;flex-shrink:0">
-          <button onclick="openAgentPicker()" style="background:rgba(124,92,191,.3);border:1px solid rgba(124,92,191,.5);color:#fff;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Set Name</button>
-          <button onclick="openCfg()" style="background:rgba(124,92,191,.3);border:1px solid rgba(124,92,191,.5);color:#fff;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Configure</button>
-          <button onclick="dismissOnboarding()" style="background:none;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);padding:5px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif">Dismiss</button>
+          <button onclick="openCfg()" style="background:rgba(200,164,90,.25);border:1px solid rgba(200,164,90,.4);color:#fff;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">⚙️ Set Up Profile</button>
+          <button onclick="dismissOnboarding()" style="background:none;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.7);padding:8px 12px;border-radius:8px;font-size:12px;cursor:pointer">Dismiss</button>
         </div>
       </div>
     </div>
 
-    <!-- ── CONTENT ── -->
-    <div class="app-content">
+    <!-- PROJECT BAR -->
+    <div class="proj-bar">
+      <div class="proj-logo">
+        <div class="logo-mark">P</div>
+        <div class="logo-text">
+          <div class="lt1">PHC Cambodia</div>
+          <div class="lt2">Sales Desk</div>
+        </div>
+      </div>
+      <div class="proj-tabs" id="projTabs"></div>
+      <div class="proj-bar-right">
+        <a href="index.html" class="hub-link">← Hub</a>
+        <button class="cfg-btn" id="cfgBtnMain" onclick="openCfg()"><svg class="ui-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.65 1.65 0 0 0 15 19.4a1.65 1.65 0 0 0-1 .6 1.65 1.65 0 0 0-.33 1V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-.33-1A1.65 1.65 0 0 0 8.35 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-.6-1 1.65 1.65 0 0 0-1-.33H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1-.33A1.65 1.65 0 0 0 4.6 8.35a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.35 4.6a1.65 1.65 0 0 0 1-.6 1.65 1.65 0 0 0 .33-1V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 .33 1 1.65 1.65 0 0 0 1 .6 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8.35c0 .39.14.76.4 1.05.29.3.66.48 1.08.51H21a2 2 0 1 1 0 4h-.09c-.42.03-.79.21-1.08.51-.26.29-.4.66-.43 1.08Z"/></svg><span>Configure</span><span id="cfgWarningDot" style="display:none;width:7px;height:7px;background:var(--amber);border-radius:50%;flex-shrink:0;margin-left:2px"></span></button>
+      </div>
+    </div>
 
-      <!-- ══ QUOTE MODE ══ -->
-      <div class="mode-panel active" id="mode-panel-quote">
-        <div class="container">
+    <!-- MAIN TABS: 4 primary + Tools dropdown -->
+    <div class="main-tabs">
+      <div class="main-tabs-inner">
+        <div class="mtab" onclick="goTab('inventory', 0)">
+          <svg
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            viewBox="0 0 24 24"
+          >
+            <path d="M3 7.5h18" />
+            <path d="M3 12h18" />
+            <path d="M3 16.5h18" />
+            <path d="M7.5 4.5v15" />
+            <path d="M16.5 4.5v15" /></svg
+          >Inventory
+        </div>
+        <div class="mtab active" onclick="goTab('calculator', 1)">
+          <svg
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            viewBox="0 0 24 24"
+          >
+            <rect x="4" y="3.5" width="16" height="17" rx="3" />
+            <path d="M8 8.5h8" />
+            <path d="M8 12.5h8" />
+            <path d="M8 16.5h4" /></svg
+          >Calculator
+        </div>
+        <div
+          class="mtab"
+          onclick="goTab('pipeline', 2)"
+          style="position: relative"
+        >
+          <svg
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            viewBox="0 0 24 24"
+          >
+            <circle cx="8" cy="7" r="3" />
+            <circle cx="16.5" cy="8.5" r="2.5" />
+            <path d="M3.5 19a4.5 4.5 0 0 1 9 0" />
+            <path d="M13.5 18.5a3.5 3.5 0 0 1 7 0" /></svg
+          >Pipeline<span class="mtab-badge" id="mtabAlert" style="display: none"
+            >!</span
+          >
+        </div>
+        <div class="mtab" onclick="goTab('saved', 3)">
+          <svg
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M19 20.5 12 16.5 5 20.5V5.5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"
+            /></svg
+          >Saved
+        </div>
+        <div class="mtab tool" onclick="goTab('roi', 4)">
+          <svg
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            viewBox="0 0 24 24"
+          >
+            <path d="M4 18.5 9 11l3.5 3.5L17 7l3 3.5" />
+            <path d="M4 20.5h16" /></svg
+          >ROI
+        </div>
+        <div class="mtab tool" onclick="goTab('mortgage', 5)">
+          <svg
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            viewBox="0 0 24 24"
+          >
+            <path d="M3.5 9.5 12 3l8.5 6.5" />
+            <path d="M5.5 9.5v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-10" />
+            <path d="M10 20.5v-6h4v6" /></svg
+          >Loan
+        </div>
+        <div class="mtab tool" onclick="goTab('compare', 6)">
+          <svg
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            viewBox="0 0 24 24"
+          >
+            <path d="M6 19V9" />
+            <path d="M12 19V5" />
+            <path d="M18 19v-7" />
+            <path d="M4 19.5h16" /></svg
+          >Compare
+        </div>
+        <div class="mtab tool" onclick="goTab('resale', 7)">
+          <svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M17 3 7 21"/><circle cx="7.5" cy="6.5" r="2.5"/><circle cx="16.5" cy="17.5" r="2.5"/>
+          </svg>Resale
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <!-- MOBILE MORE SHEET -->
+    <div id="mobileMoreSheet" style="display:none;position:fixed;bottom:60px;left:0;right:0;background:#fff;border-top:1px solid var(--bd);box-shadow:0 -4px 24px rgba(14,30,53,.14);z-index:299;padding:10px 8px 8px">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">
+        <button class="bnav" onclick="goTab('roi',4);closeMobileMore()" style="padding:10px 4px">
+          <svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 18.5 9 11l3.5 3.5L17 7l3 3.5"/><path d="M4 20.5h16"/></svg>ROI</button>
+        <button class="bnav" onclick="goTab('mortgage',5);closeMobileMore()" style="padding:10px 4px">
+          <svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3.5 9.5 12 3l8.5 6.5"/><path d="M5.5 9.5v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-10"/><path d="M10 20.5v-6h4v6"/></svg>Loan</button>
+        <button class="bnav" onclick="goTab('compare',6);closeMobileMore()" style="padding:10px 4px">
+          <svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M6 19V9"/><path d="M12 19V5"/><path d="M18 19v-7"/><path d="M4 19.5h16"/></svg>Compare</button>
+        <button class="bnav" onclick="goTab('resale',7);closeMobileMore()" style="padding:10px 4px">
+          <svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M17 3 7 21"/><circle cx="7.5" cy="6.5" r="2.5"/><circle cx="16.5" cy="17.5" r="2.5"/></svg>Resale</button>
+      </div>
+    </div>
+    <!-- BOTTOM NAV: 5 primary items -->
+    <div class="bot-nav">
+      <button class="bnav" onclick="goTab('inventory', 0)">
+        <svg
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          viewBox="0 0 24 24"
+        >
+          <path d="M3 7.5h18" />
+          <path d="M3 12h18" />
+          <path d="M3 16.5h18" />
+          <path d="M7.5 4.5v15" />
+          <path d="M16.5 4.5v15" /></svg
+        >Stock
+      </button>
+      <button class="bnav active" onclick="goTab('calculator', 1)">
+        <svg
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          viewBox="0 0 24 24"
+        >
+          <rect x="4" y="3.5" width="16" height="17" rx="3" />
+          <path d="M8 8.5h8" />
+          <path d="M8 12.5h8" />
+          <path d="M8 16.5h4" /></svg
+        >Calc
+      </button>
+      <button
+        class="bnav"
+        onclick="goTab('pipeline', 2)"
+        style="position: relative"
+      >
+        <svg
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          viewBox="0 0 24 24"
+        >
+          <circle cx="8" cy="7" r="3" />
+          <circle cx="16.5" cy="8.5" r="2.5" />
+          <path d="M3.5 19a4.5 4.5 0 0 1 9 0" />
+          <path d="M13.5 18.5a3.5 3.5 0 0 1 7 0" /></svg
+        >Pipeline<span class="bnav-badge" id="bnavAlert" style="display: none"
+          >!</span
+        >
+      </button>
+      <button class="bnav" onclick="goTab('saved', 3)">
+        <svg
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M19 20.5 12 16.5 5 20.5V5.5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"
+          /></svg
+        >Saved
+      </button>
+      <button class="bnav" onclick="toggleMobileMore(this)">
+        <svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>Tools
+      </button>
+    </div>
+
+    <div class="container">
       <!-- ═══ CALCULATOR ═══ -->
       <div id="tab-calculator" class="tab-panel active">
-        <div class="calc-layout">
-
-          <!-- ── LEFT: inputs ── -->
-          <div class="calc-left">
-
-            <!-- Client name -->
-            <div class="ci-wrap">
-              <div class="ci-label">Client Name</div>
-              <input type="text" id="clientName" class="ci-input" placeholder="e.g. Mr. Chan Sokha" />
+        <div class="card">
+          <div class="card-title">Client & Transaction Details</div>
+          <div class="g3">
+            <div class="field">
+              <label>Client Name</label
+              ><input
+                type="text"
+                id="clientName"
+                placeholder="e.g. Mr. Chan Sokha"
+              />
             </div>
-
-            <!-- Unit + plan -->
-            <div class="card" style="margin-bottom:0">
-              <div class="card-title">Unit Selection</div>
-              <div id="promoBanner" class="promo-banner">
-                <span class="promo-tag" id="promoTagText">PROMO</span><span id="promoText"></span>
-              </div>
-              <div id="priceListRef" class="price-ref-card">
-                <div class="price-ref-top">
-                  <div>
-                    <div class="price-ref-title">Price List Library</div>
-                    <div class="price-ref-sub" id="priceListRefSub"></div>
-                    <div class="price-ref-meta" id="priceListRefMeta"></div>
-                    <div class="notice-chip">Reference Only · No OCR Import</div>
-                  </div>
-                  <button class="mini-btn" type="button" onclick="openPriceListModal()">View</button>
-                </div>
-              </div>
-              <div class="g3 unit-select-grid">
-                <div class="field"><label>Unit Type</label><select id="unitType" onchange="onTypeChange()"><option value="">— Select —</option></select></div>
-                <div class="field"><label>Floor</label><select id="floor"><option value="">— Select —</option></select></div>
-                <div class="field"><label>Discount</label><select id="discOvr"><option value="auto">Auto-detect</option></select></div>
-              </div>
-              <div class="cpills" id="currencyPills"></div>
-              <div style="display:flex;align-items:center;gap:6px;margin-top:5px;font-size:11px">
-                <span id="fxTimestamp" style="color:var(--tx3)"></span>
-                <button onclick="fetchLatestFxRates()" style="background:none;border:none;color:var(--acc);font-size:11px;font-weight:700;cursor:pointer;padding:0;text-decoration:underline">Refresh</button>
-              </div>
-              <div class="ovr-toggle" onclick="toggleOvr()">
-                <span class="ovr-arrow" id="ovrArrow">&#9658;</span>
-                <span class="ovr-label">Pricing Override</span>
-                <span class="ovr-chip" id="ovrChip">Optional</span>
-                <button class="ovr-clear" id="ovrClear" style="display:none" onclick="event.stopPropagation();clearOvr()">Clear</button>
-              </div>
-              <div id="ovrPanel" style="display:none">
-                <div class="ovr-panel">
-                  <div style="font-size:10px;letter-spacing:0.04em;color:var(--tx2);text-transform:uppercase;font-weight:700;margin-bottom:10px">
-                    <span class="inline-icon"><svg class="ui-icon sm" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z"/></svg>Negotiated Pricing</span>
-                  </div>
-                  <div class="g3">
-                    <div class="field"><label>Custom Price $</label><input type="number" id="ovrPrice" placeholder="e.g. 115000" oninput="ovrChanged()"/></div>
-                    <div class="field"><label>Discount %</label><input type="number" id="ovrPct" placeholder="e.g. 12" oninput="ovrChanged()"/></div>
-                    <div class="field"><label>Flat Discount $</label><input type="number" id="ovrFlat" placeholder="e.g. 5000" oninput="ovrChanged()"/></div>
-                  </div>
-                  <div class="ovr-hint">Use <strong>Custom Price</strong> to override list price. Use <strong>% or Flat $</strong> for negotiated discounts.</div>
-                </div>
-              </div>
-              <div class="card-title" style="margin-top:14px;margin-bottom:8px">Payment Plan</div>
-              <div class="plan-pills" id="planPills"></div>
-              <div id="customPlanFields" class="custom-fields">
-                <div class="g2" style="margin-bottom:10px">
-                  <div class="field"><label>Booking $</label><input type="number" id="cBooking" value="1000"/></div>
-                  <div class="field"><label>SPA %</label><input type="number" id="cSPA" value="20" oninput="validateCustomPlan()"/><div id="cSPA_err" style="display:none;font-size:11px;color:var(--red);margin-top:3px"></div></div>
-                </div>
-                <div class="g2">
-                  <div class="field"><label>Months</label><input type="number" id="cMonths" value="45"/></div>
-                  <div class="field"><label>Handover %</label><input type="number" id="cHO" value="35" oninput="validateCustomPlan()"/><div id="cHO_err" style="display:none;font-size:11px;color:var(--red);margin-top:3px"></div></div>
-                </div>
-              </div>
-              <div class="err" id="errMsg"></div>
+            <div class="field">
+              <label>Booking Date</label
+              ><input type="date" id="bookingDate" onchange="handleBookingDateChange()" />
             </div>
-
-            <!-- Dates (collapsible) -->
-            <details class="dates-section">
-              <summary class="dates-summary">Transaction Dates <span class="dates-opt">optional</span></summary>
-              <div class="dates-body">
-                <div class="g3" style="margin-top:0">
-                  <div class="field"><label>Booking Date</label><input type="date" id="bookingDate" onchange="handleBookingDateChange()"/></div>
-                  <div class="field"><label>SPA Signing</label><input type="date" id="spaDate" onchange="markSpaDateManual()"/></div>
-                  <div class="field"><label>Est. Handover</label><input type="month" id="handoverDate" style="width:100%;background:var(--bg);border:1.5px solid var(--bd);border-radius:8px;color:var(--tx);font-size:14px;padding:10px 12px;outline:none;min-height:44px;appearance:none;-webkit-appearance:none"/></div>
-                </div>
-                <div style="padding:7px 10px;background:rgba(21,40,67,.04);border-radius:6px;font-size:10px;color:var(--tx3);line-height:1.6;margin-top:8px">
-                  <span class="inline-icon"><svg class="ui-icon sm" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 10v6"/><path d="M12 7h.01"/></svg>Dates are optional — blank fields print as "To be confirmed".</span>
-                </div>
-              </div>
-            </details>
-
-            <button class="calc-btn" onclick="calculate()">Calculate Payment Plan</button>
-
-          </div><!-- /calc-left -->
-
-          <!-- ── RIGHT: result ── -->
-          <div class="calc-right">
-
-            <div id="calcPlaceholder" class="calc-placeholder">
-              <div class="cp-icon">
-                <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 10h8M8 14h5"/></svg>
-              </div>
-              <div class="cp-title">Ready to calculate</div>
-              <div class="cp-sub">Select a unit type, pick a payment plan, then tap Calculate.</div>
+            <div class="field">
+              <label>SPA Signing Date</label><input type="date" id="spaDate" onchange="markSpaDateManual()" />
             </div>
-
-            <div id="resultCard" class="result-card">
-              <div class="unit-header">
-                <div>
-                  <div style="font-size:10px;letter-spacing:0.04em;color:var(--tx3);text-transform:uppercase;font-weight:600;margin-bottom:3px">Unit</div>
-                  <div class="unit-id" id="rUnitId">&#8212;</div>
-                </div>
-                <div style="text-align:right">
-                  <div class="unit-badge" id="rBadge">&#8212;</div>
-                  <div class="unit-meta" id="rSize">&#8212;</div>
-                  <div class="unit-meta" id="rFloor">&#8212;</div>
-                  <div id="rHighZone" style="display:none">
-                    <span class="gold-tag"><svg class="ui-icon sm" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/></svg>High Zone</span>
-                  </div>
-                </div>
-              </div>
-              <div class="price-summary">
-                <div class="price-box"><div class="plbl">List Price</div><div class="pval strike" id="rOrig">&#8212;</div><div class="psub" id="rOrigC"></div></div>
-                <div class="price-box"><div class="plbl">You Save</div><div class="pval" id="rDisc" style="color:var(--grn)">&#8212;</div><div class="psub" id="rDiscLbl">&#8212;</div></div>
-                <div class="price-box hero"><div class="plbl">Final Price</div><div class="pval" id="rFinal">&#8212;</div><div class="psub" id="rFinalC"></div></div>
-              </div>
-              <div class="schtitle">Payment Schedule</div>
-              <div class="schrows" id="schRows"></div>
-              <div id="promoNote" class="promo-note"></div>
-              <div id="agentBonus" class="agent-bonus"></div>
-
-              <!-- Primary CTAs — shown when result.visible via CSS #resultCard.visible #calcCTA -->
-              <div id="calcCTA">
-                <div class="cta-pdf-wrap">
-                  <button class="cta-generate" onclick="togglePdfMenu(event)">
-                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
-                    Generate PDF
-                    <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="14" height="14" style="margin-left:auto"><polyline points="6 9 12 15 18 9"/></svg>
-                  </button>
-                  <div class="cta-pdf-menu" id="pdfMenu">
-                    <div class="cta-pdf-item" onclick="openDoc('quotation');closePdfMenu()">
-                      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="15" height="15"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Buyer Quotation
-                    </div>
-                    <div class="cta-pdf-item" onclick="openDoc('advisory');closePdfMenu()">
-                      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="15" height="15"><path d="M3 3v18h18"/><path d="m7 14 4-4 3 3 5-7"/></svg>Advisory Report
-                    </div>
-                    <div class="cta-pdf-item" onclick="openDoc('combined');closePdfMenu()">
-                      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="15" height="15"><path d="m12 3 9 4.5-9 4.5-9-4.5L12 3Z"/><path d="m3 12 9 4.5 9-4.5"/><path d="m3 16.5 9 4.5 9-4.5"/></svg>Combined Report
-                    </div>
-                    <div class="cta-pdf-item" id="scheduleDocBtn" onclick="openDoc('schedule');closePdfMenu()">
-                      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="15" height="15"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Payment Schedule
-                    </div>
-                    <div class="cta-pdf-item" id="paymentTrackerDocBtn" style="display:none" onclick="openDoc('tracker');closePdfMenu()">
-                      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="15" height="15"><path d="M3 4h18M8 2v4M16 2v4"/><rect x="3" y="6" width="18" height="15" rx="2"/><path d="m16 14 2 2 3-4"/></svg>Payment Tracker
-                    </div>
-                  </div>
-                </div>
-
-                <button class="cta-wa" onclick="openWA()">
-                  <svg fill="currentColor" viewBox="0 0 24 24" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                  Send via WhatsApp
-                </button>
-
-                <div class="cta-row">
-                  <button class="cta-btn cta-pipe" id="pipeBtn" onclick="addToPipeline()"><span id="pipeLbl">Pipeline</span></button>
-                  <button class="cta-btn cta-save" id="saveBtn" onclick="doSave()"><span id="saveLbl">Save</span></button>
-                  <button class="cta-btn cta-remind" onclick="openRemindFromCalc()">Reminder</button>
-                  <button class="cta-btn" onclick="sendToResale()">&#8594; Resale</button>
-                </div>
-
-                <div id="scheduleHint" style="display:none;margin-top:8px;padding:8px 12px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:8px;font-size:11px;color:var(--amber)">
-                  <span class="inline-icon"><svg class="ui-icon sm" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg>Add SPA Signing Date to enable Payment Schedule</span>
-                </div>
-                <div id="trackerHint" style="display:none;margin-top:6px;padding:8px 12px;background:rgba(124,92,191,.06);border:1px solid rgba(124,92,191,.15);border-radius:8px;font-size:11px;color:var(--acc)">
-                  <span class="inline-icon"><svg class="ui-icon sm" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg>Payment Tracker available after adding this deal to Pipeline</span>
-                </div>
-
-              </div><!-- /calcCTA -->
-
-              <!-- Legacy state hooks (JS references these IDs — keep hidden) -->
-              <div id="docUnavailableMsg" style="display:none"></div>
-              <div id="docStrip" style="display:none;height:0;overflow:hidden"></div>
-              <div id="actionBtns" style="display:none;height:0;overflow:hidden"></div>
-
-            </div><!-- /resultCard -->
-
-          </div><!-- /calc-right -->
-        </div><!-- /calc-layout -->
-      </div><!-- /tab-calculator -->
-        </div><!-- /container quote -->
-      </div><!-- /mode-panel-quote -->
-
-      <!-- ══ PIPELINE MODE ══ -->
-      <div class="mode-panel" id="mode-panel-pipeline">
-        <div class="pipe-mode-content">
-
-          <!-- Agent filter bar (Nick-only full view) -->
-          <div class="pipe-agent-bar" id="pipeAgentBar" style="display:none">
-            <span class="pab-label">Viewing pipeline for:</span>
-            <select class="pab-select" id="pipeAgentFilter" onchange="applyAgentFilter()">
-              <option value="">All Agents</option>
-            </select>
           </div>
-
-        <div class="card" style="margin-bottom: 12px">
-          <div class="card-title">Commission Tracker</div>
-          <div class="comm-panel" id="commPanel"></div>
+          <div class="field" style="margin-bottom: 8px">
+            <label>Estimated Handover</label>
+            <input
+              type="month"
+              id="handoverDate"
+              style="
+                width: 100%;
+                background: var(--cream2);
+                border: 1.5px solid var(--bd);
+                border-radius: 8px;
+                color: var(--tx);
+                font-size: 14px;
+                padding: 10px 12px;
+                outline: none;
+                min-height: 44px;
+                appearance: none;
+              "
+            />
+          </div>
+          <div
+            style="
+              padding: 8px 10px;
+              background: rgba(21, 40, 67, 0.04);
+              border-radius: 6px;
+              font-size: 10px;
+              color: var(--tx3);
+              line-height: 1.6;
+            "
+          >
+            <span class="inline-icon"><svg class="ui-icon sm" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 10v6"/><path d="M12 7h.01"/></svg>Booking Date and SPA Date are optional. Blank fields print as To be confirmed or N/A.</span>
+          </div>
         </div>
         <div class="card">
-          <div class="card-title">Deal Pipeline</div>
-          <div class="pipe-stats" id="pipeStats"></div>
-          <div class="pipe-toolbar">
-            <input
-              class="pipe-search"
-              type="text"
-              placeholder="Search client or unit…"
-              id="pipeSearch"
-              oninput="renderPipeline()"
-            />
-            <div
-              class="pipe-filter active"
-              onclick="setPipeFilter('all', this)"
-            >
-              All
-            </div>
-            <div class="pipe-filter" onclick="setPipeFilter('overdue', this)">
-              Overdue
-            </div>
-            <div class="pipe-filter" onclick="setPipeFilter('due-soon', this)">
-              Due Soon
+          <div class="card-title">Unit Selection <span style="font-size:11px;font-weight:500;color:var(--tx3);text-transform:none;letter-spacing:0;margin-left:6px">Step 1 of 3</span></div>
+          <div id="promoBanner" class="promo-banner">
+            <span class="promo-tag" id="promoTagText">PROMO</span
+            ><span id="promoText"></span>
+          </div>
+          <div id="priceListRef" class="price-ref-card">
+            <div class="price-ref-top">
+              <div>
+                <div class="price-ref-title">Price List Library</div>
+                <div class="price-ref-sub" id="priceListRefSub"></div>
+                <div class="price-ref-meta" id="priceListRefMeta"></div>
+                <div class="notice-chip">Reference Only · No OCR Import</div>
+              </div>
+              <button
+                class="mini-btn"
+                type="button"
+                onclick="openPriceListModal()"
+              >
+                View
+              </button>
             </div>
           </div>
-          <div class="kanban" id="kanban"></div>
+          <div class="g3 unit-select-grid">
+            <div class="field">
+              <label>Unit Type</label
+              ><select id="unitType" onchange="onTypeChange()">
+                <option value="">— Select —</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Floor</label
+              ><select id="floor">
+                <option value="">— Select —</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Discount</label
+              ><select id="discOvr">
+                <option value="auto">Auto-detect</option>
+              </select>
+            </div>
+          </div>
+          <div class="cpills" id="currencyPills"></div>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:5px;font-size:11px">
+            <span id="fxTimestamp" style="color:var(--tx3)"></span>
+            <button onclick="fetchLatestFxRates()" style="background:none;border:none;color:var(--goldd);font-size:11px;font-weight:700;cursor:pointer;padding:0;text-decoration:underline">Refresh</button>
+          </div>
+          <div class="ovr-toggle" onclick="toggleOvr()">
+            <span class="ovr-arrow" id="ovrArrow">▶</span>
+            <span class="ovr-label">Pricing Override</span>
+            <span class="ovr-chip" id="ovrChip">Optional</span>
+            <button
+              class="ovr-clear"
+              id="ovrClear"
+              style="display: none"
+              onclick="
+                event.stopPropagation();
+                clearOvr();
+              "
+            >
+              Clear
+            </button>
+          </div>
+          <div id="ovrPanel" style="display: none">
+            <div class="ovr-panel">
+              <div
+                style="
+                  font-size: 8.5px;
+                  letter-spacing: 2px;
+                  color: var(--goldd);
+                  text-transform: uppercase;
+                  font-weight: 700;
+                  margin-bottom: 10px;
+                "
+              >
+                <span class="inline-icon"><svg class="ui-icon sm" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z"/></svg>Negotiated Pricing</span>
+              </div>
+              <div class="g3">
+                <div class="field">
+                  <label>Custom Price $</label
+                  ><input
+                    type="number"
+                    id="ovrPrice"
+                    placeholder="e.g. 115000"
+                    oninput="ovrChanged()"
+                  />
+                </div>
+                <div class="field">
+                  <label>Discount %</label
+                  ><input
+                    type="number"
+                    id="ovrPct"
+                    placeholder="e.g. 12"
+                    oninput="ovrChanged()"
+                  />
+                </div>
+                <div class="field">
+                  <label>Flat Discount $</label
+                  ><input
+                    type="number"
+                    id="ovrFlat"
+                    placeholder="e.g. 5000"
+                    oninput="ovrChanged()"
+                  />
+                </div>
+              </div>
+              <div class="ovr-hint">
+                Use <strong>Custom Price</strong> to override list price. Use
+                <strong>% or Flat $</strong> for negotiated discounts.
+              </div>
+            </div>
+          </div>
+          <div class="card-title" style="margin-top: 14px; margin-bottom: 8px">
+            Payment Plan <span style="font-size:11px;font-weight:500;color:var(--tx3);text-transform:none;letter-spacing:0;margin-left:6px">Step 2 of 3</span>
+          </div>
+          <div class="plan-pills" id="planPills"></div>
+          <div id="customPlanFields" class="custom-fields">
+            <div class="g2" style="margin-bottom: 10px">
+              <div class="field">
+                <label>Booking $</label
+                ><input type="number" id="cBooking" value="1000" />
+              </div>
+              <div class="field">
+                <label>SPA %</label>
+                <input type="number" id="cSPA" value="20" oninput="validateCustomPlan()" />
+                <div id="cSPA_err" style="display:none;font-size:11px;color:var(--red);margin-top:3px"></div>
+              </div>
+            </div>
+            <div class="g2">
+              <div class="field">
+                <label>Months</label
+                ><input type="number" id="cMonths" value="45" />
+              </div>
+              <div class="field">
+                <label>Handover %</label>
+                <input type="number" id="cHO" value="35" oninput="validateCustomPlan()" />
+                <div id="cHO_err" style="display:none;font-size:11px;color:var(--red);margin-top:3px"></div>
+              </div>
+            </div>
+          </div>
+          <div class="err" id="errMsg"></div>
+          <div style="font-size:11px;color:var(--tx3);font-weight:600;margin-bottom:6px">Step 3 of 3 — Generate</div>
+          <button class="calc-btn" onclick="calculate()">
+            Calculate Payment Plan
+          </button>
+        </div>
+
+        <div id="resultCard" class="result-card">
+          <div class="unit-header">
+            <div>
+              <div
+                style="
+                  font-size: 8.5px;
+                  letter-spacing: 2px;
+                  color: var(--tx3);
+                  text-transform: uppercase;
+                  font-weight: 600;
+                  margin-bottom: 3px;
+                "
+              >
+                Unit
+              </div>
+              <div class="unit-id" id="rUnitId">—</div>
+            </div>
+            <div style="text-align: right">
+              <div class="unit-badge" id="rBadge">—</div>
+              <div class="unit-meta" id="rSize">—</div>
+              <div class="unit-meta" id="rFloor">—</div>
+              <div id="rHighZone" style="display: none">
+                <span class="gold-tag"><svg class="ui-icon sm" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/></svg>High Zone</span>
+              </div>
+            </div>
+          </div>
+          <div class="price-summary">
+            <div class="price-box">
+              <div class="plbl">List Price</div>
+              <div class="pval strike" id="rOrig">—</div>
+              <div class="psub" id="rOrigC"></div>
+            </div>
+            <div class="price-box">
+              <div class="plbl">You Save</div>
+              <div class="pval" id="rDisc" style="color: var(--grn)">—</div>
+              <div class="psub" id="rDiscLbl">—</div>
+            </div>
+            <div class="price-box hero">
+              <div class="plbl">Final Price</div>
+              <div class="pval" id="rFinal">—</div>
+              <div class="psub" id="rFinalC"></div>
+            </div>
+          </div>
+          <div class="schtitle">Payment Schedule</div>
+          <div class="schrows" id="schRows"></div>
+          <div id="promoNote" class="promo-note"></div>
+          <div id="agentBonus" class="agent-bonus"></div>
+          <div class="card-title" style="margin-top: 18px; margin-bottom: 10px">
+            Generate Documents
+          </div>
+          <div id="docUnavailableMsg" style="padding:12px 14px;background:rgba(14,30,53,.04);border:1px solid rgba(14,30,53,.08);border-radius:10px;font-size:12px;color:var(--tx3);text-align:center;margin-bottom:10px">
+            ☝️ Run a calculation above to unlock document generation.
+          </div>
+          <div class="doc-strip" id="docStrip" style="display: none">
+            <div class="doc-btn primary" onclick="openDoc('quotation')">
+              <span><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h6"/></svg></span>Buyer Quotation
+            </div>
+            <div class="doc-btn" onclick="openDoc('advisory')">
+              <span><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m7 14 4-4 3 3 5-7"/></svg></span>Advisory Report
+            </div>
+            <div class="doc-btn" onclick="openDoc('combined')">
+              <span><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m12 3 9 4.5-9 4.5-9-4.5L12 3Z"/><path d="m3 12 9 4.5 9-4.5"/><path d="m3 16.5 9 4.5 9-4.5"/></svg></span>Combined Report
+            </div>
+            <div
+              class="doc-btn tracker-btn"
+              id="scheduleDocBtn"
+              onclick="openDoc('schedule')"
+            >
+              <span><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg></span>Payment Schedule
+            </div>
+            <div
+              class="doc-btn tracker-btn"
+              id="paymentTrackerDocBtn"
+              onclick="openDoc('tracker')"
+              style="display: none"
+            >
+              <span><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 4h18"/><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="6" width="18" height="15" rx="2"/><path d="M7 13h4"/><path d="M7 17h7"/><path d="m16 14 2 2 3-4"/></svg></span>Payment Tracker
+            </div>
+          </div>
+          <div
+            id="scheduleHint"
+            style="
+              display: none;
+              margin-top: 6px;
+              padding: 7px 10px;
+              background: rgba(200, 164, 90, 0.06);
+              border: 1px solid rgba(200, 164, 90, 0.2);
+              border-radius: 6px;
+              font-size: 10px;
+              color: var(--goldd);
+            "
+          >
+            <span class="inline-icon"><svg class="ui-icon sm" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg>Add SPA Signing Date to generate the Payment Schedule</span>
+          </div>
+          <div
+            id="trackerHint"
+            style="
+              display: none;
+              margin-top: 6px;
+              padding: 7px 10px;
+              background: rgba(200, 164, 90, 0.06);
+              border: 1px solid rgba(200, 164, 90, 0.2);
+              border-radius: 6px;
+              font-size: 10px;
+              color: var(--goldd);
+            "
+          >
+            <span class="inline-icon"><svg class="ui-icon sm" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg>Payment Tracker becomes available after this deal is added to Pipeline.</span>
+          </div>
+          <div class="action-btns" id="actionBtns" style="display: none; grid-template-columns: repeat(6, 1fr)">
+            <button class="abtn save" id="saveBtn" onclick="doSave()">
+              <svg
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"
+                />
+                <polyline points="17 21 17 13 7 13 7 21" /></svg
+              ><span id="saveLbl">Save</span>
+            </button>
+            <button class="abtn pipe" id="pipeBtn" onclick="addToPipeline()">
+              <svg
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path
+                  d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"
+                /></svg
+              ><span id="pipeLbl">Pipeline</span>
+            </button>
+            <button class="abtn remind" onclick="openRemindFromCalc()">
+              <svg
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"
+                /></svg
+              ><span>Remind</span>
+            </button>
+            <button class="abtn wa" onclick="openWA()">
+              <svg fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"
+                /></svg
+              ><span>WhatsApp</span>
+            </button>
+            <button class="abtn pdf" onclick="printCurrentDoc('quotation')">
+              <svg
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                />
+                <polyline points="14 2 14 8 20 8" /></svg
+              ><span>Print</span>
+            </button>
+            <button class="abtn" style="background:linear-gradient(135deg,var(--goldd),#7a5820);color:#fff" onclick="sendToResale()" title="Pre-fill Resale tab with this unit">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 3 7 21"/><circle cx="7.5" cy="6.5" r="2.5"/><circle cx="16.5" cy="17.5" r="2.5"/></svg>
+              <span>Resale</span>
+            </button>
+          </div>
         </div>
       </div>
 
-        </div><!-- /pipe-mode-content -->
-      </div><!-- /mode-panel-pipeline -->
-
-      <!-- ══ TOOLS MODE ══ -->
-      <div class="mode-panel" id="mode-panel-tools">
-
-        <div class="tools-subnav">
-          <button class="t-tab active" id="ttab-inventory" onclick="setTool('inventory')">Inventory</button>
-          <button class="t-tab" id="ttab-roi" onclick="setTool('roi')">ROI Calculator</button>
-          <button class="t-tab" id="ttab-mortgage" onclick="setTool('mortgage')">Loan Calculator</button>
-          <button class="t-tab" id="ttab-compare" onclick="setTool('compare')">Compare Units</button>
-          <button class="t-tab" id="ttab-saved" onclick="setTool('saved')">Saved Quotes</button>
-          <button class="t-tab" id="ttab-resale" onclick="setTool('resale')">Resale</button>
-        </div>
-
-        <div class="tools-body">
-          <div class="container">
       <!-- ═══ INVENTORY ═══ -->
-      <div id="tab-inventory" class="tab-panel active">
+      <div id="tab-inventory" class="tab-panel">
         <div class="card">
           <div class="card-title">Inventory</div>
           <div class="inventory-layout">
@@ -5342,6 +5768,41 @@ B1 = East | Gross 50㎡ | Net 45㎡
           </div>
         </div>
       </div>
+
+      <!-- ═══ PIPELINE ═══ -->
+      <div id="tab-pipeline" class="tab-panel">
+        <div class="card" style="margin-bottom: 12px">
+          <div class="card-title">Commission Tracker</div>
+          <div class="comm-panel" id="commPanel"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Deal Pipeline</div>
+          <div class="pipe-stats" id="pipeStats"></div>
+          <div class="pipe-toolbar">
+            <input
+              class="pipe-search"
+              type="text"
+              placeholder="🔍 Search client or unit…"
+              id="pipeSearch"
+              oninput="renderPipeline()"
+            />
+            <div
+              class="pipe-filter active"
+              onclick="setPipeFilter('all', this)"
+            >
+              All
+            </div>
+            <div class="pipe-filter" onclick="setPipeFilter('overdue', this)">
+              🔴 Overdue
+            </div>
+            <div class="pipe-filter" onclick="setPipeFilter('due-soon', this)">
+              🟡 Due Soon
+            </div>
+          </div>
+          <div class="kanban" id="kanban"></div>
+        </div>
+      </div>
+
       <!-- ═══ ROI ═══ -->
       <div id="tab-roi" class="tab-panel">
         <div class="card">
@@ -5445,11 +5906,11 @@ B1 = East | Gross 50㎡ | Net 45㎡
                   </div>
                   <div style="margin-top: 14px; display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap; border:1px solid rgba(14,30,53,.1); border-radius:10px; padding:12px 14px; background:#fffdfa">
                     <div>
-                      <div style="font-size:10px; letter-spacing:0.04em; text-transform:uppercase; color:var(--tx3); font-weight:700">Investor Cost Assumptions</div>
+                      <div style="font-size:8px; letter-spacing:1.8px; text-transform:uppercase; color:var(--tx3); font-weight:700">Investor Cost Assumptions</div>
                       <div id="roiCostStatus" style="font-size:11px; color:var(--tx2); margin-top:4px">Suggested values loaded. Confirm or edit before using Advisory Report.</div>
                     </div>
                     <div style="display:flex; gap:8px; flex-wrap:wrap">
-                      <button type="button" onclick="confirmRoiCostAssumptions()" style="border:none;border-radius:999px;padding:9px 13px;background:var(--acc);color:#fff;font-size:10px;font-weight:700;cursor:pointer">Confirm for Advisory</button>
+                      <button type="button" onclick="confirmRoiCostAssumptions()" style="border:none;border-radius:999px;padding:9px 13px;background:var(--navy);color:#fff;font-size:10px;font-weight:700;cursor:pointer">Confirm for Advisory</button>
                       <button type="button" onclick="markRoiCostDraft()" style="border:1px solid rgba(14,30,53,.14);border-radius:999px;padding:9px 13px;background:#fff;color:var(--tx2);font-size:10px;font-weight:700;cursor:pointer">Mark as Draft</button>
                     </div>
                   </div>
@@ -5545,9 +6006,9 @@ B1 = East | Gross 50㎡ | Net 45㎡
             <div class="bar-wrap">
               <div
                 style="
-                  font-size: 10px;
-                  letter-spacing: 0.05em;
-                  color: var(--tx2);
+                  font-size: 8.5px;
+                  letter-spacing: 2px;
+                  color: var(--navy2);
                   text-transform: uppercase;
                   font-weight: 700;
                   margin-bottom: 10px;
@@ -5584,6 +6045,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
           </div>
         </div>
       </div>
+
       <!-- ═══ MORTGAGE ═══ -->
       <div id="tab-mortgage" class="tab-panel">
         <div class="card">
@@ -5703,6 +6165,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
           </div>
         </div>
       </div>
+
       <!-- ═══ COMPARE ═══ -->
       <div id="tab-compare" class="tab-panel">
         <div class="g2" style="gap: 10px">
@@ -5777,6 +6240,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
           ></div>
         </div>
       </div>
+
       <!-- ═══ SAVED ═══ -->
       <div id="tab-saved" class="tab-panel">
         <div class="card">
@@ -5801,6 +6265,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
           </div>
         </div>
       </div>
+
       <!-- ═══ RESALE CALCULATOR ═══ -->
       <div id="tab-resale" class="tab-panel">
 
@@ -5822,7 +6287,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
             <div class="field"><label>Total Instalment Months</label><input type="number" id="rsMonths" value="45" min="1" max="120"></div>
           </div>
           <div style="background:var(--cream2);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:14px">
-            <div style="font-size:10px;letter-spacing:0.04em;text-transform:uppercase;color:var(--tx3);font-weight:700;margin-bottom:10px">Payment Plan Breakdown</div>
+            <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx3);font-weight:700;margin-bottom:10px">Payment Plan Breakdown</div>
             <div class="g3" style="margin-bottom:0">
               <div class="field"><label>Booking Fee ($)</label><input type="number" id="rsBookingFee" value="1000" min="0"></div>
               <div class="field"><label>SPA % (of purchase price)</label><input type="number" id="rsSpaPct" value="20" min="0" max="100"></div>
@@ -5833,7 +6298,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
               <div style="font-size:10px;color:var(--tx3);padding-top:18px">SPA + Instalment + Handover should total 100%</div>
             </div>
           </div>
-          <button class="cfg-btn" onclick="rsGenerateSchedule()" style="background:var(--acc);border-color:var(--acc-d);color:#fff;font-size:12px;padding:11px 20px">
+          <button class="cfg-btn" onclick="rsGenerateSchedule()" style="background:linear-gradient(135deg,var(--navy),var(--navy3));border-color:var(--navy);color:#fff;font-size:12px;padding:11px 20px">
             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:15px;height:15px"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6m-6 4h4"/></svg>
             Generate Payment Schedule
           </button>
@@ -5846,16 +6311,16 @@ B1 = East | Gross 50㎡ | Net 45㎡
           <div id="rsScheduleTable"></div>
           <div style="margin-top:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
             <div style="padding:12px 14px;background:rgba(26,122,74,.07);border:1px solid rgba(26,122,74,.2);border-radius:10px;text-align:center">
-              <div style="font-size:10px;letter-spacing:0.04em;text-transform:uppercase;color:var(--grn);font-weight:700;margin-bottom:4px">Paid by Seller</div>
+              <div style="font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--grn);font-weight:700;margin-bottom:4px">Paid by Seller</div>
               <div id="rsTotalPaid" style="font-size:1.6rem;font-weight:700;color:var(--grn);font-family:'DM Serif Display',serif">$0</div>
             </div>
             <div style="padding:12px 14px;background:rgba(176,48,48,.06);border:1px solid rgba(176,48,48,.15);border-radius:10px;text-align:center">
-              <div style="font-size:10px;letter-spacing:0.04em;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:4px">Remaining to Dev</div>
+              <div style="font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:4px">Remaining to Dev</div>
               <div id="rsTotalRemaining" style="font-size:1.6rem;font-weight:700;color:var(--red);font-family:'DM Serif Display',serif">$0</div>
             </div>
             <div style="padding:12px 14px;background:rgba(14,30,53,.05);border:1px solid rgba(14,30,53,.12);border-radius:10px;text-align:center">
-              <div style="font-size:10px;letter-spacing:0.04em;text-transform:uppercase;color:var(--tx2);font-weight:700;margin-bottom:4px">Instalments Paid</div>
-              <div id="rsPaymentCount" style="font-size:1.6rem;font-weight:700;color:var(--tx);font-family:'DM Serif Display',serif">0/0</div>
+              <div style="font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx2);font-weight:700;margin-bottom:4px">Instalments Paid</div>
+              <div id="rsPaymentCount" style="font-size:1.6rem;font-weight:700;color:var(--navy);font-family:'DM Serif Display',serif">0/0</div>
             </div>
           </div>
         </div>
@@ -5885,7 +6350,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
           <div class="card-title">Resale Transfer Summary</div>
           <div id="rsResultContent"></div>
           <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
-            <button class="cfg-btn" onclick="rsPrint()" style="background:var(--acc);border-color:var(--acc-d);color:#fff;font-size:12px;padding:11px 20px">
+            <button class="cfg-btn" onclick="rsPrint()" style="background:linear-gradient(135deg,var(--navy),var(--navy3));border-color:var(--navy);color:#fff;font-size:12px;padding:11px 20px">
               <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:15px;height:15px"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
               Print / Export PDF
             </button>
@@ -5895,28 +6360,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
       </div>
       <!-- /resale -->
     </div>
-          </div><!-- /container tools -->
-        </div><!-- /tools-body -->
-      </div><!-- /mode-panel-tools -->
-
-    </div><!-- /app-content -->
-
-    <!-- ── AGENT PICKER MODAL ── -->
-    <div class="agent-modal-bg" id="agentModalBg" onclick="if(event.target===this)closeAgentPicker()">
-      <div class="agent-modal">
-        <div class="am-title">Who are you?</div>
-        <div class="am-sub">Your name is saved on this device. Nick unlocks the full pipeline view across all agents.</div>
-        <div class="am-agents" id="amAgentList"></div>
-        <div class="am-custom-wrap">
-          <input type="text" class="am-custom-input" id="amCustomInput" placeholder="Other name…" />
-          <button class="am-confirm" onclick="confirmAgentName()">Confirm</button>
-        </div>
-      </div>
-    </div>
-
-    </div><!-- /app -->
-
-
+    <!-- /container -->
 
     <script>
       // ═══════════════════════════════════════
@@ -8133,11 +8577,16 @@ B1 = East | Gross 50㎡ | Net 45㎡
       // ── PROJECT BAR ──
       function buildProjTabs() {
         const c = $("projTabs");
-        if (c) { c.innerHTML = ""; PROJ_ORDER.forEach((id) => { const p = PROJECTS[id], btn = document.createElement("button"); btn.className = "proj-tab" + (id === activeProjId ? " active" : ""); btn.innerHTML = `<span class="proj-dot"></span>${p.dev}`; btn.onclick = () => switchProj(id); c.appendChild(btn); }); }
-        const sel = document.getElementById('projTabsSb');
-        if (sel) { sel.innerHTML = ''; PROJ_ORDER.forEach(id => { const o = document.createElement('option'); o.value = id; o.textContent = PROJECTS[id].name; o.selected = id === activeProjId; sel.appendChild(o); }); }
+        c.innerHTML = "";
+        PROJ_ORDER.forEach((id) => {
+          const p = PROJECTS[id],
+            btn = document.createElement("button");
+          btn.className = "proj-tab" + (id === activeProjId ? " active" : "");
+          btn.innerHTML = `<span class="proj-dot"></span>${p.dev} <span style="font-size:9px;opacity:.55;margin-left:3px">${p.tabLabel || p.name.split(" ").slice(-1)[0]}</span>`;
+          btn.onclick = () => switchProj(id);
+          c.appendChild(btn);
+        });
       }
-      function switchProjSb(id) { if (id) switchProj(id); }
       function switchProj(id) {
         activeProjId = id;
         buildProjTabs();
@@ -8166,22 +8615,19 @@ B1 = East | Gross 50㎡ | Net 45㎡
         "compare",
         "resale",
       ];
-      const SD_TAB_NAMES = {calculator:'Calculator',inventory:'Inventory',pipeline:'Pipeline',saved:'Saved',roi:'ROI Calculator',mortgage:'Loan Calculator',compare:'Compare Units',resale:'Resale'};
       function goTab(id, idx) {
         idx = tabIds.indexOf(id);
         tabIds.forEach((t) => $("tab-" + t).classList.remove("active"));
         $("tab-" + id).classList.add("active");
-        // sidebar active
-        document.querySelectorAll('.sb-item[id^="sdNav-"]').forEach(el => el.classList.remove('active'));
-        const sdNavEl = document.getElementById('sdNav-' + id);
-        if (sdNavEl) sdNavEl.classList.add('active');
-        // breadcrumb
-        const bcEl = document.getElementById('sdBcCurrent');
-        if (bcEl) bcEl.textContent = SD_TAB_NAMES[id] || id;
+        document
+          .querySelectorAll(".mtab")
+          .forEach((t, i) => t.classList.toggle("active", i === idx));
+        document
+          .querySelectorAll(".bnav")
+          .forEach((t, i) => t.classList.toggle("active", i === idx));
         if (id === "pipeline") renderPipeline();
         if (id === "inventory") renderInventory();
-        const sc = document.querySelector('.sd-content');
-        if (sc) sc.scrollTo({ top: 0, behavior: "smooth" });
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
 
       // ── UNIT TYPE ──
@@ -8729,7 +9175,6 @@ B1 = East | Gross 50㎡ | Net 45㎡
           spaDate = $("spaDate").value,
           handoverDate = $("handoverDate").value;
         const calcState = captureCalcState();
-        const dealAgent = typeof phcCurrentAgent !== 'undefined' ? phcCurrentAgent : '';
         const schedRows = buildScheduleRows(
           lastCalc,
           bookingDate,
@@ -8758,7 +9203,6 @@ B1 = East | Gross 50㎡ | Net 45㎡
           calcState,
           schedRows,
           notes: "",
-          agent: typeof phcCurrentAgent !== 'undefined' ? phcCurrentAgent : '',
         };
         pipeline.push(deal);
         $("pipeBtn").classList.add("in-pipe");
@@ -8786,7 +9230,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
             (np.daysUntil < 0 || (np.daysUntil >= 0 && np.daysUntil <= 14))
           );
         }).length;
-        [$("sdNavAlert"), $("mtabAlert"), $("bnavAlert")].forEach((el) => {
+        [$("mtabAlert"), $("bnavAlert")].forEach((el) => {
           if (el) {
             el.style.display = alerts > 0 ? "flex" : "none";
             el.textContent = alerts;
@@ -8863,7 +9307,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
 
         kanban.innerHTML = STAGES.map((stage) => {
           const cards = filtered.filter((d) => d.stage === stage.id);
-          const emptyState = cards.length === 0 ? `<div style="padding:18px 10px;text-align:center;color:var(--tx3);font-size:11px;border:1.5px dashed var(--bd);border-radius:10px;margin:4px 0"><div style="font-size:18px;margin-bottom:4px;opacity:0.3">·</div><div style="font-weight:700;font-size:12px;color:var(--tx2)">No deals</div><div style="margin-top:2px">Calculate a unit &amp;<br>tap <strong>Add to Pipeline</strong></div></div>` : '';
+          const emptyState = cards.length === 0 ? `<div style="padding:18px 10px;text-align:center;color:var(--tx3);font-size:11px;border:1.5px dashed var(--bd);border-radius:10px;margin:4px 0"><div style="font-size:18px;margin-bottom:4px">📋</div><div style="font-weight:700;font-size:12px;color:var(--tx2)">No deals</div><div style="margin-top:2px">Calculate a unit &amp;<br>tap <strong>Add to Pipeline</strong></div></div>` : '';
           return `<div class="k-col">
       <div class="k-head"><span>${stage.label}</span><span class="k-count">${cards.length}</span></div>
       <div class="k-cards">${emptyState}${cards
@@ -8874,10 +9318,10 @@ B1 = East | Gross 50㎡ | Net 45㎡
           if (np) {
             if (np.daysUntil < 0) {
               cardCls = "k-card overdue";
-              nextHtml = `<div class="k-next overdue">${Math.abs(np.daysUntil)}d overdue · ${fUSD(np.amount)}</div>`;
+              nextHtml = `<div class="k-next overdue">🔴 ${Math.abs(np.daysUntil)}d overdue · ${fUSD(np.amount)}</div>`;
             } else if (np.daysUntil <= 14) {
               cardCls = "k-card due-soon";
-              nextHtml = `<div class="k-next soon">Due in ${np.daysUntil}d · ${fUSD(np.amount)}</div>`;
+              nextHtml = `<div class="k-next soon">🟡 Due in ${np.daysUntil}d · ${fUSD(np.amount)}</div>`;
             } else {
               nextHtml = `<div class="k-next ok"><span class="inline-icon">${uiIcon("checkcircle", "ui-icon sm")}${fmtDate(np.date)}</span></div>`;
             }
@@ -8895,9 +9339,9 @@ B1 = East | Gross 50㎡ | Net 45㎡
           const notesHtml = d.notes
             ? `<div class="k-notes has-notes"><span class="inline-icon">${uiIcon("note", "ui-icon sm")}${d.notes}</span></div>`
             : "";
-          return `<div class="${cardCls}" data-agent="${d.agent||''}" onclick="openDealModal(${d.id})">
+          return `<div class="${cardCls}" onclick="openDealModal(${d.id})">
           <div class="k-menu"><button class="k-menu-btn" onclick="event.stopPropagation();removeDeal(${d.id})" title="Remove">${uiIcon("x", "ui-icon sm")}</button></div>
-          <div style="font-size:10px;letter-spacing:0.03em;text-transform:uppercase;font-weight:700;color:var(--tx3);margin-bottom:2px">${d.projName.split(" ").slice(-1)[0]}</div>
+          <div style="font-size:7.5px;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:var(--tx3);margin-bottom:2px">${d.projName.split(" ").slice(-1)[0]}</div>
           <div class="k-unit">${d.uid}</div>
           <div class="k-client">${d.clientName}</div>
           <div class="k-proj">${d.info?.beds} · ${d.info?.size}</div>
@@ -8930,21 +9374,21 @@ B1 = East | Gross 50㎡ | Net 45㎡
         $("dmTitle").textContent = deal.uid + " · " + deal.clientName;
         $("dmBody").innerHTML = `
     <div style="margin-bottom:12px">
-      <div style="font-size:10px;letter-spacing:0.05em;text-transform:uppercase;color:var(--tx3);margin-bottom:6px">Stage</div>
+      <div style="font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--tx3);margin-bottom:6px">Stage</div>
       <div class="stage-select-grid">${STAGES.map((s) => `<div class="ss-btn${deal.stage === s.id ? " active" : ""}" onclick="setDealStage(${id},'${s.id}',this)">${s.label}</div>`).join("")}</div>
     </div>
-    <div style="font-size:10px;letter-spacing:0.05em;text-transform:uppercase;color:var(--tx2);margin:14px 0 6px;font-weight:600;">Deal Details</div>
+    <div style="font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--goldd);margin:14px 0 6px;font-weight:700;">Deal Details</div>
     <div class="deal-stat-row"><span class="dsr-l">Project</span><span class="dsr-v">${p.name}</span></div>
     <div class="deal-stat-row"><span class="dsr-l">Unit</span><span class="dsr-v">${deal.uid} · ${deal.info?.beds} · ${deal.info?.size}</span></div>
     <div class="deal-stat-row"><span class="dsr-l">Final Price</span><span class="dsr-v">${fUSD(deal.net)}</span></div>
     <div class="deal-stat-row"><span class="dsr-l">Commission (${commRate}%)</span><span class="dsr-v" style="color:var(--grn)">${fUSD(commAmt)}</span></div>
-    <div class="deal-stat-row"><span class="dsr-l">Days in Stage</span><span class="dsr-v">${ageDays}d</span></div>
+    <div class="deal-stat-row"><span class="dsr-l">Days in Stage</span><span class="dsr-v">${ageDays}d ${ageDays > 30 ? "🔴" : ageDays > 10 ? "🟡" : "🟢"}</span></div>
     <div class="deal-stat-row"><span class="dsr-l">Booking Date</span><span class="dsr-v">${deal.bookingDate ? new Date(deal.bookingDate).toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric" }) : "—"}</span></div>
     <div class="deal-stat-row"><span class="dsr-l">SPA Date</span><span class="dsr-v">${deal.spaDate ? new Date(deal.spaDate).toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric" }) : "—"}</span></div>
     ${
       np
         ? `<div style="margin-top:12px;padding:10px 12px;background:${np.daysUntil < 0 ? "rgba(176,48,48,.06)" : np.daysUntil <= 14 ? "rgba(184,112,16,.06)" : "#edf8f2"};border:1px solid ${np.daysUntil < 0 ? "rgba(176,48,48,.2)" : np.daysUntil <= 14 ? "rgba(184,112,16,.2)" : "rgba(26,122,74,.15)"};border-radius:8px;">
-      <div style="font-size:10px;letter-spacing:0.04em;text-transform:uppercase;color:var(--tx3);margin-bottom:5px">Next Payment</div>
+      <div style="font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx3);margin-bottom:5px">Next Payment</div>
       <div style="font-weight:700;font-size:13px;color:${np.daysUntil < 0 ? "var(--red)" : np.daysUntil <= 14 ? "var(--amber)" : "var(--grn)"}">${fUSD(np.amount)} · ${fmtDate(np.date)}</div>
       <div style="font-size:10px;color:var(--tx3);margin-top:2px">${np.stage} · ${np.daysUntil < 0 ? Math.abs(np.daysUntil) + "d overdue" : np.daysUntil === 0 ? "Due today" : "Due in " + np.daysUntil + "d"}</div>
     </div>`
@@ -8953,7 +9397,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
     ${
       paymentRows.length
         ? `<div style="margin-top:14px">
-      <div style="font-size:10px;letter-spacing:0.05em;text-transform:uppercase;color:var(--tx3);margin-bottom:6px">Payment Status</div>
+      <div style="font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--tx3);margin-bottom:6px">Payment Status</div>
       ${paymentRows
         .map((row) => {
           const meta = getPaymentStatusMeta(row);
@@ -8987,7 +9431,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
         : ""
     }
     <div style="margin-top:14px">
-      <label style="font-size:10px;letter-spacing:0.04em;text-transform:uppercase;color:var(--tx2);font-weight:600;display:block;margin-bottom:5px">Notes</label>
+      <label style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx2);font-weight:600;display:block;margin-bottom:5px">Notes</label>
       <textarea id="dealNotes" style="width:100%;background:var(--cream2);border:1.5px solid var(--bd);border-radius:8px;padding:9px 12px;font-size:12px;color:var(--tx);resize:vertical;outline:none;min-height:66px">${deal.notes || ""}</textarea>
     </div>
     <div class="deal-action-row">
@@ -9187,7 +9631,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
         el.innerHTML = saves
           .map(
             (s, i) => `<div class="saved-row" onclick="loadSave(${i})">
-    <div style="font-family:'DM Serif Display',serif;font-size:1.7rem;color:var(--tx);min-width:54px">${s.uid}</div>
+    <div style="font-family:'DM Serif Display',serif;font-size:1.7rem;color:var(--navy);min-width:54px">${s.uid}</div>
     <div style="flex:1"><div style="font-size:10.5px;font-weight:600;color:var(--tx2)">${s.projName} · ${s.info?.beds}</div><div style="font-size:13px;font-weight:700;color:var(--tx)">${fUSD(s.net)}</div><div style="font-size:9.5px;color:var(--tx3);margin-top:2px">${s.clientName ? s.clientName + " · " : ""}${new Date(s.savedAt).toLocaleDateString()}</div></div>
     <button style="background:none;border:none;color:var(--tx3);cursor:pointer;padding:5px;display:inline-flex;align-items:center;justify-content:center" onclick="event.stopPropagation();removeSave(${i})">${uiIcon("x", "ui-icon sm")}</button>
   </div>`,
@@ -9421,7 +9865,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
     <div class="doc-unit-badge"><div><div class="doc-uid">${r.uid}</div><div class="doc-ud">${r.info?.beds}${r.info?.series ? " · " + r.info.series : ""}${r.floor >= 35 ? " · High Zone" : ""}</div>${grossDisplay || netDisplay ? `<div style="font-size:9px;color:var(--tx2);margin-top:7px;line-height:1.6">${grossDisplay ? `Gross Size: ${grossDisplay}` : ""}${grossDisplay && netDisplay ? "<br>" : ""}${netDisplay ? `Net Size: ${netDisplay}` : ""}</div>` : ""}</div><div style="text-align:right"><div style="font-size:8px;letter-spacing:1.5px;color:var(--tx3);text-transform:uppercase">${preparedForLabel}</div><div style="font-weight:700;color:var(--navy);font-size:16px;line-height:1.25">${client}</div><div style="font-size:9px;color:var(--tx3);margin-top:7px">${bookingLabel}: ${bookingDisplay}</div><div style="font-size:9px;color:var(--tx3);margin-top:4px">${spaLabel}: ${spaDisplay}</div></div></div>
     <div class="dpr"><span>List Price</span><span>${fUSD(r.orig)}</span></div>
     <div class="dpr"><span>Discount (${r.discLabel})</span><span style="color:var(--grn)">− ${fUSD(r.discAmt)}</span></div>
-    <div class="dpr hl"><span>Final Sale Price</span><span style="color:var(--acc)">${fUSD(r.net)}</span></div>
+    <div class="dpr hl"><span>Final Sale Price</span><span style="color:var(--goldd)">${fUSD(r.net)}</span></div>
     ${unitFacts ? `<div style="font-size:9px;color:var(--tx3);letter-spacing:1px;text-transform:uppercase;margin:8px 0 14px">${unitFacts}</div>` : ""}
     <div class="dsec">Payment Schedule</div>
     <table class="dtbl"><thead><tr><th>#</th><th>Stage</th><th>%</th><th class="dr">Amount (USD)</th></tr></thead><tbody>
@@ -10828,13 +11272,8 @@ tr:nth-child(even) td{background:#faf8f4}
           setV('rsSpaPct', lastCalc.spaPct || 20);
           setV('rsMonths', lastCalc.months || 45);
           setV('rsHoPct', lastCalc.hoPct || 35);
-          setV('rsInstPct', lastCalc.instPct !== undefined ? lastCalc.instPct : (100 - (lastCalc.spaPct || 20) - (lastCalc.hoPct || 35)));
-          setV('rsSpaDate', lastCalc.spaDate || '');
-          const beds = lastCalc.info?.beds || '';
-          const sz = lastCalc.info?.size || '';
-          setV('rsUnitType', [beds, sz].filter(Boolean).join(' '));
           const t = document.createElement('div');
-          t.style.cssText = 'position:fixed;top:70px;left:50%;transform:translateX(-50%);background:rgba(124,92,191,.95);color:#fff;font-size:12px;font-weight:700;padding:8px 20px;border-radius:20px;z-index:9999;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.15)';
+          t.style.cssText = 'position:fixed;top:70px;left:50%;transform:translateX(-50%);background:rgba(154,122,62,.95);color:#fff;font-size:12px;font-weight:700;padding:8px 20px;border-radius:20px;z-index:9999;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.15)';
           t.textContent = '✓ Resale tab pre-filled from ' + (lastCalc.uid || 'calculator');
           document.body.appendChild(t);
           setTimeout(() => t.style.opacity = '0', 2500);
@@ -10902,7 +11341,7 @@ tr:nth-child(even) td{background:#faf8f4}
           });
           if (!list.length) { el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--tx3);font-size:13px">No saves match your search.</div>'; return; }
           el.innerHTML = list.map(s => `<div class="saved-row" onclick="loadSave(${s._i})">
-            <div style="font-family:'DM Serif Display',serif;font-size:1.7rem;color:var(--tx);min-width:54px">${s.uid}</div>
+            <div style="font-family:'DM Serif Display',serif;font-size:1.7rem;color:var(--navy);min-width:54px">${s.uid}</div>
             <div style="flex:1">
               <div style="font-size:11px;font-weight:600;color:var(--tx2)">${s.projName} · ${s.info?.beds||''}</div>
               <div style="font-size:13px;font-weight:700;color:var(--tx)">${fUSD(s.net)}</div>
@@ -10962,194 +11401,6 @@ tr:nth-child(even) td{background:#faf8f4}
         };
       }
 
-
-      // ── SIDEBAR TOGGLE ──
-      let sdSidebarCollapsed = false;
-      function toggleSdSidebar() {
-        sdSidebarCollapsed = !sdSidebarCollapsed;
-        document.getElementById('sdSidebar').classList.toggle('collapsed', sdSidebarCollapsed);
-        const btn = document.querySelector('#sdSidebar .collapse-btn');
-        btn.innerHTML = sdSidebarCollapsed
-          ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,18 15,12 9,6"/></svg>'
-          : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>';
-      }
 </script>
-
-    <script>
-      /* PDF dropdown */
-      function togglePdfMenu(e) {
-        e.stopPropagation();
-        var m = document.getElementById('pdfMenu');
-        if (m) m.classList.toggle('open');
-      }
-      function closePdfMenu() {
-        var m = document.getElementById('pdfMenu');
-        if (m) m.classList.remove('open');
-      }
-      document.addEventListener('click', function(e) {
-        var m = document.getElementById('pdfMenu');
-        if (m && !m.closest('.cta-pdf-wrap').contains(e.target)) m.classList.remove('open');
-      });
-      /* Placeholder toggle */
-      (function() {
-        var ph = document.getElementById('calcPlaceholder');
-        var rc = document.getElementById('resultCard');
-        if (!ph || !rc) return;
-        var upd = function() { ph.style.display = rc.classList.contains('visible') ? 'none' : ''; };
-        new MutationObserver(upd).observe(rc, {attributes:true, attributeFilter:['class']});
-      })();
-    </script>
-
-
-    <script>
-      /* ═══ MODE SWITCHING ═══ */
-      var MODES = ['quote','pipeline','tools'];
-      var TOOLS = ['inventory','roi','mortgage','compare','saved','resale'];
-      var currentMode = 'quote';
-      var currentTool = 'inventory';
-
-      function setMode(mode) {
-        MODES.forEach(function(m) {
-          var p = document.getElementById('mode-panel-' + m);
-          var b = document.getElementById('mode-btn-' + m);
-          if (p) p.classList.toggle('active', m === mode);
-          if (b) b.classList.toggle('active', m === mode);
-        });
-        currentMode = mode;
-        if (mode === 'pipeline') {
-          renderPipeline();
-          renderCommPanel();
-          applyAgentFilter();
-        }
-        if (mode === 'tools') {
-          setTool(currentTool);
-        }
-        localStorage.setItem('phcMode', mode);
-      }
-
-      function setTool(tool) {
-        TOOLS.forEach(function(t) {
-          var p = document.getElementById('tab-' + t);
-          var b = document.getElementById('ttab-' + t);
-          if (p) p.classList.toggle('active', t === tool);
-          if (b) b.classList.toggle('active', t === tool);
-        });
-        currentTool = tool;
-        if (tool === 'inventory') renderInventory();
-        localStorage.setItem('phcTool', tool);
-      }
-
-      /* Override goTab so existing internal calls route to new modes */
-      (function() {
-        var _orig = typeof goTab === 'function' ? goTab : null;
-        goTab = function(id, idx) {
-          if (id === 'calculator') { setMode('quote'); return; }
-          if (id === 'pipeline')   { setMode('pipeline'); return; }
-          if (TOOLS.indexOf(id) >= 0) { setMode('tools'); setTool(id); return; }
-          if (_orig) _orig(id, idx);
-        };
-      })();
-
-      /* ═══ AGENT IDENTITY ═══ */
-      var NICK_NAMES = ['nick', 'nicholas'];
-      var AGENT_NAMES = ['Nick','Monika','Narith','Sophea','Ratanak'];
-      var phcCurrentAgent = localStorage.getItem('phcAgent') || '';
-
-      function isNick() {
-        return NICK_NAMES.indexOf(phcCurrentAgent.toLowerCase()) >= 0;
-      }
-
-      function updateAgentUI() {
-        var btn = document.getElementById('agentBtn');
-        var chip = document.getElementById('agentNameChip');
-        if (btn) btn.classList.toggle('has-agent', !!phcCurrentAgent);
-        if (chip) chip.textContent = phcCurrentAgent ? phcCurrentAgent.split(' ')[0] : '';
-        /* Show agent filter bar only for Nick */
-        var bar = document.getElementById('pipeAgentBar');
-        if (bar) bar.style.display = isNick() ? 'flex' : 'none';
-      }
-
-      function openAgentPicker() {
-        var bg = document.getElementById('agentModalBg');
-        var list = document.getElementById('amAgentList');
-        var inp = document.getElementById('amCustomInput');
-        if (!bg) return;
-        /* Build agent buttons */
-        list.innerHTML = '';
-        AGENT_NAMES.forEach(function(name) {
-          var btn = document.createElement('button');
-          btn.className = 'am-agent-btn' + (name.toLowerCase() === 'nick' ? ' am-nick' : '') + (phcCurrentAgent === name ? ' selected' : '');
-          btn.innerHTML = '<div class="am-agent-icon">' + name[0] + '</div>' + name + (name.toLowerCase() === 'nick' ? ' <span style="font-size:10px;opacity:.6;font-weight:400">(Director)</span>' : '');
-          btn.onclick = function() { setAgent(name); closeAgentPicker(); };
-          list.appendChild(btn);
-        });
-        inp.value = '';
-        bg.classList.add('open');
-        setTimeout(function() { inp.focus(); }, 100);
-      }
-
-      function closeAgentPicker() {
-        var bg = document.getElementById('agentModalBg');
-        if (bg) bg.classList.remove('open');
-      }
-
-      function confirmAgentName() {
-        var inp = document.getElementById('amCustomInput');
-        var name = inp ? inp.value.trim() : '';
-        if (name) { setAgent(name); closeAgentPicker(); }
-      }
-
-      function setAgent(name) {
-        phcCurrentAgent = name;
-        localStorage.setItem('phcAgent', name);
-        updateAgentUI();
-        if (currentMode === 'pipeline') applyAgentFilter();
-      }
-
-      /* ═══ PIPELINE AGENT FILTER ═══ */
-      function buildAgentFilterOptions() {
-        var sel = document.getElementById('pipeAgentFilter');
-        if (!sel) return;
-        var names = {};
-        if (typeof pipeline !== 'undefined') {
-          pipeline.forEach(function(d) { if (d.agent) names[d.agent] = true; });
-        }
-        sel.innerHTML = '<option value="">All Agents</option>';
-        Object.keys(names).sort().forEach(function(n) {
-          sel.innerHTML += '<option value="' + n + '">' + n + '</option>';
-        });
-      }
-
-      function applyAgentFilter() {
-        if (!isNick() && phcCurrentAgent) {
-          /* Non-Nick: hide all deals not belonging to current agent */
-          document.querySelectorAll('.k-card').forEach(function(card) {
-            var agent = card.dataset.agent || '';
-            /* Show if no agent recorded (legacy) or matches current agent */
-            card.style.display = (!agent || agent === phcCurrentAgent) ? '' : 'none';
-          });
-        } else {
-          /* Nick: apply dropdown filter */
-          var filterVal = '';
-          var sel = document.getElementById('pipeAgentFilter');
-          if (sel) filterVal = sel.value;
-          document.querySelectorAll('.k-card').forEach(function(card) {
-            var agent = card.dataset.agent || '';
-            card.style.display = (!filterVal || agent === filterVal) ? '' : 'none';
-          });
-          buildAgentFilterOptions();
-        }
-      }
-
-      /* Restore last mode on load */
-      document.addEventListener('DOMContentLoaded', function() {
-        var savedMode = localStorage.getItem('phcMode');
-        var savedTool = localStorage.getItem('phcTool');
-        updateAgentUI();
-        if (savedMode && MODES.indexOf(savedMode) >= 0) setMode(savedMode);
-        if (savedTool && TOOLS.indexOf(savedTool) >= 0) currentTool = savedTool;
-      });
-    </script>
-
   </body>
 </html>
