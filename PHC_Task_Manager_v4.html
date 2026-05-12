@@ -439,8 +439,8 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;font-size:13px;color:var(
     <div class="sb-bot-btn" title="AI Assistant"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v1m0 16v1M4.22 4.22l.7.7m12.7 12.7.7.7M3 12h1m16 0h1M4.22 19.78l.7-.7m12.7-12.7.7-.7"/><circle cx="12" cy="12" r="4"/></svg></div>
     <div class="sb-bot-btn" title="Settings"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
     <div class="sb-user">
-      <div class="av" style="background:#cc9d4d;color:#13131a">N</div>
-      <span style="font-size:12px;font-weight:600;color:var(--text-primary)">Nick</span>
+      <div class="av" id="sb-user-av" style="background:#cc9d4d;color:#13131a">N</div>
+      <span id="sb-user-name" style="font-size:12px;font-weight:600;color:var(--text-primary)">Nick</span>
     </div>
   </div>
 
@@ -693,6 +693,10 @@ const MEMBERS = {
   Ma: { bg:'#e91e8c', tc:'#fff',    name:'Marina' },
 };
 
+// ── IDENTITY — read ?me=N (or M, R, Me, Ma) from URL ──
+const URL_ME = (()=>{ const v=new URLSearchParams(window.location.search).get('me')||'N'; return MEMBERS[v]?v:'N'; })();
+const ME     = MEMBERS[URL_ME];
+
 // ── SVG priority flag ──
 const priFlag = c => `<svg width="13" height="13" viewBox="0 0 16 16" fill="${c}"><path d="M3 2h10l-2.2 5L13 12H3l2.2-5z"/></svg>`;
 
@@ -773,7 +777,7 @@ function getFiltered(){
   if(catMap[currentNav]) list=list.filter(t=>t.cat===catMap[currentNav]);
   if(currentFilter==='overdue')  list=list.filter(t=>isOverdue(t));
   else if(currentFilter!=='all') list=list.filter(t=>t.status===currentFilter);
-  if(filterMe && currentNav==='my-tasks') list=list.filter(t=>t.assignees.includes('N'));
+  if(filterMe && currentNav==='my-tasks') list=list.filter(t=>t.assignees.includes(URL_ME));
   return list;
 }
 
@@ -1185,6 +1189,12 @@ async function initApp(){
   }
   renderAll();
   updateBadge();
+  // Update sidebar identity from URL param
+  const avEl = document.getElementById('sb-user-av');
+  const nmEl = document.getElementById('sb-user-name');
+  if(avEl){ avEl.style.background=ME.bg; avEl.style.color=ME.tc; avEl.textContent=URL_ME; }
+  if(nmEl) nmEl.textContent=ME.name;
+  document.title = ME.name + ' · PHC Task Manager';
   // 3. If connected, fetch fresh data from Sheets in background
   if(apiUrl){ await loadFromSheets(); }
 }
@@ -1430,7 +1440,7 @@ function navGo(el,key){
   currentNav=key; currentFilter='all';
   document.querySelectorAll('.sb-nav-item,.list-item').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
-  const titles={'my-tasks':'My Tasks','inbox':'Inbox','home':'Home','dashboards':'Dashboards','goals':'Goals & OKRs','favorites':'Favorites'};
+  const titles={'my-tasks':ME.name+"'s Tasks",'inbox':'Inbox','home':'Home','dashboards':'Dashboards','goals':'Goals & OKRs','favorites':'Favorites'};
   document.getElementById('tn-title').textContent=titles[key]||key;
   renderAll();
 }
@@ -1480,7 +1490,7 @@ function removeFilter(e,type){
 
 // ───── BADGE ─────
 function updateBadge(){
-  const ov=tasks.filter(t=>isOverdue(t)&&t.assignees.includes('N')).length;
+  const ov=tasks.filter(t=>isOverdue(t)&&t.assignees.includes(URL_ME)).length;
   const el=document.getElementById('sb-badge');
   if(el){ el.textContent=ov||''; el.style.display=ov?'':'none'; }
 }
@@ -1496,7 +1506,7 @@ function _clearModalFields(){
   document.getElementById('f-status').value   = 'To Do';
   document.getElementById('f-pri').value      = 'normal';
   document.getElementById('f-cat').value      = 'Admin & Operations';
-  document.getElementById('f-assignee').value = 'N';
+  document.getElementById('f-assignee').value = URL_ME;
 }
 function openModal(preDate){
   editTaskId = null;
