@@ -1,393 +1,539 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PHC · Client Manager</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>PHC CRM · Clients</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-:root {
-  --navy:#06264F; --navy-dark:#040f24; --navy-mid:#0b3d7a;
-  --gold:#C9993F; --gold-dim:rgba(201,153,63,.15);
-  --text:#dde5f0; --muted:#6b849e;
-  --green:#1a7a4a; --green-bg:rgba(26,122,74,.12);
-  --red:#c0392b; --red-bg:rgba(192,57,43,.12);
-  --orange:#e67e22; --orange-bg:rgba(230,126,34,.12);
-  --yellow:#f1c40f; --yellow-bg:rgba(241,196,15,.1);
-  --radius:10px; --radius-sm:7px;
-  --shadow:0 4px 20px rgba(0,0,0,.3);
+:root{
+  --sb:#191b23;--sb-hover:rgba(255,255,255,.05);--sb-active:rgba(255,255,255,.09);
+  --sb-text:#a8b0c8;--sb-text-s:#ffffff;--sb-icon:#5a6180;--sb-border:rgba(255,255,255,.06);
+  --purple:#7c5cbf;--purple-l:#9d8ef0;--purple-pale:#f3f0ff;--purple-btn:#7c5cbf;
+  --bg:#f7f8fa;--card:#ffffff;--white:#ffffff;
+  --border:#e3e5ea;--border-h:#c8cdd8;
+  --text:#1f2437;--text-s:#5e6882;--text-m:#9ca3af;
+  --urgent:#d63031;--urgent-pale:#fff0f0;--urgent-t:#991b1b;
+  --high:#e67e22;--high-pale:#fffbf0;
+  --green:#10b981;--red:#ef4444;--orange:#f97316;
 }
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--navy-dark);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden}
+a{text-decoration:none;color:inherit}
 
-/* ── TOPBAR ── */
-.topbar{background:var(--navy);border-bottom:3px solid var(--gold);padding:0 32px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:300}
-.tl{font-family:'Playfair Display',serif;font-size:17px;color:#fff}.tl span{color:var(--gold)}
-.tr{display:flex;align-items:center;gap:16px}
-.hub-link{font-size:12px;color:var(--gold);opacity:.7;text-decoration:none;transition:.2s}.hub-link:hover{opacity:1}
-.badge-sample{font-family:'JetBrains Mono',monospace;font-size:9px;padding:3px 9px;border-radius:4px;background:rgba(241,196,15,.15);color:var(--yellow);letter-spacing:.5px}
+.app{display:flex;height:100vh;overflow:hidden}
 
-/* ── TABS ── */
-.tabs{background:var(--navy);border-bottom:1px solid rgba(255,255,255,.06);padding:0 32px;display:flex;gap:4px}
-.tab{padding:14px 22px;font-size:13px;font-weight:500;color:var(--muted);border-bottom:2px solid transparent;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:7px}
-.tab:hover{color:var(--text)}
-.tab.active{color:var(--gold);border-bottom-color:var(--gold)}
-.tab-count{font-family:'JetBrains Mono',monospace;font-size:10px;background:rgba(201,153,63,.15);color:var(--gold);padding:2px 7px;border-radius:10px}
+/* ── SIDEBAR ── */
+.sidebar{width:230px;flex-shrink:0;background:var(--sb);display:flex;flex-direction:column;border-right:1px solid var(--sb-border);overflow:hidden}
+.ws-header{display:flex;align-items:center;gap:9px;padding:14px 12px 12px;border-bottom:1px solid var(--sb-border);flex-shrink:0}
+.ws-logo{width:28px;height:28px;border-radius:7px;background:var(--purple);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.ws-info{flex:1;min-width:0}
+.ws-name{font-size:12px;font-weight:600;color:var(--sb-text-s);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ws-sub{font-size:10px;color:var(--sb-icon);margin-top:1px}
+.sb-nav{flex:1;overflow-y:auto;padding:8px 0;scrollbar-width:none}
+.sb-nav::-webkit-scrollbar{display:none}
+.sb-section-label{font-size:9px;font-weight:600;color:var(--sb-icon);text-transform:uppercase;letter-spacing:.1em;padding:10px 14px 4px}
+.sb-item{display:flex;align-items:center;gap:8px;padding:6px 10px;margin:1px 6px;border-radius:6px;color:var(--sb-text);font-size:12px;font-weight:400;transition:all .15s;cursor:pointer;user-select:none}
+.sb-item:hover{background:var(--sb-hover);color:var(--sb-text-s)}
+.sb-item.active{background:var(--sb-active);color:var(--sb-text-s)}
+.sb-icon{width:18px;height:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--sb-icon)}
+.sb-item.active .sb-icon,.sb-item:hover .sb-icon{color:var(--sb-text-s)}
+.sb-label{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-badge{background:var(--urgent);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:8px;min-width:16px;text-align:center;flex-shrink:0}
+.sb-badge.zero{background:rgba(255,255,255,.12);color:var(--sb-icon)}
+.sb-count{font-size:10px;color:var(--sb-icon);margin-left:auto;font-weight:500}
+.sb-footer{border-top:1px solid var(--sb-border);padding:6px 0}
+.av-ring{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;flex-shrink:0}
+.api-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.2);flex-shrink:0}
+.api-dot.live{background:var(--green)}
 
-/* ── STATS STRIP ── */
-.stats-strip{background:rgba(201,153,63,.05);border-bottom:1px solid rgba(201,153,63,.1);padding:14px 32px;display:flex;gap:0}
-.stat-block{flex:1;text-align:center;padding:0 20px;border-right:1px solid rgba(255,255,255,.06)}
-.stat-block:last-child{border-right:none}
-.stat-num{font-family:'Playfair Display',serif;font-size:24px;color:var(--gold);line-height:1}
-.stat-num.red{color:#e74c3c}.stat-num.green{color:#2ecc71}.stat-num.blue{color:#3498db}
-.stat-lbl{font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:.3px}
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);height:44px;display:flex;align-items:center;padding:0 16px;gap:8px;flex-shrink:0}
+.breadcrumb{font-size:12px;color:var(--text-s)}
+.bc-sep{font-size:12px;color:var(--text-m);margin:0 2px}
+.bc-active{font-size:12px;font-weight:600;color:var(--text)}
+.topbar-right{display:flex;align-items:center;gap:8px;margin-left:auto}
+.tb-btn{background:none;border:1px solid var(--border);border-radius:6px;padding:5px 10px;cursor:pointer;color:var(--text-s);font-size:11px;font-family:'Inter',sans-serif;transition:all .15s}
+.tb-btn:hover{border-color:var(--border-h);color:var(--text)}
+.add-btn{padding:5px 14px;border:none;border-radius:6px;background:var(--purple-btn);font-size:11px;font-weight:600;font-family:'Inter',sans-serif;color:#fff;cursor:pointer;transition:all .15s}
+.add-btn:hover{background:var(--purple-l)}
 
-/* ── LAYOUT ── */
-.page{display:none;padding:28px 32px 60px}
-.page.active{display:block}
+.view-toolbar{background:var(--white);border-bottom:1px solid var(--border);height:40px;display:flex;align-items:center;padding:0 14px;gap:6px;flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+.view-toolbar.hidden{display:none}
+.filter-wrap{display:flex;align-items:center;gap:7px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:4px 9px}
+.filter-wrap input{border:none;background:transparent;font-size:11px;font-family:'Inter',sans-serif;color:var(--text);outline:none;width:160px}
+.filter-wrap input::placeholder{color:var(--text-m)}
+.vt-sel{padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);font-family:'Inter',sans-serif;font-size:11px;color:var(--text-s);cursor:pointer;outline:none}
+.vt-right{margin-left:auto;display:flex;align-items:center;gap:6px}
 
-/* ── SECTION HEAD ── */
-.sh{display:flex;align-items:center;gap:12px;margin-bottom:18px}
-.sh-title{font-family:'Playfair Display',serif;font-size:17px;color:#fff}
-.sh-line{flex:1;height:1px;background:linear-gradient(to right,rgba(201,153,63,.25),transparent)}
-.sh-action{font-size:12px;color:var(--gold);cursor:pointer;padding:5px 14px;border:1px solid rgba(201,153,63,.3);border-radius:6px;background:transparent;transition:.2s;font-family:'Inter',sans-serif}
-.sh-action:hover{background:rgba(201,153,63,.1)}
+/* ── CONTENT ── */
+.content-area{flex:1;overflow:hidden;display:flex;flex-direction:column}
 
-/* ── ALERT CARDS (due this week) ── */
-.alert-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px;margin-bottom:32px}
-.alert-card{background:var(--navy);border:1px solid rgba(255,255,255,.07);border-left:4px solid;border-radius:var(--radius);padding:16px 18px}
-.alert-card.today{border-left-color:#e74c3c}
-.alert-card.week{border-left-color:var(--orange)}
-.alert-card.soon{border-left-color:var(--yellow)}
-.alert-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
-.alert-name{font-size:14px;font-weight:600;color:#fff}
-.alert-proj{display:inline-block;font-size:10px;padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;margin-top:3px}
-.alert-unit{font-size:12px;color:var(--muted);margin-top:4px}
-.due-badge{font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;white-space:nowrap}
-.due-badge.today{background:var(--red-bg);color:#e74c3c}
-.due-badge.week{background:var(--orange-bg);color:var(--orange)}
-.due-badge.soon{background:var(--yellow-bg);color:var(--yellow)}
-.alert-amount{font-size:20px;font-family:'Playfair Display',serif;color:#fff;margin:8px 0 4px}
-.alert-bank{font-size:11px;color:var(--muted);margin-bottom:12px}
-.copy-btn{width:100%;padding:8px;background:rgba(201,153,63,.1);border:1px solid rgba(201,153,63,.25);border-radius:var(--radius-sm);color:var(--gold);font-size:12px;cursor:pointer;transition:.2s;font-family:'Inter',sans-serif}
-.copy-btn:hover{background:rgba(201,153,63,.2)}
-.copy-btn.copied{background:var(--green-bg);border-color:var(--green);color:#2ecc71}
+/* dashboard */
+.dash-wrap{flex:1;overflow:auto;padding:16px}
+.dash-wrap.hidden{display:none}
+.dash-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:20px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px;position:relative;overflow:hidden}
+.stat-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px}
+.sc-total::before{background:linear-gradient(90deg,var(--purple),var(--purple-l))}
+.sc-due::before{background:linear-gradient(90deg,var(--urgent),var(--high))}
+.sc-money::before{background:linear-gradient(90deg,var(--green),#34d399)}
+.sc-proj::before{background:linear-gradient(90deg,var(--high),var(--orange))}
+.stat-label{font-size:10px;font-weight:600;color:var(--text-m);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.stat-val{font-size:28px;font-weight:700;color:var(--text);line-height:1}
+.stat-sub{font-size:10px;color:var(--text-m);margin-top:4px}
+.section-title{font-size:11px;font-weight:600;color:var(--text-s);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:"";flex:1;height:1px;background:var(--border)}
+.alert-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px;margin-bottom:24px}
+.alert-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;border-left:4px solid var(--border)}
+.alert-card.today{border-left-color:var(--urgent)}
+.alert-card.week{border-left-color:var(--high)}
+.alert-card.soon{border-left-color:#f9a825}
+.alert-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px}
+.alert-name{font-size:14px;font-weight:600;color:var(--text)}
+.alert-sub{font-size:11px;color:var(--text-s);margin-top:2px}
+.due-badge{font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.due-badge.today{background:var(--urgent-pale);color:var(--urgent)}
+.due-badge.week{background:var(--high-pale);color:var(--high)}
+.due-badge.soon{background:#fffde7;color:#f57f17}
+.alert-amount{font-size:20px;font-weight:700;color:var(--text);margin:8px 0 3px}
+.alert-bank{font-size:11px;color:var(--text-s);margin-bottom:10px}
+.copy-btn{width:100%;padding:7px;background:var(--purple-pale);border:1px solid rgba(124,92,191,.2);border-radius:6px;color:var(--purple);font-size:11px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.copy-btn:hover{background:rgba(124,92,191,.15);border-color:rgba(124,92,191,.4)}
+.copy-btn.copied{background:#f0fdf4;border-color:rgba(16,185,129,.3);color:var(--green)}
 
-/* ── EMPTY STATE ── */
-.empty{text-align:center;padding:48px 20px;color:var(--muted)}
-.empty-icon{font-size:40px;margin-bottom:12px}
-.empty-text{font-size:14px}
+/* client list */
+.list-wrap{flex:1;overflow:auto;padding:14px 16px}
+.list-wrap.hidden{display:none}
+.l-table{width:100%;border-collapse:collapse;background:var(--card);border-radius:10px;border:1px solid var(--border);overflow:hidden}
+.l-table thead th{background:#f9fafb;color:var(--text-s);padding:8px 13px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;border-bottom:1px solid var(--border)}
+.l-table tbody tr{border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s}
+.l-table tbody tr:hover{background:#f9fafb}
+.l-table tbody tr:last-child{border-bottom:none}
+.l-table td{padding:9px 13px;font-size:12px;vertical-align:middle}
+.client-name{font-size:13px;font-weight:600;color:var(--text)}
+.client-sub{font-size:11px;color:var(--text-m);margin-top:1px}
+.prog-wrap{min-width:110px}
+.prog-bar{height:5px;background:var(--border);border-radius:3px;margin-bottom:3px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(to right,var(--purple),var(--purple-l));border-radius:3px}
+.prog-text{font-size:10px;color:var(--text-m)}
+.days-chip{font-size:10px;padding:2px 7px;border-radius:8px;font-weight:500;display:inline-block;margin-top:2px}
+.days-chip.today{background:var(--urgent-pale);color:var(--urgent)}
+.days-chip.week{background:var(--high-pale);color:var(--high)}
+.days-chip.soon{background:#fffde7;color:#f57f17}
+.days-chip.ok{background:var(--bg);color:var(--text-m)}
+.spa-chip{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500}
+.spa-chip.done{background:#f0fdf4;color:var(--green)}
+.spa-chip.pend{background:var(--high-pale);color:var(--high)}
+.status-chip{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500}
+.status-chip.Active{background:#f0fdf4;color:var(--green)}
+.status-chip.Handover{background:var(--high-pale);color:var(--high)}
+.status-chip.Complete{background:var(--purple-pale);color:var(--purple)}
+.row-del{background:none;border:none;color:var(--text-m);cursor:pointer;padding:3px 7px;border-radius:4px;font-size:14px;line-height:1;transition:.15s}
+.row-del:hover{color:var(--urgent);background:var(--urgent-pale)}
 
-/* ── CLIENT TABLE ── */
-.filter-row{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap}
-.filter-select,.search-input{background:var(--navy);border:1px solid rgba(255,255,255,.1);border-radius:var(--radius-sm);padding:8px 14px;color:var(--text);font-size:12px;font-family:'Inter',sans-serif;outline:none;transition:.2s}
-.filter-select:focus,.search-input:focus{border-color:rgba(201,153,63,.4)}
-.search-input{flex:1;min-width:200px}
+/* generator */
+.gen-wrap{flex:1;overflow:auto;padding:16px}
+.gen-wrap.hidden{display:none}
+.gen-layout{display:grid;grid-template-columns:300px 1fr;gap:14px;align-items:start}
+.gen-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px}
+.gen-card-title{font-size:10px;font-weight:600;color:var(--text-s);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px}
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:11px}
+.fl{font-size:10px;font-weight:600;color:var(--text-m);text-transform:uppercase;letter-spacing:.04em}
+.fi,.fs,.fta{padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-family:'Inter',sans-serif;font-size:12px;color:var(--text);background:var(--bg);outline:none;width:100%;transition:border .15s}
+.fi:focus,.fs:focus,.fta:focus{border-color:var(--purple);background:#fff}
+.fta{resize:vertical;min-height:80px}
+.gen-btn{width:100%;padding:9px;border:none;border-radius:6px;background:var(--purple-btn);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;margin-top:4px;transition:.15s}
+.gen-btn:hover{background:var(--purple-l)}
+.gen-output{display:flex;flex-direction:column;gap:10px}
+.gen-empty{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:48px;text-align:center;color:var(--text-m);font-size:12px}
+.gen-empty .ei{font-size:32px;margin-bottom:10px}
+.msg-card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.msg-hdr{padding:10px 14px;display:flex;align-items:center;justify-content:space-between;background:#f9fafb;border-bottom:1px solid var(--border)}
+.msg-name{font-size:13px;font-weight:600;color:var(--text)}
+.msg-meta{font-size:10px;color:var(--text-m)}
+.msg-body{padding:12px 14px;font-size:11px;line-height:1.8;color:var(--text-s);white-space:pre-wrap;background:var(--bg);border-bottom:1px solid var(--border);max-height:180px;overflow-y:auto}
+.copy-sm{padding:5px 12px;border:1px solid var(--border);border-radius:6px;background:transparent;font-size:11px;font-family:'Inter',sans-serif;color:var(--text-s);cursor:pointer;transition:all .15s;white-space:nowrap}
+.copy-sm:hover{border-color:var(--purple);color:var(--purple)}
+.copy-sm.copied{border-color:var(--green);color:var(--green)}
 
-.client-table{width:100%;border-collapse:collapse}
-.client-table th{padding:10px 14px;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;text-align:left;border-bottom:1px solid rgba(255,255,255,.08)}
-.client-table td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px;vertical-align:middle}
-.client-table tr:hover td{background:rgba(255,255,255,.02)}
-.client-table tr.row-expanded td{background:rgba(201,153,63,.03)}
+/* templates */
+.tpl-wrap{flex:1;overflow:auto;padding:16px}
+.tpl-wrap.hidden{display:none}
+.tpl-intro{font-size:12px;color:var(--text-s);line-height:1.6;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:16px}
+.tpl-proj-group{margin-bottom:24px}
+.tpl-proj-label{font-size:12px;font-weight:600;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.tpl-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.tpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:10px}
+.tpl-card{background:var(--card);border:1px solid var(--border);border-left:3px solid;border-radius:10px;overflow:hidden}
+.tpl-hdr{padding:10px 14px;display:flex;align-items:center;justify-content:space-between;background:#f9fafb;border-bottom:1px solid var(--border)}
+.tpl-title{font-size:12px;font-weight:600;color:var(--text)}
+.tpl-sub{font-size:10px;color:var(--text-m)}
+.tpl-body{padding:12px 14px;font-size:11px;line-height:1.9;color:var(--text-s);white-space:pre-wrap;background:var(--bg);max-height:190px;overflow-y:auto}
+.tpl-var{color:var(--purple);font-weight:600}
+.tpl-ftr{padding:8px 14px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.tpl-note{font-size:10px;color:var(--text-m)}
 
-.client-name{font-weight:600;color:#fff}
-.client-handle{font-size:11px;color:var(--muted)}
-.proj-badge{display:inline-block;font-size:10px;padding:3px 9px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-weight:600}
-.progress-wrap{min-width:120px}
-.progress-bar{height:5px;background:rgba(255,255,255,.08);border-radius:3px;margin-bottom:4px;overflow:hidden}
-.progress-fill{height:100%;background:linear-gradient(to right,var(--gold),#e8c96a);border-radius:3px;transition:.4s}
-.progress-text{font-size:10px;color:var(--muted)}
-.nat-flag{font-size:14px}
-.next-due{font-size:12px}
-.next-due .days{font-family:'JetBrains Mono',monospace;font-size:11px}
-.next-due .days.today{color:#e74c3c}
-.next-due .days.week{color:var(--orange)}
-.next-due .days.soon{color:var(--yellow)}
-.next-due .days.ok{color:var(--muted)}
-.spa-badge{font-size:10px;padding:2px 8px;border-radius:4px}
-.spa-badge.done{background:var(--green-bg);color:#2ecc71}
-.spa-badge.pend{background:rgba(241,196,15,.1);color:var(--yellow)}
+/* drawer */
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.25);backdrop-filter:blur(2px);z-index:200;display:flex;justify-content:flex-end}
+.drawer-overlay.hidden{display:none}
+.drawer{width:520px;max-width:100vw;height:100%;background:var(--white);display:flex;flex-direction:column;box-shadow:-8px 0 40px rgba(0,0,0,.12);animation:slideIn .22s ease}
+@keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+.dr-hdr{padding:14px 18px 10px;border-bottom:1px solid var(--border);flex-shrink:0}
+.dr-hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.dr-name{font-size:18px;font-weight:700;color:var(--text);flex:1;margin-right:10px;line-height:1.3}
+.dr-close{background:none;border:1px solid var(--border);border-radius:6px;color:var(--text-s);font-size:14px;width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.dr-close:hover{background:var(--bg);border-color:var(--border-h)}
+.dr-status-row{display:flex;gap:4px}
+.dr-st-btn{padding:3px 10px;border-radius:12px;border:1px solid var(--border);background:var(--bg);font-size:10px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;transition:all .15s;color:var(--text-s)}
+.dr-st-btn[data-s="Active"].on{background:#f0fdf4;border-color:rgba(16,185,129,.3);color:var(--green);font-weight:700}
+.dr-st-btn[data-s="Handover"].on{background:var(--high-pale);border-color:rgba(230,126,34,.3);color:var(--high);font-weight:700}
+.dr-st-btn[data-s="Complete"].on{background:var(--purple-pale);border-color:rgba(124,92,191,.3);color:var(--purple);font-weight:700}
+.dr-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
+.dr-tab{padding:9px 16px;border:none;background:transparent;font-size:12px;font-weight:500;cursor:pointer;color:var(--text-s);border-bottom:2px solid transparent;font-family:'Inter',sans-serif;transition:all .15s}
+.dr-tab.on{color:var(--purple);border-bottom-color:var(--purple);font-weight:600}
+.dr-body{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.dr-sect{font-size:10px;font-weight:600;color:var(--text-m);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
+.edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.eg{display:flex;flex-direction:column;gap:3px}
+.eg.full{grid-column:1/-1}
+.el{font-size:10px;color:var(--text-m);font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+.ei,.es,.eta{padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-family:'Inter',sans-serif;font-size:12px;color:var(--text);background:var(--bg);outline:none;width:100%;transition:border .15s}
+.ei:focus,.es:focus,.eta:focus{border-color:var(--purple);background:#fff}
+.eta{resize:vertical;min-height:80px}
+.prog-big-wrap{margin-bottom:10px}
+.prog-big-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--text-s);margin-bottom:5px}
+.prog-big{background:var(--border);border-radius:6px;height:8px;overflow:hidden}
+.prog-big-fill{height:100%;background:linear-gradient(to right,var(--purple),var(--purple-l));border-radius:6px;transition:.4s}
+.dr-footer{padding:10px 18px;border-top:1px solid var(--border);display:flex;gap:7px;flex-shrink:0}
+.dr-save{flex:1;background:var(--purple-btn);color:#fff;border:none;border-radius:7px;padding:9px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:.15s}
+.dr-save:hover{background:var(--purple-l)}
+.dr-del{background:transparent;border:1px solid var(--border);color:var(--text-s);border-radius:7px;padding:9px 14px;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;transition:.15s}
+.dr-del:hover{border-color:var(--urgent);color:var(--urgent)}
 
-.row-actions{display:flex;gap:6px}
-.act-btn{padding:5px 12px;font-size:11px;border-radius:5px;cursor:pointer;border:1px solid;font-family:'Inter',sans-serif;transition:.2s}
-.act-btn.edit{background:transparent;border-color:rgba(255,255,255,.1);color:var(--muted)}.act-btn.edit:hover{border-color:var(--gold);color:var(--gold)}
-.act-btn.del{background:transparent;border-color:transparent;color:var(--muted)}.act-btn.del:hover{color:#e74c3c;border-color:#e74c3c}
+/* modal */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(4px);z-index:300;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal-ov.hidden{display:none}
+.modal{background:var(--white);border-radius:12px;width:100%;max-width:500px;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);border:1px solid var(--border)}
+.modal-hdr{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--white);z-index:1;border-radius:12px 12px 0 0}
+.modal-hdr h2{font-size:15px;font-weight:700;color:var(--text)}
+.modal-x{background:none;border:1px solid var(--border);border-radius:6px;color:var(--text-s);font-size:14px;width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.modal-body{padding:18px}
+.m-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.m-group{display:flex;flex-direction:column;gap:4px}
+.m-group.full{grid-column:1/-1}
+.m-lbl{font-size:10px;font-weight:600;color:var(--text-m);text-transform:uppercase;letter-spacing:.04em}
+.m-inp,.m-sel,.m-ta{padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-family:'Inter',sans-serif;font-size:12px;color:var(--text);background:var(--bg);outline:none;width:100%;transition:border .15s}
+.m-inp:focus,.m-sel:focus,.m-ta:focus{border-color:var(--purple);background:#fff}
+.m-ta{resize:vertical;min-height:55px}
+.modal-ftr{padding:12px 18px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:7px;background:#fafafa;border-radius:0 0 12px 12px;position:sticky;bottom:0}
+.btn-cancel{padding:7px 16px;border-radius:6px;border:1px solid var(--border);background:#fff;color:var(--text-s);font-family:'Inter',sans-serif;font-size:12px;cursor:pointer}
+.btn-cancel:hover{background:var(--bg)}
+.btn-primary{padding:7px 20px;border-radius:6px;border:none;background:var(--purple-btn);color:#fff;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer}
+.btn-primary:hover{background:var(--purple-l)}
 
-/* expanded row */
-.expand-row td{padding:0!important;border-bottom:1px solid rgba(255,255,255,.06)!important}
-.expand-inner{display:none;padding:16px 14px 18px;background:rgba(255,255,255,.02)}
-.expand-inner.open{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.expand-field label{font-size:10px;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px;display:block}
-.expand-field .val{font-size:13px;color:var(--text)}
+/* utils */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--text);color:#fff;padding:9px 16px;border-radius:8px;font-size:12px;font-weight:500;box-shadow:0 6px 20px rgba(0,0,0,.2);z-index:600;transform:translateY(60px);transition:transform .25s;border-left:3px solid var(--purple)}
+.toast.show{transform:translateY(0)}
+.toast.err{border-left-color:var(--urgent)}
+.empty{text-align:center;padding:32px;color:var(--text-m);font-size:12px}
+.empty .ei{font-size:28px;margin-bottom:8px}
 
-/* ── UPDATE GENERATOR ── */
-.gen-layout{display:grid;grid-template-columns:340px 1fr;gap:20px}
-.gen-form{background:var(--navy);border:1px solid rgba(255,255,255,.07);border-radius:var(--radius);padding:22px}
-.gen-form-title{font-size:14px;font-weight:600;color:#fff;margin-bottom:18px;display:flex;align-items:center;gap:8px}
-.field-group{margin-bottom:14px}
-.field-group label{display:block;font-size:11px;color:var(--muted);margin-bottom:6px;letter-spacing:.3px}
-.field-group select,.field-group input,.field-group textarea{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:var(--radius-sm);padding:9px 12px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:.2s;resize:vertical}
-.field-group select:focus,.field-group input:focus,.field-group textarea:focus{border-color:rgba(201,153,63,.4)}
-.field-group textarea{min-height:100px}
-.gen-btn{width:100%;padding:11px;background:var(--gold);border:none;border-radius:var(--radius-sm);color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;font-family:'Inter',sans-serif;margin-top:6px}
-.gen-btn:hover{background:#b8892e}
-
-.gen-output{display:flex;flex-direction:column;gap:12px}
-.gen-placeholder{background:var(--navy);border:1px solid rgba(255,255,255,.07);border-radius:var(--radius);padding:48px;text-align:center;color:var(--muted)}
-.gen-placeholder-icon{font-size:36px;margin-bottom:12px}
-.msg-card{background:var(--navy);border:1px solid rgba(255,255,255,.07);border-radius:var(--radius);overflow:hidden}
-.msg-card-header{padding:10px 16px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.06)}
-.msg-card-name{font-size:13px;font-weight:600;color:#fff}
-.msg-card-meta{font-size:11px;color:var(--muted)}
-.msg-body{padding:16px;font-size:12px;line-height:1.8;color:var(--text);white-space:pre-wrap;font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.02);border-bottom:1px solid rgba(255,255,255,.06);max-height:220px;overflow-y:auto}
-.msg-footer{padding:10px 16px;display:flex;justify-content:flex-end}
-
-/* ── MAKE.COM TEMPLATES ── */
-.templates-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px;margin-top:20px}
-.tpl-card{background:var(--navy);border:1px solid rgba(255,255,255,.07);border-left:3px solid;border-radius:var(--radius);overflow:hidden}
-.tpl-header{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.06)}
-.tpl-proj-name{font-size:13px;font-weight:600;color:#fff}
-.tpl-dev{font-size:11px;color:var(--muted)}
-.tpl-body{padding:14px 16px;font-size:11px;line-height:1.9;color:var(--text);white-space:pre-wrap;font-family:'JetBrains Mono',monospace;max-height:240px;overflow-y:auto}
-.tpl-var{color:var(--gold);font-weight:600}
-.tpl-footer{padding:10px 16px;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center}
-.tpl-note{font-size:10px;color:var(--muted)}
-
-/* ── MODAL ── */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(4,15,36,.85);z-index:500;align-items:center;justify-content:center;padding:20px}
-.modal-overlay.open{display:flex}
-.modal{background:var(--navy);border:1px solid rgba(201,153,63,.2);border-radius:14px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.6)}
-.modal-head{padding:20px 24px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--navy);z-index:10}
-.modal-title{font-family:'Playfair Display',serif;font-size:18px;color:#fff}
-.modal-close{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.07);border:none;color:var(--muted);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}.modal-close:hover{color:#fff;background:rgba(255,255,255,.12)}
-.modal-body{padding:24px}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.form-field{display:flex;flex-direction:column;gap:6px}
-.form-field.full{grid-column:1/-1}
-.form-field label{font-size:11px;color:var(--muted);letter-spacing:.3px}
-.form-field input,.form-field select,.form-field textarea{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:var(--radius-sm);padding:9px 12px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:.2s}
-.form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:rgba(201,153,63,.4)}
-.modal-footer{padding:16px 24px;border-top:1px solid rgba(255,255,255,.07);display:flex;gap:10px;justify-content:flex-end}
-.btn-cancel{padding:9px 20px;background:transparent;border:1px solid rgba(255,255,255,.12);border-radius:var(--radius-sm);color:var(--muted);font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;transition:.2s}.btn-cancel:hover{color:var(--text)}
-.btn-save{padding:9px 24px;background:var(--gold);border:none;border-radius:var(--radius-sm);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:.2s}.btn-save:hover{background:#b8892e}
-
-/* ── TOAST ── */
-.toast{position:fixed;bottom:24px;right:24px;background:#1a7a4a;color:#fff;padding:12px 20px;border-radius:var(--radius-sm);font-size:13px;z-index:999;transform:translateY(60px);opacity:0;transition:.3s}
-.toast.show{transform:translateY(0);opacity:1}
+@media(max-width:768px){
+  .sidebar{width:52px}
+  .ws-info,.sb-label,.sb-count,.sb-badge{display:none}
+  .gen-layout{grid-template-columns:1fr}
+  .tpl-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
+<div class="app">
 
-<!-- TOPBAR -->
-<div class="topbar">
-  <div class="tl">Property Hub <span>Cambodia</span> · Client Manager</div>
-  <div class="tr">
-    <span class="badge-sample" id="data-badge">SAMPLE DATA</span>
-    <button class="sh-action" onclick="exportCSV()">⬇ Export CSV</button>
-    <a href="PHC_Agent_Hub.html" class="hub-link">← Hub</a>
-  </div>
-</div>
-
-<!-- TABS -->
-<div class="tabs">
-  <div class="tab active" onclick="switchTab('dashboard')" id="tab-dashboard">📊 Dashboard <span class="tab-count" id="tc-due">0</span></div>
-  <div class="tab" onclick="switchTab('clients')" id="tab-clients">👥 All Clients <span class="tab-count" id="tc-all">0</span></div>
-  <div class="tab" onclick="switchTab('generator')" id="tab-generator">📢 Update Generator</div>
-  <div class="tab" onclick="switchTab('templates')" id="tab-templates">⚙️ Make.com Templates</div>
-</div>
-
-<!-- STATS STRIP -->
-<div class="stats-strip">
-  <div class="stat-block"><div class="stat-num" id="s-total">0</div><div class="stat-lbl">Total Clients</div></div>
-  <div class="stat-block"><div class="stat-num red" id="s-due">0</div><div class="stat-lbl">Due This Week</div></div>
-  <div class="stat-block"><div class="stat-num green" id="s-monthly">$0</div><div class="stat-lbl">Monthly Collection</div></div>
-  <div class="stat-block"><div class="stat-num blue" id="s-projects">0</div><div class="stat-lbl">Active Projects</div></div>
-  <div class="stat-block"><div class="stat-num" id="s-avg-progress">0%</div><div class="stat-lbl">Avg. Payment Progress</div></div>
-</div>
-
-<!-- ══════════ DASHBOARD ══════════ -->
-<div class="page active" id="page-dashboard">
-
-  <div class="sh">
-    <span class="sh-title">⚠️ Payment Due This Week</span>
-    <div class="sh-line"></div>
-  </div>
-  <div class="alert-grid" id="due-grid">
-    <div class="empty"><div class="empty-icon">✅</div><div class="empty-text">No payments due in the next 5 days</div></div>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="ws-header">
+    <div class="ws-logo">C</div>
+    <div class="ws-info">
+      <div class="ws-name">PHC CRM</div>
+      <div class="ws-sub">Client Manager</div>
+    </div>
   </div>
 
-  <div class="sh">
-    <span class="sh-title">📅 Coming Up This Month</span>
-    <div class="sh-line"></div>
-  </div>
-  <div class="alert-grid" id="soon-grid">
-    <div class="empty"><div class="empty-icon">📆</div><div class="empty-text">No upcoming payments to show</div></div>
+  <div class="sb-nav">
+    <div class="sb-section-label">Views</div>
+    <div class="sb-item active" id="sbi-dashboard" onclick="switchView('dashboard',this)">
+      <div class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg></div>
+      <span class="sb-label">Dashboard</span>
+      <span class="sb-badge zero" id="sb-due-badge">0</span>
+    </div>
+    <div class="sb-item" id="sbi-clients" onclick="switchView('clients',this)">
+      <div class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="5" r="2.5"/><path d="M1 13c0-2.76 2.24-5 5-5s5 2.24 5 5"/><circle cx="12.5" cy="5" r="2"/><path d="M15 13c0-2.21-1.34-4-3-4.5"/></svg></div>
+      <span class="sb-label">All Clients</span>
+      <span class="sb-count" id="sb-count">0</span>
+    </div>
+    <div class="sb-item" id="sbi-generator" onclick="switchView('generator',this)">
+      <div class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 2H2a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h4l2 2 2-2h4a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1z"/><path d="M5 7h6M5 10h4"/></svg></div>
+      <span class="sb-label">Update Generator</span>
+    </div>
+    <div class="sb-item" id="sbi-templates" onclick="switchView('templates',this)">
+      <div class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41"/></svg></div>
+      <span class="sb-label">Make.com Templates</span>
+    </div>
+
+    <div class="sb-section-label" style="margin-top:6px">Other Tools</div>
+    <a class="sb-item" href="PHC_Lead_Tracker.html">
+      <div class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="1" width="14" height="14" rx="2"/><path d="M4 8h8M4 5h8M4 11h5"/></svg></div>
+      <span class="sb-label">Lead Tracker</span>
+    </a>
+    <a class="sb-item" href="PHC_Task_Manager_v4.html">
+      <div class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 4h12M2 8h12M2 12h7"/></svg></div>
+      <span class="sb-label">Task Manager</span>
+    </a>
+    <a class="sb-item" href="index.html">
+      <div class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9L8 4l5 5"/><path d="M5 14V9h6v5"/></svg></div>
+      <span class="sb-label">← Back to Hub</span>
+    </a>
   </div>
 
-</div>
+  <div class="sb-footer">
+    <div class="sb-item" style="pointer-events:none">
+      <div class="av-ring" style="background:#7c5cbf">N</div>
+      <span class="sb-label" style="font-size:12px;font-weight:600;color:var(--sb-text-s)">Nick</span>
+      <div class="api-dot live"></div>
+    </div>
+  </div>
+</aside>
 
-<!-- ══════════ CLIENTS ══════════ -->
-<div class="page" id="page-clients">
-  <div class="sh">
-    <span class="sh-title">All Clients</span>
-    <div class="sh-line"></div>
-    <button class="sh-action" onclick="openModal()">+ Add Client</button>
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <span class="breadcrumb">PHC CRM</span>
+    <span class="bc-sep">/</span>
+    <span class="bc-active" id="topbar-title">Dashboard</span>
+    <div class="topbar-right">
+      <button class="tb-btn" onclick="exportCSV()">Export CSV</button>
+      <button class="add-btn" onclick="openAddModal()">+ Add Client</button>
+    </div>
   </div>
 
-  <div class="filter-row">
-    <input class="search-input" id="search" placeholder="Search by name, unit, telegram..." oninput="renderClients()">
-    <select class="filter-select" id="f-project" onchange="renderClients()">
+  <div class="view-toolbar hidden" id="clients-toolbar">
+    <div class="filter-wrap">
+      <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="#9498aa" stroke-width="1.8"><circle cx="7" cy="7" r="5"/><path d="m11 11 2.5 2.5"/></svg>
+      <input type="text" placeholder="Search by name, unit, telegram…" id="search-input" oninput="renderClients()">
+    </div>
+    <select class="vt-sel" id="f-project" onchange="renderClients()">
       <option value="">All Projects</option>
-      <option value="TS7">Time Square 7</option>
-      <option value="TS8">Time Square 8</option>
-      <option value="TS9">Time Square 9</option>
-      <option value="TS10">Time Square 10</option>
-      <option value="TS11">Time Square 11</option>
-      <option value="P2">Picasso 2</option>
+      <option>Time Square 9 (Gatsby)</option><option>Time Square 8</option>
+      <option>Time Square 10 (Otres)</option><option>Time Square 11 BKK3</option>
+      <option>J Tower 2</option><option>J Tower 3</option>
+      <option>Le Conde BKK1</option><option>Royal Platinum</option>
+      <option>Peninsula Private Residences</option><option>G.A.T.O Tower</option>
     </select>
-    <select class="filter-select" id="f-nat" onchange="renderClients()">
-      <option value="">All Segments</option>
-      <option value="EN">🇬🇧 English/Western</option>
-      <option value="JP">🇯🇵 Japanese</option>
-      <option value="DE">🇩🇪 German/European</option>
-      <option value="RU">🇷🇺 Russian</option>
-      <option value="KH">🇰🇭 Cambodian</option>
-      <option value="VIP">⭐ VIP</option>
+    <select class="vt-sel" id="f-nat" onchange="renderClients()">
+      <option value="">All Nationalities</option>
+      <option value="JP">Japanese</option><option value="DE">German / European</option>
+      <option value="EN">English / Western</option><option value="RU">Russian</option>
+      <option value="KH">Cambodian</option><option value="CN">Chinese</option>
     </select>
-    <select class="filter-select" id="f-status" onchange="renderClients()">
+    <select class="vt-sel" id="f-status" onchange="renderClients()">
       <option value="">All Status</option>
-      <option value="Active">Active</option>
-      <option value="Handover">Handover</option>
-      <option value="Complete">Complete</option>
+      <option>Active</option><option>Handover</option><option>Complete</option>
     </select>
   </div>
 
-  <table class="client-table" id="client-table">
-    <thead>
-      <tr>
-        <th>Client</th>
-        <th>Project / Unit</th>
-        <th>Progress</th>
-        <th>Next Payment</th>
-        <th>Amount</th>
-        <th>SPA</th>
-        <th>Seg.</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody id="client-tbody"></tbody>
-  </table>
-</div>
+  <div class="content-area">
 
-<!-- ══════════ UPDATE GENERATOR ══════════ -->
-<div class="page" id="page-generator">
-  <div class="sh">
-    <span class="sh-title">📢 Project Update Generator</span>
-    <div class="sh-line"></div>
-  </div>
-  <p style="font-size:13px;color:var(--muted);margin-bottom:22px">Fill in the update details → click Generate → copy individual messages to send each client on Telegram.</p>
-
-  <div class="gen-layout">
-    <div class="gen-form">
-      <div class="gen-form-title">🖊️ Update Details</div>
-      <div class="field-group">
-        <label>Project</label>
-        <select id="gen-project">
-          <option value="">— Select project —</option>
-          <option value="TS7">Time Square 7</option>
-          <option value="TS8">Time Square 8</option>
-          <option value="TS9">Time Square 9 — Gatsby Residence</option>
-          <option value="TS10">Time Square 10 — Ocean View</option>
-          <option value="TS11">Time Square 11</option>
-          <option value="P2">Picasso 2</option>
-        </select>
+    <!-- DASHBOARD -->
+    <div class="dash-wrap" id="view-dashboard">
+      <div class="dash-stats">
+        <div class="stat-card sc-total"><div class="stat-label">Total Clients</div><div class="stat-val" id="s-total">0</div><div class="stat-sub">All projects</div></div>
+        <div class="stat-card sc-due"><div class="stat-label">Due This Week</div><div class="stat-val" id="s-due">0</div><div class="stat-sub">Need reminders</div></div>
+        <div class="stat-card sc-money"><div class="stat-label">Monthly Collection</div><div class="stat-val" id="s-monthly">$0</div><div class="stat-sub">Active clients</div></div>
+        <div class="stat-card sc-proj"><div class="stat-label">Active Projects</div><div class="stat-val" id="s-projects">0</div><div class="stat-sub">With clients</div></div>
       </div>
-      <div class="field-group">
-        <label>Update Title</label>
-        <input id="gen-title" placeholder="e.g. Structure now at Level 8" type="text">
-      </div>
-      <div class="field-group">
-        <label>Update Body</label>
-        <textarea id="gen-body" placeholder="Describe the construction progress, what has been completed, what is next..."></textarea>
-      </div>
-      <div class="field-group">
-        <label>Photo Album Link (optional)</label>
-        <input id="gen-photo" placeholder="https://drive.google.com/..." type="text">
-      </div>
-      <div class="field-group">
-        <label>Estimated Handover Date (optional)</label>
-        <input id="gen-handover" placeholder="e.g. Q3 2028" type="text">
-      </div>
-      <button class="gen-btn" onclick="generateMessages()">⚡ Generate Messages</button>
+      <div class="section-title">Due This Week</div>
+      <div class="alert-grid" id="due-grid"></div>
+      <div class="section-title">Coming Up This Month</div>
+      <div class="alert-grid" id="soon-grid"></div>
     </div>
 
-    <div id="gen-output">
-      <div class="gen-placeholder">
-        <div class="gen-placeholder-icon">📢</div>
-        <div style="font-size:14px;color:var(--muted)">Select a project and fill in the update details, then click Generate to create personalised messages for every client on that project.</div>
+    <!-- ALL CLIENTS -->
+    <div class="list-wrap hidden" id="view-clients">
+      <table class="l-table">
+        <thead><tr>
+          <th>Client</th><th>Project / Unit</th><th>Progress</th>
+          <th>Next Payment</th><th>Amount</th><th>SPA</th>
+          <th>Status</th><th>Seg.</th><th></th>
+        </tr></thead>
+        <tbody id="client-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- UPDATE GENERATOR -->
+    <div class="gen-wrap hidden" id="view-generator">
+      <div class="gen-layout">
+        <div class="gen-card">
+          <div class="gen-card-title">Update Details</div>
+          <div class="fg"><div class="fl">Project</div>
+            <select class="fs" id="gen-project">
+              <option value="">— Select project —</option>
+              <option>Time Square 9 (Gatsby)</option><option>Time Square 8</option>
+              <option>Time Square 10 (Otres)</option><option>Time Square 11 BKK3</option>
+              <option>J Tower 2</option><option>J Tower 3</option>
+              <option>Le Conde BKK1</option><option>Royal Platinum</option>
+              <option>Peninsula Private Residences</option><option>G.A.T.O Tower</option>
+            </select>
+          </div>
+          <div class="fg"><div class="fl">Update Title</div><input class="fi" id="gen-title" placeholder="e.g. Structure now at Level 8"></div>
+          <div class="fg"><div class="fl">Update Body</div><textarea class="fta" id="gen-body" placeholder="Describe the construction progress…"></textarea></div>
+          <div class="fg"><div class="fl">Photo Album Link (optional)</div><input class="fi" id="gen-photo" placeholder="https://drive.google.com/…"></div>
+          <div class="fg"><div class="fl">Est. Handover (optional)</div><input class="fi" id="gen-handover" placeholder="e.g. Q3 2028"></div>
+          <button class="gen-btn" onclick="generateMessages()">Generate Messages</button>
+        </div>
+        <div id="gen-output">
+          <div class="gen-empty"><div class="ei">📢</div>Select a project and fill in the update details, then click Generate to create personalised messages for every client on that project.</div>
+        </div>
       </div>
+    </div>
+
+    <!-- TEMPLATES -->
+    <div class="tpl-wrap hidden" id="view-templates">
+      <div class="tpl-intro">Paste these templates into <strong>Make.com → Telegram Bot → Send Message → Text</strong>. Replace <span style="color:var(--purple);font-weight:600">{{VARIABLE}}</span> with the mapped Google Sheet column in Make.com's visual editor.</div>
+      <div id="templates-container"></div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- DRAWER -->
+<div class="drawer-overlay hidden" id="drawer-overlay" onclick="closeDrawerBg(event)">
+  <div class="drawer">
+    <div class="dr-hdr">
+      <div class="dr-hdr-top">
+        <div class="dr-name" id="dr-name">Client</div>
+        <button class="dr-close" onclick="closeDrawer()">✕</button>
+      </div>
+      <div class="dr-status-row">
+        <button class="dr-st-btn" data-s="Active" onclick="setDrStatus('Active')">Active</button>
+        <button class="dr-st-btn" data-s="Handover" onclick="setDrStatus('Handover')">Handover</button>
+        <button class="dr-st-btn" data-s="Complete" onclick="setDrStatus('Complete')">Complete</button>
+      </div>
+    </div>
+    <div class="dr-tabs">
+      <button class="dr-tab on" id="drtab-info" onclick="switchDrTab('info')">Details</button>
+      <button class="dr-tab" id="drtab-payment" onclick="switchDrTab('payment')">Payment</button>
+      <button class="dr-tab" id="drtab-notes" onclick="switchDrTab('notes')">Notes</button>
+    </div>
+    <div class="dr-body">
+      <div id="drp-info">
+        <div class="dr-sect">Contact</div>
+        <div class="edit-grid">
+          <div class="eg"><div class="el">Full Name</div><input class="ei" id="dr-name-inp"></div>
+          <div class="eg"><div class="el">Telegram</div><input class="ei" id="dr-telegram" placeholder="@username"></div>
+          <div class="eg"><div class="el">Phone</div><input class="ei" id="dr-phone" placeholder="+855…"></div>
+          <div class="eg"><div class="el">Nationality</div>
+            <select class="es" id="dr-nat">
+              <option value="JP">Japanese</option><option value="DE">German / European</option>
+              <option value="EN">English / Western</option><option value="RU">Russian</option>
+              <option value="KH">Cambodian</option><option value="CN">Chinese</option>
+            </select>
+          </div>
+        </div>
+        <div class="dr-sect" style="margin-top:10px">Property</div>
+        <div class="edit-grid">
+          <div class="eg"><div class="el">Project</div>
+            <select class="es" id="dr-proj">
+              <option>Time Square 9 (Gatsby)</option><option>Time Square 8</option>
+              <option>Time Square 10 (Otres)</option><option>Time Square 11 BKK3</option>
+              <option>J Tower 2</option><option>J Tower 3</option>
+              <option>Le Conde BKK1</option><option>Royal Platinum</option>
+              <option>Peninsula Private Residences</option><option>G.A.T.O Tower</option>
+            </select>
+          </div>
+          <div class="eg"><div class="el">Unit</div><input class="ei" id="dr-unit" placeholder="12A"></div>
+          <div class="eg"><div class="el">Floor</div><input class="ei" id="dr-floor" type="number"></div>
+          <div class="eg"><div class="el">Booking Date</div><input class="ei" id="dr-booking" type="date"></div>
+          <div class="eg"><div class="el">SPA Signed</div>
+            <select class="es" id="dr-spa"><option value="true">Yes — Signed</option><option value="false">No — Pending</option></select>
+          </div>
+          <div class="eg"><div class="el">Title Status</div>
+            <select class="es" id="dr-title"><option>Pending</option><option>Issued</option><option>Transferred</option></select>
+          </div>
+        </div>
+      </div>
+      <div id="drp-payment" style="display:none">
+        <div class="dr-sect">Payment Progress</div>
+        <div class="prog-big-wrap">
+          <div class="prog-big-labels"><span id="dr-prog-label">0 of 0 paid</span><span id="dr-prog-pct">0%</span></div>
+          <div class="prog-big"><div class="prog-big-fill" id="dr-prog-fill" style="width:0%"></div></div>
+        </div>
+        <div class="edit-grid">
+          <div class="eg"><div class="el">Payment Day (1–28)</div><input class="ei" id="dr-pday" type="number" min="1" max="28" oninput="updateDrProgress()"></div>
+          <div class="eg"><div class="el">Monthly Amount (USD)</div><input class="ei" id="dr-pamount" type="number"></div>
+          <div class="eg"><div class="el">Total Payments</div><input class="ei" id="dr-ptotal" type="number" oninput="updateDrProgress()"></div>
+          <div class="eg"><div class="el">Payments Made</div><input class="ei" id="dr-pmade" type="number" oninput="updateDrProgress()"></div>
+          <div class="eg full"><div class="el">Developer Bank Account</div><input class="ei" id="dr-bank" placeholder="ABA Bank — Acc … — Developer Name"></div>
+        </div>
+      </div>
+      <div id="drp-notes" style="display:none">
+        <div class="dr-sect">Notes</div>
+        <textarea class="eta" id="dr-notes" placeholder="Any notes about this client…" style="min-height:120px;width:100%"></textarea>
+      </div>
+    </div>
+    <div class="dr-footer">
+      <button class="dr-del" onclick="deleteFromDrawer()">Delete</button>
+      <button class="dr-save" onclick="saveFromDrawer()">Save Changes</button>
     </div>
   </div>
 </div>
 
-<!-- ══════════ MAKE.COM TEMPLATES ══════════ -->
-<div class="page" id="page-templates">
-  <div class="sh">
-    <span class="sh-title">⚙️ Make.com Message Templates</span>
-    <div class="sh-line"></div>
-  </div>
-  <p style="font-size:13px;color:var(--muted);margin-bottom:6px">Paste these into Make.com → Telegram Bot → Send Message → Text field. Replace <span style="color:var(--gold);font-family:'JetBrains Mono',monospace">{{VARIABLE}}</span> with the mapped Google Sheet column in Make.com's visual editor.</p>
-  <p style="font-size:12px;color:var(--muted);margin-bottom:22px">Two template types per project: <strong style="color:var(--text)">Monthly Payment Reminder</strong> (runs automatically every month) · <strong style="color:var(--text)">Project Update</strong> (triggered when you submit the update form).</p>
-
-  <div id="templates-container"></div>
-</div>
-
-<!-- ══════════ MODAL ══════════ -->
-<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+<!-- ADD CLIENT MODAL -->
+<div class="modal-ov hidden" id="modal-ov" onclick="closeModalBg(event)">
   <div class="modal">
-    <div class="modal-head">
-      <div class="modal-title" id="modal-title">Add Client</div>
-      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    <div class="modal-hdr">
+      <h2>Add New Client</h2>
+      <button class="modal-x" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-body">
-      <div class="form-grid">
-        <input type="hidden" id="edit-id">
-        <div class="form-field"><label>Full Name *</label><input id="f-name" placeholder="e.g. Kenji Tanaka"></div>
-        <div class="form-field"><label>Telegram Handle</label><input id="f-telegram" placeholder="@username"></div>
-        <div class="form-field"><label>Project *</label>
-          <select id="f-proj">
-            <option value="TS7">Time Square 7</option><option value="TS8">Time Square 8</option>
-            <option value="TS9">Time Square 9</option><option value="TS10">Time Square 10</option>
-            <option value="TS11">Time Square 11</option><option value="P2">Picasso 2</option>
+      <div class="m-grid">
+        <div class="m-group full"><div class="m-lbl">Full Name *</div><input class="m-inp" id="m-name" placeholder="e.g. Kenji Tanaka"></div>
+        <div class="m-group"><div class="m-lbl">Project *</div>
+          <select class="m-sel" id="m-proj">
+            <option>Time Square 9 (Gatsby)</option><option>Time Square 8</option>
+            <option>Time Square 10 (Otres)</option><option>Time Square 11 BKK3</option>
+            <option>J Tower 2</option><option>J Tower 3</option>
+            <option>Le Conde BKK1</option><option>Royal Platinum</option>
+            <option>Peninsula Private Residences</option><option>G.A.T.O Tower</option>
           </select>
         </div>
-        <div class="form-field"><label>Unit Number *</label><input id="f-unit" placeholder="e.g. 12A"></div>
-        <div class="form-field"><label>Floor</label><input id="f-floor" type="number" placeholder="e.g. 12"></div>
-        <div class="form-field"><label>Nationality</label>
-          <select id="f-nat2">
-            <option value="EN">🇬🇧 English/Western</option><option value="JP">🇯🇵 Japanese</option>
-            <option value="DE">🇩🇪 German/European</option><option value="RU">🇷🇺 Russian</option>
-            <option value="KH">🇰🇭 Cambodian</option><option value="VIP">⭐ VIP</option>
+        <div class="m-group"><div class="m-lbl">Unit *</div><input class="m-inp" id="m-unit" placeholder="12A"></div>
+        <div class="m-group"><div class="m-lbl">Floor</div><input class="m-inp" id="m-floor" type="number" placeholder="12"></div>
+        <div class="m-group"><div class="m-lbl">Nationality</div>
+          <select class="m-sel" id="m-nat">
+            <option value="JP">Japanese</option><option value="DE">German / European</option>
+            <option value="EN">English / Western</option><option value="RU">Russian</option>
+            <option value="KH">Cambodian</option><option value="CN">Chinese</option>
           </select>
         </div>
-        <div class="form-field"><label>Booking Date</label><input id="f-booking" type="date"></div>
-        <div class="form-field"><label>SPA Signed?</label>
-          <select id="f-spa"><option value="true">Yes — Signed</option><option value="false">No — Pending</option></select>
+        <div class="m-group"><div class="m-lbl">Telegram</div><input class="m-inp" id="m-telegram" placeholder="@username"></div>
+        <div class="m-group"><div class="m-lbl">Payment Day</div><input class="m-inp" id="m-pday" type="number" min="1" max="28" placeholder="7"></div>
+        <div class="m-group"><div class="m-lbl">Monthly Amount ($)</div><input class="m-inp" id="m-pamount" type="number" placeholder="1715"></div>
+        <div class="m-group"><div class="m-lbl">Total Payments</div><input class="m-inp" id="m-ptotal" type="number" value="45"></div>
+        <div class="m-group"><div class="m-lbl">Payments Made</div><input class="m-inp" id="m-pmade" type="number" value="0"></div>
+        <div class="m-group"><div class="m-lbl">SPA Signed?</div>
+          <select class="m-sel" id="m-spa"><option value="false">No — Pending</option><option value="true">Yes — Signed</option></select>
         </div>
-        <div class="form-field"><label>Payment Day of Month (1–28)</label><input id="f-pday" type="number" min="1" max="28" placeholder="e.g. 1"></div>
-        <div class="form-field"><label>Monthly Payment (USD)</label><input id="f-pamount" type="number" placeholder="e.g. 1715"></div>
-        <div class="form-field"><label>Total Payments (months)</label><input id="f-ptotal" type="number" placeholder="45"></div>
-        <div class="form-field"><label>Payments Made So Far</label><input id="f-pmade" type="number" placeholder="0"></div>
-        <div class="form-field full"><label>Developer Bank Account (for reminders)</label><input id="f-bank" placeholder="e.g. ABA Bank — Acc 001234567 — MegaKim Realty"></div>
-        <div class="form-field"><label>Status</label>
-          <select id="f-sstatus"><option value="Active">Active</option><option value="Handover">Handover</option><option value="Complete">Complete</option></select>
-        </div>
-        <div class="form-field full"><label>Notes</label><input id="f-notes" placeholder="Any notes about this client..."></div>
+        <div class="m-group"><div class="m-lbl">Booking Date</div><input class="m-inp" id="m-booking" type="date"></div>
+        <div class="m-group full"><div class="m-lbl">Developer Bank Account</div><input class="m-inp" id="m-bank" placeholder="ABA Bank — Acc 001234567 — Developer Name"></div>
+        <div class="m-group full"><div class="m-lbl">Notes</div><textarea class="m-ta" id="m-notes" placeholder="Any notes…"></textarea></div>
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn-cancel" onclick="closeModalDirect()">Cancel</button>
-      <button class="btn-save" onclick="saveClient()">Save Client</button>
+    <div class="modal-ftr">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveNewClient()">Add Client</button>
     </div>
   </div>
 </div>
@@ -395,512 +541,360 @@ body{background:var(--navy-dark);color:var(--text);font-family:'Inter',sans-seri
 <div class="toast" id="toast"></div>
 
 <script>
-// ═══════════════════════════════════════════
-// CONFIG
-// ═══════════════════════════════════════════
-const PROJECTS = {
-  TS7:  { name:'Time Square 7',          color:'#e67e22', dev:'MegaKim Realty',  loc:'Phnom Penh' },
-  TS8:  { name:'Time Square 8',          color:'#3498db', dev:'MegaKim Realty',  loc:'Phnom Penh' },
-  TS9:  { name:'Time Square 9 — Gatsby', color:'#9b59b6', dev:'MegaKim Realty',  loc:'BKK1, Phnom Penh' },
-  TS10: { name:'Time Square 10 Ocean View',color:'#1abc9c', dev:'MegaKim Realty', loc:'Phnom Penh' },
-  TS11: { name:'Time Square 11',          color:'#e74c3c', dev:'MegaKim Realty',  loc:'Phnom Penh' },
-  P2:   { name:'Picasso 2',              color:'#f39c12', dev:'Picasso Group',    loc:'Phnom Penh' },
-};
-const NATS = {
-  EN:{label:'English/Western',flag:'🇬🇧',color:'#1877f2'},
-  JP:{label:'Japanese',       flag:'🇯🇵',color:'#e63946'},
-  DE:{label:'German/European',flag:'🇩🇪',color:'#2d9e6b'},
-  RU:{label:'Russian',        flag:'🇷🇺',color:'#c0392b'},
-  KH:{label:'Cambodian',      flag:'🇰🇭',color:'#2196a3'},
-  VIP:{label:'VIP',           flag:'⭐', color:'#8b5cf6'},
-};
+const PROJ_COLORS={'Time Square 9 (Gatsby)':'#7c5cbf','Time Square 8':'#3b82f6','Time Square 10 (Otres)':'#10b981','Time Square 11 BKK3':'#ef4444','J Tower 2':'#f97316','J Tower 3':'#e67e22','Le Conde BKK1':'#8b5cf6','Royal Platinum':'#f9a825','Peninsula Private Residences':'#06b6d4','G.A.T.O Tower':'#84cc16'};
+const PROJECTS=Object.keys(PROJ_COLORS);
+const NATS={JP:{label:'Japanese',flag:'🇯🇵'},DE:{label:'German/European',flag:'🇩🇪'},EN:{label:'English/Western',flag:'🇬🇧'},RU:{label:'Russian',flag:'🇷🇺'},KH:{label:'Cambodian',flag:'🇰🇭'},CN:{label:'Chinese',flag:'🇨🇳'}};
 
-// ═══════════════════════════════════════════
-// SAMPLE DATA
-// ═══════════════════════════════════════════
-const SAMPLE = [
-  {id:1,name:'Kenji Tanaka',project:'TS9',unit:'08A',floor:8,nat:'JP',telegram:'@kenjitanaka',bookingDate:'2025-11-01',spa:true,payDay:7,payAmount:1715,payTotal:45,payMade:6,bank:'ABA Bank — Acc 001234567 — MegaKim Realty',status:'Active',notes:'Japanese investor, English OK'},
-  {id:2,name:'Sarah Mitchell',project:'TS10',unit:'15B',floor:15,nat:'EN',telegram:'@sarahmphc',bookingDate:'2025-12-15',spa:true,payDay:15,payAmount:1910,payTotal:45,payMade:5,bank:'ABA Bank — Acc 001234568 — MegaKim Realty',status:'Active',notes:'UK investor'},
-  {id:3,name:'Dmitri Volkov',project:'TS8',unit:'12C',floor:12,nat:'RU',telegram:'@dmitriv',bookingDate:'2025-10-01',spa:true,payDay:10,payAmount:1632,payTotal:45,payMade:7,bank:'ABA Bank — Acc 001234569 — MegaKim Realty',status:'Active',notes:'Russian investor, Telegram preferred'},
-  {id:4,name:'Li Wei',project:'P2',unit:'05D',floor:5,nat:'KH',telegram:'@liwei_phc',bookingDate:'2026-01-10',spa:true,payDay:10,payAmount:1450,payTotal:45,payMade:4,bank:'Wing Bank — Acc 002345678 — Picasso Group',status:'Active',notes:'Overseas Cambodian'},
-  {id:5,name:'Hans Mueller',project:'TS11',unit:'03A',floor:3,nat:'DE',telegram:'@hansm',bookingDate:'2026-02-01',spa:false,payDay:12,payAmount:1800,payTotal:45,payMade:3,bank:'ABA Bank — Acc 001234570 — MegaKim Realty',status:'Active',notes:'German investor, SPA pending'},
-  {id:6,name:'Sopheap Chan',project:'TS7',unit:'07B',floor:7,nat:'KH',telegram:'@sopheapphc',bookingDate:'2025-08-01',spa:true,payDay:5,payAmount:1596,payTotal:45,payMade:9,bank:'ABA Bank — Acc 001234571 — MegaKim Realty',status:'Active',notes:'Local Cambodian buyer'},
-  {id:7,name:'Yuki Sato',project:'TS9',unit:'10B',floor:10,nat:'JP',telegram:'@yukisato',bookingDate:'2025-12-01',spa:true,payDay:1,payAmount:1715,payTotal:45,payMade:5,bank:'ABA Bank — Acc 001234572 — MegaKim Realty',status:'Active',notes:'Japanese investor'},
-  {id:8,name:'Emma Thompson',project:'TS10',unit:'20A',floor:20,nat:'EN',telegram:'@emmaphc',bookingDate:'2026-01-20',spa:true,payDay:20,payAmount:1910,payTotal:45,payMade:3,bank:'ABA Bank — Acc 001234573 — MegaKim Realty',status:'Active',notes:'UK/Australian investor'},
-  {id:9,name:'Viktor Petrov',project:'TS8',unit:'18D',floor:18,nat:'RU',telegram:'@viktorpetrov',bookingDate:'2025-09-15',spa:true,payDay:15,payAmount:1632,payTotal:45,payMade:8,bank:'ABA Bank — Acc 001234574 — MegaKim Realty',status:'Active',notes:'Russian investor'},
-  {id:10,name:'Chantha Sok',project:'P2',unit:'10C',floor:10,nat:'KH',telegram:'@chanthasok',bookingDate:'2025-11-20',spa:true,payDay:20,payAmount:1450,payTotal:45,payMade:6,bank:'Wing Bank — Acc 002345679 — Picasso Group',status:'Active',notes:'Local Cambodian buyer'},
-  {id:11,name:'Thomas Weber',project:'TS11',unit:'07C',floor:7,nat:'DE',telegram:'@thomasw',bookingDate:'2026-03-01',spa:false,payDay:1,payAmount:1800,payTotal:45,payMade:2,bank:'ABA Bank — Acc 001234575 — MegaKim Realty',status:'Active',notes:'German/European investor'},
-  {id:12,name:'Mira Nakagawa',project:'TS7',unit:'14A',floor:14,nat:'JP',telegram:'@miranaka',bookingDate:'2025-07-01',spa:true,payDay:1,payAmount:1596,payTotal:45,payMade:10,bank:'ABA Bank — Acc 001234576 — MegaKim Realty',status:'Active',notes:'Japanese investor, long-term hold'},
+const SAMPLE=[
+  {id:'C1',name:'Kenji Tanaka',project:'Time Square 9 (Gatsby)',unit:'08A',floor:8,nat:'JP',telegram:'@kenjitanaka',phone:'',bookingDate:'2025-11-01',spa:true,titleStatus:'Pending',payDay:7,payAmount:1715,payTotal:45,payMade:6,bank:'ABA Bank — Acc 001234567 — MegaKim Realty',status:'Active',notes:'Japanese investor, English OK'},
+  {id:'C2',name:'Sarah Mitchell',project:'Time Square 10 (Otres)',unit:'15B',floor:15,nat:'EN',telegram:'@sarahmphc',phone:'',bookingDate:'2025-12-15',spa:true,titleStatus:'Pending',payDay:15,payAmount:1910,payTotal:45,payMade:5,bank:'ABA Bank — Acc 001234568 — MegaKim Realty',status:'Active',notes:'UK investor'},
+  {id:'C3',name:'Hans Mueller',project:'Le Conde BKK1',unit:'03A',floor:3,nat:'DE',telegram:'@hansm',phone:'',bookingDate:'2026-02-01',spa:false,titleStatus:'Pending',payDay:12,payAmount:1800,payTotal:45,payMade:3,bank:'ABA Bank — Acc 001234570 — Le Conde Dev',status:'Active',notes:'German investor, SPA pending'},
+  {id:'C4',name:'Sopheap Chan',project:'Royal Platinum',unit:'07B',floor:7,nat:'KH',telegram:'@sopheapphc',phone:'',bookingDate:'2025-08-01',spa:true,titleStatus:'Issued',payDay:5,payAmount:1596,payTotal:45,payMade:9,bank:'ABA Bank — Acc 001234571 — Royal Dev',status:'Active',notes:'Local Cambodian buyer'},
+  {id:'C5',name:'Yuki Sato',project:'J Tower 3',unit:'10B',floor:10,nat:'JP',telegram:'@yukisato',phone:'',bookingDate:'2025-12-01',spa:true,titleStatus:'Pending',payDay:1,payAmount:1715,payTotal:45,payMade:5,bank:'ABA Bank — Acc 001234572 — J Tower Dev',status:'Active',notes:'Japanese investor'},
+  {id:'C6',name:'Emma Thompson',project:'Peninsula Private Residences',unit:'20A',floor:20,nat:'EN',telegram:'@emmaphc',phone:'',bookingDate:'2026-01-20',spa:true,titleStatus:'Pending',payDay:20,payAmount:2200,payTotal:45,payMade:3,bank:'ABA Bank — Acc 001234573 — Peninsula Dev',status:'Active',notes:'UK/Australian investor'},
 ];
 
-// ═══════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════
-function loadClients() {
-  try {
-    const d = localStorage.getItem('phc_clients');
-    if (d) { document.getElementById('data-badge').style.display='none'; return JSON.parse(d); }
-  } catch(e){}
-  return SAMPLE;
-}
-function saveClients() {
-  localStorage.setItem('phc_clients', JSON.stringify(clients));
-  document.getElementById('data-badge').style.display='none';
-}
-let clients = loadClients();
+const LS_KEY='phc_clients_v2';
+function loadClients(){try{const d=localStorage.getItem(LS_KEY);if(d)return JSON.parse(d);}catch(e){}return SAMPLE.map(c=>({...c}));}
+function saveClients(){localStorage.setItem(LS_KEY,JSON.stringify(clients));}
+let clients=loadClients();
+let currentView='dashboard';
+let drawerClientId=null;
 
-// ═══════════════════════════════════════════
-// UTILITIES
-// ═══════════════════════════════════════════
-function today() { return new Date(); }
-function daysUntil(payDay) {
-  const t = today();
-  const curDay = t.getDate(), curM = t.getMonth(), curY = t.getFullYear();
-  let due;
-  if (payDay >= curDay) { due = new Date(curY, curM, payDay); }
-  else { due = new Date(curY, curM + 1, payDay); }
-  return Math.ceil((due - new Date(curY, curM, curDay)) / 86400000);
+// ── UTILS ──
+function todayD(){const d=new Date();d.setHours(0,0,0,0);return d;}
+function daysUntil(payDay){
+  const t=todayD(),cd=t.getDate(),cm=t.getMonth(),cy=t.getFullYear();
+  const due=payDay>=cd?new Date(cy,cm,payDay):new Date(cy,cm+1,payDay);
+  return Math.ceil((due-t)/86400000);
 }
-function dueDateStr(payDay) {
-  const t = today();
-  const curDay = t.getDate(), curM = t.getMonth(), curY = t.getFullYear();
-  let due;
-  if (payDay >= curDay) { due = new Date(curY, curM, payDay); }
-  else { due = new Date(curY, curM + 1, payDay); }
+function dueDateStr(payDay){
+  const t=todayD(),cd=t.getDate(),cm=t.getMonth(),cy=t.getFullYear();
+  const due=payDay>=cd?new Date(cy,cm,payDay):new Date(cy,cm+1,payDay);
   return due.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
 }
-function dueLabel(days) {
-  if (days === 0) return {cls:'today', txt:'Due TODAY'};
-  if (days <= 5)  return {cls:'week',  txt:'Due in '+days+' day'+(days>1?'s':'')};
-  if (days <= 15) return {cls:'soon',  txt:'Due in '+days+' days'};
-  return {cls:'ok', txt:'In '+days+' days'};
+function dueInfo(days){
+  if(days===0)return{cls:'today',txt:'Due TODAY'};
+  if(days<=7) return{cls:'week', txt:`Due in ${days} day${days>1?'s':''}`};
+  if(days<=25)return{cls:'soon', txt:`In ${days} days`};
+  return{cls:'ok',txt:`In ${days} days`};
 }
-function fmt(n) { return '$'+Number(n).toLocaleString(); }
-function pct(made,total) { return total>0 ? Math.round(made/total*100) : 0; }
-function projBadge(p,extra) {
-  const pr = PROJECTS[p]; if(!pr) return '';
-  return `<span class="proj-badge" style="background:${pr.color}22;color:${pr.color}${extra||''}">${pr.name}</span>`;
+function fmt(n){return'$'+Number(n).toLocaleString();}
+function pct(m,t){return t>0?Math.round(m/t*100):0;}
+function pc(p){return PROJ_COLORS[p]||'#9498aa';}
+function flag(n){return(NATS[n]||{flag:'?'}).flag;}
+function nextId(){return'C'+Date.now();}
+function toast(msg,err){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.className='toast show'+(err?' err':'');
+  setTimeout(()=>el.classList.remove('show'),2500);
 }
-function natFlag(n) { return (NATS[n]||{flag:'?'}).flag; }
-function nextId() { return clients.length ? Math.max(...clients.map(c=>c.id))+1 : 1; }
+function copyText(text){navigator.clipboard.writeText(text).then(()=>toast('Copied ✓'));}
 
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 2500);
-}
-
-function copyText(text, btn) {
-  navigator.clipboard.writeText(text).then(()=>{
-    if(btn){ btn.textContent='✓ Copied!'; btn.classList.add('copied');
-      setTimeout(()=>{ btn.textContent='Copy Message'; btn.classList.remove('copied'); },2000); }
-    else { toast('✓ Copied to clipboard'); }
+// ── VIEW SWITCH ──
+function switchView(v,el){
+  currentView=v;
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
+  if(el)el.classList.add('active');
+  const titles={dashboard:'Dashboard',clients:'All Clients',generator:'Update Generator',templates:'Make.com Templates'};
+  document.getElementById('topbar-title').textContent=titles[v]||v;
+  document.getElementById('clients-toolbar').classList.toggle('hidden',v!=='clients');
+  ['dashboard','clients','generator','templates'].forEach(k=>{
+    const p=document.getElementById('view-'+k);
+    if(p)p.classList.toggle('hidden',k!==v);
   });
+  if(v==='templates')renderTemplates();
+  if(v==='clients')renderClients();
+  if(v==='dashboard')renderDashboard();
 }
 
-function buildReminderMsg(c) {
-  const pr = PROJECTS[c.project]||{};
-  return `Hi ${c.name.split(' ')[0]} 👋
-
-Your monthly payment reminder for ${pr.name||c.project} — Unit ${c.unit}.
-
-💳 Amount due: ${fmt(c.payAmount)}
-📅 Due date: ${dueDateStr(c.payDay)}
-🏦 Transfer to: ${c.bank}
-
-Please send your transfer receipt to your PHC advisor once payment is made.
-
-Questions? Reply here anytime.
-
-Property Hub Cambodia
-📞 011 666 952`;
+// ── STATS ──
+function updateStats(){
+  const active=clients.filter(c=>c.status==='Active');
+  const due=active.filter(c=>daysUntil(c.payDay)<=7);
+  document.getElementById('s-total').textContent=clients.length;
+  document.getElementById('s-due').textContent=due.length;
+  document.getElementById('s-monthly').textContent='$'+active.reduce((s,c)=>s+Number(c.payAmount),0).toLocaleString();
+  document.getElementById('s-projects').textContent=new Set(active.map(c=>c.project)).size;
+  const badge=document.getElementById('sb-due-badge');
+  badge.textContent=due.length||'0';badge.className='sb-badge'+(due.length?'':' zero');
+  document.getElementById('sb-count').textContent=clients.length;
 }
 
-// ═══════════════════════════════════════════
-// TABS
-// ═══════════════════════════════════════════
-function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('tab-'+tab).classList.add('active');
-  document.getElementById('page-'+tab).classList.add('active');
-  if(tab==='templates') renderTemplates();
+// ── DASHBOARD ──
+function buildReminder(c){
+  return`Hi ${c.name.split(' ')[0]} 👋\n\nYour monthly payment reminder for ${c.project} — Unit ${c.unit}.\n\n💳 Amount due: ${fmt(c.payAmount)}\n📅 Due date: ${dueDateStr(c.payDay)}\n🏦 Transfer to: ${c.bank||'Contact your PHC advisor for bank details'}\n\nPlease send your transfer receipt to your PHC advisor once payment is made.\n\nQuestions? Reply here anytime.\n\nProperty Hub Cambodia\n📞 011 666 952`;
 }
-
-// ═══════════════════════════════════════════
-// STATS
-// ═══════════════════════════════════════════
-function updateStats() {
-  const active = clients.filter(c=>c.status==='Active');
-  const due = active.filter(c=>daysUntil(c.payDay)<=5);
-  const monthly = active.reduce((s,c)=>s+Number(c.payAmount),0);
-  const projs = new Set(active.map(c=>c.project)).size;
-  const avgPct = active.length ? Math.round(active.reduce((s,c)=>s+pct(c.payMade,c.payTotal),0)/active.length) : 0;
-
-  document.getElementById('s-total').textContent = clients.length;
-  document.getElementById('s-due').textContent = due.length;
-  document.getElementById('s-monthly').textContent = '$'+monthly.toLocaleString();
-  document.getElementById('s-projects').textContent = projs;
-  document.getElementById('s-avg-progress').textContent = avgPct+'%';
-  document.getElementById('tc-due').textContent = due.length;
-  document.getElementById('tc-all').textContent = clients.length;
-}
-
-// ═══════════════════════════════════════════
-// DASHBOARD
-// ═══════════════════════════════════════════
-function renderDashboard() {
-  const active = clients.filter(c=>c.status==='Active');
-  const dueList = active.filter(c=>daysUntil(c.payDay)<=5).sort((a,b)=>daysUntil(a.payDay)-daysUntil(b.payDay));
-  const soonList = active.filter(c=>{const d=daysUntil(c.payDay);return d>5&&d<=20;}).sort((a,b)=>daysUntil(a.payDay)-daysUntil(b.payDay));
-
-  const dueGrid = document.getElementById('due-grid');
-  if(!dueList.length){dueGrid.innerHTML='<div class="empty"><div class="empty-icon">✅</div><div class="empty-text">No payments due in the next 5 days</div></div>';return;}
-  dueGrid.innerHTML = dueList.map(c=>{
-    const days = daysUntil(c.payDay); const dl = dueLabel(days);
-    const msg = buildReminderMsg(c);
-    return `<div class="alert-card ${dl.cls}">
-      <div class="alert-top">
-        <div>
-          <div class="alert-name">${c.name}</div>
-          ${projBadge(c.project)}
-          <div class="alert-unit">Unit ${c.unit} · Floor ${c.floor} · ${natFlag(c.nat)}</div>
-        </div>
-        <div class="due-badge ${dl.cls}">${dl.txt}</div>
+function alertCardHTML(c,di){
+  const color=pc(c.project);
+  return`<div class="alert-card ${di.cls}">
+    <div class="alert-top">
+      <div>
+        <div class="alert-name">${c.name}</div>
+        <div class="alert-sub"><span style="font-size:10px;padding:1px 7px;border-radius:8px;background:${color}18;color:${color};font-weight:600;margin-right:4px">${c.project}</span>Unit ${c.unit} · ${flag(c.nat)}</div>
       </div>
-      <div class="alert-amount">${fmt(c.payAmount)}</div>
-      <div class="alert-bank">🏦 ${c.bank}</div>
-      <div class="alert-bank" style="margin-top:2px">📅 Due: ${dueDateStr(c.payDay)}</div>
-      <button class="copy-btn" onclick="copyReminder(this,'${c.id}')">📋 Copy Payment Reminder</button>
-    </div>`;
-  }).join('');
-
-  const soonGrid = document.getElementById('soon-grid');
-  if(!soonList.length){soonGrid.innerHTML='<div class="empty"><div class="empty-icon">📆</div><div class="empty-text">No further payments in the next 20 days</div></div>';return;}
-  soonGrid.innerHTML = soonList.map(c=>{
-    const days = daysUntil(c.payDay); const dl = dueLabel(days);
-    return `<div class="alert-card soon">
-      <div class="alert-top">
-        <div>
-          <div class="alert-name">${c.name}</div>
-          ${projBadge(c.project)}
-          <div class="alert-unit">Unit ${c.unit} · Floor ${c.floor} · ${natFlag(c.nat)}</div>
-        </div>
-        <div class="due-badge soon">${dl.txt}</div>
-      </div>
-      <div class="alert-amount">${fmt(c.payAmount)}</div>
-      <div class="alert-bank">📅 Due: ${dueDateStr(c.payDay)}</div>
-      <button class="copy-btn" onclick="copyReminder(this,'${c.id}')">📋 Copy Payment Reminder</button>
-    </div>`;
-  }).join('');
+      <div class="due-badge ${di.cls}">${di.txt}</div>
+    </div>
+    <div class="alert-amount">${fmt(c.payAmount)}</div>
+    <div class="alert-bank">🏦 ${c.bank||'—'}</div>
+    <div class="alert-bank" style="margin-bottom:10px">📅 Due: ${dueDateStr(c.payDay)}</div>
+    <button class="copy-btn" onclick="copyReminder(this,'${c.id}')">Copy Payment Reminder</button>
+  </div>`;
+}
+function renderDashboard(){
+  const active=clients.filter(c=>c.status==='Active');
+  const dueList=active.filter(c=>daysUntil(c.payDay)<=7).sort((a,b)=>daysUntil(a.payDay)-daysUntil(b.payDay));
+  const soonList=active.filter(c=>{const d=daysUntil(c.payDay);return d>7&&d<=25;}).sort((a,b)=>daysUntil(a.payDay)-daysUntil(b.payDay));
+  document.getElementById('due-grid').innerHTML=dueList.length?dueList.map(c=>alertCardHTML(c,dueInfo(daysUntil(c.payDay)))).join(''):'<div class="empty"><div class="ei">✅</div>No payments due in the next 7 days</div>';
+  document.getElementById('soon-grid').innerHTML=soonList.length?soonList.map(c=>alertCardHTML(c,dueInfo(daysUntil(c.payDay)))).join(''):'<div class="empty"><div class="ei">📆</div>No payments coming up in the next 25 days</div>';
+}
+function copyReminder(btn,id){
+  const c=clients.find(x=>x.id===id);if(!c)return;
+  copyText(buildReminder(c));
+  btn.textContent='✓ Copied!';btn.classList.add('copied');
+  setTimeout(()=>{btn.textContent='Copy Payment Reminder';btn.classList.remove('copied');},2000);
 }
 
-function copyReminder(btn, id) {
-  const c = clients.find(x=>x.id==id); if(!c) return;
-  copyText(buildReminderMsg(c));
-  btn.textContent='✓ Copied!'; btn.classList.add('copied');
-  setTimeout(()=>{btn.textContent='📋 Copy Payment Reminder';btn.classList.remove('copied');},2000);
-}
-
-// ═══════════════════════════════════════════
-// CLIENT TABLE
-// ═══════════════════════════════════════════
-function renderClients() {
-  const q=(document.getElementById('search').value||'').toLowerCase();
-  const fp=document.getElementById('f-project').value;
-  const fn=document.getElementById('f-nat').value;
-  const fs=document.getElementById('f-status').value;
-  let list = clients.filter(c=>{
-    if(fp && c.project!==fp) return false;
-    if(fn && c.nat!==fn) return false;
-    if(fs && c.status!==fs) return false;
-    if(q && !c.name.toLowerCase().includes(q) && !(c.unit||'').toLowerCase().includes(q) && !(c.telegram||'').toLowerCase().includes(q)) return false;
+// ── CLIENTS TABLE ──
+function renderClients(){
+  const q=(document.getElementById('search-input')?.value||'').toLowerCase();
+  const fp=document.getElementById('f-project')?.value||'';
+  const fn=document.getElementById('f-nat')?.value||'';
+  const fs=document.getElementById('f-status')?.value||'';
+  const list=clients.filter(c=>{
+    if(fp&&c.project!==fp)return false;
+    if(fn&&c.nat!==fn)return false;
+    if(fs&&c.status!==fs)return false;
+    if(q&&!c.name.toLowerCase().includes(q)&&!(c.unit||'').toLowerCase().includes(q)&&!(c.telegram||'').toLowerCase().includes(q))return false;
     return true;
   });
-  const tb = document.getElementById('client-tbody');
-  if(!list.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--muted)">No clients match the current filters.</td></tr>';return;}
-  tb.innerHTML = list.map(c=>{
-    const days=daysUntil(c.payDay); const dl=dueLabel(days);
-    const p=pct(c.payMade,c.payTotal);
-    const pr=PROJECTS[c.project]||{color:'#666'};
-    return `<tr onclick="toggleRow(${c.id})" style="cursor:pointer">
-      <td><div class="client-name">${c.name}</div><div class="client-handle">${c.telegram||''}</div></td>
-      <td>${projBadge(c.project)}<div style="font-size:11px;color:var(--muted);margin-top:4px">Unit ${c.unit} · Fl.${c.floor||'—'}</div></td>
-      <td><div class="progress-wrap">
-        <div class="progress-bar"><div class="progress-fill" style="width:${p}%"></div></div>
-        <div class="progress-text">${c.payMade} of ${c.payTotal} paid (${p}%)</div>
-      </div></td>
-      <td><div class="next-due"><div>${dueDateStr(c.payDay)}</div><div class="days ${dl.cls}">${dl.txt}</div></div></td>
-      <td style="font-weight:600;color:#fff">${fmt(c.payAmount)}</td>
-      <td><span class="spa-badge ${c.spa?'done':'pend'}">${c.spa?'✓ Signed':'Pending'}</span></td>
-      <td class="nat-flag" title="${(NATS[c.nat]||{}).label||c.nat}">${natFlag(c.nat)}</td>
-      <td><div class="row-actions">
-        <button class="act-btn edit" onclick="event.stopPropagation();openModal(${c.id})">Edit</button>
-        <button class="act-btn del" onclick="event.stopPropagation();deleteClient(${c.id})">✕</button>
-      </div></td>
-    </tr>
-    <tr class="expand-row" id="exp-${c.id}">
-      <td colspan="8"><div class="expand-inner" id="exp-inner-${c.id}">
-        <div class="expand-field"><label>Developer Bank</label><div class="val">${c.bank||'—'}</div></div>
-        <div class="expand-field"><label>Booking Date</label><div class="val">${c.bookingDate||'—'}</div></div>
-        <div class="expand-field"><label>Status</label><div class="val">${c.status}</div></div>
-        <div class="expand-field"><label>Nationality</label><div class="val">${(NATS[c.nat]||{}).flag||''} ${(NATS[c.nat]||{}).label||c.nat}</div></div>
-        <div class="expand-field"><label>Payments Remaining</label><div class="val">${c.payTotal-c.payMade} of ${c.payTotal}</div></div>
-        <div class="expand-field full"><label>Notes</label><div class="val">${c.notes||'—'}</div></div>
-      </div></td>
+  const tb=document.getElementById('client-tbody');
+  if(!list.length){tb.innerHTML='<tr><td colspan="9" class="empty">No clients match the current filters.</td></tr>';return;}
+  tb.innerHTML=list.map(c=>{
+    const d=daysUntil(c.payDay),di=dueInfo(d),p=pct(c.payMade,c.payTotal),color=pc(c.project);
+    return`<tr onclick="openDrawer('${c.id}')">
+      <td><div class="client-name">${c.name}</div><div class="client-sub">${c.telegram||''}${c.phone?' · '+c.phone:''}</div></td>
+      <td><span style="display:inline-block;font-size:10px;padding:2px 8px;border-radius:10px;background:${color}18;color:${color};font-weight:600">${c.project}</span><div class="client-sub" style="margin-top:3px">Unit ${c.unit}${c.floor?' · Fl.'+c.floor:''}</div></td>
+      <td><div class="prog-wrap"><div class="prog-bar"><div class="prog-fill" style="width:${p}%"></div></div><div class="prog-text">${c.payMade}/${c.payTotal} (${p}%)</div></div></td>
+      <td><div style="font-size:12px">${dueDateStr(c.payDay)}</div><span class="days-chip ${di.cls}">${di.txt}</span></td>
+      <td style="font-size:13px;font-weight:600">${fmt(c.payAmount)}</td>
+      <td><span class="spa-chip ${c.spa?'done':'pend'}">${c.spa?'✓ Signed':'Pending'}</span></td>
+      <td><span class="status-chip ${c.status}">${c.status}</span></td>
+      <td title="${(NATS[c.nat]||{}).label||c.nat}">${flag(c.nat)}</td>
+      <td><button class="row-del" onclick="event.stopPropagation();deleteClient('${c.id}')" title="Remove">✕</button></td>
     </tr>`;
   }).join('');
 }
 
-function toggleRow(id) {
-  const el = document.getElementById('exp-inner-'+id);
-  if(el) el.classList.toggle('open');
+// ── DRAWER ──
+function openDrawer(id){
+  const c=clients.find(x=>x.id===id);if(!c)return;
+  drawerClientId=id;
+  document.getElementById('dr-name').textContent=c.name;
+  document.querySelectorAll('.dr-st-btn').forEach(b=>b.classList.toggle('on',b.dataset.s===c.status));
+  document.getElementById('dr-name-inp').value=c.name||'';
+  document.getElementById('dr-telegram').value=c.telegram||'';
+  document.getElementById('dr-phone').value=c.phone||'';
+  document.getElementById('dr-nat').value=c.nat||'JP';
+  document.getElementById('dr-proj').value=c.project||PROJECTS[0];
+  document.getElementById('dr-unit').value=c.unit||'';
+  document.getElementById('dr-floor').value=c.floor||'';
+  document.getElementById('dr-booking').value=c.bookingDate||'';
+  document.getElementById('dr-spa').value=c.spa?'true':'false';
+  document.getElementById('dr-title').value=c.titleStatus||'Pending';
+  document.getElementById('dr-pday').value=c.payDay||'';
+  document.getElementById('dr-pamount').value=c.payAmount||'';
+  document.getElementById('dr-ptotal').value=c.payTotal||45;
+  document.getElementById('dr-pmade').value=c.payMade||0;
+  document.getElementById('dr-bank').value=c.bank||'';
+  document.getElementById('dr-notes').value=c.notes||'';
+  updateDrProgress();
+  switchDrTab('info');
+  document.getElementById('drawer-overlay').classList.remove('hidden');
+}
+function closeDrawer(){document.getElementById('drawer-overlay').classList.add('hidden');drawerClientId=null;}
+function closeDrawerBg(e){if(e.target===document.getElementById('drawer-overlay'))closeDrawer();}
+function switchDrTab(tab){
+  ['info','payment','notes'].forEach(t=>{
+    document.getElementById('drtab-'+t).classList.toggle('on',t===tab);
+    document.getElementById('drp-'+t).style.display=t===tab?'':'none';
+  });
+}
+function setDrStatus(s){document.querySelectorAll('.dr-st-btn').forEach(b=>b.classList.toggle('on',b.dataset.s===s));}
+function getDrStatus(){const b=document.querySelector('.dr-st-btn.on');return b?b.dataset.s:'Active';}
+function updateDrProgress(){
+  const made=Number(document.getElementById('dr-pmade').value)||0;
+  const total=Number(document.getElementById('dr-ptotal').value)||1;
+  const p=Math.round(made/total*100);
+  document.getElementById('dr-prog-label').textContent=`${made} of ${total} paid`;
+  document.getElementById('dr-prog-pct').textContent=p+'%';
+  document.getElementById('dr-prog-fill').style.width=Math.min(p,100)+'%';
+}
+function saveFromDrawer(){
+  if(!drawerClientId)return;
+  const idx=clients.findIndex(x=>x.id===drawerClientId);if(idx<0)return;
+  clients[idx]={...clients[idx],
+    name:document.getElementById('dr-name-inp').value.trim()||clients[idx].name,
+    telegram:document.getElementById('dr-telegram').value.trim(),
+    phone:document.getElementById('dr-phone').value.trim(),
+    nat:document.getElementById('dr-nat').value,
+    project:document.getElementById('dr-proj').value,
+    unit:document.getElementById('dr-unit').value.trim(),
+    floor:Number(document.getElementById('dr-floor').value)||0,
+    bookingDate:document.getElementById('dr-booking').value,
+    spa:document.getElementById('dr-spa').value==='true',
+    titleStatus:document.getElementById('dr-title').value,
+    payDay:Number(document.getElementById('dr-pday').value)||1,
+    payAmount:Number(document.getElementById('dr-pamount').value)||0,
+    payTotal:Number(document.getElementById('dr-ptotal').value)||45,
+    payMade:Number(document.getElementById('dr-pmade').value)||0,
+    bank:document.getElementById('dr-bank').value.trim(),
+    notes:document.getElementById('dr-notes').value.trim(),
+    status:getDrStatus(),
+  };
+  saveClients();closeDrawer();renderAll();toast('Client updated ✓');
+}
+function deleteFromDrawer(){
+  if(!drawerClientId)return;
+  const c=clients.find(x=>x.id===drawerClientId);if(!c)return;
+  if(!confirm(`Remove ${c.name} from the client list?`))return;
+  clients=clients.filter(x=>x.id!==drawerClientId);
+  saveClients();closeDrawer();renderAll();toast('Client removed');
 }
 
-// ═══════════════════════════════════════════
-// UPDATE GENERATOR
-// ═══════════════════════════════════════════
-function generateMessages() {
-  const proj = document.getElementById('gen-project').value;
-  const title = document.getElementById('gen-title').value.trim();
-  const body = document.getElementById('gen-body').value.trim();
-  const photo = document.getElementById('gen-photo').value.trim();
-  const handover = document.getElementById('gen-handover').value.trim();
+// ── ADD MODAL ──
+function openAddModal(){
+  ['m-name','m-unit','m-floor','m-telegram','m-bank','m-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('m-ptotal').value='45';
+  document.getElementById('m-pmade').value='0';
+  document.getElementById('m-spa').value='false';
+  document.getElementById('m-booking').value='';
+  document.getElementById('modal-ov').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('m-name').focus(),80);
+}
+function closeModal(){document.getElementById('modal-ov').classList.add('hidden');}
+function closeModalBg(e){if(e.target===document.getElementById('modal-ov'))closeModal();}
+function saveNewClient(){
+  const name=document.getElementById('m-name').value.trim();
+  if(!name){toast('Name is required','err');return;}
+  const unit=document.getElementById('m-unit').value.trim();
+  if(!unit){toast('Unit number is required','err');return;}
+  clients.push({
+    id:nextId(),name,unit,
+    project:document.getElementById('m-proj').value,
+    floor:Number(document.getElementById('m-floor').value)||0,
+    nat:document.getElementById('m-nat').value,
+    telegram:document.getElementById('m-telegram').value.trim(),
+    phone:'',
+    bookingDate:document.getElementById('m-booking').value,
+    spa:document.getElementById('m-spa').value==='true',
+    titleStatus:'Pending',
+    payDay:Number(document.getElementById('m-pday').value)||1,
+    payAmount:Number(document.getElementById('m-pamount').value)||0,
+    payTotal:Number(document.getElementById('m-ptotal').value)||45,
+    payMade:Number(document.getElementById('m-pmade').value)||0,
+    bank:document.getElementById('m-bank').value.trim(),
+    status:'Active',
+    notes:document.getElementById('m-notes').value.trim(),
+  });
+  saveClients();closeModal();renderAll();toast('Client added ✓');
+}
+function deleteClient(id){
+  const c=clients.find(x=>x.id===id);if(!c)return;
+  if(!confirm(`Remove ${c.name}?`))return;
+  clients=clients.filter(x=>x.id!==id);
+  saveClients();renderAll();toast('Client removed');
+}
 
-  if(!proj){toast('⚠️ Please select a project'); return;}
-  if(!title){toast('⚠️ Please enter an update title'); return;}
-  if(!body){toast('⚠️ Please enter the update body'); return;}
-
-  const pr = PROJECTS[proj];
-  const projClients = clients.filter(c=>c.project===proj && c.status==='Active');
-  if(!projClients.length){
-    document.getElementById('gen-output').innerHTML='<div class="gen-placeholder"><div class="gen-placeholder-icon">🤷</div><div style="font-size:13px;color:var(--muted)">No active clients found for '+pr.name+'. Add clients on the Clients tab first.</div></div>';
-    return;
-  }
-
-  const cards = projClients.map(c=>{
-    const firstName = c.name.split(' ')[0];
-    let msg = `Hi ${firstName} 👋 — ${pr.name} Update\n\n`;
-    msg += `📍 Your unit: ${c.unit}${c.floor?` — Floor ${c.floor}`:''}\n\n`;
-    msg += `${title}\n\n${body}`;
-    if(photo) msg += `\n\n📸 Full photo update:\n${photo}`;
-    if(handover) msg += `\n\n🗓️ Estimated handover: ${handover}`;
-    msg += `\n\nQuestions? Reply here anytime.\n\nProperty Hub Cambodia\n📞 011 666 952`;
-    return `<div class="msg-card">
-      <div class="msg-card-header">
-        <div>
-          <div class="msg-card-name">${c.name}</div>
-          <div class="msg-card-meta">Unit ${c.unit} · ${natFlag(c.nat)} · ${c.telegram||'no handle'}</div>
-        </div>
-        <button class="copy-btn" style="width:auto;padding:6px 16px" onclick="copyText(decodeURIComponent('${encodeURIComponent(msg)}'))">Copy</button>
+// ── GENERATOR ──
+function generateMessages(){
+  const proj=document.getElementById('gen-project').value;
+  const title=document.getElementById('gen-title').value.trim();
+  const body=document.getElementById('gen-body').value.trim();
+  const photo=document.getElementById('gen-photo').value.trim();
+  const handover=document.getElementById('gen-handover').value.trim();
+  if(!proj){toast('Please select a project','err');return;}
+  if(!title){toast('Please enter an update title','err');return;}
+  if(!body){toast('Please enter the update body','err');return;}
+  const list=clients.filter(c=>c.project===proj&&c.status==='Active');
+  if(!list.length){document.getElementById('gen-output').innerHTML='<div class="gen-empty"><div class="ei">🤷</div>No active clients for this project. Add clients first.</div>';return;}
+  const cards=list.map(c=>{
+    const fn=c.name.split(' ')[0];
+    let msg=`Hi ${fn} 👋 — ${proj} Update\n\n📍 Your unit: ${c.unit}${c.floor?` — Floor ${c.floor}`:''}\n\n${title}\n\n${body}`;
+    if(photo)msg+=`\n\n📸 Full photo update:\n${photo}`;
+    if(handover)msg+=`\n\n🗓️ Estimated handover: ${handover}`;
+    msg+=`\n\nQuestions? Reply here anytime.\n\nProperty Hub Cambodia\n📞 011 666 952`;
+    const esc=msg.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return`<div class="msg-card">
+      <div class="msg-hdr">
+        <div><div class="msg-name">${c.name}</div><div class="msg-meta">Unit ${c.unit} · ${flag(c.nat)} · ${c.telegram||'no handle'}</div></div>
+        <button class="copy-sm" onclick="flashCopy(this,decodeURIComponent('${encodeURIComponent(msg)}'))">Copy</button>
       </div>
-      <div class="msg-body">${msg.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+      <div class="msg-body">${esc}</div>
     </div>`;
   }).join('');
-
-  const count = projClients.length;
-  document.getElementById('gen-output').innerHTML = `
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
-      <div style="font-size:14px;color:#fff;font-weight:600">✅ ${count} message${count>1?'s':''} generated for ${pr.name}</div>
-      <button class="sh-action" onclick="copyAllMessages()">Copy All (${count})</button>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:12px" id="msg-cards">${cards}</div>`;
+  document.getElementById('gen-output').innerHTML=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px"><span style="font-size:13px;font-weight:600;color:var(--text)">${list.length} message${list.length>1?'s':''} ready</span><button class="copy-sm" onclick="copyAll()">Copy All</button></div><div style="display:flex;flex-direction:column;gap:10px">${cards}</div>`;
 }
-
-function copyAllMessages() {
-  const proj = document.getElementById('gen-project').value;
-  const title = document.getElementById('gen-title').value.trim();
-  const body = document.getElementById('gen-body').value.trim();
-  const photo = document.getElementById('gen-photo').value.trim();
-  const handover = document.getElementById('gen-handover').value.trim();
-  const pr = PROJECTS[proj];
-  const projClients = clients.filter(c=>c.project===proj && c.status==='Active');
-  const all = projClients.map(c=>{
-    const firstName = c.name.split(' ')[0];
-    let msg = `─── ${c.name} (Unit ${c.unit}) ───\n`;
-    msg += `Hi ${firstName} 👋 — ${pr.name} Update\n\n`;
-    msg += `📍 Your unit: ${c.unit}${c.floor?` — Floor ${c.floor}`:''}\n\n`;
-    msg += `${title}\n\n${body}`;
-    if(photo) msg += `\n\n📸 Full photo update:\n${photo}`;
-    if(handover) msg += `\n\n🗓️ Estimated handover: ${handover}`;
-    msg += `\n\nQuestions? Reply here anytime.\n\nProperty Hub Cambodia\n📞 011 666 952`;
+function flashCopy(btn,text){
+  copyText(text);btn.textContent='✓ Copied';btn.classList.add('copied');
+  setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},1800);
+}
+function copyAll(){
+  const proj=document.getElementById('gen-project').value;
+  const title=document.getElementById('gen-title').value.trim();
+  const body=document.getElementById('gen-body').value.trim();
+  const photo=document.getElementById('gen-photo').value.trim();
+  const handover=document.getElementById('gen-handover').value.trim();
+  const list=clients.filter(c=>c.project===proj&&c.status==='Active');
+  const all=list.map(c=>{
+    const fn=c.name.split(' ')[0];
+    let msg=`─── ${c.name} (Unit ${c.unit}) ───\nHi ${fn} 👋 — ${proj} Update\n\n📍 Your unit: ${c.unit}${c.floor?` — Floor ${c.floor}`:''}\n\n${title}\n\n${body}`;
+    if(photo)msg+=`\n\n📸 Full photo update:\n${photo}`;
+    if(handover)msg+=`\n\n🗓️ Estimated handover: ${handover}`;
+    msg+=`\n\nQuestions? Reply here anytime.\n\nProperty Hub Cambodia\n📞 011 666 952`;
     return msg;
   }).join('\n\n\n');
-  copyText(all);
-  toast(`✓ All ${projClients.length} messages copied`);
+  copyText(all);toast(`All ${list.length} messages copied ✓`);
 }
 
-// ═══════════════════════════════════════════
-// MAKE.COM TEMPLATES
-// ═══════════════════════════════════════════
-function renderTemplates() {
-  const container = document.getElementById('templates-container');
-  const html = Object.entries(PROJECTS).map(([key, pr])=>{
-    const payTpl =
-`Hi {{CLIENT_FIRST_NAME}} 👋
-
-Your monthly payment reminder for ${pr.name} — Unit {{UNIT}}.
-
-💳 Amount due: ${{PAYMENT_AMOUNT}}
-📅 Due date: {{DUE_DATE}}
-🏦 Transfer to: {{DEVELOPER_BANK}}
-
-Please send your transfer receipt to your PHC advisor once payment is made.
-
-Questions? Reply here anytime.
-
-Property Hub Cambodia
-📞 011 666 952`;
-
-    const updTpl =
-`Hi {{CLIENT_FIRST_NAME}} 👋 — ${pr.name} Update
-
-📍 Your unit: {{UNIT}}{{FLOOR_LINE}}
-
-{{UPDATE_TITLE}}
-
-{{UPDATE_BODY}}
-
-📸 Full photo update:
-{{PHOTO_LINK}}
-
-🗓️ Estimated handover: {{HANDOVER_DATE}}
-
-Questions? Reply here anytime.
-
-Property Hub Cambodia
-📞 011 666 952`;
-
-    return `<div style="margin-bottom:28px">
-      <div style="font-size:13px;font-weight:600;color:var(--gold);margin-bottom:12px;font-family:'Playfair Display',serif">${pr.name} <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);font-weight:400">— ${pr.dev} · ${pr.loc}</span></div>
-      <div class="templates-grid">
-        <div class="tpl-card" style="border-left-color:${pr.color}">
-          <div class="tpl-header">
-            <div><div class="tpl-proj-name">💳 Monthly Payment Reminder</div><div class="tpl-dev">Runs automatically every month via Make.com</div></div>
-          </div>
-          <div class="tpl-body">${formatTplVars(payTpl)}</div>
-          <div class="tpl-footer">
-            <div class="tpl-note">Map: CLIENT_FIRST_NAME · UNIT · PAYMENT_AMOUNT · DUE_DATE · DEVELOPER_BANK → Google Sheet columns</div>
-            <button class="copy-btn" style="width:auto;padding:5px 14px;font-size:11px" onclick="copyText(decodeURIComponent('${encodeURIComponent(payTpl)}'))">Copy</button>
-          </div>
+// ── TEMPLATES ──
+function fmtVars(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\{\{([^}]+)\}\}/g,'<span class="tpl-var">{{$1}}</span>');}
+function renderTemplates(){
+  document.getElementById('templates-container').innerHTML=PROJECTS.map(proj=>{
+    const color=pc(proj);
+    const payTpl=`Hi {{CLIENT_FIRST_NAME}} 👋\n\nYour monthly payment reminder for ${proj} — Unit {{UNIT}}.\n\n💳 Amount due: ${{PAYMENT_AMOUNT}}\n📅 Due date: {{DUE_DATE}}\n🏦 Transfer to: {{DEVELOPER_BANK}}\n\nPlease send your transfer receipt to your PHC advisor once payment is made.\n\nQuestions? Reply here anytime.\n\nProperty Hub Cambodia\n📞 011 666 952`;
+    const updTpl=`Hi {{CLIENT_FIRST_NAME}} 👋 — ${proj} Update\n\n📍 Your unit: {{UNIT}}{{FLOOR_LINE}}\n\n{{UPDATE_TITLE}}\n\n{{UPDATE_BODY}}\n\n📸 Full photo update:\n{{PHOTO_LINK}}\n\n🗓️ Estimated handover: {{HANDOVER_DATE}}\n\nQuestions? Reply here anytime.\n\nProperty Hub Cambodia\n📞 011 666 952`;
+    return`<div class="tpl-proj-group">
+      <div class="tpl-proj-label"><div class="tpl-dot" style="background:${color}"></div>${proj}</div>
+      <div class="tpl-grid">
+        <div class="tpl-card" style="border-left-color:${color}">
+          <div class="tpl-hdr"><div><div class="tpl-title">Monthly Payment Reminder</div><div class="tpl-sub">Runs automatically each month via Make.com</div></div></div>
+          <div class="tpl-body">${fmtVars(payTpl)}</div>
+          <div class="tpl-ftr"><div class="tpl-note">Map: CLIENT_FIRST_NAME · UNIT · PAYMENT_AMOUNT · DUE_DATE · DEVELOPER_BANK</div><button class="copy-sm" onclick="copyText(decodeURIComponent('${encodeURIComponent(payTpl)}'))">Copy</button></div>
         </div>
-        <div class="tpl-card" style="border-left-color:${pr.color}">
-          <div class="tpl-header">
-            <div><div class="tpl-proj-name">📢 Project Update Broadcast</div><div class="tpl-dev">Triggered when Nick submits the update form</div></div>
-          </div>
-          <div class="tpl-body">${formatTplVars(updTpl)}</div>
-          <div class="tpl-footer">
-            <div class="tpl-note">Map: CLIENT_FIRST_NAME · UNIT · FLOOR_LINE · UPDATE_TITLE · UPDATE_BODY · PHOTO_LINK · HANDOVER_DATE</div>
-            <button class="copy-btn" style="width:auto;padding:5px 14px;font-size:11px" onclick="copyText(decodeURIComponent('${encodeURIComponent(updTpl)}'))">Copy</button>
-          </div>
+        <div class="tpl-card" style="border-left-color:${color}">
+          <div class="tpl-hdr"><div><div class="tpl-title">Project Update Broadcast</div><div class="tpl-sub">Triggered when you submit the Update Generator</div></div></div>
+          <div class="tpl-body">${fmtVars(updTpl)}</div>
+          <div class="tpl-ftr"><div class="tpl-note">Map: CLIENT_FIRST_NAME · UNIT · FLOOR_LINE · UPDATE_TITLE · UPDATE_BODY · PHOTO_LINK · HANDOVER_DATE</div><button class="copy-sm" onclick="copyText(decodeURIComponent('${encodeURIComponent(updTpl)}'))">Copy</button></div>
         </div>
       </div>
     </div>`;
   }).join('');
-  container.innerHTML = html;
 }
 
-function formatTplVars(text) {
-  return text
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/\{\{([^}]+)\}\}/g,'<span class="tpl-var">{{$1}}</span>');
+// ── CSV EXPORT ──
+function exportCSV(){
+  const cols=['Name','Telegram','Phone','Project','Unit','Floor','Nationality','Booking Date','SPA Signed','Title Status','Payment Day','Payment Amount','Total Payments','Payments Made','Progress %','Developer Bank','Status','Notes'];
+  const rows=clients.map(c=>[c.name,c.telegram||'',c.phone||'',c.project,c.unit,c.floor||'',(NATS[c.nat]||{}).label||c.nat,c.bookingDate||'',c.spa?'Yes':'No',c.titleStatus||'Pending',c.payDay,c.payAmount,c.payTotal,c.payMade,pct(c.payMade,c.payTotal)+'%',c.bank||'',c.status,c.notes||''].map(v=>`"${String(v).replace(/"/g,'""')}"`));
+  const csv=[cols.map(c=>`"${c}"`).join(','),...rows.map(r=>r.join(','))].join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,﻿'+encodeURIComponent(csv);
+  a.download='PHC_Clients_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();toast('CSV exported ✓');
 }
 
-// ═══════════════════════════════════════════
-// MODAL — ADD / EDIT
-// ═══════════════════════════════════════════
-function openModal(id) {
-  document.getElementById('modal-overlay').classList.add('open');
-  if(id){
-    const c = clients.find(x=>x.id==id); if(!c) return;
-    document.getElementById('modal-title').textContent = 'Edit Client';
-    document.getElementById('edit-id').value = c.id;
-    document.getElementById('f-name').value = c.name||'';
-    document.getElementById('f-telegram').value = c.telegram||'';
-    document.getElementById('f-proj').value = c.project||'TS9';
-    document.getElementById('f-unit').value = c.unit||'';
-    document.getElementById('f-floor').value = c.floor||'';
-    document.getElementById('f-nat2').value = c.nat||'EN';
-    document.getElementById('f-booking').value = c.bookingDate||'';
-    document.getElementById('f-spa').value = c.spa?'true':'false';
-    document.getElementById('f-pday').value = c.payDay||'';
-    document.getElementById('f-pamount').value = c.payAmount||'';
-    document.getElementById('f-ptotal').value = c.payTotal||45;
-    document.getElementById('f-pmade').value = c.payMade||0;
-    document.getElementById('f-bank').value = c.bank||'';
-    document.getElementById('f-sstatus').value = c.status||'Active';
-    document.getElementById('f-notes').value = c.notes||'';
-  } else {
-    document.getElementById('modal-title').textContent = 'Add Client';
-    document.getElementById('edit-id').value = '';
-    ['f-name','f-telegram','f-unit','f-floor','f-booking','f-pday','f-pamount','f-bank','f-notes'].forEach(id=>document.getElementById(id).value='');
-    document.getElementById('f-ptotal').value = '45';
-    document.getElementById('f-pmade').value = '0';
-    document.getElementById('f-spa').value = 'false';
-  }
-}
-function closeModal(e){if(e.target===document.getElementById('modal-overlay'))closeModalDirect();}
-function closeModalDirect(){document.getElementById('modal-overlay').classList.remove('open');}
-
-function saveClient() {
-  const name = document.getElementById('f-name').value.trim();
-  if(!name){toast('⚠️ Name is required'); return;}
-  const unit = document.getElementById('f-unit').value.trim();
-  if(!unit){toast('⚠️ Unit number is required'); return;}
-  const editId = document.getElementById('edit-id').value;
-  const c = {
-    id: editId ? Number(editId) : nextId(),
-    name, unit,
-    project:document.getElementById('f-proj').value,
-    floor:Number(document.getElementById('f-floor').value)||0,
-    nat:document.getElementById('f-nat2').value,
-    telegram:document.getElementById('f-telegram').value.trim(),
-    bookingDate:document.getElementById('f-booking').value,
-    spa:document.getElementById('f-spa').value==='true',
-    payDay:Number(document.getElementById('f-pday').value)||1,
-    payAmount:Number(document.getElementById('f-pamount').value)||0,
-    payTotal:Number(document.getElementById('f-ptotal').value)||45,
-    payMade:Number(document.getElementById('f-pmade').value)||0,
-    bank:document.getElementById('f-bank').value.trim(),
-    status:document.getElementById('f-sstatus').value,
-    notes:document.getElementById('f-notes').value.trim(),
-  };
-  if(editId){ const idx=clients.findIndex(x=>x.id==editId); if(idx>-1) clients[idx]=c; }
-  else { clients.push(c); }
-  saveClients(); closeModalDirect();
-  renderAll(); toast(editId?'✓ Client updated':'✓ Client added');
-}
-
-function deleteClient(id) {
-  const c = clients.find(x=>x.id==id); if(!c) return;
-  if(!confirm(`Remove ${c.name} from the client list?`)) return;
-  clients = clients.filter(x=>x.id!=id);
-  saveClients(); renderAll(); toast('Client removed');
-}
-
-// ═══════════════════════════════════════════
-// CSV EXPORT
-// ═══════════════════════════════════════════
-function exportCSV() {
-  const cols = ['Name','Telegram','Project','Unit','Floor','Nationality','Booking Date','SPA Signed','Payment Day','Payment Amount','Total Payments','Payments Made','Progress %','Developer Bank','Status','Notes'];
-  const rows = clients.map(c=>[
-    c.name, c.telegram||'', PROJECTS[c.project]?.name||c.project, c.unit, c.floor||'',
-    (NATS[c.nat]||{}).label||c.nat, c.bookingDate||'', c.spa?'Yes':'No',
-    c.payDay, c.payAmount, c.payTotal, c.payMade, pct(c.payMade,c.payTotal)+'%',
-    c.bank||'', c.status, c.notes||''
-  ].map(v=>`"${String(v).replace(/"/g,'""')}"`));
-  const csv = [cols.map(c=>`"${c}"`).join(','), ...rows.map(r=>r.join(','))].join('\n');
-  const a = document.createElement('a');
-  a.href = 'data:text/csv;charset=utf-8,﻿'+encodeURIComponent(csv);
-  a.download = 'PHC_Clients_'+new Date().toISOString().slice(0,10)+'.csv';
-  a.click();
-  toast('✓ CSV exported');
-}
-
-// ═══════════════════════════════════════════
-// RENDER ALL
-// ═══════════════════════════════════════════
-function renderAll() { updateStats(); renderDashboard(); renderClients(); }
+// ── INIT ──
+function renderAll(){updateStats();renderDashboard();if(currentView==='clients')renderClients();}
 renderAll();
 </script>
 </body>
