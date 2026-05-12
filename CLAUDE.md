@@ -33,6 +33,7 @@
 | `PHC_Market_Intelligence_Cheat_Sheet.html` | ✅ Production | /phc-tools/PHC_Market_Intelligence_Cheat_Sheet.html |
 | `PHC_CEO_Business_Plan.html` | ✅ Production | /phc-tools/PHC_CEO_Business_Plan.html |
 | `PHC_System_Map.html` | ✅ Production | /phc-tools/PHC_System_Map.html |
+| `PHC_CEO_Dashboard.html` | ✅ Production | /phc-tools/PHC_CEO_Dashboard.html |
 | `PHC_AppsScript.gs` | ✅ Deployed | Google Apps Script (bound to PHC CRM sheet) |
 
 ---
@@ -282,10 +283,11 @@ Multiple/TBD
 | 1 | Google Sheets connection | ✅ Done (Tasks + Leads tabs live) |
 | 2 | Task Manager v4 | ✅ Done (list/board/schedule/doc views, Sheets sync) |
 | 3 | Lead Tracker v3 | ✅ Done (kanban, scoring, activity log, dashboard) |
-| 4 | CEO Dashboard | 🔲 Next — morning view: leads by stage, pipeline value, overdue, deals MTD |
+| 4 | CEO Dashboard | ✅ Done — pipeline by stage, overdue follow-ups/tasks, payments due, agent breakdown |
 | 5 | Commission Tracker | 🔲 Log deals, auto-split Nick/Monika/Reza, monthly summary |
-| 6 | Client Manager | 🔲 After-sale tracking, payment alerts, title status |
-| 7 | Password protection | 🔲 Shared password for agent tools, separate PIN for CEO tools |
+| 6 | Client Manager | ✅ Done — payment schedules, SPA/title status, Sheets sync |
+| 7 | Convert Lead → Client | 🔲 Button in Lead Tracker to move closed lead into Client Manager |
+| 8 | Password protection | 🔲 Shared password for agent tools, separate PIN for CEO tools |
 
 ---
 
