@@ -1,11 +1,11 @@
 // ═══════════════════════════════════════════════════════════════
 //  PHC CRM — Google Apps Script API
-//  Sheets: Tasks | Leads | Clients
+//  Sheets: Tasks | Leads | Clients | Deals
 //
 //  HOW TO DEPLOY:
 //  1. Open your PHC CRM Google Sheet
 //  2. Extensions → Apps Script → paste this entire file
-//  3. Run initializeAll() once (creates + formats all three tabs)
+//  3. Run initializeAll() once (creates + formats all four tabs)
 //  4. Deploy → New Deployment → Web App
 //     • Execute as: Me
 //     • Who has access: Anyone
@@ -28,6 +28,12 @@ const SHEET_HEADERS = {
     'telegram', 'phone', 'project', 'unit', 'floor',
     'bookingDate', 'spa', 'titleStatus', 'payDay', 'payAmount',
     'payTotal', 'payMade', 'bank', 'status', 'notes'
+  ],
+  Deals: [
+    'id', 'createdAt', 'updatedAt', 'closedDate', 'clientName',
+    'project', 'unit', 'salePrice', 'commissionRate', 'commissionTotal',
+    'nickPct', 'monikaPct', 'rezaPct', 'nickAmt', 'monikaAmt', 'rezaAmt',
+    'agent', 'notes'
   ]
 };
 
@@ -185,7 +191,7 @@ function deleteTask(id)  { return deleteRow('Tasks', id); }
  * Creates and formats Tasks, Leads, and Clients tabs.
  */
 function initializeAll() {
-  ['Tasks', 'Leads', 'Clients'].forEach(name => {
+  ['Tasks', 'Leads', 'Clients', 'Deals'].forEach(name => {
     const sheet = getOrCreateSheet(name);
     Logger.log('✅ ' + name + ' ready — rows: ' + sheet.getLastRow());
   });

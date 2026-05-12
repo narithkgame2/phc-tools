@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PHC · Commission Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#083467;--gold:#cc9d4d;--gold-light:#e8c47a;--gold-pale:#fdf3e3;
+  --cream:#fdf8f0;--g1:#f5f6f8;--g2:#e8ecf2;--g3:#c0c8d4;--g4:#7a8799;
+  --text:#1a2535;--red:#d63031;--green:#00b894;--orange:#e17055;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--g1);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;}
+
+/* ── Topbar ── */
+.topbar{background:var(--navy);height:54px;display:flex;align-items:center;padding:0 24px;gap:16px;position:sticky;top:0;z-index:100;}
+.hub-link{color:rgba(255,255,255,.5);font-size:11px;font-family:'DM Mono',monospace;text-decoration:none;letter-spacing:.04em;white-space:nowrap;}
+.hub-link:hover{color:var(--gold-light);}
+.topbar-title{font-family:'DM Serif Display',serif;font-size:18px;color:#fff;flex:1;}
+.month-picker{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#fff;font-family:'DM Mono',monospace;font-size:11px;padding:5px 10px;border-radius:7px;cursor:pointer;outline:none;}
+.month-picker option{background:var(--navy);color:#fff;}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--g3);flex-shrink:0;}
+.sync-dot.ok{background:var(--green);}
+.sync-dot.err{background:var(--red);}
+.sync-txt{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.4);white-space:nowrap;}
+.add-btn{background:var(--gold);color:var(--navy);font-size:12px;font-weight:600;padding:7px 16px;border:none;border-radius:8px;cursor:pointer;white-space:nowrap;transition:background .15s;}
+.add-btn:hover{background:var(--gold-light);}
+
+/* ── Page ── */
+.page{max-width:1200px;margin:0 auto;padding:28px 24px 64px;}
+.section-label{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--g4);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:"";flex:1;height:1px;background:var(--g2);}
+
+/* ── Stat cards ── */
+.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:28px;}
+.stat-card{background:#fff;border:1px solid var(--g2);border-radius:12px;padding:18px 20px;position:relative;overflow:hidden;}
+.stat-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;}
+.stat-card.c-navy::before{background:var(--navy);}
+.stat-card.c-gold::before{background:linear-gradient(90deg,var(--gold),var(--gold-light));}
+.stat-card.c-nick::before{background:#3b82f6;}
+.stat-card.c-monika::before{background:#8b5cf6;}
+.stat-card.c-reza::before{background:#10b981;}
+.stat-label{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--g4);margin-bottom:8px;}
+.stat-val{font-family:'DM Serif Display',serif;font-size:28px;color:var(--text);line-height:1;margin-bottom:4px;}
+.stat-sub{font-size:11px;color:var(--g4);}
+.stat-sub b{color:var(--text);}
+
+/* ── Agent cards ── */
+.agent-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;}
+.agent-card{background:#fff;border:1px solid var(--g2);border-radius:12px;padding:20px 22px;}
+.agent-top{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.agent-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:16px;color:#fff;flex-shrink:0;}
+.av-nick{background:#3b82f6;}
+.av-monika{background:#8b5cf6;}
+.av-reza{background:#10b981;}
+.agent-name{font-size:14px;font-weight:600;color:var(--text);}
+.agent-role{font-size:11px;color:var(--g4);}
+.agent-stat-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--g2);font-size:12px;color:var(--g4);}
+.agent-stat-row:last-child{border-bottom:none;padding-bottom:0;}
+.agent-stat-row b{color:var(--text);font-weight:600;}
+.agent-big{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin-bottom:2px;}
+.agent-big-lbl{font-family:'DM Mono',monospace;font-size:10px;color:var(--g4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;}
+
+/* ── Deal table ── */
+.table-wrap{background:#fff;border:1px solid var(--g2);border-radius:12px;overflow:hidden;}
+.table-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g2);}
+.table-title{font-size:13px;font-weight:600;color:var(--text);}
+.filter-row{display:flex;gap:8px;align-items:center;}
+.filter-sel{background:var(--g1);border:1px solid var(--g2);color:var(--text);font-size:11px;font-family:'DM Mono',monospace;padding:5px 10px;border-radius:7px;outline:none;cursor:pointer;}
+table{width:100%;border-collapse:collapse;}
+thead th{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--g4);text-align:left;padding:10px 14px;background:var(--g1);border-bottom:1px solid var(--g2);}
+tbody td{padding:12px 14px;border-bottom:1px solid var(--g2);font-size:12px;vertical-align:middle;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:var(--g1);}
+.deal-client{font-weight:600;color:var(--text);}
+.deal-project{color:var(--g4);font-size:11px;margin-top:2px;}
+.price-cell{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;}
+.split-cell{display:flex;flex-direction:column;gap:2px;}
+.split-line{font-size:11px;font-family:'DM Mono',monospace;}
+.split-n{color:#3b82f6;}
+.split-m{color:#8b5cf6;}
+.split-r{color:#10b981;}
+.agent-chip{display:inline-block;font-size:10px;font-family:'DM Mono',monospace;padding:2px 8px;border-radius:10px;font-weight:500;}
+.ac-n{background:#dbeafe;color:#1e40af;}
+.ac-m{background:#ede9fe;color:#4c1d95;}
+.ac-r{background:#d1fae5;color:#065f46;}
+.ac-all{background:var(--g2);color:var(--g4);}
+.action-btn{background:none;border:1px solid var(--g2);color:var(--g4);font-size:11px;padding:4px 10px;border-radius:6px;cursor:pointer;transition:all .15s;}
+.action-btn:hover{border-color:var(--navy);color:var(--navy);}
+.del-btn{color:var(--red);border-color:rgba(214,48,49,.2);}
+.del-btn:hover{background:#fee2e2;border-color:var(--red);}
+.empty-row td{text-align:center;padding:40px;color:var(--g4);font-size:13px;}
+
+/* ── Modal ── */
+.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(8,52,103,.45);z-index:200;align-items:center;justify-content:center;padding:20px;}
+.modal-backdrop.show{display:flex;}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:540px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.2);}
+.modal-header{background:var(--navy);color:#fff;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;border-radius:16px 16px 0 0;}
+.modal-title{font-family:'DM Serif Display',serif;font-size:17px;}
+.modal-close{background:none;border:none;color:rgba(255,255,255,.6);font-size:20px;cursor:pointer;line-height:1;padding:2px 6px;}
+.modal-close:hover{color:#fff;}
+.modal-body{padding:22px;}
+.form-row{margin-bottom:16px;}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.form-label{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--g4);margin-bottom:6px;display:block;}
+.form-input{width:100%;border:1px solid var(--g2);border-radius:8px;padding:9px 12px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);background:#fff;outline:none;transition:border-color .15s;}
+.form-input:focus{border-color:var(--navy);}
+.form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%237a8799' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:30px;}
+.split-section{background:var(--g1);border-radius:10px;padding:16px;margin-bottom:16px;}
+.split-title{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--g4);margin-bottom:12px;}
+.split-row{display:grid;grid-template-columns:1fr 80px 100px;gap:8px;align-items:center;margin-bottom:10px;}
+.split-row:last-child{margin-bottom:0;}
+.split-name{font-size:12px;font-weight:600;color:var(--text);}
+.split-pct-input{border:1px solid var(--g2);border-radius:7px;padding:7px 10px;font-size:13px;font-family:'DM Mono',monospace;width:100%;text-align:right;outline:none;transition:border-color .15s;}
+.split-pct-input:focus{border-color:var(--navy);}
+.split-amt{font-family:'DM Mono',monospace;font-size:12px;color:var(--g4);text-align:right;}
+.split-warning{font-size:11px;color:var(--red);margin-top:8px;display:none;}
+.commission-preview{background:var(--gold-pale);border:1px solid rgba(204,157,77,.3);border-radius:8px;padding:12px 14px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;}
+.commission-preview-lbl{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--g4);}
+.commission-preview-val{font-family:'DM Serif Display',serif;font-size:22px;color:var(--navy);}
+.modal-footer{padding:0 22px 22px;display:flex;gap:10px;justify-content:flex-end;}
+.btn-cancel{background:var(--g1);border:1px solid var(--g2);color:var(--text);font-size:13px;font-weight:500;padding:9px 20px;border-radius:9px;cursor:pointer;}
+.btn-save{background:var(--navy);color:#fff;font-size:13px;font-weight:600;padding:9px 24px;border-radius:9px;border:none;cursor:pointer;transition:background .15s;}
+.btn-save:hover{background:#0a4080;}
+
+/* ── Toast ── */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;font-size:13px;padding:12px 18px;border-radius:10px;border-left:3px solid var(--gold);box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:300;transform:translateY(80px);opacity:0;transition:all .25s;pointer-events:none;}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* ── Delete confirm ── */
+.confirm-backdrop{display:none;position:fixed;inset:0;background:rgba(8,52,103,.45);z-index:300;align-items:center;justify-content:center;}
+.confirm-backdrop.show{display:flex;}
+.confirm-box{background:#fff;border-radius:14px;padding:28px;max-width:360px;width:90%;text-align:center;}
+.confirm-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:8px;}
+.confirm-sub{font-size:12px;color:var(--g4);margin-bottom:20px;}
+.confirm-btns{display:flex;gap:10px;justify-content:center;}
+.btn-del-confirm{background:var(--red);color:#fff;border:none;font-size:13px;font-weight:600;padding:9px 20px;border-radius:9px;cursor:pointer;}
+.btn-del-cancel{background:var(--g1);border:1px solid var(--g2);color:var(--text);font-size:13px;padding:9px 20px;border-radius:9px;cursor:pointer;}
+
+@media(max-width:900px){
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .agent-grid{grid-template-columns:1fr;}
+}
+@media(max-width:600px){
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .topbar{flex-wrap:wrap;height:auto;padding:10px 16px;gap:8px;}
+  .page{padding:20px 14px 48px;}
+  table{font-size:11px;}
+  thead th,tbody td{padding:9px 10px;}
+}
+</style>
+</head>
+<body>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Delete confirm -->
+<div class="confirm-backdrop" id="confirmBd">
+  <div class="confirm-box">
+    <div class="confirm-title">Delete this deal?</div>
+    <div class="confirm-sub">This will remove it from Google Sheets permanently.</div>
+    <div class="confirm-btns">
+      <button class="btn-del-cancel" onclick="closeConfirm()">Cancel</button>
+      <button class="btn-del-confirm" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal-backdrop" id="modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Log New Deal</div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row-2">
+        <div>
+          <label class="form-label">Client Name</label>
+          <input class="form-input" id="f-client" placeholder="e.g. Kenji Tanaka">
+        </div>
+        <div>
+          <label class="form-label">Close Date</label>
+          <input class="form-input" id="f-date" type="date">
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div>
+          <label class="form-label">Project</label>
+          <select class="form-input form-select" id="f-project">
+            <option value="">Select project…</option>
+            <option>Time Square 9 (Gatsby)</option>
+            <option>Time Square 8</option>
+            <option>Time Square 10 (Otres)</option>
+            <option>Time Square 11 BKK3</option>
+            <option>J Tower 2</option>
+            <option>J Tower 3</option>
+            <option>Le Conde BKK1</option>
+            <option>Royal Platinum</option>
+            <option>Peninsula Private Residences</option>
+            <option>G.A.T.O Tower</option>
+            <option>Multiple/TBD</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label">Unit</label>
+          <input class="form-input" id="f-unit" placeholder="e.g. 08A">
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div>
+          <label class="form-label">Sale Price ($)</label>
+          <input class="form-input" id="f-price" type="number" min="0" placeholder="e.g. 85000" oninput="recalc()">
+        </div>
+        <div>
+          <label class="form-label">Commission Rate (%)</label>
+          <input class="form-input" id="f-rate" type="number" min="0" max="20" step="0.1" placeholder="e.g. 3" oninput="recalc()">
+        </div>
+      </div>
+
+      <div class="commission-preview">
+        <div>
+          <div class="commission-preview-lbl">Total Commission</div>
+          <div class="commission-preview-val" id="comm-preview">$0</div>
+        </div>
+        <div style="text-align:right">
+          <div class="commission-preview-lbl">Sale Price</div>
+          <div style="font-family:'DM Mono',monospace;font-size:13px;color:var(--navy)" id="price-preview">$0</div>
+        </div>
+      </div>
+
+      <div class="split-section">
+        <div class="split-title">Commission Split — must total 100%</div>
+        <div class="split-row">
+          <div class="split-name" style="color:#3b82f6">Nick</div>
+          <input class="split-pct-input" id="f-nick-pct" type="number" min="0" max="100" value="33" oninput="recalc()">
+          <div class="split-amt" id="nick-amt">$0</div>
+        </div>
+        <div class="split-row">
+          <div class="split-name" style="color:#8b5cf6">Monika</div>
+          <input class="split-pct-input" id="f-monika-pct" type="number" min="0" max="100" value="34" oninput="recalc()">
+          <div class="split-amt" id="monika-amt">$0</div>
+        </div>
+        <div class="split-row">
+          <div class="split-name" style="color:#10b981">Reza</div>
+          <input class="split-pct-input" id="f-reza-pct" type="number" min="0" max="100" value="33" oninput="recalc()">
+          <div class="split-amt" id="reza-amt">$0</div>
+        </div>
+        <div class="split-warning" id="split-warn">⚠ Percentages must add up to 100%</div>
+      </div>
+
+      <div class="form-row-2">
+        <div>
+          <label class="form-label">Lead Agent</label>
+          <select class="form-input form-select" id="f-agent">
+            <option value="N">Nick</option>
+            <option value="M">Monika</option>
+            <option value="R">Reza</option>
+            <option value="All">All Three</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label">Notes</label>
+          <input class="form-input" id="f-notes" placeholder="Optional notes">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveDeal()">Save Deal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Topbar -->
+<div class="topbar">
+  <a class="hub-link" href="index.html">← Hub</a>
+  <div class="topbar-title">Commission Tracker</div>
+  <select class="month-picker" id="monthPicker" onchange="renderAll()"></select>
+  <div class="sync-dot" id="syncDot"></div>
+  <div class="sync-txt" id="syncTxt">Loading…</div>
+  <button class="add-btn" onclick="openModal()">+ Log Deal</button>
+</div>
+
+<div class="page">
+
+  <!-- ── STAT CARDS ── -->
+  <div class="stats-grid" style="margin-bottom:28px;">
+    <div class="stat-card c-navy">
+      <div class="stat-label">Deals Closed</div>
+      <div class="stat-val" id="s-count">—</div>
+      <div class="stat-sub" id="s-count-sub">this period</div>
+    </div>
+    <div class="stat-card c-gold">
+      <div class="stat-label">Total Commission</div>
+      <div class="stat-val" id="s-total">—</div>
+      <div class="stat-sub" id="s-total-sub">this period</div>
+    </div>
+    <div class="stat-card c-nick">
+      <div class="stat-label">Nick</div>
+      <div class="stat-val" id="s-nick">—</div>
+      <div class="stat-sub" id="s-nick-sub">this period</div>
+    </div>
+    <div class="stat-card c-monika">
+      <div class="stat-label">Monika</div>
+      <div class="stat-val" id="s-monika">—</div>
+      <div class="stat-sub" id="s-monika-sub">this period</div>
+    </div>
+    <div class="stat-card c-reza">
+      <div class="stat-label">Reza</div>
+      <div class="stat-val" id="s-reza">—</div>
+      <div class="stat-sub" id="s-reza-sub">this period</div>
+    </div>
+  </div>
+
+  <!-- ── AGENT CARDS ── -->
+  <div class="section-label">Year to Date · All Deals</div>
+  <div class="agent-grid" id="agent-grid" style="margin-bottom:28px;"></div>
+
+  <!-- ── DEAL TABLE ── -->
+  <div class="table-wrap">
+    <div class="table-header">
+      <div class="table-title" id="table-title">Deals</div>
+      <div class="filter-row">
+        <select class="filter-sel" id="agentFilter" onchange="renderAll()">
+          <option value="">All Agents</option>
+          <option value="N">Nick</option>
+          <option value="M">Monika</option>
+          <option value="R">Reza</option>
+        </select>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Client & Project</th>
+          <th>Close Date</th>
+          <th>Sale Price</th>
+          <th>Commission</th>
+          <th>Split</th>
+          <th>Agent</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="deal-tbody"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+const API_URL = 'https://script.google.com/macros/s/AKfycbzlAxcJqEI3upZ18sm-mj2Gxd3w2XSkD_YYqgkZ4kdw2_AV3V8f2B4qVcPESHZTOq2k8Q/exec';
+const LS_KEY  = 'phc_deals_cache';
+
+let deals = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+let editingId = null;
+let deletingId = null;
+
+// ── Helpers ──────────────────────────────────────────────────────
+
+function $(id){ return document.getElementById(id); }
+function usd(n){ n=Number(n)||0; return n>=1000?'$'+(n/1000).toFixed(1)+'K':'$'+n.toFixed(0); }
+function usdFull(n){ return '$'+(Number(n)||0).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0}); }
+
+function toast(msg){
+  const el=$('toast'); el.textContent=msg; el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),3000);
+}
+
+function monthLabel(ym){ // "2026-05" → "May 2026"
+  const [y,m]=ym.split('-');
+  return new Date(+y,+m-1,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+}
+
+function dealMonth(d){ return (d.closedDate||d.createdAt||'').slice(0,7); }
+
+// ── Month picker ─────────────────────────────────────────────────
+
+function buildMonthPicker(){
+  const pk=$('monthPicker');
+  const months=new Set(deals.map(d=>dealMonth(d)).filter(Boolean));
+  const now=new Date();
+  const cur=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  months.add(cur);
+  const sorted=[...months].sort().reverse();
+  pk.innerHTML=`<option value="ALL">All Time</option>`+sorted.map(m=>`<option value="${m}">${monthLabel(m)}</option>`).join('');
+  if(!pk.value) pk.value=cur;
+}
+
+// ── API ──────────────────────────────────────────────────────────
+
+async function apiPOST(body){
+  try{ await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body),mode:'no-cors'}); return {ok:true}; }catch{return null;}
+}
+
+async function loadDeals(){
+  try{
+    const r=await fetch(API_URL+'?action=getAll&sheet=Deals');
+    const data=await r.json();
+    if(Array.isArray(data)){
+      deals=data.filter(d=>d.id).map(d=>({
+        ...d,
+        salePrice:Number(d.salePrice)||0,
+        commissionRate:Number(d.commissionRate)||0,
+        commissionTotal:Number(d.commissionTotal)||0,
+        nickPct:Number(d.nickPct)||0, monikaPct:Number(d.monikaPct)||0, rezaPct:Number(d.rezaPct)||0,
+        nickAmt:Number(d.nickAmt)||0, monikaAmt:Number(d.monikaAmt)||0, rezaAmt:Number(d.rezaAmt)||0
+      }));
+      localStorage.setItem(LS_KEY,JSON.stringify(deals));
+      $('syncDot').className='sync-dot ok';
+      $('syncTxt').textContent='Live · '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    }
+  }catch{
+    $('syncDot').className='sync-dot err';
+    $('syncTxt').textContent='Offline — cached';
+  }
+  buildMonthPicker();
+  renderAll();
+}
+
+// ── Render ───────────────────────────────────────────────────────
+
+function filteredDeals(){
+  const period=$('monthPicker').value||'ALL';
+  const agent=$('agentFilter').value;
+  return deals.filter(d=>{
+    if(period!=='ALL' && dealMonth(d)!==period) return false;
+    if(agent && d.agent!==agent) return false;
+    return true;
+  });
+}
+
+function renderAll(){
+  const fd=filteredDeals();
+  renderStats(fd);
+  renderAgents();
+  renderTable(fd);
+}
+
+function renderStats(fd){
+  const total=fd.reduce((s,d)=>s+d.commissionTotal,0);
+  const nick=fd.reduce((s,d)=>s+d.nickAmt,0);
+  const monika=fd.reduce((s,d)=>s+d.monikaAmt,0);
+  const reza=fd.reduce((s,d)=>s+d.rezaAmt,0);
+  const period=$('monthPicker').value==='ALL'?'all time':monthLabel($('monthPicker').value);
+  $('s-count').textContent=fd.length;
+  $('s-count-sub').textContent=fd.length===1?'deal · '+period:'deals · '+period;
+  $('s-total').textContent=usd(total);
+  $('s-total-sub').textContent='commission · '+period;
+  $('s-nick').textContent=usd(nick);
+  $('s-nick-sub').textContent=period;
+  $('s-monika').textContent=usd(monika);
+  $('s-monika-sub').textContent=period;
+  $('s-reza').textContent=usd(reza);
+  $('s-reza-sub').textContent=period;
+}
+
+function renderAgents(){
+  const agents=[
+    {key:'N',name:'Nick',role:'CEO & Director',cls:'nick',av:'av-nick'},
+    {key:'M',name:'Monika',role:'Co-Founder · Japanese Market',cls:'monika',av:'av-monika'},
+    {key:'R',name:'Reza',role:'Co-Founder · European Market',cls:'reza',av:'av-reza'}
+  ];
+  const now=new Date();
+  const ytdPrefix=now.getFullYear()+'-';
+  $('agent-grid').innerHTML=agents.map(a=>{
+    const ytd=deals.filter(d=>dealMonth(d).startsWith(ytdPrefix));
+    const total=ytd.reduce((s,d)=>s+(a.key==='N'?d.nickAmt:a.key==='M'?d.monikaAmt:d.rezaAmt),0);
+    const count=ytd.filter(d=>d.agent===a.key).length;
+    const allDealsAmt=deals.reduce((s,d)=>s+(a.key==='N'?d.nickAmt:a.key==='M'?d.monikaAmt:d.rezaAmt),0);
+    const allDealsCount=deals.length;
+    const initials=a.name.split(' ').map(w=>w[0]).join('');
+    return `<div class="agent-card">
+      <div class="agent-top">
+        <div class="agent-avatar ${a.av}">${initials}</div>
+        <div><div class="agent-name">${a.name}</div><div class="agent-role">${a.role}</div></div>
+      </div>
+      <div class="agent-big">${usdFull(total)}</div>
+      <div class="agent-big-lbl">YTD Commission</div>
+      <div class="agent-stat-row"><span>Deals closed (YTD)</span><b>${count}</b></div>
+      <div class="agent-stat-row"><span>All-time earnings</span><b>${usdFull(allDealsAmt)}</b></div>
+    </div>`;
+  }).join('');
+}
+
+function renderTable(fd){
+  const sorted=[...fd].sort((a,b)=>(b.closedDate||'').localeCompare(a.closedDate||''));
+  const period=$('monthPicker').value==='ALL'?'All Deals':monthLabel($('monthPicker').value);
+  $('table-title').textContent=period+' ('+sorted.length+')';
+
+  if(!sorted.length){
+    $('deal-tbody').innerHTML=`<tr class="empty-row"><td colspan="7">No deals found for this period</td></tr>`;
+    return;
+  }
+
+  const agentBadge=(a)=>{
+    if(a==='N') return `<span class="agent-chip ac-n">Nick</span>`;
+    if(a==='M') return `<span class="agent-chip ac-m">Monika</span>`;
+    if(a==='R') return `<span class="agent-chip ac-r">Reza</span>`;
+    return `<span class="agent-chip ac-all">All</span>`;
+  };
+
+  $('deal-tbody').innerHTML=sorted.map(d=>{
+    const dateStr=d.closedDate?new Date(d.closedDate).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'—';
+    return `<tr>
+      <td>
+        <div class="deal-client">${d.clientName||'—'}</div>
+        <div class="deal-project">${d.project||''} ${d.unit?'· Unit '+d.unit:''}</div>
+      </td>
+      <td style="font-family:'DM Mono',monospace;font-size:11px">${dateStr}</td>
+      <td class="price-cell">${usdFull(d.salePrice)}</td>
+      <td>
+        <div class="price-cell">${usdFull(d.commissionTotal)}</div>
+        <div style="font-size:10px;font-family:'DM Mono',monospace;color:var(--g4)">${d.commissionRate}%</div>
+      </td>
+      <td>
+        <div class="split-cell">
+          <span class="split-line split-n">N ${d.nickPct}% · ${usdFull(d.nickAmt)}</span>
+          <span class="split-line split-m">M ${d.monikaPct}% · ${usdFull(d.monikaAmt)}</span>
+          <span class="split-line split-r">R ${d.rezaPct}% · ${usdFull(d.rezaAmt)}</span>
+        </div>
+      </td>
+      <td>${agentBadge(d.agent)}</td>
+      <td style="white-space:nowrap">
+        <button class="action-btn" onclick="openEdit('${d.id}')">Edit</button>
+        <button class="action-btn del-btn" onclick="askDelete('${d.id}')">Delete</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Modal ────────────────────────────────────────────────────────
+
+function recalc(){
+  const price=Number($('f-price').value)||0;
+  const rate=Number($('f-rate').value)||0;
+  const comm=Math.round(price*(rate/100)*100)/100;
+  const nickP=Number($('f-nick-pct').value)||0;
+  const monikaP=Number($('f-monika-pct').value)||0;
+  const rezaP=Number($('f-reza-pct').value)||0;
+  const total=nickP+monikaP+rezaP;
+
+  $('comm-preview').textContent=usdFull(comm);
+  $('price-preview').textContent=usdFull(price);
+  $('nick-amt').textContent=usdFull(Math.round(comm*(nickP/100)));
+  $('monika-amt').textContent=usdFull(Math.round(comm*(monikaP/100)));
+  $('reza-amt').textContent=usdFull(Math.round(comm*(rezaP/100)));
+  $('split-warn').style.display=total!==100?'block':'none';
+}
+
+function openModal(){
+  editingId=null;
+  $('modal-title').textContent='Log New Deal';
+  $('f-client').value='';
+  $('f-date').value=new Date().toISOString().slice(0,10);
+  $('f-project').value='';
+  $('f-unit').value='';
+  $('f-price').value='';
+  $('f-rate').value='3';
+  $('f-nick-pct').value='33';
+  $('f-monika-pct').value='34';
+  $('f-reza-pct').value='33';
+  $('f-agent').value='N';
+  $('f-notes').value='';
+  recalc();
+  $('modal').classList.add('show');
+}
+
+function openEdit(id){
+  const d=deals.find(x=>x.id===id);
+  if(!d) return;
+  editingId=id;
+  $('modal-title').textContent='Edit Deal';
+  $('f-client').value=d.clientName||'';
+  $('f-date').value=d.closedDate||'';
+  $('f-project').value=d.project||'';
+  $('f-unit').value=d.unit||'';
+  $('f-price').value=d.salePrice||'';
+  $('f-rate').value=d.commissionRate||'';
+  $('f-nick-pct').value=d.nickPct||0;
+  $('f-monika-pct').value=d.monikaPct||0;
+  $('f-reza-pct').value=d.rezaPct||0;
+  $('f-agent').value=d.agent||'N';
+  $('f-notes').value=d.notes||'';
+  recalc();
+  $('modal').classList.add('show');
+}
+
+function closeModal(){ $('modal').classList.remove('show'); }
+
+function saveDeal(){
+  const nickP=Number($('f-nick-pct').value)||0;
+  const monikaP=Number($('f-monika-pct').value)||0;
+  const rezaP=Number($('f-reza-pct').value)||0;
+  if(nickP+monikaP+rezaP!==100){ toast('Split must total 100%'); return; }
+
+  const price=Number($('f-price').value)||0;
+  const rate=Number($('f-rate').value)||0;
+  const comm=Math.round(price*(rate/100)*100)/100;
+  const now=new Date().toISOString();
+
+  const payload={
+    id: editingId||('D'+Date.now()),
+    createdAt: editingId?(deals.find(d=>d.id===editingId)||{}).createdAt||now : now,
+    updatedAt: now,
+    closedDate: $('f-date').value,
+    clientName: $('f-client').value.trim(),
+    project: $('f-project').value,
+    unit: $('f-unit').value.trim(),
+    salePrice: price,
+    commissionRate: rate,
+    commissionTotal: comm,
+    nickPct: nickP,   monikaPct: monikaP,   rezaPct: rezaP,
+    nickAmt: Math.round(comm*(nickP/100)),
+    monikaAmt: Math.round(comm*(monikaP/100)),
+    rezaAmt: Math.round(comm*(rezaP/100)),
+    agent: $('f-agent').value,
+    notes: $('f-notes').value.trim()
+  };
+
+  if(editingId){
+    const idx=deals.findIndex(d=>d.id===editingId);
+    if(idx>-1) deals[idx]=payload;
+    apiPOST({action:'update',sheet:'Deals',id:editingId,data:payload});
+    toast('Deal updated');
+  } else {
+    deals.unshift(payload);
+    apiPOST({action:'insert',sheet:'Deals',data:payload});
+    toast('Deal logged');
+  }
+  localStorage.setItem(LS_KEY,JSON.stringify(deals));
+  buildMonthPicker();
+  renderAll();
+  closeModal();
+}
+
+// ── Delete ───────────────────────────────────────────────────────
+
+function askDelete(id){ deletingId=id; $('confirmBd').classList.add('show'); }
+function closeConfirm(){ $('confirmBd').classList.remove('show'); deletingId=null; }
+function confirmDelete(){
+  if(!deletingId) return;
+  deals=deals.filter(d=>d.id!==deletingId);
+  localStorage.setItem(LS_KEY,JSON.stringify(deals));
+  apiPOST({action:'delete',sheet:'Deals',id:deletingId});
+  buildMonthPicker();
+  renderAll();
+  closeConfirm();
+  toast('Deal deleted');
+}
+
+// ── Init ─────────────────────────────────────────────────────────
+
+buildMonthPicker();
+renderAll();
+loadDeals();
+</script>
+</body>
+</html>
