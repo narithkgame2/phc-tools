@@ -1,21 +1,35 @@
 // ═══════════════════════════════════════════════════════════════
-//  PHC Task Manager — Google Apps Script API
-//  Spreadsheet: PHC CRM  |  Sheet: Tasks
+//  PHC CRM — Google Apps Script API
+//  Sheets: Tasks | Leads | Clients
 //
 //  HOW TO DEPLOY:
 //  1. Open your PHC CRM Google Sheet
 //  2. Extensions → Apps Script → paste this entire file
-//  3. Run initializeTasks() once (to create & format the Tasks tab)
+//  3. Run initializeAll() once (creates + formats all three tabs)
 //  4. Deploy → New Deployment → Web App
 //     • Execute as: Me
 //     • Who has access: Anyone
-//  5. Copy the Web App URL → paste into the Task Manager settings
+//  5. Copy the Web App URL → paste into each tool's settings
 // ═══════════════════════════════════════════════════════════════
 
-const TASKS_HEADERS = [
-  'id', 'name', 'status', 'priority', 'category',
-  'due', 'assignees', 'memo', 'link', 'createdAt', 'updatedAt'
-];
+const SHEET_HEADERS = {
+  Tasks: [
+    'id', 'name', 'status', 'priority', 'category',
+    'due', 'assignees', 'memo', 'link', 'createdAt', 'updatedAt'
+  ],
+  Leads: [
+    'id', 'createdAt', 'updatedAt', 'fullName', 'nationality',
+    'phone', 'email', 'source', 'budget', 'timeline',
+    'interestedIn', 'stage', 'score', 'agent', 'notes',
+    'lastContact', 'followUpDate', 'followUpAction', 'activities'
+  ],
+  Clients: [
+    'id', 'createdAt', 'updatedAt', 'name', 'nat',
+    'telegram', 'phone', 'project', 'unit', 'floor',
+    'bookingDate', 'spa', 'titleStatus', 'payDay', 'payAmount',
+    'payTotal', 'payMade', 'bank', 'status', 'notes'
+  ]
+};
 
 // ── HTTP entry points ────────────────────────────────────────────
 
@@ -23,7 +37,7 @@ function doGet(e) {
   try {
     const p = e.parameter || {};
     if (p.action === 'ping')   return respond({ ok: true, ts: new Date().toISOString() });
-    if (p.action === 'getAll') return respond(getAllTasks());
+    if (p.action === 'getAll') return respond(getAllRows(p.sheet || 'Tasks'));
     return respond({ error: 'Unknown action: ' + p.action });
   } catch (err) {
     return respond({ error: err.toString() });
@@ -32,10 +46,11 @@ function doGet(e) {
 
 function doPost(e) {
   try {
-    const body = JSON.parse(e.postData.contents);
-    if (body.action === 'insert') return respond(insertTask(body.data));
-    if (body.action === 'update') return respond(updateTask(body.id, body.data));
-    if (body.action === 'delete') return respond(deleteTask(body.id));
+    const body  = JSON.parse(e.postData.contents);
+    const sheet = body.sheet || 'Tasks';
+    if (body.action === 'insert') return respond(insertRow(sheet, body.data));
+    if (body.action === 'update') return respond(updateRow(sheet, body.id, body.data));
+    if (body.action === 'delete') return respond(deleteRow(sheet, body.id));
     return respond({ error: 'Unknown action: ' + body.action });
   } catch (err) {
     return respond({ error: err.toString() });
@@ -50,41 +65,34 @@ function respond(data) {
 
 // ── Sheet helpers ────────────────────────────────────────────────
 
-function getTasksSheet() {
+function getOrCreateSheet(name) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = ss.getSheetByName('Tasks');
+  let sheet = ss.getSheetByName(name);
   if (!sheet) {
-    sheet = ss.insertSheet('Tasks');
-    _formatTasksSheet(sheet);
+    sheet = ss.insertSheet(name);
+    const headers = SHEET_HEADERS[name];
+    if (headers) {
+      const lastCol = headers.length;
+      sheet.getRange(1, 1, 1, lastCol).setValues([headers]);
+      sheet.getRange(1, 1, 1, lastCol)
+        .setBackground('#083467')
+        .setFontColor('#ffffff')
+        .setFontWeight('bold')
+        .setFontSize(10);
+      sheet.setFrozenRows(1);
+      // Banding — column letter from count (works for ≤26 columns)
+      const lastColLetter = String.fromCharCode(64 + lastCol);
+      sheet.getRange('A2:' + lastColLetter + '1000')
+        .applyRowBanding(SpreadsheetApp.BandingTheme.LIGHT_GREY);
+    }
   }
   return sheet;
 }
 
-function _formatTasksSheet(sheet) {
-  const lastCol = TASKS_HEADERS.length;
-  sheet.getRange(1, 1, 1, lastCol).setValues([TASKS_HEADERS]);
-  sheet.getRange(1, 1, 1, lastCol)
-    .setBackground('#083467')
-    .setFontColor('#ffffff')
-    .setFontWeight('bold')
-    .setFontSize(10);
-  sheet.setFrozenRows(1);
+// ── CRUD (generic) ───────────────────────────────────────────────
 
-  // Column widths
-  const widths = { id: 200, name: 300, status: 120, priority: 80, category: 160,
-                   due: 90, assignees: 90, memo: 260, link: 240, createdAt: 170, updatedAt: 170 };
-  TASKS_HEADERS.forEach((h, i) => {
-    if (widths[h]) sheet.setColumnWidth(i + 1, widths[h]);
-  });
-
-  // Alternate row colour will apply automatically via conditional formatting
-  sheet.getRange('A2:K1000').applyRowBanding(SpreadsheetApp.BandingTheme.LIGHT_GREY);
-}
-
-// ── CRUD ────────────────────────────────────────────────────────
-
-function getAllTasks() {
-  const sheet = getTasksSheet();
+function getAllRows(sheetName) {
+  const sheet = getOrCreateSheet(sheetName);
   const data  = sheet.getDataRange().getValues();
   if (data.length < 2) return [];
   const headers = data[0];
@@ -94,7 +102,6 @@ function getAllTasks() {
       const obj = {};
       headers.forEach((h, i) => {
         const v = row[i];
-        // Normalise Dates that Sheets auto-converts
         obj[h] = (v instanceof Date)
           ? Utilities.formatDate(v, Session.getScriptTimeZone(), 'yyyy-MM-dd')
           : (v === null || v === undefined ? '' : String(v));
@@ -103,41 +110,53 @@ function getAllTasks() {
     });
 }
 
-function insertTask(data) {
-  if (!data || !data.id) return { error: 'Missing task id' };
-  const sheet = getTasksSheet();
-  const now   = new Date().toISOString();
+function insertRow(sheetName, data) {
+  if (!data || !data.id) return { error: 'Missing id' };
+  const headers = SHEET_HEADERS[sheetName];
+  if (!headers) return { error: 'Unknown sheet: ' + sheetName };
+  const sheet = getOrCreateSheet(sheetName);
+  const now = new Date().toISOString();
   data.createdAt = data.createdAt || now;
   data.updatedAt = now;
-  const row = TASKS_HEADERS.map(h => (data[h] !== undefined && data[h] !== null) ? data[h] : '');
+  const row = headers.map(h => {
+    const v = data[h];
+    if (v === undefined || v === null) return '';
+    if (typeof v === 'object') return JSON.stringify(v); // arrays → JSON string
+    return v;
+  });
   sheet.appendRow(row);
   return { success: true, id: data.id };
 }
 
-function updateTask(id, data) {
+function updateRow(sheetName, id, data) {
   if (!id) return { error: 'Missing id' };
-  const sheet   = getTasksSheet();
+  const headers = SHEET_HEADERS[sheetName];
+  if (!headers) return { error: 'Unknown sheet: ' + sheetName };
+  const sheet   = getOrCreateSheet(sheetName);
   const allData = sheet.getDataRange().getValues();
-  const headers = allData[0];
-  const idIdx   = headers.indexOf('id');
-  const updIdx  = headers.indexOf('updatedAt');
+  const sheetHdrs = allData[0];
+  const idIdx = sheetHdrs.indexOf('id');
 
   for (let i = 1; i < allData.length; i++) {
     if (String(allData[i][idIdx]) === String(id)) {
       data.updatedAt = new Date().toISOString();
-      const updatedRow = headers.map((h, colIdx) =>
-        (data[h] !== undefined && data[h] !== null) ? data[h] : allData[i][colIdx]
-      );
-      sheet.getRange(i + 1, 1, 1, headers.length).setValues([updatedRow]);
+      const updatedRow = sheetHdrs.map((h, colIdx) => {
+        if (data[h] !== undefined && data[h] !== null) {
+          const v = data[h];
+          return typeof v === 'object' ? JSON.stringify(v) : v;
+        }
+        return allData[i][colIdx];
+      });
+      sheet.getRange(i + 1, 1, 1, sheetHdrs.length).setValues([updatedRow]);
       return { success: true };
     }
   }
-  return { error: 'Task not found: ' + id };
+  return { error: 'Row not found: ' + id };
 }
 
-function deleteTask(id) {
+function deleteRow(sheetName, id) {
   if (!id) return { error: 'Missing id' };
-  const sheet   = getTasksSheet();
+  const sheet   = getOrCreateSheet(sheetName);
   const allData = sheet.getDataRange().getValues();
   const headers = allData[0];
   const idIdx   = headers.indexOf('id');
@@ -148,17 +167,29 @@ function deleteTask(id) {
       return { success: true };
     }
   }
-  return { error: 'Task not found: ' + id };
+  return { error: 'Row not found: ' + id };
 }
+
+// ── Backward-compatible aliases (Task Manager v4 still works) ────
+
+function getTasksSheet() { return getOrCreateSheet('Tasks'); }
+function getAllTasks()    { return getAllRows('Tasks'); }
+function insertTask(d)   { return insertRow('Tasks', d); }
+function updateTask(id, d) { return updateRow('Tasks', id, d); }
+function deleteTask(id)  { return deleteRow('Tasks', id); }
 
 // ── One-time setup ────────────────────────────────────────────────
 
 /**
- * Run this ONCE from the Apps Script editor before deploying.
- * Creates and formats the Tasks sheet if it doesn't exist.
+ * Run this ONCE from the Apps Script editor after pasting.
+ * Creates and formats Tasks, Leads, and Clients tabs.
  */
-function initializeTasks() {
-  const sheet = getTasksSheet();
-  Logger.log('✅ Tasks sheet ready: ' + sheet.getName());
-  Logger.log('Row count (incl. header): ' + sheet.getLastRow());
+function initializeAll() {
+  ['Tasks', 'Leads', 'Clients'].forEach(name => {
+    const sheet = getOrCreateSheet(name);
+    Logger.log('✅ ' + name + ' ready — rows: ' + sheet.getLastRow());
+  });
 }
+
+// Alias so old initializeTasks() calls still work
+function initializeTasks() { initializeAll(); }

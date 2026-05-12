@@ -633,7 +633,7 @@ async function apiGET(q){
 }
 async function apiPOST(body){
   if(!API_URL) return null;
-  try{ var r=await fetch(API_URL,{method:'POST',body:JSON.stringify(body)}); return await r.json(); }catch{return null;}
+  try{ var r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body)}); return await r.json(); }catch{return null;}
 }
 async function loadLeads(){
   if(!API_URL){
@@ -644,8 +644,12 @@ async function loadLeads(){
   setLoading(true);
   var res=await apiGET({action:'getAll',sheet:'Leads'});
   setLoading(false);
-  if(res&&res.success){
-    leads=res.data.filter(function(r){return r.id;});
+  if(Array.isArray(res)){
+    leads=res.filter(function(r){return r.id;}).map(function(r){
+      return Object.assign({},r,{
+        activities:(function(){try{return JSON.parse(r.activities||'[]');}catch(e){return[];}}())
+      });
+    });
     localStorage.setItem(LS_DATA,JSON.stringify(leads));
     setApiStatus(true);
   } else {
@@ -658,8 +662,10 @@ async function loadLeads(){
 async function persistLead(lead,isNew){
   localStorage.setItem(LS_DATA,JSON.stringify(leads));
   if(!API_URL) return;
-  if(isNew) await apiPOST({action:'insert',sheet:'Leads',data:lead});
-  else await apiPOST({action:'update',sheet:'Leads',id:lead.id,data:lead});
+  var now=new Date().toISOString();
+  var payload=Object.assign({},lead,{score:score(lead),updatedAt:now,createdAt:lead.createdAt||now});
+  if(isNew) await apiPOST({action:'insert',sheet:'Leads',data:payload});
+  else await apiPOST({action:'update',sheet:'Leads',id:lead.id,data:payload});
 }
 
 function sampleLeads(){

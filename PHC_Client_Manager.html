@@ -48,6 +48,15 @@ a{text-decoration:none;color:inherit}
 .av-ring{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;flex-shrink:0}
 .api-dot{width:6px;height:6px;border-radius:50%;background:var(--border);flex-shrink:0}
 .api-dot.live{background:var(--green)}
+.api-dot.err{background:var(--red)}
+.api-status-txt{font-size:11px;color:var(--text-m)}
+.setup-bar{background:var(--white);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.setup-bar.hidden{display:none}
+.setup-bar label{font-size:11px;font-weight:600;color:var(--text-s);white-space:nowrap}
+.setup-bar input{flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--white);color:var(--text);font-size:12px;font-family:'DM Sans',sans-serif;outline:none}
+.setup-bar input:focus{border-color:var(--navy)}
+.setup-save{padding:6px 14px;border:none;border-radius:6px;background:var(--navy);color:#fff;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap}
+.setup-save:hover{background:#0a4080}
 
 /* ── MAIN ── */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
@@ -300,10 +309,10 @@ a{text-decoration:none;color:inherit}
   </div>
 
   <div class="sb-footer">
-    <div class="sb-item" style="pointer-events:none">
-      <div class="av-ring" style="background:var(--navy)">N</div>
-      <span class="sb-label" style="font-size:12px;font-weight:600;color:var(--text)">Nick</span>
-      <div class="api-dot live"></div>
+    <div class="sb-item" onclick="toggleSetup()" style="cursor:pointer">
+      <div class="sb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+      <span class="sb-label">Setup Sheets</span>
+      <div class="api-dot" id="apiDot"></div>
     </div>
   </div>
 </aside>
@@ -315,9 +324,17 @@ a{text-decoration:none;color:inherit}
     <span class="bc-sep">/</span>
     <span class="bc-active" id="topbar-title">Dashboard</span>
     <div class="topbar-right">
+      <span class="api-status-txt" id="apiTxt">Local mode</span>
       <button class="tb-btn" onclick="exportCSV()">Export CSV</button>
       <button class="add-btn" onclick="openAddModal()">+ Add Client</button>
     </div>
+  </div>
+
+  <!-- SETUP BAR -->
+  <div class="setup-bar hidden" id="setupBar">
+    <label>Apps Script URL</label>
+    <input id="apiInput" type="url" placeholder="https://script.google.com/macros/s/.../exec"/>
+    <button class="setup-save" onclick="saveApiUrl()">Connect</button>
   </div>
 
   <div class="view-toolbar hidden" id="clients-toolbar">
@@ -543,6 +560,80 @@ a{text-decoration:none;color:inherit}
 <div class="toast" id="toast"></div>
 
 <script>
+// ── API / SYNC ──
+const LS_API = 'phc_clients_api';
+const DEFAULT_API = 'https://script.google.com/macros/s/AKfycbzlAxcJqEI3upZ18sm-mj2Gxd3w2XSkD_YYqgkZ4kdw2_AV3V8f2B4qVcPESHZTOq2k8Q/exec';
+let API_URL = localStorage.getItem(LS_API) || DEFAULT_API;
+
+async function apiGET(params){
+  if(!API_URL) return null;
+  try{const r=await fetch(API_URL+'?'+new URLSearchParams(params));return await r.json();}catch{return null;}
+}
+async function apiPOST(body){
+  if(!API_URL) return null;
+  try{const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body)});return await r.json();}catch{return null;}
+}
+
+function rowToClient(row){
+  return Object.assign({},row,{
+    floor:Number(row.floor)||0,
+    spa:row.spa==='true'||row.spa===true,
+    payDay:Number(row.payDay)||1,
+    payAmount:Number(row.payAmount)||0,
+    payTotal:Number(row.payTotal)||45,
+    payMade:Number(row.payMade)||0,
+  });
+}
+
+async function loadFromSheets(){
+  setApiStatus(null);
+  const res=await apiGET({action:'getAll',sheet:'Clients'});
+  if(Array.isArray(res)){
+    clients=res.filter(r=>r.id).map(rowToClient);
+    saveClients();
+    setApiStatus(true);
+    renderAll();updateStats();
+  } else {
+    setApiStatus(false);
+  }
+}
+
+function syncInsert(c){
+  if(!API_URL) return;
+  const now=new Date().toISOString();
+  apiPOST({action:'insert',sheet:'Clients',data:Object.assign({},c,{createdAt:c.createdAt||now,updatedAt:now})});
+}
+function syncUpdate(c){
+  if(!API_URL) return;
+  apiPOST({action:'update',sheet:'Clients',id:c.id,data:Object.assign({},c,{updatedAt:new Date().toISOString()})});
+}
+function syncDelete(id){
+  if(!API_URL) return;
+  apiPOST({action:'delete',sheet:'Clients',id});
+}
+
+function setApiStatus(ok){
+  const dot=document.getElementById('apiDot');
+  const txt=document.getElementById('apiTxt');
+  if(!dot||!txt) return;
+  if(ok===null){dot.className='api-dot';txt.textContent='Syncing...';}
+  else if(ok){dot.className='api-dot live';txt.textContent='Sheets live';}
+  else{dot.className='api-dot err';txt.textContent='Local mode';}
+}
+function toggleSetup(){
+  const b=document.getElementById('setupBar');
+  b.classList.toggle('hidden');
+  if(!b.classList.contains('hidden')) document.getElementById('apiInput').value=API_URL;
+}
+function saveApiUrl(){
+  const u=document.getElementById('apiInput').value.trim();
+  if(!u) return;
+  API_URL=u;localStorage.setItem(LS_API,u);
+  document.getElementById('setupBar').classList.add('hidden');
+  toast('Connecting to Sheets...');
+  loadFromSheets();
+}
+
 const PROJ_COLORS={'Time Square 9 (Gatsby)':'#7c5cbf','Time Square 8':'#3b82f6','Time Square 10 (Otres)':'#10b981','Time Square 11 BKK3':'#ef4444','J Tower 2':'#f97316','J Tower 3':'#e67e22','Le Conde BKK1':'#8b5cf6','Royal Platinum':'#f9a825','Peninsula Private Residences':'#06b6d4','G.A.T.O Tower':'#84cc16'};
 const PROJECTS=Object.keys(PROJ_COLORS);
 const NATS={JP:{label:'Japanese',flag:'🇯🇵'},DE:{label:'German/European',flag:'🇩🇪'},EN:{label:'English/Western',flag:'🇬🇧'},RU:{label:'Russian',flag:'🇷🇺'},KH:{label:'Cambodian',flag:'🇰🇭'},CN:{label:'Chinese',flag:'🇨🇳'}};
@@ -754,12 +845,14 @@ function saveFromDrawer(){
     notes:document.getElementById('dr-notes').value.trim(),
     status:getDrStatus(),
   };
+  syncUpdate(clients[idx]);
   saveClients();closeDrawer();renderAll();toast('Client updated ✓');
 }
 function deleteFromDrawer(){
   if(!drawerClientId)return;
   const c=clients.find(x=>x.id===drawerClientId);if(!c)return;
   if(!confirm(`Remove ${c.name} from the client list?`))return;
+  syncDelete(c.id);
   clients=clients.filter(x=>x.id!==drawerClientId);
   saveClients();closeDrawer();renderAll();toast('Client removed');
 }
@@ -781,7 +874,7 @@ function saveNewClient(){
   if(!name){toast('Name is required','err');return;}
   const unit=document.getElementById('m-unit').value.trim();
   if(!unit){toast('Unit number is required','err');return;}
-  clients.push({
+  const newClient={
     id:nextId(),name,unit,
     project:document.getElementById('m-proj').value,
     floor:Number(document.getElementById('m-floor').value)||0,
@@ -798,12 +891,16 @@ function saveNewClient(){
     bank:document.getElementById('m-bank').value.trim(),
     status:'Active',
     notes:document.getElementById('m-notes').value.trim(),
-  });
+    createdAt:new Date().toISOString(),
+  };
+  clients.push(newClient);
+  syncInsert(newClient);
   saveClients();closeModal();renderAll();toast('Client added ✓');
 }
 function deleteClient(id){
   const c=clients.find(x=>x.id===id);if(!c)return;
   if(!confirm(`Remove ${c.name}?`))return;
+  syncDelete(id);
   clients=clients.filter(x=>x.id!==id);
   saveClients();renderAll();toast('Client removed');
 }
@@ -897,7 +994,14 @@ function exportCSV(){
 
 // ── INIT ──
 function renderAll(){updateStats();renderDashboard();if(currentView==='clients')renderClients();}
-renderAll();
+
+document.addEventListener('DOMContentLoaded',function(){
+  renderAll();
+  if(API_URL){
+    setApiStatus(null);
+    loadFromSheets();
+  }
+});
 </script>
 </body>
 </html>
