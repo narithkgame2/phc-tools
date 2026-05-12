@@ -38,6 +38,7 @@
 | `PHC_CEO_Business_Plan.html` | Director | /phc-tools/PHC_CEO_Business_Plan.html |
 | `PHC_System_Map.html` | Director | /phc-tools/PHC_System_Map.html |
 | `PHC_AppsScript.gs` | — | Google Apps Script (bound to PHC CRM sheet) |
+| `PHC_Bridge_Script.gs` | — | Google Apps Script (bound to the existing lead inquiry sheet) |
 
 ---
 
@@ -70,7 +71,9 @@ Every tool has an inline password gate (sessionStorage — clears when browser c
 `id, name, status, priority, category, due, assignees, memo, link, createdAt, updatedAt`
 
 **Leads** (used by Lead Tracker)
-`id, createdAt, updatedAt, fullName, nationality, phone, email, source, budget, timeline, interestedIn, stage, score, agent, notes, lastContact, followUpDate, followUpAction, activities`
+`id, createdAt, updatedAt, fullName, nationality, phone, telegram, email, source, budget, timeline, interestedIn, stage, score, agent, notes, lastContact, followUpDate, followUpAction, activities`
+
+> **Note:** `telegram` was added after the initial schema. Run `migrateLeadsSchema()` once in the Apps Script editor to add this column to an existing Leads sheet without losing data.
 
 **Clients** (used by Client Manager)
 `id, createdAt, updatedAt, name, nat, telegram, phone, project, unit, floor, bookingDate, spa, titleStatus, payDay, payAmount, payTotal, payMade, bank, status, notes`
@@ -120,6 +123,49 @@ await fetch(API_URL, {
 1. Open PHC CRM sheet → Extensions → Apps Script → paste full `PHC_AppsScript.gs`
 2. Run `initializeAll()` once — creates/formats all 4 tabs (Tasks, Leads, Clients, Deals)
 3. Deploy → New Deployment → Web App → Execute as Me · Anyone → copy URL
+
+---
+
+## BRIDGE SCRIPT — LEAD INQUIRY SHEET → PHC CRM
+
+**File:** `PHC_Bridge_Script.gs`  
+**Paste into:** Apps Script editor bound to the existing lead inquiry sheet  
+**Lead inquiry sheet ID:** `1-YtoUwEp-dQfMsl7AHbM1rbaG5rwUpPu9QheLEsyOKI`  
+**Lead inquiry sheet tab:** `PHC Lead Sheet` (24 columns)
+
+### Setup (one-time)
+1. Open lead inquiry sheet → Extensions → Apps Script → paste `PHC_Bridge_Script.gs` (replace all)
+2. Run `setupTrigger()` — installs onChange trigger; new rows auto-sync from then on
+3. Run `syncAllToPHC()` — backfills all existing rows (safe to re-run; updates by ID)
+
+### Column mapping (source → PHC CRM)
+| Source column | PHC CRM field | Transform |
+|---|---|---|
+| Full Name | `fullName` | direct |
+| WhatsApp | `phone` | direct |
+| Telegram | `telegram` | direct |
+| Email | `email` | direct |
+| Language | `nationality` | Japanese→Japanese, English→British, Khmer→Cambodian, etc. |
+| Source | `source` | keyword match (Facebook, Telegram, Website, etc.) |
+| Confirmed Budget / Budget Max / Min | `budget` | range string (Under $100K … $500K+) |
+| Timeline | `timeline` | keyword match → 0-3m / 3-6m / 6-12m / 12+m |
+| Stage | `stage` | New Inquiry→New Lead, Qualified/Proposal→Contacted, Site Visit→Viewing, Closed/Won→Closed |
+| Score | `score` | VIP→5, A→4, B→3, C→2 |
+| Agent Assigned | `agent` | direct |
+| Next Follow-up Date | `followUpDate` | date formatted yyyy-MM-dd |
+| Follow-up Status | `followUpAction` | direct |
+| Purpose + Area + Type + Notes + Chat URL + Listings | `notes` | concatenated with ` | ` |
+| Lead ID | `id` | prefixed with `B-` (e.g. `B-L-20260202-192549`) |
+
+### Key functions
+- `setupTrigger()` — installs onChange trigger (run once)
+- `syncAllToPHC()` — backfills all rows; uses GET to check existing IDs first
+- `onSheetChange(e)` — fires on INSERT_ROW; reads last row, maps, sends to PHC CRM API
+- `sendToPHC(lead, isNew)` — uses `UrlFetchApp` (server-side, no CORS issues); inserts or updates
+- `rowToLead(row)` — maps 24-column row to PHC CRM lead object
+
+### Throttling
+`syncAllToPHC()` sleeps 1 second per 10 rows to stay within Apps Script quotas.
 
 ---
 
@@ -360,7 +406,8 @@ Multiple/TBD
 | 6 | Client Manager | ✅ Done — payment schedules, SPA/title status, Sheets sync |
 | 7 | Convert Lead → Client | ✅ Done — button in Lead Tracker drawer when stage = Closed |
 | 8 | Password protection | ✅ Done — PHC2026 (agents) / Nick@PHC2026 (director) on all 15 tools |
-| 9 | Auto-mirror to NickCambodia | 🔲 Pending — Option B GitHub Actions mirror (user testing first) |
+| 9 | Lead inquiry bridge | ✅ Done — PHC_Bridge_Script.gs syncs existing lead sheet → PHC CRM Leads tab |
+| 10 | Auto-mirror to NickCambodia | 🔲 Pending — Option B GitHub Actions mirror (user testing first) |
 
 ---
 
@@ -373,6 +420,9 @@ Multiple/TBD
 5. **Deals tab missing** — Commission Tracker requires the Deals tab to exist in PHC CRM. If it's not there, run `initializeAll()` in Apps Script editor once.
 6. **NickCambodia fork is a snapshot** — Changes pushed to narithkgame2 do NOT auto-sync to the NickCambodia fork. Nick must go to github.com/NickCambodia/phc-tools and click "Sync fork" manually after each batch of updates.
 7. **Phone numbers in Sheets** — Phone numbers starting with `+` (e.g. `+81 90-...`) are interpreted as formulas. Set the phone columns to Plain Text format in the spreadsheet: Leads → col F, Clients → col G.
+8. **Leads `telegram` column migration** — If the Leads tab was created before the telegram field was added, run `migrateLeadsSchema()` in the Apps Script editor once. It inserts the column after `phone` without touching existing data.
+9. **Bridge script IDs** — Leads synced from the existing inquiry sheet get IDs prefixed with `B-` (e.g. `B-L-20260202-192549`). This allows `syncAllToPHC()` to safely update existing rows without creating duplicates.
+10. **Bridge script redeployment** — The bridge script is bound to the lead inquiry sheet and has no web app deployment. It runs server-side (no CORS). Just paste + run `setupTrigger()` once.
 
 ---
 

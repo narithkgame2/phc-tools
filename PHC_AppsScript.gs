@@ -19,7 +19,7 @@ const SHEET_HEADERS = {
   ],
   Leads: [
     'id', 'createdAt', 'updatedAt', 'fullName', 'nationality',
-    'phone', 'email', 'source', 'budget', 'timeline',
+    'phone', 'telegram', 'email', 'source', 'budget', 'timeline',
     'interestedIn', 'stage', 'score', 'agent', 'notes',
     'lastContact', 'followUpDate', 'followUpAction', 'activities'
   ],
@@ -199,3 +199,37 @@ function initializeAll() {
 
 // Alias so old initializeTasks() calls still work
 function initializeTasks() { initializeAll(); }
+
+// ── Schema migration ──────────────────────────────────────────────
+
+/**
+ * Run once after adding 'telegram' to Leads SHEET_HEADERS.
+ * Inserts the new column after 'phone' without destroying existing data.
+ */
+function migrateLeadsSchema() {
+  const ss    = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName('Leads');
+  if (!sheet) { Logger.log('❌ Leads sheet not found'); return; }
+
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  if (headers.includes('telegram')) {
+    Logger.log('✅ telegram column already exists — no migration needed');
+    return;
+  }
+
+  const phoneIdx = headers.indexOf('phone'); // 0-based
+  if (phoneIdx === -1) { Logger.log('❌ phone column not found'); return; }
+
+  // Insert blank column after phone (Sheets column = 1-based, so +2)
+  sheet.insertColumnAfter(phoneIdx + 1);
+  sheet.getRange(1, phoneIdx + 2).setValue('telegram');
+
+  // Re-apply header style to the new cell
+  sheet.getRange(1, phoneIdx + 2)
+    .setBackground('#083467')
+    .setFontColor('#ffffff')
+    .setFontWeight('bold')
+    .setFontSize(10);
+
+  Logger.log('✅ telegram column added to Leads at position ' + (phoneIdx + 2));
+}
