@@ -727,6 +727,7 @@ let tasks = [
 // ───── STORAGE KEYS ─────
 const LS_API   = 'phc_tasks_api';
 const LS_CACHE = 'phc_tasks_cache';
+const LS_DOCS  = 'phc_tasks_docs';
 
 // ───── STATE ─────
 const DEFAULT_API = 'https://script.google.com/macros/s/AKfycbzlAxcJqEI3upZ18sm-mj2Gxd3w2XSkD_YYqgkZ4kdw2_AV3V8f2B4qVcPESHZTOq2k8Q/exec';
@@ -742,7 +743,7 @@ let schedDragId   = null;
 let wasDragging   = false;
 let editTaskId    = null;
 const grpCollapsed = {};
-const docNotes     = {};
+const docNotes     = (()=>{ try{ return JSON.parse(localStorage.getItem(LS_DOCS)||'{}'); }catch(e){ return {}; } })();
 
 // ───── UTILS ─────
 function pd(s){ if(!s) return null; const d=new Date(s+'T00:00:00'); return isNaN(d)?null:d; }
@@ -859,9 +860,9 @@ function taskRowHTML(t){
     : `<div class="tr-link-btn no-link" title="No link">${linkSVG}</div>`;
 
   return `
-  <div class="col-grid task-row ${isDone?'is-done':''}" id="trow-${t.id}" onclick="openEditModal(${t.id})">
+  <div class="col-grid task-row ${isDone?'is-done':''}" id="trow-${t.id}" onclick="openEditModal('${t.id}')">
     <div class="tr-check-wrap">
-      <input type="checkbox" class="tr-check" ${isDone?'checked':''} onchange="toggleDone(${t.id},this)" onclick="event.stopPropagation()">
+      <input type="checkbox" class="tr-check" ${isDone?'checked':''} onchange="toggleDone('${t.id}',this)" onclick="event.stopPropagation()">
     </div>
     <div class="tr-name-cell">
       <div class="tr-color-dot" style="background:${statusBg}"></div>
@@ -873,12 +874,12 @@ function taskRowHTML(t){
       <div class="priority-icon" title="${pc.label}">${priFlag(pc.color)}</div>
     </div>
     <div class="tr-cell">
-      <button class="status-badge" style="background:${statusBg};color:${sc.color}" onclick="cycleStatus(${t.id},event)">${statusLabel}</button>
+      <button class="status-badge" style="background:${statusBg};color:${sc.color}" onclick="cycleStatus('${t.id}',event)">${statusLabel}</button>
     </div>
     <div class="tr-cell"><span class="tr-cat">${shortCat}</span></div>
     <div class="tr-link-cell">${linkBtn}</div>
     <div class="tr-more">
-      <button class="tr-more-btn" onclick="deleteTask(${t.id},event)" title="Delete">
+      <button class="tr-more-btn" onclick="deleteTask('${t.id}',event)" title="Delete">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
@@ -917,9 +918,9 @@ function renderBoard(){
           const dCls=isOverdue(t)?'overdue':isTodayDue(t)?'today':'';
           const hasLink=t.link&&t.link.trim();
           return `<div class="bc-card" draggable="true" data-tid="${t.id}"
-            ondragstart="onDragStart(event,${t.id})"
+            ondragstart="onDragStart(event,'${t.id}')"
             ondragend="onDragEnd(event)"
-            onclick="if(!wasDragging)openEditModal(${t.id})">
+            onclick="if(!wasDragging)openEditModal('${t.id}')">
             <div class="bc-card-name">${t.name}</div>
             <div class="bc-card-meta">
               <span style="font-size:10px;padding:2px 6px;border-radius:3px;background:${pc.color}22;color:${pc.color};font-weight:600">${pc.label}</span>
@@ -1312,9 +1313,9 @@ function renderSchedule(){
         return `<span class="sched-chip" draggable="true" data-tid="${t.id}"
           style="background:${bg}22;color:${bg};border-left:2px solid ${bg};cursor:grab"
           title="${t.name} — ${t.assignees.map(k=>MEMBERS[k]?.name||k).join(', ')}"
-          ondragstart="schedDragStart(event,${t.id})"
+          ondragstart="schedDragStart(event,'${t.id}')"
           ondragend="schedDragEnd(event)"
-          onclick="if(!schedDragId)openEditModal(${t.id})">${t.name}</span>`;
+          onclick="if(!schedDragId)openEditModal('${t.id}')">${t.name}</span>`;
       }).join('')}
       ${overflow>0?`<span class="sched-more">+${overflow} more</span>`:''}
       ${cell.thisMonth?`<div class="sched-add" title="Add task" onclick="openModalDate('${isoDate}')">+</div>`:''}
@@ -1339,6 +1340,7 @@ function saveDocContent(){
   const co=document.getElementById('doc-content');
   if(ti) docNotes[k].title=ti.value;
   if(co) docNotes[k].content=co.innerHTML;
+  try{ localStorage.setItem(LS_DOCS, JSON.stringify(docNotes)); }catch(e){}
 }
 function docFormat(cmd, val){
   const co=document.getElementById('doc-content');
