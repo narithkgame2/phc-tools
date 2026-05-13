@@ -120,16 +120,22 @@ function formatDate(val) {
   if (!val) return '';
   try {
     var d = (val instanceof Date) ? val : new Date(val);
-    if (isNaN(d.getTime())) return String(val);
+    // Reject invalid dates and Google Sheets epoch ghost dates (pre-2000)
+    if (isNaN(d.getTime()) || d.getFullYear() < 2000) return '';
     return Utilities.formatDate(d, Session.getScriptTimeZone(), 'yyyy-MM-dd');
   } catch (e) {
-    return String(val);
+    return '';
   }
 }
 
 // ── Row → PHC CRM Lead object ────────────────────────────────────
 
 function rowToLead(row) {
+  // Skip header rows (sheet has literal column name text instead of data)
+  var rawId   = String(row[COL.LEAD_ID]   || '').trim();
+  var rawName = String(row[COL.FULL_NAME] || '').trim();
+  if (rawId === 'Lead ID' || rawName === 'Full Name') return null;
+
   var confirmed = row[COL.CONFIRMED_BUDGET];
   var budgetMax = row[COL.BUDGET_MAX];
   var budgetMin = row[COL.BUDGET_MIN];
@@ -233,8 +239,10 @@ function onSheetChange(e) {
   var row = sheet.getRange(lastRow, 1, 1, 24).getValues()[0];
   if (!row[COL.FULL_NAME]) return; // blank row
 
-  var lead   = rowToLead(row);
-  var isNew  = !existsInPHC(lead.id);
+  var lead = rowToLead(row);
+  if (!lead) return; // header row
+
+  var isNew = !existsInPHC(lead.id);
 
   var ok = sendToPHC(lead, isNew);
   Logger.log('[onSheetChange] row ' + lastRow + ' → ' + (ok ? 'synced' : 'FAILED') + ' (id=' + lead.id + ')');
@@ -272,7 +280,9 @@ function syncAllToPHC() {
     var row = allData[i];
     if (!row[COL.FULL_NAME]) { skipped++; continue; } // blank row
 
-    var lead  = rowToLead(row);
+    var lead = rowToLead(row);
+    if (!lead) { skipped++; continue; } // header row
+
     var isNew = !existingIds[lead.id];
     var ok    = sendToPHC(lead, isNew);
 
