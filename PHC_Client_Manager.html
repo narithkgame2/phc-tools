@@ -346,11 +346,13 @@ a{text-decoration:none;color:inherit}
     </div>
     <select class="vt-sel" id="f-project" onchange="renderClients()">
       <option value="">All Projects</option>
-      <option>Time Square 9 (Gatsby)</option><option>Time Square 8</option>
-      <option>Time Square 10 (Otres)</option><option>Time Square 11 BKK3</option>
-      <option>J Tower 2</option><option>J Tower 3</option>
-      <option>Le Conde BKK1</option><option>Royal Platinum</option>
-      <option>Peninsula Private Residences</option><option>G.A.T.O Tower</option>
+      <option>Time Square 7</option><option>Time Square 8</option>
+      <option>Time Square 9</option><option>Time Square 10</option>
+      <option>Kingston Royale</option><option>Le Conde BKK1</option>
+      <option>J Tower 3</option><option>Odom Tower</option><option>Odom Living</option>
+      <option>UC88 Wyndham Garden</option><option>Diamond Bay Garden</option>
+      <option>Angkor Grace</option><option>LZ Sea View Premium</option>
+      <option>Picasso Sky Gemme</option><option>GATO Tower</option>
     </select>
     <select class="vt-sel" id="f-nat" onchange="renderClients()">
       <option value="">All Nationalities</option>
@@ -400,11 +402,13 @@ a{text-decoration:none;color:inherit}
           <div class="fg"><div class="fl">Project</div>
             <select class="fs" id="gen-project">
               <option value="">— Select project —</option>
-              <option>Time Square 9 (Gatsby)</option><option>Time Square 8</option>
-              <option>Time Square 10 (Otres)</option><option>Time Square 11 BKK3</option>
-              <option>J Tower 2</option><option>J Tower 3</option>
-              <option>Le Conde BKK1</option><option>Royal Platinum</option>
-              <option>Peninsula Private Residences</option><option>G.A.T.O Tower</option>
+              <option>Time Square 7</option><option>Time Square 8</option>
+              <option>Time Square 9</option><option>Time Square 10</option>
+              <option>Kingston Royale</option><option>Le Conde BKK1</option>
+              <option>J Tower 3</option><option>Odom Tower</option><option>Odom Living</option>
+              <option>UC88 Wyndham Garden</option><option>Diamond Bay Garden</option>
+              <option>Angkor Grace</option><option>LZ Sea View Premium</option>
+              <option>Picasso Sky Gemme</option><option>GATO Tower</option>
             </select>
           </div>
           <div class="fg"><div class="fl">Update Title</div><input class="fi" id="gen-title" placeholder="e.g. Structure now at Level 8"></div>
@@ -467,11 +471,13 @@ a{text-decoration:none;color:inherit}
         <div class="edit-grid">
           <div class="eg"><div class="el">Project</div>
             <select class="es" id="dr-proj">
-              <option>Time Square 9 (Gatsby)</option><option>Time Square 8</option>
-              <option>Time Square 10 (Otres)</option><option>Time Square 11 BKK3</option>
-              <option>J Tower 2</option><option>J Tower 3</option>
-              <option>Le Conde BKK1</option><option>Royal Platinum</option>
-              <option>Peninsula Private Residences</option><option>G.A.T.O Tower</option>
+              <option>Time Square 7</option><option>Time Square 8</option>
+              <option>Time Square 9</option><option>Time Square 10</option>
+              <option>Kingston Royale</option><option>Le Conde BKK1</option>
+              <option>J Tower 3</option><option>Odom Tower</option><option>Odom Living</option>
+              <option>UC88 Wyndham Garden</option><option>Diamond Bay Garden</option>
+              <option>Angkor Grace</option><option>LZ Sea View Premium</option>
+              <option>Picasso Sky Gemme</option><option>GATO Tower</option>
             </select>
           </div>
           <div class="eg"><div class="el">Unit</div><input class="ei" id="dr-unit" placeholder="12A"></div>
@@ -523,11 +529,13 @@ a{text-decoration:none;color:inherit}
         <div class="m-group full"><div class="m-lbl">Full Name *</div><input class="m-inp" id="m-name" placeholder="e.g. Kenji Tanaka"></div>
         <div class="m-group"><div class="m-lbl">Project *</div>
           <select class="m-sel" id="m-proj">
-            <option>Time Square 9 (Gatsby)</option><option>Time Square 8</option>
-            <option>Time Square 10 (Otres)</option><option>Time Square 11 BKK3</option>
-            <option>J Tower 2</option><option>J Tower 3</option>
-            <option>Le Conde BKK1</option><option>Royal Platinum</option>
-            <option>Peninsula Private Residences</option><option>G.A.T.O Tower</option>
+            <option>Time Square 7</option><option>Time Square 8</option>
+            <option>Time Square 9</option><option>Time Square 10</option>
+            <option>Kingston Royale</option><option>Le Conde BKK1</option>
+            <option>J Tower 3</option><option>Odom Tower</option><option>Odom Living</option>
+            <option>UC88 Wyndham Garden</option><option>Diamond Bay Garden</option>
+            <option>Angkor Grace</option><option>LZ Sea View Premium</option>
+            <option>Picasso Sky Gemme</option><option>GATO Tower</option>
           </select>
         </div>
         <div class="m-group"><div class="m-lbl">Unit *</div><input class="m-inp" id="m-unit" placeholder="12A"></div>
@@ -636,17 +644,17 @@ function saveApiUrl(){
   loadFromSheets();
 }
 
-const PROJ_COLORS={'Time Square 9 (Gatsby)':'#7c5cbf','Time Square 8':'#3b82f6','Time Square 10 (Otres)':'#10b981','Time Square 11 BKK3':'#ef4444','J Tower 2':'#f97316','J Tower 3':'#e67e22','Le Conde BKK1':'#8b5cf6','Royal Platinum':'#f9a825','Peninsula Private Residences':'#06b6d4','G.A.T.O Tower':'#84cc16'};
+const PROJ_COLORS={'Time Square 7':'#c084fc','Time Square 8':'#3b82f6','Time Square 9':'#7c5cbf','Time Square 10':'#10b981','Kingston Royale':'#f9a825','Le Conde BKK1':'#8b5cf6','J Tower 3':'#e67e22','Odom Tower':'#ef4444','Odom Living':'#f97316','UC88 Wyndham Garden':'#06b6d4','Diamond Bay Garden':'#84cc16','Angkor Grace':'#14b8a6','LZ Sea View Premium':'#0ea5e9','Picasso Sky Gemme':'#ec4899','GATO Tower':'#a3e635'};
 const PROJECTS=Object.keys(PROJ_COLORS);
 const NATS={JP:{label:'Japanese',flag:'🇯🇵'},DE:{label:'German/European',flag:'🇩🇪'},EN:{label:'English/Western',flag:'🇬🇧'},RU:{label:'Russian',flag:'🇷🇺'},KH:{label:'Cambodian',flag:'🇰🇭'},CN:{label:'Chinese',flag:'🇨🇳'}};
 
 const SAMPLE=[
-  {id:'C1',name:'Kenji Tanaka',project:'Time Square 9 (Gatsby)',unit:'08A',floor:8,nat:'JP',telegram:'@kenjitanaka',phone:'',bookingDate:'2025-11-01',spa:true,titleStatus:'Pending',payDay:7,payAmount:1715,payTotal:45,payMade:6,bank:'ABA Bank — Acc 001234567 — MegaKim Realty',status:'Active',notes:'Japanese investor, English OK'},
-  {id:'C2',name:'Sarah Mitchell',project:'Time Square 10 (Otres)',unit:'15B',floor:15,nat:'EN',telegram:'@sarahmphc',phone:'',bookingDate:'2025-12-15',spa:true,titleStatus:'Pending',payDay:15,payAmount:1910,payTotal:45,payMade:5,bank:'ABA Bank — Acc 001234568 — MegaKim Realty',status:'Active',notes:'UK investor'},
+  {id:'C1',name:'Kenji Tanaka',project:'Time Square 9',unit:'08A',floor:8,nat:'JP',telegram:'@kenjitanaka',phone:'',bookingDate:'2025-11-01',spa:true,titleStatus:'Pending',payDay:7,payAmount:1715,payTotal:45,payMade:6,bank:'ABA Bank — Acc 001234567 — MegaKim Realty',status:'Active',notes:'Japanese investor, English OK'},
+  {id:'C2',name:'Sarah Mitchell',project:'Time Square 10',unit:'15B',floor:15,nat:'EN',telegram:'@sarahmphc',phone:'',bookingDate:'2025-12-15',spa:true,titleStatus:'Pending',payDay:15,payAmount:1910,payTotal:45,payMade:5,bank:'ABA Bank — Acc 001234568 — MegaKim Realty',status:'Active',notes:'UK investor'},
   {id:'C3',name:'Hans Mueller',project:'Le Conde BKK1',unit:'03A',floor:3,nat:'DE',telegram:'@hansm',phone:'',bookingDate:'2026-02-01',spa:false,titleStatus:'Pending',payDay:12,payAmount:1800,payTotal:45,payMade:3,bank:'ABA Bank — Acc 001234570 — Le Conde Dev',status:'Active',notes:'German investor, SPA pending'},
-  {id:'C4',name:'Sopheap Chan',project:'Royal Platinum',unit:'07B',floor:7,nat:'KH',telegram:'@sopheapphc',phone:'',bookingDate:'2025-08-01',spa:true,titleStatus:'Issued',payDay:5,payAmount:1596,payTotal:45,payMade:9,bank:'ABA Bank — Acc 001234571 — Royal Dev',status:'Active',notes:'Local Cambodian buyer'},
+  {id:'C4',name:'Sopheap Chan',project:'Kingston Royale',unit:'07B',floor:7,nat:'KH',telegram:'@sopheapphc',phone:'',bookingDate:'2025-08-01',spa:true,titleStatus:'Issued',payDay:5,payAmount:1596,payTotal:45,payMade:9,bank:'ABA Bank — Acc 001234571 — Kingston Dev',status:'Active',notes:'Local Cambodian buyer'},
   {id:'C5',name:'Yuki Sato',project:'J Tower 3',unit:'10B',floor:10,nat:'JP',telegram:'@yukisato',phone:'',bookingDate:'2025-12-01',spa:true,titleStatus:'Pending',payDay:1,payAmount:1715,payTotal:45,payMade:5,bank:'ABA Bank — Acc 001234572 — J Tower Dev',status:'Active',notes:'Japanese investor'},
-  {id:'C6',name:'Emma Thompson',project:'Peninsula Private Residences',unit:'20A',floor:20,nat:'EN',telegram:'@emmaphc',phone:'',bookingDate:'2026-01-20',spa:true,titleStatus:'Pending',payDay:20,payAmount:2200,payTotal:45,payMade:3,bank:'ABA Bank — Acc 001234573 — Peninsula Dev',status:'Active',notes:'UK/Australian investor'},
+  {id:'C6',name:'Emma Thompson',project:'UC88 Wyndham Garden',unit:'20A',floor:20,nat:'EN',telegram:'@emmaphc',phone:'',bookingDate:'2026-01-20',spa:true,titleStatus:'Pending',payDay:20,payAmount:2200,payTotal:45,payMade:3,bank:'ABA Bank — Acc 001234573 — UC88 Dev',status:'Active',notes:'UK/Australian investor'},
 ];
 
 const LS_KEY='phc_clients_v2';

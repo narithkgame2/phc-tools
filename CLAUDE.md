@@ -369,16 +369,21 @@ Released:    bg #fee2e2  text #991b1b
 
 Dropdown options used across all tools:
 ```
-Time Square 9 (Gatsby)
+Time Square 7
 Time Square 8
-Time Square 10 (Otres)
-Time Square 11 BKK3
-J Tower 2
-J Tower 3
+Time Square 9
+Time Square 10
+Kingston Royale
 Le Conde BKK1
-Royal Platinum
-Peninsula Private Residences
-G.A.T.O Tower
+J Tower 3
+Odom Tower
+Odom Living
+UC88 Wyndham Garden
+Diamond Bay Garden
+Angkor Grace
+LZ Sea View Premium
+Picasso Sky Gemme
+GATO Tower
 Multiple/TBD
 ```
 

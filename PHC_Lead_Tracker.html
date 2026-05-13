@@ -516,10 +516,12 @@ select.vt-sel{padding:4px 8px;border:1px solid var(--border);border-radius:6px;b
         </div>
         <div class="m-group"><label class="m-lbl">Interested In</label>
           <select class="m-sel" id="mProject"><option value="">-</option>
-            <option>Time Square 9 (Gatsby)</option><option>Time Square 8</option><option>Time Square 10 (Otres)</option>
-            <option>Time Square 11 BKK3</option><option>J Tower 2</option><option>J Tower 3</option>
-            <option>Le Conde BKK1</option><option>Royal Platinum</option><option>Peninsula</option>
-            <option>G.A.T.O Tower</option><option>Multiple / TBD</option>
+            <option>Time Square 7</option><option>Time Square 8</option><option>Time Square 9</option>
+            <option>Time Square 10</option><option>Kingston Royale</option><option>Le Conde BKK1</option>
+            <option>J Tower 3</option><option>Odom Tower</option><option>Odom Living</option>
+            <option>UC88 Wyndham Garden</option><option>Diamond Bay Garden</option><option>Angkor Grace</option>
+            <option>LZ Sea View Premium</option><option>Picasso Sky Gemme</option>
+            <option>GATO Tower</option><option>Multiple/TBD</option>
           </select>
         </div>
         <div class="m-group"><label class="m-lbl">Source</label>
@@ -677,10 +679,10 @@ async function persistLead(lead,isNew){
 function sampleLeads(){
   return [
     {id:'s1',fullName:'Tanaka Hiroshi',nationality:'Japanese',phone:'+81 90-1234-5678',email:'tanaka@email.jp',budget:'$200K-$300K',timeline:'3-6 months',interestedIn:'J Tower 3',source:'LINE',stage:'Contacted',agent:'Nick',followUpDate:today(),followUpAction:'Send J Tower 3 brochure',notes:'Low risk tolerance. Needs strata title confirmation.',activities:[{type:'Call',note:'Initial call - interested in freehold condos near BKK1',ts:new Date(Date.now()-86400000*2).toISOString()}],createdAt:new Date().toISOString()},
-    {id:'s2',fullName:'Klaus Muller',nationality:'German',phone:'+49 151 2345678',email:'k.muller@gmail.com',budget:'$300K-$500K',timeline:'6-12 months',interestedIn:'Peninsula',source:'LinkedIn',stage:'Viewing',agent:'Reza',followUpDate:'',followUpAction:'',notes:'Retirement income focus. Wants 7%+ net yield.',activities:[],createdAt:new Date().toISOString()},
-    {id:'s3',fullName:'Sophea Keo',nationality:'Cambodian',phone:'012 345 678',email:'',budget:'$100K-$200K',timeline:'0-3 months',interestedIn:'Time Square 11 BKK3',source:'Facebook',stage:'New Lead',agent:'Monika',followUpDate:'',followUpAction:'',notes:'Family purchase. School proximity important.',activities:[],createdAt:new Date().toISOString()},
-    {id:'s4',fullName:'Yamamoto Keiko',nationality:'Japanese',phone:'+81 80-9876-5432',email:'keiko.y@yahoo.jp',budget:'$500K+',timeline:'0-3 months',interestedIn:'J Tower 2',source:'LINE',stage:'Negotiating',agent:'Nick',followUpDate:'',followUpAction:'',notes:'Cash buyer. VIP referral from Osaka broker.',activities:[],createdAt:new Date().toISOString()},
-    {id:'s5',fullName:'Hans Weber',nationality:'German',phone:'+49 170 8765432',email:'hans.w@web.de',budget:'$200K-$300K',timeline:'3-6 months',interestedIn:'G.A.T.O Tower',source:'Facebook',stage:'New Lead',agent:'Monika',followUpDate:'',followUpAction:'',notes:'',activities:[],createdAt:new Date().toISOString()}
+    {id:'s2',fullName:'Klaus Muller',nationality:'German',phone:'+49 151 2345678',email:'k.muller@gmail.com',budget:'$300K-$500K',timeline:'6-12 months',interestedIn:'Odom Tower',source:'LinkedIn',stage:'Viewing',agent:'Reza',followUpDate:'',followUpAction:'',notes:'Retirement income focus. Wants 7%+ net yield.',activities:[],createdAt:new Date().toISOString()},
+    {id:'s3',fullName:'Sophea Keo',nationality:'Cambodian',phone:'012 345 678',email:'',budget:'$100K-$200K',timeline:'0-3 months',interestedIn:'Kingston Royale',source:'Facebook',stage:'New Lead',agent:'Monika',followUpDate:'',followUpAction:'',notes:'Family purchase. School proximity important.',activities:[],createdAt:new Date().toISOString()},
+    {id:'s4',fullName:'Yamamoto Keiko',nationality:'Japanese',phone:'+81 80-9876-5432',email:'keiko.y@yahoo.jp',budget:'$500K+',timeline:'0-3 months',interestedIn:'J Tower 3',source:'LINE',stage:'Negotiating',agent:'Nick',followUpDate:'',followUpAction:'',notes:'Cash buyer. VIP referral from Osaka broker.',activities:[],createdAt:new Date().toISOString()},
+    {id:'s5',fullName:'Hans Weber',nationality:'German',phone:'+49 170 8765432',email:'hans.w@web.de',budget:'$200K-$300K',timeline:'3-6 months',interestedIn:'GATO Tower',source:'Facebook',stage:'New Lead',agent:'Monika',followUpDate:'',followUpAction:'',notes:'',activities:[],createdAt:new Date().toISOString()}
   ];
 }
 
@@ -979,7 +981,7 @@ function renderDrawerDetails(l){
         '<div class="edit-group"><label class="edit-lbl">Email</label><input class="edit-inp" id="eEmail" value="'+escAttr(l.email||'')+'"/></div>'+
         '<div class="edit-group"><label class="edit-lbl">Budget</label><select class="edit-sel" id="eBudget"><option value="">-</option>'+['Under $100K','$100K-$200K','$200K-$300K','$300K-$500K','$500K+'].map(function(b){return '<option'+(l.budget===b?' selected':'')+'>'+b+'</option>';}).join('')+'</select></div>'+
         '<div class="edit-group"><label class="edit-lbl">Timeline</label><select class="edit-sel" id="eTimeline"><option value="">-</option>'+['0-3 months','3-6 months','6-12 months','12+ months'].map(function(t){return '<option'+(l.timeline===t?' selected':'')+'>'+t+'</option>';}).join('')+'</select></div>'+
-        '<div class="edit-group"><label class="edit-lbl">Project</label><select class="edit-sel" id="eProject"><option value="">-</option>'+['Time Square 9 (Gatsby)','Time Square 8','Time Square 10 (Otres)','Time Square 11 BKK3','J Tower 2','J Tower 3','Le Conde BKK1','Royal Platinum','Peninsula','G.A.T.O Tower','Multiple / TBD'].map(function(p){return '<option'+(l.interestedIn===p?' selected':'')+'>'+p+'</option>';}).join('')+'</select></div>'+
+        '<div class="edit-group"><label class="edit-lbl">Project</label><select class="edit-sel" id="eProject"><option value="">-</option>'+['Time Square 7','Time Square 8','Time Square 9','Time Square 10','Kingston Royale','Le Conde BKK1','J Tower 3','Odom Tower','Odom Living','UC88 Wyndham Garden','Diamond Bay Garden','Angkor Grace','LZ Sea View Premium','Picasso Sky Gemme','GATO Tower','Multiple/TBD'].map(function(p){return '<option'+(l.interestedIn===p?' selected':'')+'>'+p+'</option>';}).join('')+'</select></div>'+
         '<div class="edit-group"><label class="edit-lbl">Agent</label><select class="edit-sel" id="eAgent">'+['Nick','Monika','Reza'].map(function(a){return '<option'+(l.agent===a?' selected':'')+'>'+a+'</option>';}).join('')+'</select></div>'+
         '<div class="edit-group full"><label class="edit-lbl">Notes</label><textarea class="edit-ta" id="eNotes">'+escHtml(l.notes||'')+'</textarea></div>'+
       '</div>'+
