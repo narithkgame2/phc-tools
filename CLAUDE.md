@@ -1,4 +1,6 @@
-# CLAUDE.md — Property Hub Cambodia (PHC) Internal OS
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## PROJECT OVERVIEW
 
@@ -9,11 +11,13 @@
 **Primary live hub:** https://narithkgame2.github.io/phc-tools/  
 **Mirror repo:** NickCambodia/phc-tools (manual fork — sync via "Sync fork" on GitHub when ready)  
 **Mirror live hub:** https://nickcambodia.github.io/phc-tools/  
-**Local folder:** /Users/narithk/Desktop/phc-tools/  
 **Team:** Nick (CEO), Monika (Co-Founder, Japanese market), Reza (Co-Founder, European market)
 
 **Goal:** $0-cost internal OS — Pipedrive-quality UX without subscriptions.  
 **Rule:** Every tool is a single self-contained .html file. No frameworks. No build step. No dependencies except Google Fonts CDN.
+
+**Read-write tools** (fetch + write to Google Sheets): Task Manager, Lead Tracker, Client Manager, Commission Tracker, CEO Dashboard  
+**Read-only tools** (no Sheets writes, static content): Agent Training, Proposal Generator, Message Builder, Investment Explorer, Lead Magnet, Market Intelligence Cheat Sheet, Setup Tracker, CEO Business Plan, System Map
 
 ---
 
