@@ -130,7 +130,17 @@ function insertRow(sheetName, data) {
     if (typeof v === 'object') return JSON.stringify(v); // arrays → JSON string
     return v;
   });
+  const nextRow = sheet.getLastRow() + 1;
   sheet.appendRow(row);
+
+  // Force phone column to text format — prevents +country codes being parsed as formulas
+  const phoneIdx = headers.indexOf('phone');
+  if (phoneIdx !== -1) {
+    const phoneCell = sheet.getRange(nextRow, phoneIdx + 1);
+    phoneCell.setNumberFormat('@STRING@');
+    phoneCell.setValue(String(row[phoneIdx]));
+  }
+
   return { success: true, id: data.id };
 }
 
