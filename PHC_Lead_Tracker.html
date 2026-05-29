@@ -163,7 +163,7 @@ select.vt-sel{padding:4px 8px;border:1px solid var(--border);border-radius:6px;b
 .pf-normal{background:var(--normal-pale);color:var(--normal-t)}
 .pf-low{background:var(--low-pale);color:var(--low-t)}
 .k-card-project{font-size:11px;color:var(--text-s);margin-bottom:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.k-card-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:7px}
+.k-card-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:7px;min-height:20px}
 .k-tag{font-size:9px;padding:2px 7px;border-radius:10px;background:var(--bg);border:1px solid var(--border);color:var(--text-s);font-weight:500}
 .k-card-footer{display:flex;align-items:center;justify-content:space-between;gap:4px}
 .k-due{display:flex;align-items:center;gap:4px;font-size:10px;padding:2px 7px;border-radius:8px;font-weight:500}
@@ -797,7 +797,7 @@ function renderCard(l){
         '<div class="k-card-name">'+escHtml(l.fullName||'Unnamed')+'</div>'+
         '<div class="k-priority-flag '+p.cls+'">'+p.label+'</div>'+
       '</div>'+
-      (l.interestedIn?'<div class="k-card-project">'+escHtml(l.interestedIn)+'</div>':'')+
+      '<div class="k-card-project">'+(l.interestedIn?escHtml(l.interestedIn):'&nbsp;')+'</div>'+
       '<div class="k-card-tags">'+
         (l.nationality?'<span class="k-tag">'+escHtml(l.nationality)+'</span>':'')+
         (l.budget?'<span class="k-tag">'+escHtml(l.budget)+'</span>':'')+
