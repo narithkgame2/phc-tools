@@ -134,9 +134,9 @@ select.vt-sel{padding:4px 8px;border:1px solid var(--border);border-radius:6px;b
 .overdue-bar strong{font-weight:600}
 
 /* ── BOARD ── */
-.board-wrap{flex:1;overflow-x:auto;overflow-y:hidden;padding:14px 16px;display:flex;align-items:flex-start;gap:10px;background:var(--bg)}
+.board-wrap{flex:1;overflow-x:auto;overflow-y:hidden;padding:14px 16px;display:flex;align-items:stretch;gap:10px;background:var(--bg)}
 .board-wrap.hidden{display:none}
-.k-col{width:272px;flex-shrink:0;display:flex;flex-direction:column;max-height:100%;background:var(--bg)}
+.k-col{width:272px;flex-shrink:0;display:flex;flex-direction:column;min-height:0;background:var(--bg)}
 .k-col-hdr{display:flex;align-items:center;gap:7px;padding:0 4px 8px;flex-shrink:0}
 .k-col-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
 .k-col-name{font-size:12px;font-weight:600;color:var(--text);flex:1}
