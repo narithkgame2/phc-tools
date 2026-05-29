@@ -344,7 +344,7 @@ select.vt-sel{padding:4px 8px;border:1px solid var(--border);border-radius:6px;b
       <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 2,7 12,12 22,7"/><polyline points="2,17 12,22 22,17"/><polyline points="2,12 12,17 22,12"/></svg></span>
       <span class="sb-label" style="flex:1;font-size:12px;font-weight:500;color:var(--sb-text-s)">PHC Leads</span>
     </div>
-    <div class="sb-space-items" id="spaceItems">
+    <div class="sb-space-items" id="spaceItems" style="max-height:400px">
       <a class="sb-item sb-sub active" id="sbAll" onclick="sbSetFilter(null,'All Leads',this)">
         <div class="stage-dot" style="background:#6b7280;border-radius:2px;width:8px;height:8px;flex-shrink:0"></div>
         <span class="sb-label">All Leads</span>
@@ -485,7 +485,7 @@ select.vt-sel{padding:4px 8px;border:1px solid var(--border);border-radius:6px;b
 <div class="modal-ov hidden" id="modalOv">
   <div class="modal">
     <div class="modal-hdr">
-      <h2>New Lead</h2>
+      <h2 id="modalTitle">New Lead</h2>
       <button class="modal-x" onclick="closeModal()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <div class="modal-body">
@@ -564,7 +564,7 @@ const STAGES = [
   {k:'Contacted',   bg:'#fef3c7',t:'#92400e',dot:'#f59e0b'},
   {k:'Viewing',     bg:'#d1fae5',t:'#065f46',dot:'#10b981'},
   {k:'Negotiating', bg:'#ede9fe',t:'#4c1d95',dot:'#8b5cf6'},
-  {k:'Closed',      bg:'#e0f2fe',t:'#0369a1',dot:'#0ea5e9'},
+  {k:'Closed',      bg:'#083467',t:'#cc9d4d',dot:'#cc9d4d'},
   {k:'Hold',        bg:'#f1f5f9',t:'#475569',dot:'#94a3b8'},
   {k:'Released',    bg:'#fee2e2',t:'#991b1b',dot:'#f87171'}
 ];
@@ -828,7 +828,7 @@ function renderList(){
       '<td><span class="l-status"><div class="l-status-dot" style="background:'+st.dot+'"></div>'+l.stage+'</span></td>'+
       '<td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px">'+escHtml(l.interestedIn||'-')+'</td>'+
       '<td style="font-size:11px">'+escHtml(l.budget||'-')+'</td>'+
-      '<td><span class="l-fu '+fu.cls+'">'+fu.txt+'</span></td>'+
+      '<td>'+(fu.cls!=='kd-none'?'<span class="l-fu '+fu.cls+'">'+fu.txt+'</span>':'<span style="color:var(--text-m);font-size:11px">—</span>')+'</td>'+
       '<td><div style="display:flex;align-items:center;gap:5px"><div class="avatar-sm" style="background:'+av.bg+'">'+av.initials+'</div><span style="font-size:11px">'+escHtml(l.agent||'-')+'</span></div></td>'+
     '</tr>';
   }).join('');
@@ -890,8 +890,8 @@ function renderDashboard(){
 
 // CSV
 function exportCSV(){
-  var fields=['fullName','nationality','phone','email','budget','timeline','interestedIn','source','stage','priority','agent','followUpDate','followUpAction','notes','createdAt'];
-  var headers=['Name','Nationality','Phone','Email','Budget','Timeline','Project','Source','Stage','Priority','Agent','Follow-up Date','Follow-up Action','Notes','Created At'];
+  var fields=['fullName','nationality','phone','telegram','email','budget','timeline','interestedIn','source','stage','priority','agent','followUpDate','followUpAction','notes','createdAt'];
+  var headers=['Name','Nationality','Phone','Telegram','Email','Budget','Timeline','Project','Source','Stage','Priority','Agent','Follow-up Date','Follow-up Action','Notes','Created At'];
   var rows=[headers].concat(leads.map(function(l){
     return fields.map(function(f){
       var v=f==='priority'?priority(l).label:(l[f]||'');
@@ -979,6 +979,7 @@ function renderDrawerDetails(l){
         '<div class="edit-group"><label class="edit-lbl">Timeline</label><select class="edit-sel" id="eTimeline"><option value="">-</option>'+['0-3 months','3-6 months','6-12 months','12+ months'].map(function(t){return '<option'+(l.timeline===t?' selected':'')+'>'+t+'</option>';}).join('')+'</select></div>'+
         '<div class="edit-group"><label class="edit-lbl">Project</label><select class="edit-sel" id="eProject"><option value="">-</option>'+['Time Square 7','Time Square 8','Time Square 9','Time Square 10','Kingston Royale','Le Conde BKK1','J Tower 3','Odom Tower','Odom Living','UC88 Wyndham Garden','Diamond Bay Garden','Angkor Grace','LZ Sea View Premium','Picasso Sky Gemme','GATO Tower','Multiple/TBD'].map(function(p){return '<option'+(l.interestedIn===p?' selected':'')+'>'+p+'</option>';}).join('')+'</select></div>'+
         '<div class="edit-group"><label class="edit-lbl">Agent</label><select class="edit-sel" id="eAgent">'+['Nick','Monika','Reza'].map(function(a){return '<option'+(l.agent===a?' selected':'')+'>'+a+'</option>';}).join('')+'</select></div>'+
+        '<div class="edit-group"><label class="edit-lbl">Source</label><select class="edit-sel" id="eSource"><option value="">-</option>'+['WhatsApp','Facebook','Instagram','Telegram','LINE','REAKH','PHC Website','Referral','Walk-in','TikTok','LinkedIn'].map(function(s){return '<option'+(l.source===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select></div>'+
         '<div class="edit-group full"><label class="edit-lbl">Notes</label><textarea class="edit-ta" id="eNotes">'+escHtml(l.notes||'')+'</textarea></div>'+
       '</div>'+
     '</div>';
@@ -1065,6 +1066,7 @@ async function saveLead(){
   l.timeline=document.getElementById('eTimeline').value;
   l.interestedIn=document.getElementById('eProject').value;
   l.agent=document.getElementById('eAgent').value;
+  l.source=document.getElementById('eSource').value;
   l.notes=document.getElementById('eNotes').value.trim();
   await persistLead(l,false);
   closeDrawer();
@@ -1091,6 +1093,8 @@ function convertToClient(){
     name:l.fullName||'',
     nat:natMap[l.nationality]||'',
     phone:l.phone||'',
+    telegram:l.telegram||'',
+    email:l.email||'',
     project:l.interestedIn||'',
     notes:l.notes||'',
     leadId:l.id
@@ -1105,8 +1109,10 @@ function openAddForStage(stage){
   ['mNat','mBudget','mTimeline','mProject','mSource'].forEach(function(id){document.getElementById(id).value='';});
   document.getElementById('mFU').value='';
   document.getElementById('mAgent').value='Nick';
+  document.getElementById('modalTitle').textContent='New Lead'+(stage&&stage!=='New Lead'?' → '+stage:'');
   document.getElementById('modalOv').classList.remove('hidden');
   document.getElementById('modalOv').dataset.stage=stage;
+  setTimeout(function(){document.getElementById('mName').focus();},80);
 }
 function closeModal(){document.getElementById('modalOv').classList.add('hidden');}
 async function addLead(){
