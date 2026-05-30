@@ -496,7 +496,7 @@ select.vt-sel{padding:4px 8px;border:1px solid var(--border);border-radius:6px;b
       <div class="m-grid">
         <div class="m-group"><label class="m-lbl">Full Name *</label><input class="m-inp" id="mName" placeholder="e.g. Tanaka Hiroshi"/></div>
         <div class="m-group"><label class="m-lbl">Nationality</label>
-          <select class="m-sel" id="mNat"><option value="">-</option>
+          <select class="m-sel" id="mNat" onchange="autoAssignFromModal()"><option value="">-</option>
             <option>Japanese</option><option>German</option><option>Cambodian</option>
             <option>Russian</option><option>Chinese</option><option>Singaporean</option><option>British</option><option>Other</option>
           </select>
@@ -589,6 +589,27 @@ const AGENT_AV = {
   Monika:{bg:'var(--av-monika)',initials:'MO'},
   Reza:  {bg:'var(--av-reza)',  initials:'RE'}
 };
+
+// AUTO-ASSIGN
+function autoAssign(nationality){
+  // Definitive routing
+  if(nationality==='Japanese') return 'Nick';
+  if(nationality==='Cambodian'||nationality==='Chinese') return 'Monika';
+  if(nationality==='German'||nationality==='Russian') return 'Reza';
+  // British / Singaporean / Other / blank → least loaded between Nick & Monika
+  var active=leads.filter(function(l){return l.stage!=='Closed'&&l.stage!=='Released';});
+  function cnt(a){return active.filter(function(l){return l.agent===a;}).length;}
+  return cnt('Nick')<=cnt('Monika')?'Nick':'Monika';
+}
+function autoAssignFromModal(){
+  var nat=document.getElementById('mNat').value;
+  document.getElementById('mAgent').value=autoAssign(nat);
+}
+function autoAssignFromDrawer(){
+  var nat=document.getElementById('eNat').value;
+  var el=document.getElementById('eAgent');
+  if(el) el.value=autoAssign(nat);
+}
 
 // SCORING
 const NS = {Japanese:5,German:4,Singaporean:4,British:3,Cambodian:3,Russian:3,Chinese:3,Other:2};
@@ -970,7 +991,7 @@ function renderDrawerDetails(l){
       '<div class="dr-section-title">Client Details</div>'+
       '<div class="edit-grid">'+
         '<div class="edit-group"><label class="edit-lbl">Full Name</label><input class="edit-inp" id="eFullName" value="'+escAttr(l.fullName||'')+'"/></div>'+
-        '<div class="edit-group"><label class="edit-lbl">Nationality</label><select class="edit-sel" id="eNat"><option value="">-</option>'+['Japanese','German','Cambodian','Russian','Chinese','Singaporean','British','Other'].map(function(n){return '<option'+(l.nationality===n?' selected':'')+'>'+n+'</option>';}).join('')+'</select></div>'+
+        '<div class="edit-group"><label class="edit-lbl">Nationality</label><select class="edit-sel" id="eNat" onchange="autoAssignFromDrawer()"><option value="">-</option>'+['Japanese','German','Cambodian','Russian','Chinese','Singaporean','British','Other'].map(function(n){return '<option'+(l.nationality===n?' selected':'')+'>'+n+'</option>';}).join('')+'</select></div>'+
         '<div class="edit-group"><label class="edit-lbl">Phone</label><input class="edit-inp" id="ePhone" value="'+escAttr(l.phone||'')+'"/></div>'+
         '<div class="edit-group"><label class="edit-lbl">Telegram</label><input class="edit-inp" id="eTelegram" value="'+escAttr(l.telegram||'')+'"/></div>'+
         '<div class="edit-group"><label class="edit-lbl">Email</label><input class="edit-inp" id="eEmail" value="'+escAttr(l.email||'')+'"/></div>'+
@@ -1120,7 +1141,7 @@ function openAddForStage(stage){
   ['mName','mPhone','mTelegram','mEmail','mNotes'].forEach(function(id){document.getElementById(id).value='';});
   ['mNat','mBudget','mTimeline','mProject','mSource'].forEach(function(id){document.getElementById(id).value='';});
   document.getElementById('mFU').value='';
-  document.getElementById('mAgent').value='Nick';
+  document.getElementById('mAgent').value=autoAssign('');
   document.getElementById('modalTitle').textContent='New Lead'+(stage&&stage!=='New Lead'?' → '+stage:'');
   document.getElementById('modalOv').classList.remove('hidden');
   document.getElementById('modalOv').dataset.stage=stage;
