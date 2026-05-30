@@ -501,7 +501,7 @@ select.vt-sel{padding:4px 8px;border:1px solid var(--border);border-radius:6px;b
             <option>Russian</option><option>Chinese</option><option>Singaporean</option><option>British</option><option>Other</option>
           </select>
         </div>
-        <div class="m-group"><label class="m-lbl">Phone / WhatsApp</label><input class="m-inp" id="mPhone" placeholder="+855 xx xxx xxx"/></div>
+        <div class="m-group"><label class="m-lbl">Phone / WhatsApp</label><input class="m-inp" id="mPhone" placeholder="+855 xx xxx xxx" oninput="detectNatFromPhone()"/></div>
         <div class="m-group"><label class="m-lbl">Telegram</label><input class="m-inp" id="mTelegram" placeholder="@username or number"/></div>
         <div class="m-group"><label class="m-lbl">Email</label><input class="m-inp" id="mEmail" type="email"/></div>
         <div class="m-group"><label class="m-lbl">Budget</label>
@@ -589,6 +589,38 @@ const AGENT_AV = {
   Monika:{bg:'var(--av-monika)',initials:'MO'},
   Reza:  {bg:'var(--av-reza)',  initials:'RE'}
 };
+
+// PHONE → NATIONALITY DETECTION
+const PHONE_NAT = {
+  '+855':'Cambodian',  // Cambodia
+  '+81':'Japanese',    // Japan
+  '+49':'German',      // Germany
+  '+7':'Russian',      // Russia / Kazakhstan (PHC context: Russian)
+  '+886':'Chinese',    // Taiwan
+  '+852':'Chinese',    // Hong Kong
+  '+86':'Chinese',     // China mainland
+  '+65':'Singaporean', // Singapore
+  '+44':'British',     // UK
+};
+function natFromPhone(phone){
+  if(!phone) return '';
+  var p=phone.replace(/[\s\-\(\)\.]/g,'');
+  if(!p.startsWith('+')) return '';
+  // Sort longest prefix first so +855 beats +8, +852 beats +86 etc.
+  var codes=Object.keys(PHONE_NAT).sort(function(a,b){return b.length-a.length;});
+  for(var i=0;i<codes.length;i++){if(p.startsWith(codes[i]))return PHONE_NAT[codes[i]];}
+  return '';
+}
+function detectNatFromPhone(){
+  var phone=document.getElementById('mPhone').value.trim();
+  var detected=natFromPhone(phone);
+  if(!detected) return;
+  var natEl=document.getElementById('mNat');
+  if(natEl.value) return; // don't override a manually chosen nationality
+  natEl.value=detected;
+  autoAssignFromModal();
+  toast('Nationality detected: '+detected);
+}
 
 // AUTO-ASSIGN
 function autoAssign(nationality){
