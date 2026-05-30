@@ -10,13 +10,13 @@
     />
     <style>
       :root {
-        --navy: #0e1e35;
-        --navy2: #152843;
-        --navy3: #1d3557;
+        --navy: #083467;
+        --navy2: #0b3d7a;
+        --navy3: #06264F;
         --teal: #0e7490;
-        --gold: #c8a45a;
-        --goldl: #dbbe85;
-        --goldd: #9a7a3e;
+        --gold: #cc9d4d;
+        --goldl: #e8c47a;
+        --goldd: #9a7530;
         --cream: #faf8f4;
         --cream2: #f3efe8;
         --cream3: #ede7dd;
@@ -5444,6 +5444,10 @@ B1 = East | Gross 50㎡ | Net 45㎡
               </button>
             </div>
           </div>
+          <div id="noDataNotice" style="display:none;padding:14px 16px;background:rgba(204,157,77,.08);border:1.5px solid rgba(204,157,77,.3);border-radius:10px;margin-bottom:14px">
+            <div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:3px">Price list not yet imported</div>
+            <div style="font-size:12px;color:var(--tx2);line-height:1.5">Unit pricing for <strong id="noDataProjName"></strong> has not been added yet. Use <em>Pricing Override</em> below to enter a custom price manually, or contact sales to get the latest list.</div>
+          </div>
           <div class="g3 unit-select-grid">
             <div class="field">
               <label>Unit Type</label
@@ -6369,7 +6373,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
       const PROJECTS = {
         ts9: {
           id: "ts9",
-          name: "The Gatsby Residence",
+          name: "Time Square 9",
           dev: "TS9",
           tabLabel: "BKK1",
           location: "Phnom Penh",
@@ -6652,10 +6656,10 @@ B1 = East | Gross 50㎡ | Net 45㎡
         },
         ts10: {
           id: "ts10",
-          name: "Ocean View Residence",
+          name: "Time Square 10",
           dev: "TS10",
           tabLabel: "SHV",
-          location: "Phnom Penh",
+          location: "Sihanoukville",
           commission: 10,
           discounts: { standard: 10, promo: 14 },
           promoGroups: {
@@ -6921,6 +6925,73 @@ B1 = East | Gross 50㎡ | Net 45㎡
             Q: {},
           },
         },
+
+        kingston: {
+          id: "kingston", name: "Kingston Royale", dev: "Kingston",
+          tabLabel: "BKK1", location: "Phnom Penh", commission: 10,
+          discounts: { standard: 0, promo: 0 }, promoGroups: {},
+          unitGroups: [], unitTypes: {}, prices: {},
+        },
+        leconde: {
+          id: "leconde", name: "Le Conde BKK1", dev: "Le Conde",
+          tabLabel: "BKK1", location: "Phnom Penh", commission: 10,
+          discounts: { standard: 0, promo: 0 }, promoGroups: {},
+          unitGroups: [], unitTypes: {}, prices: {},
+        },
+        jtower3: {
+          id: "jtower3", name: "J Tower 3", dev: "J Tower",
+          tabLabel: "PP", location: "Phnom Penh", commission: 10,
+          discounts: { standard: 0, promo: 0 }, promoGroups: {},
+          unitGroups: [], unitTypes: {}, prices: {},
+        },
+        odomtower: {
+          id: "odomtower", name: "Odom Tower", dev: "Odom",
+          tabLabel: "Odom", location: "Phnom Penh", commission: 10,
+          discounts: { standard: 0, promo: 0 }, promoGroups: {},
+          unitGroups: [], unitTypes: {}, prices: {},
+        },
+        odomliving: {
+          id: "odomliving", name: "Odom Living", dev: "Odom",
+          tabLabel: "Odom", location: "Phnom Penh", commission: 10,
+          discounts: { standard: 0, promo: 0 }, promoGroups: {},
+          unitGroups: [], unitTypes: {}, prices: {},
+        },
+        uc88: {
+          id: "uc88", name: "UC88 Wyndham Garden", dev: "UC88",
+          tabLabel: "PP", location: "Phnom Penh", commission: 10,
+          discounts: { standard: 0, promo: 0 }, promoGroups: {},
+          unitGroups: [], unitTypes: {}, prices: {},
+        },
+        diamondbay: {
+          id: "diamondbay", name: "Diamond Bay Garden", dev: "Diamond Bay",
+          tabLabel: "SHV", location: "Sihanoukville", commission: 10,
+          discounts: { standard: 0, promo: 0 }, promoGroups: {},
+          unitGroups: [], unitTypes: {}, prices: {},
+        },
+        angkor: {
+          id: "angkor", name: "Angkor Grace", dev: "Angkor",
+          tabLabel: "SR", location: "Siem Reap", commission: 10,
+          discounts: { standard: 0, promo: 0 }, promoGroups: {},
+          unitGroups: [], unitTypes: {}, prices: {},
+        },
+        lzseaview: {
+          id: "lzseaview", name: "LZ Sea View Premium", dev: "LZ",
+          tabLabel: "Coast", location: "Sihanoukville", commission: 10,
+          discounts: { standard: 0, promo: 0 }, promoGroups: {},
+          unitGroups: [], unitTypes: {}, prices: {},
+        },
+        picasso: {
+          id: "picasso", name: "Picasso Sky Gemme", dev: "Picasso",
+          tabLabel: "PP", location: "Phnom Penh", commission: 10,
+          discounts: { standard: 0, promo: 0 }, promoGroups: {},
+          unitGroups: [], unitTypes: {}, prices: {},
+        },
+        gato: {
+          id: "gato", name: "GATO Tower", dev: "GATO",
+          tabLabel: "PP", location: "Phnom Penh", commission: 10,
+          discounts: { standard: 0, promo: 0 }, promoGroups: {},
+          unitGroups: [], unitTypes: {}, prices: {},
+        },
         ts11: {
           id: "ts11",
           name: "Time Castle BKK3",
@@ -7124,7 +7195,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
         D: { ...TS11_PRICE_MAPS.D },
       };
 
-      const PROJ_ORDER = ["ts11", "ts10", "ts9", "ts8", "ts7"];
+      const PROJ_ORDER = ["ts9","ts8","ts7","ts10","ts11","kingston","leconde","jtower3","odomtower","odomliving","uc88","diamondbay","angkor","lzseaview","picasso","gato"];
       const FOLDER_PRICE_LIST_FILES = {
         ts7: [
           "TS7 - Price List.jpeg",
@@ -8635,6 +8706,13 @@ B1 = East | Gross 50㎡ | Net 45㎡
         const p = proj(),
           sel = $("unitType");
         sel.innerHTML = '<option value="">— Select —</option>';
+        const noData = $("noDataNotice");
+        if (noData) {
+          const hasUnits = p.unitGroups && p.unitGroups.length > 0;
+          noData.style.display = hasUnits ? "none" : "block";
+          const nameEl = $("noDataProjName");
+          if (nameEl) nameEl.textContent = p.name;
+        }
         p.unitGroups.forEach((g) => {
           const og = document.createElement("optgroup");
           og.label = g.label;
