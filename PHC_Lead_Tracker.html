@@ -501,7 +501,12 @@ select.vt-sel{padding:4px 8px;border:1px solid var(--border);border-radius:6px;b
             <option>Russian</option><option>Chinese</option><option>Singaporean</option><option>British</option><option>Other</option>
           </select>
         </div>
-        <div class="m-group"><label class="m-lbl">Phone / WhatsApp</label><input class="m-inp" id="mPhone" placeholder="+855 xx xxx xxx" oninput="detectNatFromPhone()"/></div>
+        <div class="m-group"><label class="m-lbl">Phone / WhatsApp</label>
+          <div style="display:flex;gap:5px">
+            <button type="button" id="flagBtn" onclick="toggleFlagPicker(event)" title="Country code" style="padding:7px 9px;border:1px solid var(--border);border-radius:6px;background:var(--bg);cursor:pointer;flex-shrink:0;display:flex;align-items:center;gap:3px;font-size:15px;line-height:1;transition:border .15s" onmouseover="this.style.borderColor='var(--border-h)'" onmouseout="this.style.borderColor='var(--border)'"><span id="flagBtnIcon">🌐</span><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6,9 12,15 18,9"/></svg></button>
+            <input class="m-inp" id="mPhone" placeholder="+855 xx xxx xxx" oninput="detectNatFromPhone()" style="flex:1"/>
+          </div>
+        </div>
         <div class="m-group"><label class="m-lbl">Telegram</label><input class="m-inp" id="mTelegram" placeholder="@username or number"/></div>
         <div class="m-group"><label class="m-lbl">Email</label><input class="m-inp" id="mEmail" type="email"/></div>
         <div class="m-group"><label class="m-lbl">Budget</label>
@@ -549,6 +554,7 @@ select.vt-sel{padding:4px 8px;border:1px solid var(--border);border-radius:6px;b
 
 <div class="loading hidden" id="loadingEl"><div class="spinner"></div></div>
 <div class="toast" id="toastEl"></div>
+<div id="flagPickerDrop" style="display:none;position:fixed;z-index:9999;background:var(--white);border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.15);padding:4px;min-width:200px;max-height:220px;overflow-y:auto"></div>
 
 <script>
 // STATE
@@ -616,11 +622,60 @@ function detectNatFromPhone(){
   var detected=natFromPhone(phone);
   if(!detected) return;
   var natEl=document.getElementById('mNat');
-  if(natEl.value) return; // don't override a manually chosen nationality
+  if(natEl.value) return;
   natEl.value=detected;
   autoAssignFromModal();
   toast('Nationality detected: '+detected);
 }
+
+// FLAG PICKER
+const PHONE_CODES=[
+  {f:'🇰🇭',c:'+855',n:'Cambodia'},
+  {f:'🇯🇵',c:'+81', n:'Japan'},
+  {f:'🇩🇪',c:'+49', n:'Germany'},
+  {f:'🇷🇺',c:'+7',  n:'Russia'},
+  {f:'🇨🇳',c:'+86', n:'China'},
+  {f:'🇭🇰',c:'+852',n:'Hong Kong'},
+  {f:'🇹🇼',c:'+886',n:'Taiwan'},
+  {f:'🇸🇬',c:'+65', n:'Singapore'},
+  {f:'🇬🇧',c:'+44', n:'UK'},
+  {f:'🇺🇸',c:'+1',  n:'USA'},
+  {f:'🇦🇺',c:'+61', n:'Australia'},
+  {f:'🇫🇷',c:'+33', n:'France'},
+  {f:'🇨🇭',c:'+41', n:'Switzerland'},
+  {f:'🇳🇱',c:'+31', n:'Netherlands'},
+  {f:'🇰🇷',c:'+82', n:'South Korea'},
+  {f:'🇹🇭',c:'+66', n:'Thailand'},
+  {f:'🇻🇳',c:'+84', n:'Vietnam'},
+];
+function toggleFlagPicker(e){
+  e.stopPropagation();
+  var drop=document.getElementById('flagPickerDrop');
+  if(drop.style.display!=='none'){drop.style.display='none';return;}
+  var rect=e.currentTarget.getBoundingClientRect();
+  drop.style.top=(rect.bottom+4)+'px';
+  drop.style.left=rect.left+'px';
+  drop.innerHTML=PHONE_CODES.map(function(p){
+    return '<div onclick="selectPhoneCode(\''+p.c+'\',\''+p.f+'\')" style="display:flex;align-items:center;gap:8px;padding:7px 10px;cursor:pointer;border-radius:5px;font-size:12px;white-space:nowrap" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'">'+
+      '<span style="font-size:16px">'+p.f+'</span>'+
+      '<span style="color:var(--text);font-weight:500;flex:1">'+p.n+'</span>'+
+      '<span style="color:var(--text-m);margin-left:12px">'+p.c+'</span>'+
+    '</div>';
+  }).join('');
+  drop.style.display='block';
+}
+function selectPhoneCode(code,flag){
+  document.getElementById('flagBtnIcon').textContent=flag;
+  var el=document.getElementById('mPhone');
+  var existing=(el.value||'').replace(/^\+\d+\s*/,'').trim();
+  el.value=code+(existing?' '+existing:'');
+  document.getElementById('flagPickerDrop').style.display='none';
+  detectNatFromPhone();
+}
+document.addEventListener('click',function(e){
+  var drop=document.getElementById('flagPickerDrop');
+  if(drop&&drop.style.display!=='none')drop.style.display='none';
+});
 
 // AUTO-ASSIGN
 function autoAssign(nationality){
