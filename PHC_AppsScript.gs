@@ -349,7 +349,7 @@ function getClientCopy(scenario, lang, lead) {
   // ── Viewing ────────────────────────────────────────────────────
   if (scenario === 'viewing') {
     const vd = parseViewingDetails(lead);
-    const dateTime = '📅 <strong>' + vd.date + '</strong> &nbsp;·&nbsp; 🕐 <strong>' + vd.time + '</strong>';
+    const dateTime = '<strong>' + vd.date + '</strong> &nbsp;at&nbsp; <strong>' + vd.time + '</strong>';
     return {
       subject: { en:'Your Viewing Request — '+(lead.interestedIn||'Property'), ja:'内覧ご予約を承りました — '+(lead.interestedIn||''), de:'Besichtigungsanfrage erhalten — '+(lead.interestedIn||''), kh:'បានទទួលការស្នើសុំទស្សនា — '+(lead.interestedIn||'') }[lang] || 'Your Viewing Request',
       greeting: { en:'Hi '+n+',', ja:n+' 様、こんにちは', de:'Hallo '+n+',', kh:n+' ជំរាបសួរ' }[lang],
@@ -447,7 +447,7 @@ function buildClientEmailHtml(copy, waLink, gdpr) {
 
   // Footer
   '<tr><td style="background:#083467;padding:22px 36px">' +
-  '<p style="margin:0;font-size:13px;color:rgba(255,255,255,.75)">📞 011 666 952 &nbsp;·&nbsp; <a href="https://t.me/PropertyHubCambodia" style="color:#cc9d4d;text-decoration:none">t.me/PropertyHubCambodia</a></p>' +
+  '<p style="margin:0;font-size:13px;color:rgba(255,255,255,.75)">Tel: 011 666 952 &nbsp;·&nbsp; <a href="https://t.me/PropertyHubCambodia" style="color:#cc9d4d;text-decoration:none">t.me/PropertyHubCambodia</a></p>' +
   '<p style="margin:5px 0 0;font-size:11px;color:rgba(255,255,255,.4)">#12F Time Square 5, St. 306, BKK1, Phnom Penh, Cambodia</p>' +
   (gdpr || '') +
   '</td></tr>' +
@@ -456,10 +456,10 @@ function buildClientEmailHtml(copy, waLink, gdpr) {
 }
 
 function buildAgentEmailHtml(lead, scenario, lang) {
-  const scenarioLabel = { viewing:'📅 Viewing Request', property:'🏠 Property Inquiry', general:'📋 General Inquiry' }[scenario] || 'New Lead';
-  const langFlag      = { en:'🇬🇧', ja:'🇯🇵', de:'🇩🇪', kh:'🇰🇭' }[lang] || '🌐';
+  const scenarioLabel = { viewing:'Viewing Request', property:'Property Inquiry', general:'General Inquiry' }[scenario] || 'New Lead';
+  const langLabel     = { en:'EN', ja:'JP', de:'DE', kh:'KH' }[lang] || lang.toUpperCase();
   const scoreNum      = parseInt(lead.score) || 0;
-  const scoreTag      = scoreNum >= 5 ? '⭐ VIP' : scoreNum >= 4 ? '🔴 A' : scoreNum >= 3 ? '🟡 B' : '⚪ C';
+  const scoreTag      = scoreNum >= 5 ? 'VIP' : scoreNum >= 4 ? 'A' : scoreNum >= 3 ? 'B' : 'C';
 
   const rows = [
     ['Name',            escH(lead.fullName    || '—')],
@@ -468,7 +468,7 @@ function buildAgentEmailHtml(lead, scenario, lang) {
     ['Property',        escH(lead.interestedIn|| '—')],
     ['Budget',          escH(lead.budget      || '—')],
     ['Timeline',        escH(lead.timeline    || '—')],
-    ['Language',        langFlag + ' ' + lang.toUpperCase()],
+    ['Language',        langLabel],
     ['Score',           scoreTag],
     ['Source',          'Website'],
   ];
@@ -501,9 +501,9 @@ function buildAgentEmailHtml(lead, scenario, lang) {
   // Action buttons
   '<tr><td style="padding:16px 20px;background:#f8fafc;border-top:1px solid #e8ecf2">' +
   '<table cellpadding="0" cellspacing="0"><tr>' +
-  (phone ? '<td style="padding-right:8px"><a href="'+waLink+'" style="display:inline-block;padding:10px 18px;background:#25D366;border-radius:7px;font-size:12px;font-weight:bold;color:#ffffff;text-decoration:none">📱 WhatsApp</a></td>' : '') +
-  (phone ? '<td style="padding-right:8px"><a href="'+callLink+'" style="display:inline-block;padding:10px 18px;background:#083467;border-radius:7px;font-size:12px;font-weight:bold;color:#ffffff;text-decoration:none">📞 Call</a></td>' : '') +
-  '<td><a href="https://narithkgame2.github.io/phc-tools/PHC_Lead_Tracker.html" style="display:inline-block;padding:10px 18px;background:#cc9d4d;border-radius:7px;font-size:12px;font-weight:bold;color:#083467;text-decoration:none">📋 Open CRM</a></td>' +
+  (phone ? '<td style="padding-right:8px"><a href="'+waLink+'" style="display:inline-block;padding:10px 18px;background:#25D366;border-radius:7px;font-size:12px;font-weight:bold;color:#ffffff;text-decoration:none">WhatsApp</a></td>' : '') +
+  (phone ? '<td style="padding-right:8px"><a href="'+callLink+'" style="display:inline-block;padding:10px 18px;background:#083467;border-radius:7px;font-size:12px;font-weight:bold;color:#ffffff;text-decoration:none">Call</a></td>' : '') +
+  '<td><a href="https://narithkgame2.github.io/phc-tools/PHC_Lead_Tracker.html" style="display:inline-block;padding:10px 18px;background:#cc9d4d;border-radius:7px;font-size:12px;font-weight:bold;color:#083467;text-decoration:none">Open CRM</a></td>' +
   '</tr></table>' +
   '</td></tr>' +
 
@@ -530,7 +530,7 @@ function sendClientConfirmation(lead, scenario, lang) {
 
 function sendAgentNotification(lead, scenario, lang) {
   const label   = { viewing:'Viewing Request', property:'Property Inquiry', general:'General Inquiry' }[scenario] || 'New Lead';
-  const subject = '🔔 New ' + label + ' — ' + escH(lead.fullName || 'Unknown') + ' · ' + escH(lead.interestedIn || lead.budget || 'Website');
+  const subject = '[PHC] New ' + label + ' — ' + escH(lead.fullName || 'Unknown') + ' · ' + escH(lead.interestedIn || lead.budget || 'Website');
 
   GmailApp.sendEmail(AGENT_EMAIL, subject, '', {
     htmlBody: buildAgentEmailHtml(lead, scenario, lang),
