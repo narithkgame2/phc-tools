@@ -793,10 +793,10 @@ function getFiltered(){
   var q=document.getElementById('srchQ').value.toLowerCase();
   var nt=document.getElementById('fltNat').value;
   return leads.filter(function(l){
-    if(stageFilter==='__overdue__') return fuStatus(l)==='overdue' && l.stage!=='Closed' && l.stage!=='Released';
     var mq=!q||(l.fullName||'').toLowerCase().includes(q)||(l.phone||'').toLowerCase().includes(q)||(l.email||'').toLowerCase().includes(q)||(l.telegram||'').toLowerCase().includes(q)||(l.interestedIn||'').toLowerCase().includes(q)||(l.notes||'').toLowerCase().includes(q);
     var ma=!agentFilter||l.agent===agentFilter;
     var mn=!nt||l.nationality===nt;
+    if(stageFilter==='__overdue__') return mq&&ma&&mn&&fuStatus(l)==='overdue'&&l.stage!=='Closed'&&l.stage!=='Released';
     var ms=!stageFilter||l.stage===stageFilter;
     return mq&&ma&&mn&&ms;
   });
@@ -818,7 +818,7 @@ function renderStageTabs(){
   STAGES.forEach(function(s){counts[s.k]=0;});
   leads.forEach(function(l){if(counts[l.stage]!==undefined)counts[l.stage]++;});
   var total=leads.length;
-  tabs.innerHTML='<button class="s-tab '+((!stageFilter||stageFilter==='__overdue__')?'on':'')+'" onclick="setStageFilter(null)">All <span class="sc">'+total+'</span></button>'+
+  tabs.innerHTML='<button class="s-tab '+(!stageFilter?'on':'')+'" onclick="setStageFilter(null)">All <span class="sc">'+total+'</span></button>'+
     STAGES.map(function(s){
       return '<button class="s-tab '+(stageFilter===s.k?'on':'')+'" onclick="setStageFilter(\''+s.k+'\')"><span style="display:inline-block;width:7px;height:7px;border-radius:2px;background:'+s.dot+';margin-right:3px"></span>'+s.k+' <span class="sc">'+counts[s.k]+'</span></button>';
     }).join('');
@@ -829,7 +829,7 @@ function renderOverdueBanner(){
   var b=document.getElementById('overdueBanner');
   if(od.length){
     b.classList.remove('hidden');
-    document.getElementById('overdueMsg').innerHTML='<strong>'+od.length+' lead'+(od.length>1?'s':'')+' overdue:</strong> '+od.map(function(l){return l.fullName;}).join(', ');
+    document.getElementById('overdueMsg').innerHTML='<strong>'+od.length+' lead'+(od.length>1?'s':'')+' overdue:</strong> '+od.map(function(l){return escHtml(l.fullName||'');}).join(', ');
   } else b.classList.add('hidden');
 }
 
