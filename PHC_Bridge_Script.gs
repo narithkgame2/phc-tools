@@ -11,7 +11,7 @@
 // ═══════════════════════════════════════════════════════════════
 
 // PHC CRM Apps Script Web App URL
-var PHC_API_URL = 'https://script.google.com/macros/s/AKfycbzlAxcJqEI3upZ18sm-mj2Gxd3w2XSkD_YYqgkZ4kdw2_AV3V8f2B4qVcPESHZTOq2k8Q/exec';
+var PHC_API_URL = 'https://script.google.com/macros/s/AKfycbyCd3r8sX18YONWUf98_eB_B3uuXbn3ALq8A7ataIysQfUPU9y43DvZUe-OoRIticXBzg/exec';
 
 // Tab name in the existing lead inquiry sheet
 var SOURCE_TAB = 'PHC Lead Sheet';

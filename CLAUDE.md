@@ -89,7 +89,7 @@ Every tool has an inline password gate (sessionStorage — clears when browser c
 
 ## APPS SCRIPT API (PHC_AppsScript.gs)
 
-**Web App URL:** `https://script.google.com/macros/s/AKfycbzlAxcJqEI3upZ18sm-mj2Gxd3w2XSkD_YYqgkZ4kdw2_AV3V8f2B4qVcPESHZTOq2k8Q/exec`  
+**Web App URL:** `https://script.google.com/macros/s/AKfycbyCd3r8sX18YONWUf98_eB_B3uuXbn3ALq8A7ataIysQfUPU9y43DvZUe-OoRIticXBzg/exec`  
 **Settings:** Execute as Me · Anyone can access  
 **CORS strategy:** POST uses `mode:'no-cors'` + `Content-Type: text/plain` (avoids preflight; response is opaque — do not try to read it)
 
