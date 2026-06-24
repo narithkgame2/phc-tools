@@ -598,6 +598,48 @@ function sendClientConfirmation(lead, scenario, lang) {
   });
 }
 
+function testTelegramAlert() {
+  sendTelegramAlert({
+    fullName:     'Test Lead',
+    phone:        '+855 11 666 952',
+    email:        'test@phc.com',
+    nationality:  'Japanese',
+    budget:       '$100,000 – $200,000',
+    timeline:     '3–6 months',
+    interestedIn: 'Time Square 9',
+    source:       'Website',
+    score:        '4',
+  });
+}
+
+function testTelegramGetUpdates() {
+  const token = PropertiesService.getScriptProperties().getProperty('TELEGRAM_BOT_TOKEN');
+  const res = UrlFetchApp.fetch('https://api.telegram.org/bot' + token + '/getUpdates', { muteHttpExceptions: true });
+  Logger.log(res.getContentText());
+}
+
+function testTelegramGetMe() {
+  const token = PropertiesService.getScriptProperties().getProperty('TELEGRAM_BOT_TOKEN');
+  const res = UrlFetchApp.fetch('https://api.telegram.org/bot' + token + '/getMe', { muteHttpExceptions: true });
+  Logger.log(res.getContentText());
+}
+
+function testTelegramRaw() {
+  const props  = PropertiesService.getScriptProperties();
+  const token  = props.getProperty('TELEGRAM_BOT_TOKEN');
+  const chatId = props.getProperty('TELEGRAM_CHAT_ID');
+  Logger.log('Token: ' + token);
+  Logger.log('Chat ID: ' + chatId);
+  const url = 'https://api.telegram.org/bot' + token + '/sendMessage';
+  const res = UrlFetchApp.fetch(url, {
+    method: 'post',
+    contentType: 'application/json',
+    payload: JSON.stringify({ chat_id: chatId, text: 'PHC test ping 🔔' }),
+    muteHttpExceptions: true,
+  });
+  Logger.log('Response: ' + res.getContentText());
+}
+
 function sendAgentNotification(lead, scenario, lang) {
   const label   = { viewing:'Viewing Request', property:'Property Inquiry', general:'General Inquiry' }[scenario] || 'New Lead';
   const subject = '[PHC] New ' + label + ' — ' + escH(lead.fullName || 'Unknown') + ' · ' + escH(lead.interestedIn || lead.budget || 'Website');
