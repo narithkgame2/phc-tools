@@ -268,37 +268,31 @@ function sendTelegramAlert(lead) {
     const chatId   = props.getProperty('TELEGRAM_CHAT_ID');
     if (!token || !chatId) { Logger.log('Telegram: missing Script Properties'); return; }
 
-    const name     = lead.fullName    || '—';
-    const phone    = lead.phone       || '—';
-    const email    = lead.email       || '—';
-    const nat      = lead.nationality || '—';
-    const budget   = lead.budget      || '—';
-    const timeline = lead.timeline    || '—';
-    const property = lead.interestedIn|| '—';
-    const source   = lead.source      || 'Website';
-    const score    = lead.score       ? lead.score + '/5' : '—';
-
-    // Score priority label
-    const scoreNum = parseInt(lead.score) || 0;
-    const priority = scoreNum >= 5 ? '🔴 VIP'
-                   : scoreNum >= 4 ? '🔴 High priority'
-                   : scoreNum >= 3 ? '🟡 Medium priority'
-                   : scoreNum >  0 ? '🟢 Low priority'
-                   : '⬜ Unscored';
+    const scoreNum  = parseInt(lead.score) || 0;
+    const scoreTag  = scoreNum >= 5 ? 'VIP' : scoreNum >= 4 ? 'A' : scoreNum >= 3 ? 'B' : 'C';
+    const nat       = (lead.nationality || '').toLowerCase();
+    const langLabel = nat === 'japanese' ? 'JP' : nat === 'german' ? 'DE' : nat === 'cambodian' ? 'KH' : 'EN';
+    const rawNotes  = (lead.notes || '').replace(/\[Language:[^\]]*\]\s*\|?\s*/i, '').replace(/^Website inquiry:\s*/i, '').trim();
+    const scenario  = detectScenario(lead);
+    const typeLabel = scenario === 'viewing' ? 'New Viewing Request' : scenario === 'property' ? 'New Property Inquiry' : 'New Website Inquiry';
+    const viewing   = scenario === 'viewing' ? parseViewingDetails(lead) : null;
 
     const msg = [
-      '🔔 *New PHC Lead*',
+      '🔔 *PHC LEAD ALERT*',
+      '*' + typeLabel + '*',
       '',
-      '👤 ' + name,
-      '📱 ' + phone,
-      '📧 ' + email,
-      nat !== '—' ? '🌏 ' + nat : null,
-      '💰 ' + budget,
-      timeline !== '—' ? '⏱ ' + timeline : null,
-      '🏢 ' + property,
-      '📍 ' + source,
-      '',
-      score !== '—' ? '⭐ ' + score + ' — ' + priority : priority,
+      'Name: '           + (lead.fullName     || '—'),
+      'Phone/WhatsApp: ' + (lead.phone        || '—'),
+      'Email: '          + (lead.email        || '—'),
+      'Property: '       + (lead.interestedIn || '—'),
+      viewing ? 'Date: ' + viewing.date : null,
+      viewing ? 'Time: ' + viewing.time : null,
+      'Budget: '         + (lead.budget       || '—'),
+      'Timeline: '       + (lead.timeline     || '—'),
+      'Language: '       + langLabel,
+      'Score: '          + scoreTag,
+      'Source: '         + (lead.source       || 'Website'),
+      rawNotes ? '\nMessage: ' + rawNotes : null,
     ].filter(Boolean).join('\n');
 
     const url = 'https://api.telegram.org/bot' + token + '/sendMessage';
