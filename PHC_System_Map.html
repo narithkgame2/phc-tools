@@ -3,709 +3,1252 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PHC · System Architecture</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>PHC · Full System Architecture 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --navy: #06264F;
-  --navy-dark: #040f24;
-  --navy-mid: #0b3d7a;
-  --gold: #C9993F;
-  --gold-dim: rgba(201,153,63,0.15);
-  --text: #dde5f0;
-  --muted: #6b849e;
-  --mc: #0099dd;
-  --make: #7c3aed;
-  --tg: #229ED9;
-  --wa: #25D366;
-  --fb: #1877F2;
-  --ig: #E1306C;
-  --mail: #FFD200;
-  --sheets: #34a853;
-  --en: #1877f2;
-  --kh: #2196a3;
-  --jp: #e63946;
-  --de: #2d9e6b;
-  --ru: #c0392b;
-  --vip: #8b5cf6;
+  --navy:        #06264f;
+  --navy-d:      #040f24;
+  --navy-md:     #0b3d7a;
+  --gold:        #c9993f;
+  --gold-lt:     #e0b86a;
+  --gold-dim:    #a07a2e;
+  --gold-soft:   rgba(201,153,63,0.10);
+  --gold-border: rgba(201,153,63,0.22);
+  --ink:         #0c1b2e;
+  --ink-2:       #374f66;
+  --ink-3:       #7490a8;
+  --line:        rgba(6,38,79,0.09);
+  --line-md:     rgba(6,38,79,0.16);
+  --bg:          #ffffff;
+  --bg-2:        #f6f8fb;
+  --bg-3:        #edf0f5;
+  --ok:          #1a7a4a;
+  --ok-soft:     rgba(26,122,74,0.08);
+  --ok-border:   rgba(26,122,74,0.22);
+  --err:         #b83030;
+  --r:           10px;
+  --r-lg:        16px;
+  --sf:          -apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue","Inter",sans-serif;
+  --sf-mono:     "SF Mono","SFMono-Regular",ui-monospace,"JetBrains Mono","Courier New",monospace;
+  --transition:  .2s cubic-bezier(.4,0,.2,1);
+
+  /* Platform colors */
+  --ig:   #E1306C; --fb:  #1877F2; --tg: #229ED9;
+  --wa:   #25D366; --yt:  #FF0000; --tt: #000000;
+  --mc:   #0099dd; --make:#7c3aed; --buf:#E60023;
+  --sb:   #3ECF8E; --gs:  #34a853;
+
+  /* Segment colors */
+  --en: #1877f2; --jp: #e63946; --de: #2d9e6b;
+  --ru: #c0392b; --kh: #2196a3; --vip:#8b5cf6;
 }
+
 *{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
 
 body {
-  background: var(--navy-dark);
-  color: var(--text);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--sf);
+  background: var(--navy-d);
+  color: #dde5f0;
+  -webkit-font-smoothing: antialiased;
   min-height: 100vh;
 }
 
 /* ── TOPBAR ── */
 .topbar {
-  background: var(--navy);
-  border-bottom: 3px solid var(--gold);
+  background: rgba(4,15,36,0.96);
+  height: 58px;
   padding: 0 40px;
-  height: 62px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   position: sticky;
   top: 0;
   z-index: 200;
-}
-.topbar-logo { font-family:'Playfair Display',serif; font-size:17px; color:#fff; }
-.topbar-logo span { color:var(--gold); }
-.topbar-right { display:flex; align-items:center; gap:24px; }
-.topbar-tag {
-  font-family:'JetBrains Mono',monospace; font-size:10px;
-  color:var(--gold); opacity:.75; letter-spacing:1px;
-}
-
-/* ── STATS STRIP ── */
-.stats-strip {
-  background: rgba(201,153,63,0.06);
-  border-bottom: 1px solid rgba(201,153,63,0.12);
-  padding: 10px 40px;
-  display: flex;
-  gap: 40px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-.stat { text-align:center; }
-.stat-num { font-family:'Playfair Display',serif; font-size:22px; color:var(--gold); line-height:1; }
-.stat-label { font-size:10px; color:var(--muted); margin-top:2px; letter-spacing:.5px; }
-
-/* ── LEGEND BAR ── */
-.legend-bar {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  flex-wrap: wrap;
-  padding: 12px 40px;
   border-bottom: 1px solid rgba(255,255,255,0.05);
-  background: rgba(255,255,255,0.02);
 }
-.legend-item { display:flex; align-items:center; gap:7px; font-size:11px; color:var(--muted); }
-.ldot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
-.legend-sep { width:1px; height:16px; background:rgba(255,255,255,0.08); }
-.auto-key {
-  font-family:'JetBrains Mono',monospace; font-size:9px;
-  padding:2px 7px; border-radius:3px; margin-left:2px;
+.topbar::after {
+  content:'';
+  position:absolute;
+  bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,var(--gold) 0%,rgba(201,153,63,.3) 40%,transparent 70%);
 }
-.auto-key.auto { background:rgba(0,153,221,0.15); color:var(--mc); }
-.auto-key.make { background:rgba(124,58,237,0.15); color:#a78bfa; }
-.auto-key.tg   { background:rgba(34,158,217,0.15); color:var(--tg); }
-.auto-key.man  { background:rgba(255,255,255,0.07); color:var(--muted); }
+.topbar-brand { display:flex; align-items:center; gap:12px; }
+.topbar-mark {
+  width:32px;height:32px;border-radius:8px;
+  background:var(--navy);border:1px solid var(--gold-border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;
+}
+.topbar-name {
+  font-family:'Playfair Display',serif;
+  font-size:15px;color:#fff;letter-spacing:-.01em;
+}
+.topbar-name span{color:var(--gold);}
+.topbar-right{display:flex;align-items:center;gap:20px;}
+.topbar-tag {
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  color:var(--gold);opacity:.65;letter-spacing:2px;text-transform:uppercase;
+}
+.topbar-link {
+  font-size:11px;color:rgba(255,255,255,.4);text-decoration:none;
+  padding:5px 12px;border:1px solid rgba(255,255,255,.08);border-radius:6px;
+  transition:all var(--transition);
+}
+.topbar-link:hover{color:var(--gold);border-color:var(--gold-border);}
 
-/* ── MAIN LAYOUT ── */
+/* ── HERO ── */
+.hero {
+  background:linear-gradient(180deg, rgba(11,61,122,.6) 0%, var(--navy-d) 100%);
+  padding: 56px 40px 48px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content:'';position:absolute;top:-120px;left:50%;transform:translateX(-50%);
+  width:600px;height:300px;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,153,63,.08) 0%,transparent 70%);
+}
+.hero-eyebrow {
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--gold);
+  opacity:.8;margin-bottom:16px;
+}
+.hero-title {
+  font-family:'Playfair Display',serif;font-size:42px;font-weight:700;
+  color:#fff;line-height:1.1;letter-spacing:-.03em;margin-bottom:12px;
+}
+.hero-title span{color:var(--gold);}
+.hero-sub {
+  font-size:15px;color:rgba(255,255,255,.45);max-width:480px;
+  margin:0 auto 40px;line-height:1.7;
+}
+.hero-stats {
+  display:inline-flex;gap:0;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:var(--r-lg);overflow:hidden;
+}
+.hs {
+  padding:18px 28px;text-align:center;
+  border-right:1px solid rgba(255,255,255,.06);
+}
+.hs:last-child{border-right:none;}
+.hs-n {
+  font-family:'Playfair Display',serif;font-size:26px;
+  color:var(--gold);line-height:1;margin-bottom:4px;letter-spacing:-.03em;
+}
+.hs-l {
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em;
+}
+
+/* ── DIAGRAM WRAPPER ── */
 .diagram {
-  max-width: 1380px;
-  margin: 0 auto;
-  padding: 36px 32px 80px;
+  max-width:1400px;
+  margin:0 auto;
+  padding:48px 36px 100px;
+  display:flex;
+  flex-direction:column;
+  gap:0;
 }
 
 /* ── SECTION HEADER ── */
+.sec {margin-bottom:48px;}
 .sec-head {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 16px;
+  display:flex;align-items:center;gap:16px;margin-bottom:22px;
 }
 .sec-num {
-  font-family:'JetBrains Mono',monospace; font-size:10px;
-  color:var(--gold); opacity:.6; letter-spacing:2px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  color:var(--gold);opacity:.55;letter-spacing:.2em;
 }
 .sec-title {
-  font-family:'Playfair Display',serif; font-size:18px; color:#fff;
+  font-family:'Playfair Display',serif;font-size:20px;color:#fff;
 }
-.sec-line { flex:1; height:1px; background:linear-gradient(to right, rgba(201,153,63,.25), transparent); }
+.sec-line {
+  flex:1;height:1px;
+  background:linear-gradient(to right,rgba(201,153,63,.2),transparent);
+}
+.sec-badge {
+  font-family:'JetBrains Mono',monospace;font-size:8px;
+  padding:3px 9px;border-radius:4px;letter-spacing:.08em;text-transform:uppercase;
+}
+.sb-new  {background:rgba(201,153,63,.12);color:var(--gold);}
+.sb-live {background:rgba(26,122,74,.12);color:#4ade80;border:1px solid rgba(26,122,74,.2);}
+.sb-plan {background:rgba(255,255,255,.05);color:rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.08);}
+
+/* ── STATUS PILL ── */
+.pill {
+  display:inline-flex;align-items:center;gap:4px;
+  font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.06em;
+  padding:2px 7px;border-radius:12px;
+}
+.pill-live {background:rgba(26,122,74,.15);color:#4ade80;border:1px solid rgba(26,122,74,.25);}
+.pill-plan {background:rgba(255,255,255,.05);color:rgba(255,255,255,.3);border:1px solid rgba(255,255,255,.08);}
+.pill-build{background:rgba(201,153,63,.12);color:var(--gold);border:1px solid var(--gold-border);}
+.pill::before{content:'●';font-size:6px;}
 
 /* ── CONNECTOR ── */
-.connector {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 6px 0;
+.conn {
+  display:flex;flex-direction:column;align-items:center;
+  padding:4px 0 4px;margin:-4px 0;
 }
-.conn-line { width:2px; height:28px; background:linear-gradient(to bottom, rgba(201,153,63,.5), rgba(201,153,63,.1)); }
-.conn-label { font-size:10px; color:var(--muted); letter-spacing:1px; font-family:'JetBrains Mono',monospace; margin:3px 0; }
+.conn-line {
+  width:1.5px;height:32px;
+  background:linear-gradient(to bottom,rgba(201,153,63,.4),rgba(201,153,63,.08));
+}
+.conn-label {
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  color:rgba(201,153,63,.45);letter-spacing:.1em;margin:4px 0;text-transform:uppercase;
+}
 .conn-arrow {
-  width:0; height:0;
-  border-left:6px solid transparent;
-  border-right:6px solid transparent;
-  border-top:9px solid rgba(201,153,63,.4);
+  width:0;height:0;
+  border-left:5px solid transparent;
+  border-right:5px solid transparent;
+  border-top:8px solid rgba(201,153,63,.35);
 }
 
-/* ── CHANNEL ROW ── */
-.channel-row { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+/* ── CARDS ── */
+.card {
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:var(--r-lg);
+  padding:20px;
+  transition:all var(--transition);
+}
+.card:hover{background:rgba(255,255,255,.05);box-shadow:0 8px 32px rgba(0,0,0,.3);}
+.card-head {
+  display:flex;align-items:center;gap:12px;
+  padding-bottom:16px;margin-bottom:16px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.card-icon{font-size:22px;flex-shrink:0;}
+.card-title{font-size:15px;font-weight:600;color:#fff;}
+.card-sub{font-size:11px;color:rgba(255,255,255,.35);margin-top:2px;}
+.card-badge {
+  margin-left:auto;
+  font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.08em;
+  padding:3px 9px;border-radius:4px;
+}
+.cb-mc   {background:rgba(0,153,221,.15);color:var(--mc);}
+.cb-make {background:rgba(124,58,237,.15);color:#a78bfa;}
+.cb-tg   {background:rgba(34,158,217,.15);color:var(--tg);}
+.cb-ai   {background:rgba(201,153,63,.15);color:var(--gold);}
+.cb-live {background:rgba(26,122,74,.15);color:#4ade80;}
+.cb-gs   {background:rgba(52,168,83,.15);color:var(--gs);}
+.cb-buf  {background:rgba(255,48,64,.12);color:#ff6b7a;}
+
+/* ── ROWS & GRIDS ── */
+.row     {display:flex;gap:12px;flex-wrap:wrap;}
+.row-3   {display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.row-4   {display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.row-5   {display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+.col-main{flex:2.5;min-width:360px;}
+.col-side{flex:1;min-width:240px;}
+.auto-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+
+/* ── CHANNEL CARDS ── */
 .ch-card {
-  flex:1; min-width:140px; max-width:190px;
-  background:var(--navy);
-  border:1px solid rgba(255,255,255,0.07);
-  border-top:3px solid;
-  border-radius:10px;
-  padding:16px 16px 14px;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.07);
+  border-top:2.5px solid;
+  border-radius:var(--r-lg);
+  padding:18px 16px 16px;
   text-align:center;
-  transition:all .2s;
+  transition:all var(--transition);
+  display:flex;flex-direction:column;align-items:center;
 }
-.ch-card:hover { transform:translateY(-3px); box-shadow:0 8px 28px rgba(0,0,0,.35); border-color:rgba(201,153,63,.3); }
-.ch-icon { font-size:26px; margin-bottom:8px; }
-.ch-name { font-size:13px; font-weight:600; color:#fff; margin-bottom:5px; }
-.ch-sub { font-size:11px; color:var(--muted); line-height:1.7; }
-.ch-card.ig  { border-top-color:var(--ig); }
-.ch-card.fb  { border-top-color:var(--fb); }
-.ch-card.tg  { border-top-color:var(--tg); }
-.ch-card.wa  { border-top-color:var(--wa); }
-.ch-card.web { border-top-color:var(--gold); }
-.ch-card.ref { border-top-color:var(--muted); }
+.ch-card:hover{transform:translateY(-3px);box-shadow:0 10px 32px rgba(0,0,0,.35);}
+.ch-icon{font-size:28px;margin-bottom:10px;}
+.ch-name{font-size:13px;font-weight:600;color:#fff;margin-bottom:6px;}
+.ch-sub{font-size:10.5px;color:rgba(255,255,255,.35);line-height:1.75;flex:1;}
+.ch-status{margin-top:10px;}
+.ch-card.ig {border-top-color:var(--ig);}
+.ch-card.fb {border-top-color:var(--fb);}
+.ch-card.tg {border-top-color:var(--tg);}
+.ch-card.wa {border-top-color:var(--wa);}
+.ch-card.web{border-top-color:var(--gold);}
+.ch-card.ref{border-top-color:rgba(255,255,255,.2);}
+.ch-card.yt {border-top-color:var(--yt);}
+.ch-card.li {border-top-color:#0a66c2;}
 
-/* ── AUTOMATION ROW ── */
-.auto-row { display:flex; gap:12px; flex-wrap:wrap; }
-.auto-card {
-  background:var(--navy);
-  border:1px solid rgba(255,255,255,0.07);
-  border-left:3px solid;
-  border-radius:10px;
-  padding:20px;
-  transition:all .2s;
+/* ── AGENT CARDS (new style) ── */
+.agent-card {
+  background:linear-gradient(135deg,rgba(201,153,63,.06) 0%,rgba(6,38,79,.8) 100%);
+  border:1px solid var(--gold-border);
+  border-radius:var(--r-lg);
+  padding:22px;
+  transition:all var(--transition);
+  position:relative;
+  overflow:hidden;
 }
-.auto-card:hover { box-shadow:0 8px 28px rgba(0,0,0,.3); }
-.auto-card.mc   { flex:2.2; min-width:360px; border-left-color:var(--mc); }
-.auto-card.tg   { flex:1; min-width:240px; border-left-color:var(--tg); }
+.agent-card::before {
+  content:'';position:absolute;top:0;left:0;right:0;height:1.5px;
+  background:linear-gradient(90deg,var(--gold),transparent 60%);
+}
+.agent-card:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,0,0,.4),0 0 0 1px rgba(201,153,63,.15);}
+.agent-num {
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  color:var(--gold);opacity:.6;letter-spacing:.15em;margin-bottom:8px;
+}
+.agent-name{font-size:14px;font-weight:600;color:#fff;margin-bottom:4px;}
+.agent-desc{font-size:11px;color:rgba(255,255,255,.4);line-height:1.7;margin-bottom:14px;}
+.agent-flow {
+  background:rgba(0,0,0,.25);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:8px;padding:12px 14px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  color:rgba(255,255,255,.5);line-height:2;
+}
+.agent-flow .hl{color:var(--gold);font-weight:500;}
 
-.auto-head { display:flex; align-items:center; gap:12px; margin-bottom:16px; padding-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.06); }
-.auto-icon { font-size:22px; }
-.auto-head-title { font-size:15px; font-weight:600; color:#fff; }
-.auto-head-sub { font-size:11px; color:var(--muted); margin-top:2px; }
-.badge {
-  font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.5px;
-  padding:3px 9px; border-radius:4px; margin-left:auto;
-}
-.badge.mc   { background:rgba(0,153,221,.15);  color:var(--mc); }
-.badge.tg   { background:rgba(34,158,217,.15); color:var(--tg); }
-.badge.make { background:rgba(124,58,237,.15); color:#a78bfa; }
-
-.auto-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-.auto-block-label {
-  font-family:'JetBrains Mono',monospace; font-size:9px;
-  color:var(--gold); letter-spacing:1.5px; margin-bottom:8px; opacity:.8;
-}
-.tag-list { display:flex; flex-wrap:wrap; gap:5px; }
+/* ── TAG LIST ── */
+.tag-list{display:flex;flex-wrap:wrap;gap:5px;}
 .tag {
-  font-size:11px; padding:3px 10px; border-radius:20px;
-  border:1px solid rgba(255,255,255,.09); color:var(--muted);
+  font-size:10.5px;padding:3px 10px;border-radius:16px;
+  border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.4);
 }
-.tag.on { background:rgba(201,153,63,.1); border-color:rgba(201,153,63,.3); color:var(--gold); }
-.tag.phase2 { border-style:dashed; opacity:.6; }
+.tag.on {background:var(--gold-soft);border-color:var(--gold-border);color:var(--gold);}
+.tag.live{background:rgba(26,122,74,.12);border-color:rgba(26,122,74,.25);color:#4ade80;}
+.tag.dim {border-style:dashed;opacity:.5;}
 
-.tg-block { margin-bottom:14px; padding-bottom:14px; border-bottom:1px solid rgba(255,255,255,.06); }
-.tg-block:last-child { margin-bottom:0; padding-bottom:0; border-bottom:none; }
-.tg-block-name { font-size:12px; font-weight:600; color:#fff; margin-bottom:3px; }
-.tg-block-sub { font-size:11px; color:var(--muted); line-height:1.6; }
-
-/* ── MAKE.COM ── */
-.make-card {
-  background:var(--navy);
-  border:1px solid rgba(255,255,255,0.07);
-  border-left:3px solid var(--make);
-  border-radius:10px;
-  padding:20px;
-  transition:all .2s;
+/* ── MINI LABEL ── */
+.mini-label {
+  font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--gold);opacity:.65;margin-bottom:8px;
 }
-.make-card:hover { box-shadow:0 8px 28px rgba(0,0,0,.3); }
-.make-outputs { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:14px; }
+
+/* ── MAKE OUTPUTS ── */
+.make-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px;}
 .make-out {
-  background:rgba(255,255,255,0.03);
-  border:1px solid rgba(255,255,255,0.07);
-  border-radius:8px;
-  padding:14px 12px;
-  text-align:center;
-  transition:all .2s;
+  background:rgba(0,0,0,.2);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:10px;padding:16px 14px;
+  text-align:center;transition:all var(--transition);
 }
-.make-out:hover { background:rgba(124,58,237,.07); border-color:rgba(124,58,237,.3); }
-.make-out-icon { font-size:22px; margin-bottom:6px; }
-.make-out-title { font-size:12px; font-weight:600; color:#fff; margin-bottom:3px; }
-.make-out-desc { font-size:10px; color:var(--muted); line-height:1.6; }
+.make-out:hover{background:rgba(124,58,237,.07);border-color:rgba(124,58,237,.3);}
+.make-icon{font-size:22px;margin-bottom:8px;}
+.make-title{font-size:12px;font-weight:600;color:#fff;margin-bottom:4px;}
+.make-desc{font-size:10px;color:rgba(255,255,255,.3);line-height:1.65;}
 
-/* ── TOOLS + TEAM ── */
-.two-col { display:grid; grid-template-columns:1fr 320px; gap:14px; }
-.tools-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(172px,1fr)); gap:9px; }
+/* ── TOOL CARDS ── */
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;}
 .tool-card {
-  background:var(--navy);
+  background:rgba(255,255,255,.03);
   border:1px solid rgba(201,153,63,.1);
-  border-left:3px solid var(--gold);
-  border-radius:8px;
-  padding:12px 14px;
-  transition:all .2s;
+  border-left:2.5px solid var(--gold);
+  border-radius:9px;padding:13px 15px;
+  transition:all var(--transition);
 }
-.tool-card:hover { background:rgba(201,153,63,.04); transform:translateX(2px); box-shadow:0 4px 16px rgba(0,0,0,.2); }
-.tool-card.soon { border-left-color:var(--muted); opacity:.5; border-style:dashed; }
-.tool-name { font-size:12px; font-weight:600; color:#fff; margin-bottom:3px; }
-.tool-desc { font-size:10px; color:var(--muted); line-height:1.5; }
+.tool-card:hover{background:rgba(201,153,63,.04);transform:translateX(2px);box-shadow:0 4px 18px rgba(0,0,0,.2);}
+.tool-card.web-tool{border-left-color:#3ECF8E;}
+.tool-name{font-size:12px;font-weight:600;color:#fff;margin-bottom:3px;}
+.tool-desc{font-size:10px;color:rgba(255,255,255,.35);line-height:1.55;}
 
-/* team panel */
-.team-panel { background:var(--navy); border:1px solid rgba(255,255,255,0.07); border-radius:10px; overflow:hidden; }
-.team-hdr { background:rgba(201,153,63,.08); border-bottom:1px solid rgba(201,153,63,.2); padding:12px 18px; font-size:11px; font-weight:600; letter-spacing:1.5px; color:var(--gold); text-transform:uppercase; }
-.team-member { padding:14px 18px; border-bottom:1px solid rgba(255,255,255,0.05); display:flex; align-items:flex-start; gap:12px; }
-.role-badge { font-family:'JetBrains Mono',monospace; font-size:9px; padding:3px 8px; border-radius:4px; background:rgba(201,153,63,.1); color:var(--gold); white-space:nowrap; margin-top:2px; }
-.member-name { font-size:13px; font-weight:600; color:#fff; margin-bottom:3px; }
-.member-detail { font-size:11px; color:var(--muted); line-height:1.7; }
-.alert-panel { padding:14px 18px; background:rgba(34,158,217,.05); }
-.alert-label { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--tg); letter-spacing:1.5px; margin-bottom:8px; }
-.alert-items { font-size:11px; color:var(--muted); line-height:1.9; }
+/* ── TEAM PANEL ── */
+.team-panel {
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:var(--r-lg);overflow:hidden;
+}
+.team-hdr {
+  background:var(--gold-soft);border-bottom:1px solid var(--gold-border);
+  padding:13px 20px;
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  font-weight:500;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;
+}
+.team-member {
+  padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.04);
+  display:flex;align-items:flex-start;gap:12px;
+}
+.role-badge {
+  font-family:'JetBrains Mono',monospace;font-size:8px;
+  padding:3px 8px;border-radius:4px;
+  background:rgba(201,153,63,.1);color:var(--gold);
+  white-space:nowrap;margin-top:2px;letter-spacing:.06em;
+}
+.role-badge.founder{background:rgba(6,38,79,.6);color:#93b4d4;border:1px solid rgba(255,255,255,.08);}
+.member-name{font-size:13px;font-weight:600;color:#fff;margin-bottom:3px;}
+.member-detail{font-size:11px;color:rgba(255,255,255,.35);line-height:1.75;}
+.member-flag{font-size:11px;margin-right:2px;}
 
 /* ── LIFECYCLE ── */
-.lifecycle-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
-.lc-col { background:var(--navy); border:1px solid rgba(255,255,255,0.07); border-radius:10px; overflow:hidden; }
-.lc-hdr { padding:14px 18px; font-family:'Playfair Display',serif; font-size:15px; font-weight:600; display:flex; align-items:center; gap:10px; }
-.lc-hdr.before { background:rgba(24,119,242,.1); border-bottom:2px solid var(--fb); }
-.lc-hdr.during { background:rgba(201,153,63,.1); border-bottom:2px solid var(--gold); }
-.lc-hdr.after  { background:rgba(34,158,217,.1);  border-bottom:2px solid var(--tg); }
-.lc-body { padding:14px 18px; }
-.lc-step { display:flex; align-items:flex-start; gap:10px; margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.04); }
-.lc-step:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
-.lc-num { width:20px; height:20px; border-radius:50%; background:rgba(201,153,63,.15); color:var(--gold); font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
-.lc-text { font-size:11.5px; color:var(--text); line-height:1.55; flex:1; }
-.lc-badge {
-  display:inline-block; font-family:'JetBrains Mono',monospace; font-size:8.5px;
-  padding:1px 6px; border-radius:3px; margin-left:4px; vertical-align:middle;
+.lc-col {
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:var(--r-lg);overflow:hidden;
 }
-.lc-badge.auto { background:rgba(0,153,221,.15); color:var(--mc); }
-.lc-badge.make { background:rgba(124,58,237,.15); color:#a78bfa; }
-.lc-badge.tg   { background:rgba(34,158,217,.15); color:var(--tg); }
-.lc-badge.man  { background:rgba(255,255,255,.07); color:var(--muted); }
+.lc-hdr {
+  padding:16px 20px;
+  font-family:'Playfair Display',serif;
+  font-size:15px;font-weight:600;
+  display:flex;align-items:center;gap:10px;
+}
+.lc-hdr.before{background:rgba(24,119,242,.08);border-bottom:1.5px solid rgba(24,119,242,.3);}
+.lc-hdr.during{background:rgba(201,153,63,.08);border-bottom:1.5px solid var(--gold-border);}
+.lc-hdr.after {background:rgba(34,158,217,.08);border-bottom:1.5px solid rgba(34,158,217,.3);}
+.lc-body{padding:16px 20px;}
+.lc-step {
+  display:flex;align-items:flex-start;gap:10px;
+  margin-bottom:10px;padding-bottom:10px;
+  border-bottom:1px solid rgba(255,255,255,.04);
+}
+.lc-step:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.lc-num {
+  width:20px;height:20px;border-radius:50%;flex-shrink:0;margin-top:1px;
+  background:rgba(201,153,63,.12);color:var(--gold);
+  font-size:9px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;
+}
+.lc-text{font-size:11.5px;color:rgba(255,255,255,.6);line-height:1.6;flex:1;}
+.lc-tag {
+  display:inline-block;
+  font-family:'JetBrains Mono',monospace;font-size:7.5px;
+  padding:1px 5px;border-radius:3px;margin-left:4px;vertical-align:middle;
+}
+.lc-tag.auto{background:rgba(0,153,221,.15);color:var(--mc);}
+.lc-tag.make{background:rgba(124,58,237,.15);color:#a78bfa;}
+.lc-tag.tg  {background:rgba(34,158,217,.15);color:var(--tg);}
+.lc-tag.ai  {background:rgba(201,153,63,.15);color:var(--gold);}
+.lc-tag.man {background:rgba(255,255,255,.06);color:rgba(255,255,255,.3);}
 
-/* ── PROJECTS + SEGMENTS ── */
-.proj-row { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-bottom:14px; }
+/* ── PROJECTS ── */
+.proj-section{margin-bottom:20px;}
+.proj-city {
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  color:var(--gold);opacity:.6;letter-spacing:.12em;text-transform:uppercase;
+  margin-bottom:10px;display:flex;align-items:center;gap:8px;
+}
+.proj-city::after{content:'';flex:1;height:1px;background:rgba(201,153,63,.15);}
+.proj-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
 .proj-chip {
-  background:var(--navy-mid);
-  border:1px solid rgba(201,153,63,.22);
-  border-radius:9px; padding:12px 22px; text-align:center;
-  transition:all .2s;
+  background:rgba(11,61,122,.4);
+  border:1px solid rgba(201,153,63,.18);
+  border-radius:9px;padding:10px 18px;
+  transition:all var(--transition);
 }
-.proj-chip:hover { border-color:var(--gold); transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,.3); }
-.proj-name { font-size:13px; font-weight:600; color:var(--gold); margin-bottom:2px; }
-.proj-dev { font-size:10px; color:var(--muted); }
-.seg-row { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
+.proj-chip:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.3);}
+.proj-name{font-size:12.5px;font-weight:600;color:var(--gold);margin-bottom:1px;}
+.proj-dev {font-size:10px;color:rgba(255,255,255,.3);}
+
+/* ── SEGMENTS ── */
+.seg-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
 .seg-chip {
-  padding:7px 18px; border-radius:24px; font-size:12px; font-weight:600;
-  border:1px solid; transition:all .2s;
+  padding:8px 20px;border-radius:24px;
+  font-size:12px;font-weight:600;
+  border:1px solid;transition:all var(--transition);
+  display:flex;align-items:center;gap:6px;
 }
-.seg-chip:hover { transform:translateY(-1px); box-shadow:0 4px 14px rgba(0,0,0,.25); }
+.seg-chip:hover{transform:translateY(-2px);box-shadow:0 5px 16px rgba(0,0,0,.25);}
+
+/* ── LEGEND ── */
+.legend {
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+  padding:14px 36px;
+  border-top:1px solid rgba(255,255,255,.04);
+  border-bottom:1px solid rgba(255,255,255,.04);
+  background:rgba(255,255,255,.015);
+  margin-bottom:48px;
+}
+.legend-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--gold);opacity:.6;letter-spacing:.1em;margin-right:6px;}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:10.5px;color:rgba(255,255,255,.35);}
+.ldot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.legend-sep{width:1px;height:14px;background:rgba(255,255,255,.07);}
+
+@media(max-width:900px){
+  .row-3,.row-4,.row-5{grid-template-columns:1fr 1fr;}
+  .make-grid{grid-template-columns:1fr 1fr;}
+  .auto-grid{grid-template-columns:1fr;}
+  .hero{padding:40px 20px 36px;}
+  .hero-title{font-size:28px;}
+  .hero-stats{flex-wrap:wrap;}
+  .hs{padding:14px 18px;}
+  .diagram{padding:32px 20px 80px;}
+  .col-main,.col-side{min-width:100%;flex:unset;}
+}
 </style>
 </head>
 <body>
-<div id="phc-gate" style="display:none;position:fixed;inset:0;background:#083467;z-index:99999;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,sans-serif;"><div style="background:#fff;border-radius:16px;padding:40px 36px;width:320px;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.35);"><div style="font-family:Georgia,serif;font-size:22px;font-weight:700;color:#083467;margin-bottom:6px;">PHC Director</div><div style="font-size:13px;color:#7a8799;margin-bottom:8px;">Property Hub Cambodia</div><div style="width:40px;height:2px;background:#cc9d4d;margin:0 auto 24px;"></div><input id="phc-gate-pw" type="password" placeholder="Director password" autocomplete="current-password" style="width:100%;border:1.5px solid #e8ecf2;border-radius:9px;padding:11px 14px;font-size:14px;text-align:center;letter-spacing:.12em;outline:none;margin-bottom:12px;" onfocus="this.style.borderColor='#083467'" onblur="this.style.borderColor='#e8ecf2'" onkeydown="if(event.key==='Enter')phcCheck();"><button onclick="phcCheck()" style="width:100%;background:#083467;color:#fff;border:none;border-radius:9px;padding:12px;font-size:13px;font-weight:600;cursor:pointer;">Continue →</button><div id="phc-gate-err" style="display:none;color:#d63031;font-size:12px;margin-top:12px;">Incorrect password. Try again.</div></div></div>
-<script>(function(){var g=document.getElementById('phc-gate');if(sessionStorage.getItem('phc_ceo_auth')==='1'){g.style.display='none';}else{g.style.display='flex';setTimeout(function(){document.getElementById('phc-gate-pw').focus();},50);}window.phcCheck=function(){var v=document.getElementById('phc-gate-pw').value;if(v==='Nick@PHC2026'){sessionStorage.setItem('phc_ceo_auth','1');sessionStorage.setItem('phc_agent_auth','1');g.style.display='none';}else{document.getElementById('phc-gate-err').style.display='block';document.getElementById('phc-gate-pw').value='';document.getElementById('phc-gate-pw').focus();}};})();</script>
 
-<!-- TOP BAR -->
+<!-- PASSWORD GATE -->
+<div id="phc-gate" style="display:none;position:fixed;inset:0;background:#040f24;z-index:99999;align-items:center;justify-content:center;font-family:-apple-system,sans-serif;">
+  <div style="background:#06264f;border:1px solid rgba(201,153,63,.25);border-radius:16px;padding:44px 40px;width:340px;text-align:center;box-shadow:0 32px 80px rgba(0,0,0,.6);">
+    <div style="font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:4px;">PHC Director</div>
+    <div style="font-size:12px;color:rgba(255,255,255,.35);margin-bottom:6px;">Property Hub Cambodia</div>
+    <div style="width:36px;height:1.5px;background:var(--gold);margin:0 auto 28px;"></div>
+    <input id="phc-gate-pw" type="password" placeholder="Director password"
+      style="width:100%;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:12px 16px;font-size:14px;text-align:center;letter-spacing:.1em;color:#fff;outline:none;margin-bottom:12px;"
+      onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'"
+      onkeydown="if(event.key==='Enter')phcCheck()">
+    <button onclick="phcCheck()" style="width:100%;background:var(--gold);color:#040f24;border:none;border-radius:9px;padding:13px;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.03em;">Continue →</button>
+    <div id="phc-gate-err" style="display:none;color:#f87171;font-size:12px;margin-top:12px;">Incorrect password.</div>
+  </div>
+</div>
+<script>
+(function(){
+  var g=document.getElementById('phc-gate');
+  if(sessionStorage.getItem('phc_ceo_auth')==='1'){g.style.display='none';}
+  else{g.style.display='flex';setTimeout(function(){document.getElementById('phc-gate-pw').focus();},50);}
+  window.phcCheck=function(){
+    var v=document.getElementById('phc-gate-pw').value;
+    if(v==='Nick@PHC2026'){
+      sessionStorage.setItem('phc_ceo_auth','1');
+      sessionStorage.setItem('phc_agent_auth','1');
+      g.style.display='none';
+    } else {
+      document.getElementById('phc-gate-err').style.display='block';
+      document.getElementById('phc-gate-pw').value='';
+      document.getElementById('phc-gate-pw').focus();
+    }
+  };
+})();
+</script>
+
+<!-- TOPBAR -->
 <div class="topbar">
-  <div class="topbar-logo">Property Hub <span>Cambodia</span> · System Architecture</div>
+  <div class="topbar-brand">
+    <div class="topbar-mark">🏢</div>
+    <div class="topbar-name">Property Hub <span>Cambodia</span> &nbsp;·&nbsp; System Architecture</div>
+  </div>
   <div class="topbar-right">
-    <div class="topbar-tag">FULL PICTURE · MAY 2026</div>
-    <a href="PHC_Agent_Hub.html" style="font-size:12px;color:var(--gold);opacity:.7;text-decoration:none">← Hub</a>
+    <div class="topbar-tag">Full Picture · June 2026</div>
+    <a href="index.html" class="topbar-link">← Hub</a>
   </div>
 </div>
 
-<!-- STATS STRIP -->
-<div class="stats-strip">
-  <div class="stat"><div class="stat-num">6</div><div class="stat-label">Lead Channels</div></div>
-  <div class="stat"><div class="stat-num">10</div><div class="stat-label">PHC Tools</div></div>
-  <div class="stat"><div class="stat-num">3</div><div class="stat-label">Automation Layers</div></div>
-  <div class="stat"><div class="stat-num">6</div><div class="stat-label">Projects</div></div>
-  <div class="stat"><div class="stat-num">7</div><div class="stat-label">Client Segments</div></div>
-  <div class="stat"><div class="stat-num">20+</div><div class="stat-label">Active Clients</div></div>
-  <div class="stat"><div class="stat-num">3</div><div class="stat-label">Lifecycle Phases</div></div>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Property Hub Cambodia · Internal OS</div>
+  <h1 class="hero-title">The Full <span>PHC</span> System</h1>
+  <p class="hero-sub">From content creation to client handover — every agent, tool, channel, and automation in one view.</p>
+  <div class="hero-stats">
+    <div class="hs"><div class="hs-n">5</div><div class="hs-l">AI Agents</div></div>
+    <div class="hs"><div class="hs-n">8</div><div class="hs-l">Entry Points</div></div>
+    <div class="hs"><div class="hs-n">18</div><div class="hs-l">Properties</div></div>
+    <div class="hs"><div class="hs-n">7</div><div class="hs-l">Segments</div></div>
+    <div class="hs"><div class="hs-n">14+</div><div class="hs-l">PHC Tools</div></div>
+    <div class="hs"><div class="hs-n">5</div><div class="hs-l">Team</div></div>
+  </div>
 </div>
 
 <!-- LEGEND -->
-<div class="legend-bar">
-  <span style="font-size:11px;font-weight:600;color:var(--gold);margin-right:4px;">LEGEND</span>
+<div class="legend">
+  <span class="legend-lbl">Legend</span>
   <div class="legend-item"><div class="ldot" style="background:var(--mc)"></div>ManyChat</div>
   <div class="legend-item"><div class="ldot" style="background:var(--make)"></div>Make.com</div>
   <div class="legend-item"><div class="ldot" style="background:var(--tg)"></div>Telegram</div>
-  <div class="legend-item"><div class="ldot" style="background:var(--wa)"></div>WhatsApp</div>
-  <div class="legend-item"><div class="ldot" style="background:var(--sheets)"></div>Google Sheets</div>
+  <div class="legend-item"><div class="ldot" style="background:var(--gs)"></div>Google Sheets</div>
+  <div class="legend-item"><div class="ldot" style="background:var(--sb)"></div>Supabase</div>
   <div class="legend-item"><div class="ldot" style="background:var(--gold)"></div>PHC Tool</div>
   <div class="legend-sep"></div>
-  <div class="legend-item">Automated:<span class="auto-key auto">MANYCHAT</span><span class="auto-key make">MAKE</span><span class="auto-key tg">TELEGRAM</span></div>
-  <div class="legend-item">Agent required:<span class="auto-key man">MANUAL</span></div>
+  <div class="legend-item"><span class="pill pill-live">LIVE</span> Built & running</div>
+  <div class="legend-item"><span class="pill pill-build">BUILDING</span> In progress</div>
+  <div class="legend-item"><span class="pill pill-plan">PLANNED</span> Roadmap</div>
 </div>
 
-<!-- ════════════════ DIAGRAM ════════════════ -->
+<!-- DIAGRAM -->
 <div class="diagram">
 
-  <!-- 01 LEAD ENTRY -->
-  <div class="sec-head">
-    <span class="sec-num">01</span>
-    <span class="sec-title">Lead Entry Points</span>
-    <div class="sec-line"></div>
-  </div>
-  <div class="channel-row">
-    <div class="ch-card ig">
-      <div class="ch-icon">📸</div>
-      <div class="ch-name">Instagram</div>
-      <div class="ch-sub">Post comments<br>Story replies<br>Direct DMs<br>Ad — Messages CTA</div>
+  <!-- ══ 01 CONTENT & DISTRIBUTION ══ -->
+  <div class="sec">
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <span class="sec-title">Content & Distribution Pipeline</span>
+      <span class="sec-badge sb-new">NEW PRIORITY</span>
+      <div class="sec-line"></div>
     </div>
-    <div class="ch-card fb">
-      <div class="ch-icon">👥</div>
-      <div class="ch-name">Facebook</div>
-      <div class="ch-sub">Page DMs<br>Post comments<br>Ad — Messages CTA</div>
+    <div class="row" style="margin-bottom:12px;">
+      <!-- Content Agent -->
+      <div class="agent-card col-main">
+        <div class="card-head">
+          <div class="card-icon">✍️</div>
+          <div>
+            <div class="card-title">Content Agent <span class="pill pill-build" style="font-size:7px;vertical-align:middle;margin-left:6px;">BUILDING</span></div>
+            <div class="card-sub">Claude-powered · generates multilingual content from a single brief</div>
+          </div>
+          <div class="card-badge cb-ai">AI AGENT</div>
+        </div>
+        <div class="auto-grid">
+          <div>
+            <div class="mini-label">Input</div>
+            <div class="tag-list">
+              <div class="tag on">Property brief</div>
+              <div class="tag on">Target segment</div>
+              <div class="tag on">Content type</div>
+            </div>
+          </div>
+          <div>
+            <div class="mini-label">Output (all languages)</div>
+            <div class="tag-list">
+              <div class="tag on">Instagram caption EN/JP/DE</div>
+              <div class="tag on">Facebook post</div>
+              <div class="tag on">Blog article</div>
+              <div class="tag on">YouTube description</div>
+            </div>
+          </div>
+          <div>
+            <div class="mini-label">Content Mix (70/30 rule)</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.4);line-height:1.9;">
+              70% Educational — market insights, ROI guides, investor stories<br>
+              30% Listing — property features, unit types, pricing
+            </div>
+          </div>
+          <div>
+            <div class="mini-label">Languages</div>
+            <div class="tag-list">
+              <div class="tag on">🇬🇧 English</div>
+              <div class="tag on">🇯🇵 Japanese</div>
+              <div class="tag on">🇩🇪 German</div>
+              <div class="tag dim">🇷🇺 Russian</div>
+              <div class="tag dim">🇰🇭 Khmer</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Scheduler -->
+      <div class="card col-side" style="display:flex;flex-direction:column;gap:12px;">
+        <div>
+          <div class="mini-label">Blog Publisher Agent <span class="pill pill-plan" style="font-size:7px;vertical-align:middle;margin-left:4px;">PLANNED</span></div>
+          <div style="font-size:11px;color:rgba(255,255,255,.35);line-height:1.75;margin-bottom:10px;">Approved article → Supabase blog → live on website. No copy-paste, no login needed.</div>
+          <div class="tag-list">
+            <div class="tag on">Supabase API</div>
+            <div class="tag on">Auto SEO meta</div>
+            <div class="tag on">Slug generation</div>
+          </div>
+        </div>
+        <div style="border-top:1px solid rgba(255,255,255,.06);padding-top:12px;">
+          <div class="mini-label">Social Scheduler Agent <span class="pill pill-plan" style="font-size:7px;vertical-align:middle;margin-left:4px;">PLANNED</span></div>
+          <div style="font-size:11px;color:rgba(255,255,255,.35);line-height:1.75;margin-bottom:10px;">Approved post → Buffer → all platforms at optimal time. Human approves, agent publishes.</div>
+          <div class="tag-list">
+            <div class="tag on">Instagram</div>
+            <div class="tag on">Facebook</div>
+            <div class="tag on">LinkedIn</div>
+            <div class="tag dim">YouTube</div>
+            <div class="tag dim">TikTok</div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="ch-card tg">
-      <div class="ch-icon">✈️</div>
-      <div class="ch-name">Telegram</div>
-      <div class="ch-sub">@PHCPropertyBot<br>Channel followers<br>Group members</div>
-    </div>
-    <div class="ch-card wa">
-      <div class="ch-icon">💬</div>
-      <div class="ch-name">WhatsApp</div>
-      <div class="ch-sub">011 666 952<br>Direct contact<br><em style="font-size:10px;color:var(--wa)">Phase 2 — pending</em></div>
-    </div>
-    <div class="ch-card web">
-      <div class="ch-icon">🌐</div>
-      <div class="ch-name">Website</div>
-      <div class="ch-sub">Lead form<br>Email capture<br>→ Mailchimp</div>
-    </div>
-    <div class="ch-card ref">
-      <div class="ch-icon">🤝</div>
-      <div class="ch-name">Referral / QR</div>
-      <div class="ch-sub">Business cards<br>Events / open days<br>Agent referrals</div>
+    <!-- Platform targets -->
+    <div class="row-5">
+      <div class="ch-card ig">
+        <div class="ch-icon">📸</div>
+        <div class="ch-name">Instagram</div>
+        <div class="ch-sub">Reels · Carousels<br>Story links<br>EN · JP · DE content</div>
+        <div class="ch-status"><span class="pill pill-live">ACTIVE</span></div>
+      </div>
+      <div class="ch-card fb">
+        <div class="ch-icon">👥</div>
+        <div class="ch-name">Facebook</div>
+        <div class="ch-sub">Posts · Groups<br>Investor communities<br>Ad campaigns</div>
+        <div class="ch-status"><span class="pill pill-live">ACTIVE</span></div>
+      </div>
+      <div class="ch-card" style="border-top-color:#0a66c2;">
+        <div class="ch-icon">💼</div>
+        <div class="ch-name">LinkedIn</div>
+        <div class="ch-sub">Western investors<br>Corporate buyers<br>Market reports</div>
+        <div class="ch-status"><span class="pill pill-plan">PLANNED</span></div>
+      </div>
+      <div class="ch-card yt">
+        <div class="ch-icon">▶️</div>
+        <div class="ch-name">YouTube</div>
+        <div class="ch-sub">Property tours<br>Market analysis<br>JP-language content</div>
+        <div class="ch-status"><span class="pill pill-plan">PLANNED</span></div>
+      </div>
+      <div class="ch-card" style="border-top-color:var(--sb);">
+        <div class="ch-icon">🌐</div>
+        <div class="ch-name">Website Blog</div>
+        <div class="ch-sub">SEO articles<br>Multilingual guides<br>Supabase-powered</div>
+        <div class="ch-status"><span class="pill pill-live">LIVE</span></div>
+      </div>
     </div>
   </div>
 
-  <div class="connector">
+  <div class="conn">
+    <div class="conn-line"></div>
+    <div class="conn-label">drives traffic to</div>
+    <div class="conn-line"></div>
+    <div class="conn-arrow"></div>
+  </div>
+
+  <!-- ══ 02 LEAD ENTRY ══ -->
+  <div class="sec">
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <span class="sec-title">Lead Entry Points</span>
+      <div class="sec-line"></div>
+    </div>
+    <div class="row-4">
+      <div class="ch-card ig">
+        <div class="ch-icon">📸</div>
+        <div class="ch-name">Instagram</div>
+        <div class="ch-sub">Comment → DM<br>Story replies<br>Ad Messages CTA</div>
+        <div class="ch-status"><span class="pill pill-live">ACTIVE</span></div>
+      </div>
+      <div class="ch-card fb">
+        <div class="ch-icon">👥</div>
+        <div class="ch-name">Facebook</div>
+        <div class="ch-sub">Page DMs<br>Post comments<br>Ad Messages CTA</div>
+        <div class="ch-status"><span class="pill pill-live">ACTIVE</span></div>
+      </div>
+      <div class="ch-card tg">
+        <div class="ch-icon">✈️</div>
+        <div class="ch-name">Telegram</div>
+        <div class="ch-sub">@PHCPropertyBot<br>Channel followers<br>Group members</div>
+        <div class="ch-status"><span class="pill pill-plan">PLANNED</span></div>
+      </div>
+      <div class="ch-card wa">
+        <div class="ch-icon">💬</div>
+        <div class="ch-name">WhatsApp</div>
+        <div class="ch-sub">011 666 952<br>Floating website button<br>Business API</div>
+        <div class="ch-status"><span class="pill pill-live">ACTIVE</span></div>
+      </div>
+      <div class="ch-card web">
+        <div class="ch-icon">🌐</div>
+        <div class="ch-name">Website</div>
+        <div class="ch-sub">Inquiry form<br>Lead Magnet capture<br>propertyhubcambodia.com</div>
+        <div class="ch-status"><span class="pill pill-live">LIVE</span></div>
+      </div>
+      <div class="ch-card ref">
+        <div class="ch-icon">🤝</div>
+        <div class="ch-name">Referral / QR</div>
+        <div class="ch-sub">Business cards<br>Events · open days<br>Agent referrals</div>
+        <div class="ch-status"><span class="pill pill-live">ACTIVE</span></div>
+      </div>
+      <div class="ch-card" style="border-top-color:#0a66c2;">
+        <div class="ch-icon">💼</div>
+        <div class="ch-name">LinkedIn</div>
+        <div class="ch-sub">Western & European<br>Corporate investors<br>InMail campaigns</div>
+        <div class="ch-status"><span class="pill pill-plan">PLANNED</span></div>
+      </div>
+      <div class="ch-card" style="border-top-color:#FF5B00;">
+        <div class="ch-icon">🏠</div>
+        <div class="ch-name">REAKH</div>
+        <div class="ch-sub">Realestate.com.kh<br>Property portal listings<br>Local & expat buyers</div>
+        <div class="ch-status"><span class="pill pill-live">ACTIVE</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="conn">
     <div class="conn-line"></div>
     <div class="conn-label">all leads enter</div>
     <div class="conn-line"></div>
     <div class="conn-arrow"></div>
   </div>
 
-  <!-- 02 AUTOMATION HUB -->
-  <div class="sec-head">
-    <span class="sec-num">02</span>
-    <span class="sec-title">Automation Hub</span>
-    <div class="sec-line"></div>
+  <!-- ══ 03 QUALIFICATION ══ -->
+  <div class="sec">
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <span class="sec-title">Qualification Layer</span>
+      <div class="sec-line"></div>
+    </div>
+    <div class="row">
+      <div class="card col-main">
+        <div class="card-head">
+          <div class="card-icon">🤖</div>
+          <div>
+            <div class="card-title">ManyChat — Qualification Flow <span class="pill pill-plan" style="font-size:7px;vertical-align:middle;margin-left:6px;">PLANNED</span></div>
+            <div class="card-sub">Automated conversation on Instagram · Facebook · Telegram · WhatsApp</div>
+          </div>
+          <div class="card-badge cb-mc">MANYCHAT</div>
+        </div>
+        <div class="auto-grid">
+          <div>
+            <div class="mini-label">Qualification Flow (5 messages)</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.4);line-height:2;">
+              1️⃣ Budget selection → buttons<br>
+              2️⃣ Investment timeline → buttons<br>
+              3️⃣ Nationality → buttons<br>
+              4️⃣ Phone number → WhatsApp<br>
+              5️⃣ Lead Magnet PDF delivered
+            </div>
+          </div>
+          <div>
+            <div class="mini-label">Smart Routing</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.4);line-height:2;">
+              ⭐ $500K+ → Nick direct (VIP alert)<br>
+              🇯🇵 Japanese → Monika<br>
+              🇩🇪 German → Reza<br>
+              🇬🇧 EN/Other → Monika<br>
+              📊 Lead scored auto on entry
+            </div>
+          </div>
+          <div>
+            <div class="mini-label">Triggers</div>
+            <div class="tag-list">
+              <div class="tag on">Comment → DM</div>
+              <div class="tag on">Keyword: INFO / INVEST</div>
+              <div class="tag on">Story mention</div>
+              <div class="tag on">Ad click</div>
+              <div class="tag on">New follower</div>
+            </div>
+          </div>
+          <div>
+            <div class="mini-label">After Qualification</div>
+            <div class="tag-list">
+              <div class="tag on">→ Google Sheets CRM</div>
+              <div class="tag on">→ Telegram alert (Nick)</div>
+              <div class="tag on">→ Email confirmation</div>
+              <div class="tag on">→ Lead Tracker v3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card col-side">
+        <div class="card-head">
+          <div class="card-icon">🌐</div>
+          <div>
+            <div class="card-title">Website Form <span class="pill pill-live" style="font-size:7px;vertical-align:middle;margin-left:6px;">LIVE</span></div>
+            <div class="card-sub">propertyhubcambodia.com inquiry & contact</div>
+          </div>
+          <div class="card-badge cb-live">LIVE</div>
+        </div>
+        <div style="font-size:11px;color:rgba(255,255,255,.35);line-height:2;margin-bottom:14px;">
+          Form submit → Supabase → Google Sheets<br>
+          → Confirmation email to client<br>
+          → Agent notification email<br>
+          → Telegram alert to Nick ✅
+        </div>
+        <div class="mini-label">Also captures</div>
+        <div class="tag-list">
+          <div class="tag on">Lead Magnet (email gate)</div>
+          <div class="tag on">Schedule Viewing (Calendly)</div>
+          <div class="tag on">Property inquiries</div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="auto-row">
 
-    <!-- ManyChat -->
-    <div class="auto-card mc">
-      <div class="auto-head">
-        <div class="auto-icon">🤖</div>
-        <div>
-          <div class="auto-head-title">ManyChat</div>
-          <div class="auto-head-sub">Conversation automation — Instagram · Facebook · Telegram · WhatsApp</div>
-        </div>
-        <div class="badge mc">AUTOMATION</div>
-      </div>
-      <div class="auto-grid">
-        <div>
-          <div class="auto-block-label">MAIN FLOW</div>
-          <div class="tag on" style="margin-bottom:8px">PHC Lead Qualification</div>
-          <div style="font-size:11px;color:var(--muted);line-height:1.9;margin-top:6px">
-            💰 Budget selection<br>
-            📅 Investment timeline<br>
-            🌏 Nationality<br>
-            📘 Lead Magnet delivered
-          </div>
-        </div>
-        <div>
-          <div class="auto-block-label">TRIGGERS</div>
-          <div class="tag-list">
-            <div class="tag on">Comment → DM</div>
-            <div class="tag on">Story Reply</div>
-            <div class="tag on">Keyword DM</div>
-            <div class="tag on">New Member</div>
-            <div class="tag on">Ad Click</div>
-          </div>
-        </div>
-        <div>
-          <div class="auto-block-label">SMART FEATURES</div>
-          <div class="tag-list">
-            <div class="tag">FAQ Bot</div>
-            <div class="tag">VIP Router ($500K+)</div>
-            <div class="tag">Re-engagement</div>
-            <div class="tag">Broadcast</div>
-            <div class="tag">Site Visit Booking</div>
-          </div>
-        </div>
-        <div>
-          <div class="auto-block-label">CHANNELS</div>
-          <div class="tag-list">
-            <div class="tag on">Instagram ✓</div>
-            <div class="tag on">Facebook ✓</div>
-            <div class="tag on">Telegram ✓</div>
-            <div class="tag phase2">WhatsApp (Phase 2)</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Telegram Layer -->
-    <div class="auto-card tg">
-      <div class="auto-head">
-        <div class="auto-icon">✈️</div>
-        <div>
-          <div class="auto-head-title">Telegram Layer</div>
-          <div class="auto-head-sub">3 separate purposes</div>
-        </div>
-        <div class="badge tg">TELEGRAM</div>
-      </div>
-      <div class="tg-block">
-        <div class="tg-block-name">@PHCPropertyBot</div>
-        <div class="tg-block-sub">Public client-facing bot<br>Lead capture · payment reminders<br>Client registration</div>
-      </div>
-      <div class="tg-block">
-        <div class="tg-block-name">Project Groups</div>
-        <div class="tg-block-sub">TS7 · TS8 · TS9 · TS10 · TS11 · Picasso 2<br>Progress photos · client community<br>Floor-specific updates</div>
-      </div>
-      <div class="tg-block">
-        <div class="tg-block-name">Public Channel</div>
-        <div class="tg-block-sub">Milestone news · available units<br>Price lists · market updates<br>Bot lead generation CTAs</div>
-      </div>
-    </div>
-
-  </div><!-- /auto-row -->
-
-  <div class="connector">
+  <div class="conn">
     <div class="conn-line"></div>
-    <div class="conn-label">data routed through</div>
+    <div class="conn-label">routed to</div>
     <div class="conn-line"></div>
     <div class="conn-arrow"></div>
   </div>
 
-  <!-- 03 MAKE.COM -->
-  <div class="sec-head">
-    <span class="sec-num">03</span>
-    <span class="sec-title">Integration Engine — Make.com</span>
-    <div class="sec-line"></div>
-  </div>
-  <div class="make-card">
-    <div class="auto-head">
-      <div class="auto-icon">⚙️</div>
-      <div>
-        <div class="auto-head-title">Make.com — Automation Backbone</div>
-        <div class="auto-head-sub">Receives data from ManyChat · routes to all connected systems · runs scheduled automations</div>
-      </div>
-      <div class="badge make">INTEGRATION</div>
+  <!-- ══ 04 AI AGENTS ══ -->
+  <div class="sec">
+    <div class="sec-head">
+      <span class="sec-num">04</span>
+      <span class="sec-title">AI Agent Layer</span>
+      <span class="sec-badge sb-new">THE OPERATING SYSTEM</span>
+      <div class="sec-line"></div>
     </div>
-    <div class="make-outputs">
-      <div class="make-out">
-        <div class="make-out-icon">📢</div>
-        <div class="make-out-title">Team Alert</div>
-        <div class="make-out-desc">Instant Telegram notification per new lead · VIP flagged separately to Nick</div>
+    <div class="row-3" style="margin-bottom:12px;">
+      <div class="agent-card">
+        <div class="agent-num">AGENT 01</div>
+        <div class="agent-name">✍️ Content Agent</div>
+        <div class="agent-desc">Takes a brief, writes full multilingual content package. Removes 80% of writing work from Mey, Monika & Reza.</div>
+        <div class="agent-flow">
+          <span class="hl">IN:</span> Property + Audience + Type<br>
+          <span class="hl">OUT:</span> IG caption · FB post · Blog · YT desc<br>
+          <span class="hl">LANG:</span> EN · JP · DE simultaneously
+        </div>
+        <div style="margin-top:10px;"><span class="pill pill-build">BUILDING</span></div>
       </div>
-      <div class="make-out">
-        <div class="make-out-icon">📧</div>
-        <div class="make-out-title">Mailchimp</div>
-        <div class="make-out-desc">3-email nurture sequence for website leads who provide email address</div>
+      <div class="agent-card">
+        <div class="agent-num">AGENT 02</div>
+        <div class="agent-name">📰 Blog Publisher Agent</div>
+        <div class="agent-desc">Takes approved article and pushes directly to Supabase blog. No admin panel login needed.</div>
+        <div class="agent-flow">
+          <span class="hl">IN:</span> Approved article + meta<br>
+          <span class="hl">OUT:</span> Live blog post on website<br>
+          <span class="hl">VIA:</span> Supabase API + Make.com
+        </div>
+        <div style="margin-top:10px;"><span class="pill pill-plan">PLANNED</span></div>
       </div>
-      <div class="make-out">
-        <div class="make-out-icon">📊</div>
-        <div class="make-out-title">Google Sheets</div>
-        <div class="make-out-desc">Master client database · payment schedules · construction milestone tracker</div>
-      </div>
-      <div class="make-out">
-        <div class="make-out-icon">💳</div>
-        <div class="make-out-title">Payment Reminders</div>
-        <div class="make-out-desc">Daily check · auto-DM to each client 5 days before payment due date</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="connector">
-    <div class="conn-line"></div>
-    <div class="conn-label">powers the team and tools</div>
-    <div class="conn-line"></div>
-    <div class="conn-arrow"></div>
-  </div>
-
-  <!-- 04 TOOLS + TEAM -->
-  <div class="sec-head">
-    <span class="sec-num">04</span>
-    <span class="sec-title">PHC Tools &amp; Team</span>
-    <div class="sec-line"></div>
-  </div>
-  <div class="two-col">
-    <div class="tools-grid">
-      <div class="tool-card">
-        <div class="tool-name">🏠 Agent Hub</div>
-        <div class="tool-desc">Central launcher · all tools in one place</div>
-      </div>
-      <div class="tool-card">
-        <div class="tool-name">💬 Message Builder</div>
-        <div class="tool-desc">36 scenarios · 6 segments · WhatsApp copy</div>
-      </div>
-      <div class="tool-card">
-        <div class="tool-name">🎓 Agent Training</div>
-        <div class="tool-desc">20 lessons · L01–L20 · interactive</div>
-      </div>
-      <div class="tool-card">
-        <div class="tool-name">📋 Lead Tracker</div>
-        <div class="tool-desc">Kanban CRM · auto-scoring · CSV export</div>
-      </div>
-      <div class="tool-card">
-        <div class="tool-name">🔍 Investment Explorer</div>
-        <div class="tool-desc">Client-facing · 4 budget tiers · WhatsApp CTAs</div>
-      </div>
-      <div class="tool-card">
-        <div class="tool-name">📊 Market Intelligence</div>
-        <div class="tool-desc">Data cheat sheet · May 2026 · Techo Airport</div>
-      </div>
-      <div class="tool-card">
-        <div class="tool-name">📄 Proposal Generator</div>
-        <div class="tool-desc">3-property library · anchoring · print-ready PDF</div>
-      </div>
-      <div class="tool-card">
-        <div class="tool-name">📘 Lead Magnet</div>
-        <div class="tool-desc">8-page Cambodia Guide 2026 · Google Drive hosted</div>
-      </div>
-      <div class="tool-card">
-        <div class="tool-name">⚙️ Setup Tracker</div>
-        <div class="tool-desc">4 guides · ManyChat · Make.com · Mailchimp · Ads</div>
-      </div>
-      <div class="tool-card soon">
-        <div class="tool-name">👥 Client Manager</div>
-        <div class="tool-desc">COMING — 20+ clients · payments · milestones</div>
+      <div class="agent-card">
+        <div class="agent-num">AGENT 03</div>
+        <div class="agent-name">📅 Social Scheduler Agent</div>
+        <div class="agent-desc">Takes approved post, schedules to all platforms at optimal time via Buffer. Human approves, agent executes.</div>
+        <div class="agent-flow">
+          <span class="hl">IN:</span> Approved content + platform<br>
+          <span class="hl">OUT:</span> Scheduled posts in Buffer<br>
+          <span class="hl">VIA:</span> Make.com → Buffer API
+        </div>
+        <div style="margin-top:10px;"><span class="pill pill-plan">PLANNED</span></div>
       </div>
     </div>
-    <div class="team-panel">
-      <div class="team-hdr">PHC Team</div>
-      <div class="team-member">
-        <div>
-          <div class="role-badge">CEO</div>
+    <div class="row-3">
+      <div class="agent-card">
+        <div class="agent-num">AGENT 04</div>
+        <div class="agent-name">🔔 Lead Alert Agent</div>
+        <div class="agent-desc">Fires the instant a lead enters Google Sheets. Sends formatted Telegram ping to Nick with name, budget, property, and priority score.</div>
+        <div class="agent-flow">
+          <span class="hl">IN:</span> New row in Leads sheet<br>
+          <span class="hl">OUT:</span> Telegram message → Nick<br>
+          <span class="hl">VIA:</span> Apps Script → @PHC_Lead_Bot
         </div>
-        <div>
-          <div class="member-name">Nick</div>
-          <div class="member-detail">Strategy · VIP clients ($500K+)<br>Final approvals · system owner<br>Receives VIP alerts directly</div>
-        </div>
+        <div style="margin-top:10px;"><span class="pill pill-live">LIVE ✓</span></div>
       </div>
-      <div class="team-member">
-        <div>
-          <div class="role-badge">ADVISOR</div>
+      <div class="agent-card">
+        <div class="agent-num">AGENT 05</div>
+        <div class="agent-name">🔄 Follow-up Agent</div>
+        <div class="agent-desc">Automatically contacts leads that haven't replied on Day 1, Day 3, and Day 7. Stops when lead responds. No deals lost to silence.</div>
+        <div class="agent-flow">
+          <span class="hl">IN:</span> Lead with no response<br>
+          <span class="hl">OUT:</span> WhatsApp / Telegram D1 · D3 · D7<br>
+          <span class="hl">VIA:</span> Make.com scheduled trigger
         </div>
-        <div>
-          <div class="member-name">Monika</div>
-          <div class="member-detail">t.me/Monika_PHC<br>Primary lead handling<br>JP · RU · EN segments</div>
-        </div>
+        <div style="margin-top:10px;"><span class="pill pill-plan">PLANNED</span></div>
       </div>
-      <div class="team-member">
-        <div>
-          <div class="role-badge">ADVISOR</div>
-        </div>
-        <div>
-          <div class="member-name">Reza</div>
-          <div class="member-detail">Secondary advisor<br>KH · EN segments<br>After-sale support</div>
-        </div>
-      </div>
-      <div class="alert-panel">
-        <div class="alert-label">TEAM NOTIFICATION CHANNELS</div>
-        <div class="alert-items">
-          📢 PHC Lead Notifications (Telegram group)<br>
-          ⭐ VIP direct alert → Nick only<br>
-          📞 011 666 952 (main line)<br>
-          🏠 t.me/PropertyHubCambodia
+      <div class="card" style="border:1px dashed rgba(201,153,63,.2);background:rgba(0,0,0,.15);">
+        <div style="text-align:center;padding:20px 0;">
+          <div style="font-size:28px;margin-bottom:10px;opacity:.3;">+</div>
+          <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,.25);margin-bottom:6px;">Future Agents</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.2);line-height:1.8;">
+            JP Market Agent (LINE)<br>
+            Payment Reminder Agent<br>
+            Construction Update Agent<br>
+            Rental Management Agent
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="connector">
+  <div class="conn">
     <div class="conn-line"></div>
-    <div class="conn-label">across the full client lifecycle</div>
+    <div class="conn-label">data flows through</div>
     <div class="conn-line"></div>
     <div class="conn-arrow"></div>
   </div>
 
-  <!-- 05 CLIENT LIFECYCLE -->
-  <div class="sec-head">
-    <span class="sec-num">05</span>
-    <span class="sec-title">Client Lifecycle</span>
-    <div class="sec-line"></div>
+  <!-- ══ 05 INTEGRATION ENGINE ══ -->
+  <div class="sec">
+    <div class="sec-head">
+      <span class="sec-num">05</span>
+      <span class="sec-title">Integration Engine</span>
+      <div class="sec-line"></div>
+    </div>
+    <div class="row" style="gap:12px;">
+      <div class="card col-main">
+        <div class="card-head">
+          <div class="card-icon">⚙️</div>
+          <div>
+            <div class="card-title">Make.com — Automation Backbone <span class="pill pill-plan" style="font-size:7px;vertical-align:middle;margin-left:6px;">PLANNED</span></div>
+            <div class="card-sub">Orchestrates all automated sequences — connects every system together</div>
+          </div>
+          <div class="card-badge cb-make">MAKE.COM</div>
+        </div>
+        <div class="make-grid">
+          <div class="make-out">
+            <div class="make-icon">📅</div>
+            <div class="make-title">D1 · D3 · D7</div>
+            <div class="make-desc">Post-proposal follow-up sequence. Stops when lead replies.</div>
+          </div>
+          <div class="make-out">
+            <div class="make-icon">💳</div>
+            <div class="make-title">Payment Reminders</div>
+            <div class="make-desc">Auto-DM 5 days before each client's payment due date.</div>
+          </div>
+          <div class="make-out">
+            <div class="make-icon">📋</div>
+            <div class="make-title">SPA Checklist</div>
+            <div class="make-desc">Sent automatically 24h after booking fee confirmed.</div>
+          </div>
+          <div class="make-out">
+            <div class="make-icon">📢</div>
+            <div class="make-title">Milestone Broadcasts</div>
+            <div class="make-desc">Construction updates sent to all clients on a project.</div>
+          </div>
+          <div class="make-out">
+            <div class="make-icon">🏗️</div>
+            <div class="make-title">Handover Prep</div>
+            <div class="make-desc">Full prep package sent 90 days before key collection.</div>
+          </div>
+          <div class="make-out">
+            <div class="make-icon">📱</div>
+            <div class="make-title">Social Scheduler</div>
+            <div class="make-desc">Routes approved content → Buffer → all platforms.</div>
+          </div>
+          <div class="make-out">
+            <div class="make-icon">📰</div>
+            <div class="make-title">Blog Publisher</div>
+            <div class="make-desc">Pushes approved articles → Supabase blog → live.</div>
+          </div>
+          <div class="make-out">
+            <div class="make-icon">📧</div>
+            <div class="make-title">Email Nurture</div>
+            <div class="make-desc">3-email sequence for website leads who provide email.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card col-side">
+        <div class="card-head">
+          <div class="card-icon">📊</div>
+          <div>
+            <div class="card-title">Apps Script API <span class="pill pill-live" style="font-size:7px;vertical-align:middle;margin-left:6px;">LIVE</span></div>
+            <div class="card-sub">Google Sheets CRM backbone</div>
+          </div>
+          <div class="card-badge cb-gs">LIVE</div>
+        </div>
+        <div style="font-size:11px;color:rgba(255,255,255,.35);line-height:2;margin-bottom:14px;">
+          GET/POST API for all 4 data tabs<br>
+          Tasks · Leads · Clients · Deals<br>
+          Confirmation emails on insert<br>
+          <span style="color:#4ade80;">✓ Telegram alerts on new lead</span>
+        </div>
+        <div class="mini-label">Sheets / Tabs</div>
+        <div class="tag-list">
+          <div class="tag live">Tasks ✓</div>
+          <div class="tag live">Leads ✓</div>
+          <div class="tag live">Clients ✓</div>
+          <div class="tag live">Deals ✓</div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="lifecycle-grid">
 
-    <!-- BEFORE SALE -->
-    <div class="lc-col">
-      <div class="lc-hdr before">🎯 Before Sale</div>
-      <div class="lc-body">
-        <div class="lc-step"><div class="lc-num">1</div><div class="lc-text">Lead captured via ManyChat flow<span class="lc-badge auto">MANYCHAT</span></div></div>
-        <div class="lc-step"><div class="lc-num">2</div><div class="lc-text">Qualification: budget · timeline · nationality<span class="lc-badge auto">MANYCHAT</span></div></div>
-        <div class="lc-step"><div class="lc-num">3</div><div class="lc-text">Lead Magnet delivered instantly<span class="lc-badge auto">MANYCHAT</span></div></div>
-        <div class="lc-step"><div class="lc-num">4</div><div class="lc-text">Team Telegram alert fired<span class="lc-badge make">MAKE</span></div></div>
-        <div class="lc-step"><div class="lc-num">5</div><div class="lc-text">$500K+ leads routed to Nick as VIP<span class="lc-badge auto">MANYCHAT</span></div></div>
-        <div class="lc-step"><div class="lc-num">6</div><div class="lc-text">Agent follow-up within 2 hours<span class="lc-badge man">MANUAL</span></div></div>
-        <div class="lc-step"><div class="lc-num">7</div><div class="lc-text">Investment Explorer + Market Sheet shared<span class="lc-badge man">MANUAL</span></div></div>
-        <div class="lc-step"><div class="lc-num">8</div><div class="lc-text">Site visit booked via Calendly<span class="lc-badge auto">MANYCHAT</span></div></div>
-        <div class="lc-step"><div class="lc-num">9</div><div class="lc-text">Proposal generated and sent<span class="lc-badge man">MANUAL</span></div></div>
-        <div class="lc-step"><div class="lc-num">10</div><div class="lc-text">Post-proposal follow-up Day 1 · 3 · 7<span class="lc-badge make">MAKE</span></div></div>
-      </div>
-    </div>
-
-    <!-- DURING SALE -->
-    <div class="lc-col">
-      <div class="lc-hdr during">💼 During Sale</div>
-      <div class="lc-body">
-        <div class="lc-step"><div class="lc-num">1</div><div class="lc-text">Booking fee confirmed ($1,000)<span class="lc-badge man">MANUAL</span></div></div>
-        <div class="lc-step"><div class="lc-num">2</div><div class="lc-text">"Welcome to PHC" message auto-sent<span class="lc-badge auto">MANYCHAT</span></div></div>
-        <div class="lc-step"><div class="lc-num">3</div><div class="lc-text">SPA document checklist auto-sent (24h after booking)<span class="lc-badge make">MAKE</span></div></div>
-        <div class="lc-step"><div class="lc-num">4</div><div class="lc-text">Personal payment schedule auto-sent<span class="lc-badge make">MAKE</span></div></div>
-        <div class="lc-step"><div class="lc-num">5</div><div class="lc-text">SPA signing reminder (3 days before)<span class="lc-badge make">MAKE</span></div></div>
-        <div class="lc-step"><div class="lc-num">6</div><div class="lc-text">SPA signed · client added to Google Sheet<span class="lc-badge man">MANUAL</span></div></div>
-        <div class="lc-step"><div class="lc-num">7</div><div class="lc-text">Client added to project Telegram group<span class="lc-badge man">MANUAL</span></div></div>
-        <div class="lc-step"><div class="lc-num">8</div><div class="lc-text">First payment reminder (5 days before due)<span class="lc-badge make">MAKE</span></div></div>
-      </div>
-    </div>
-
-    <!-- AFTER SALE -->
-    <div class="lc-col">
-      <div class="lc-hdr after">🏗️ After Sale</div>
-      <div class="lc-body">
-        <div class="lc-step"><div class="lc-num">1</div><div class="lc-text">Monthly payment reminder (auto, 5 days before due)<span class="lc-badge make">MAKE</span></div></div>
-        <div class="lc-step"><div class="lc-num">2</div><div class="lc-text">Client sends receipt confirmation<span class="lc-badge man">MANUAL</span></div></div>
-        <div class="lc-step"><div class="lc-num">3</div><div class="lc-text">Nick submits project update form → broadcast to all clients on that project<span class="lc-badge make">MAKE</span></div></div>
-        <div class="lc-step"><div class="lc-num">4</div><div class="lc-text">Construction milestone celebration sent<span class="lc-badge make">MAKE</span></div></div>
-        <div class="lc-step"><div class="lc-num">5</div><div class="lc-text">Project group: photos + floor progress<span class="lc-badge tg">TELEGRAM</span></div></div>
-        <div class="lc-step"><div class="lc-num">6</div><div class="lc-text">Public channel: milestone announcement<span class="lc-badge tg">TELEGRAM</span></div></div>
-        <div class="lc-step"><div class="lc-num">7</div><div class="lc-text">Handover prep package sent (90 days out)<span class="lc-badge make">MAKE</span></div></div>
-        <div class="lc-step"><div class="lc-num">8</div><div class="lc-text">Key collection coordination<span class="lc-badge man">MANUAL</span></div></div>
-        <div class="lc-step"><div class="lc-num">9</div><div class="lc-text">Post-handover: rental management referral<span class="lc-badge man">MANUAL</span></div></div>
-      </div>
-    </div>
-
-  </div><!-- /lifecycle-grid -->
-
-  <div class="connector">
+  <div class="conn">
     <div class="conn-line"></div>
-    <div class="conn-label">serving</div>
+    <div class="conn-label">powers the team via</div>
     <div class="conn-line"></div>
     <div class="conn-arrow"></div>
   </div>
 
-  <!-- 06 PROJECTS + SEGMENTS -->
-  <div class="sec-head">
-    <span class="sec-num">06</span>
-    <span class="sec-title">Projects &amp; Client Segments</span>
-    <div class="sec-line"></div>
+  <!-- ══ 06 TOOLS + TEAM ══ -->
+  <div class="sec">
+    <div class="sec-head">
+      <span class="sec-num">06</span>
+      <span class="sec-title">PHC Tools & Team</span>
+      <div class="sec-line"></div>
+    </div>
+    <div class="row">
+      <!-- Tools -->
+      <div style="flex:3;min-width:360px;">
+        <div class="mini-label" style="margin-bottom:12px;">Internal Tools (GitHub Pages · Single-file HTML)</div>
+        <div class="tools-grid" style="margin-bottom:14px;">
+          <div class="tool-card"><div class="tool-name">📋 Lead Tracker v3</div><div class="tool-desc">Kanban CRM · auto-scoring · Google Sheets sync</div></div>
+          <div class="tool-card"><div class="tool-name">✅ Task Manager v4</div><div class="tool-desc">List · Board · Schedule · Doc · team sync</div></div>
+          <div class="tool-card"><div class="tool-name">📊 CEO Dashboard</div><div class="tool-desc">Live pipeline · agent breakdown · overdue alerts</div></div>
+          <div class="tool-card"><div class="tool-name">💰 Commission Tracker</div><div class="tool-desc">Deal logging · auto commission split</div></div>
+          <div class="tool-card"><div class="tool-name">👥 Client Manager</div><div class="tool-desc">Payment schedules · SPA & title status</div></div>
+          <div class="tool-card"><div class="tool-name">💬 Message Builder</div><div class="tool-desc">36 scenarios · 6 segments · WhatsApp copy</div></div>
+          <div class="tool-card"><div class="tool-name">🎓 Agent Training v3</div><div class="tool-desc">20 lessons · interactive · certificate</div></div>
+          <div class="tool-card"><div class="tool-name">🔍 Investment Explorer</div><div class="tool-desc">Client-facing · 4 budget tiers</div></div>
+          <div class="tool-card"><div class="tool-name">📈 Market Intelligence</div><div class="tool-desc">Data cheat sheet · June 2026</div></div>
+          <div class="tool-card"><div class="tool-name">📄 Proposal Generator</div><div class="tool-desc">3-property library · print-ready PDF</div></div>
+          <div class="tool-card"><div class="tool-name">📘 Lead Magnet</div><div class="tool-desc">Cambodia Guide 2026 · email-gated</div></div>
+          <div class="tool-card"><div class="tool-name">⚙️ Setup Tracker</div><div class="tool-desc">ManyChat · Make · Mailchimp · Ads guides</div></div>
+        </div>
+        <div class="mini-label" style="margin-bottom:12px;">Website (Vercel · React · Supabase)</div>
+        <div class="tools-grid">
+          <div class="tool-card web-tool"><div class="tool-name">🌐 propertyhubcambodia.com</div><div class="tool-desc">18 properties · multilingual EN/JP/DE/KH</div></div>
+          <div class="tool-card web-tool"><div class="tool-name">🔧 Admin Panel</div><div class="tool-desc">Full CRUD · properties · blog · inquiries</div></div>
+          <div class="tool-card web-tool"><div class="tool-name">📝 Blog / Insights</div><div class="tool-desc">Supabase · TipTap editor · SEO</div></div>
+          <div class="tool-card web-tool"><div class="tool-name">🗺️ Interactive Map</div><div class="tool-desc">OpenStreetMap · property pins</div></div>
+        </div>
+      </div>
+      <!-- Team -->
+      <div style="flex:1;min-width:260px;">
+        <div class="team-panel">
+          <div class="team-hdr">PHC Team</div>
+          <div class="team-member">
+            <div><div class="role-badge">CEO</div></div>
+            <div>
+              <div class="member-name">Nick</div>
+              <div class="member-detail">Strategy · system owner<br>VIP clients ($500K+)<br>Receives all lead alerts</div>
+            </div>
+          </div>
+          <div class="team-member">
+            <div><div class="role-badge founder">CO-FOUNDER</div></div>
+            <div>
+              <div class="member-name">Monika</div>
+              <div class="member-detail">
+                <span class="member-flag">🇯🇵</span>Japanese · <span class="member-flag">🇷🇺</span>Russian · EN<br>
+                t.me/Monika_PHC<br>Primary client advisor
+              </div>
+            </div>
+          </div>
+          <div class="team-member">
+            <div><div class="role-badge founder">CO-FOUNDER</div></div>
+            <div>
+              <div class="member-name">Reza</div>
+              <div class="member-detail">
+                <span class="member-flag">🇩🇪</span>German · European market<br>
+                After-sale support<br>European investor pipeline
+              </div>
+            </div>
+          </div>
+          <div class="team-member">
+            <div><div class="role-badge" style="background:rgba(99,102,241,.12);color:#818cf8;">CONTENT</div></div>
+            <div>
+              <div class="member-name">Mey</div>
+              <div class="member-detail">
+                Daily social posts<br>
+                IG · FB · TikTok<br>
+                Blog articles
+              </div>
+            </div>
+          </div>
+          <div class="team-member">
+            <div><div class="role-badge" style="background:rgba(34,158,217,.1);color:var(--tg);">SUPPORT</div></div>
+            <div>
+              <div class="member-name">Marina</div>
+              <div class="member-detail">
+                WhatsApp · Telegram responses<br>
+                REAKH portal management<br>
+                Listing accuracy checks
+              </div>
+            </div>
+          </div>
+          <div style="padding:14px 18px;background:rgba(201,153,63,.04);border-top:1px solid rgba(201,153,63,.1);">
+            <div class="mini-label" style="margin-bottom:8px;">Alert Channels</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.35);line-height:1.9;">
+              🔔 Telegram: @PHC_Lead_Bot → Nick<br>
+              📧 Email: team notification on insert<br>
+              📞 Main: 011 666 952
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="proj-row">
-    <div class="proj-chip"><div class="proj-name">Time Square 7</div><div class="proj-dev">Off-plan · MegaKim · Active</div></div>
-    <div class="proj-chip"><div class="proj-name">Time Square 8</div><div class="proj-dev">Off-plan · MegaKim · Active</div></div>
-    <div class="proj-chip"><div class="proj-name">Time Square 9</div><div class="proj-dev">BKK1 · Gatsby Residence · Active</div></div>
-    <div class="proj-chip"><div class="proj-name">Time Square 10</div><div class="proj-dev">Ocean View · Active</div></div>
-    <div class="proj-chip"><div class="proj-name">Time Square 11</div><div class="proj-dev">Off-plan · Upcoming</div></div>
-    <div class="proj-chip"><div class="proj-name">Picasso 2</div><div class="proj-dev">Off-plan · Active</div></div>
+
+  <div class="conn">
+    <div class="conn-line"></div>
+    <div class="conn-label">across the full client journey</div>
+    <div class="conn-line"></div>
+    <div class="conn-arrow"></div>
   </div>
-  <div class="seg-row">
-    <div class="seg-chip" style="background:rgba(24,119,242,.1);border-color:#1877f2;color:#1877f2">🇬🇧 English / Western</div>
-    <div class="seg-chip" style="background:rgba(230,57,70,.1);border-color:#e63946;color:#e63946">🇯🇵 Japanese</div>
-    <div class="seg-chip" style="background:rgba(45,158,107,.1);border-color:#2d9e6b;color:#2d9e6b">🇩🇪 German / European</div>
-    <div class="seg-chip" style="background:rgba(192,57,43,.1);border-color:#c0392b;color:#c0392b">🇷🇺 Russian</div>
-    <div class="seg-chip" style="background:rgba(33,150,163,.1);border-color:#2196a3;color:#2196a3">🇰🇭 Cambodian Local</div>
-    <div class="seg-chip" style="background:rgba(33,150,163,.1);border-color:#2196a3;color:#52c0cc">🌏 Cambodian Overseas</div>
-    <div class="seg-chip" style="background:rgba(139,92,246,.1);border-color:#8b5cf6;color:#8b5cf6">⭐ VIP — $500K+</div>
+
+  <!-- ══ 07 LIFECYCLE ══ -->
+  <div class="sec">
+    <div class="sec-head">
+      <span class="sec-num">07</span>
+      <span class="sec-title">Client Lifecycle</span>
+      <div class="sec-line"></div>
+    </div>
+    <div class="row-3">
+      <div class="lc-col">
+        <div class="lc-hdr before">🎯 Before Sale</div>
+        <div class="lc-body">
+          <div class="lc-step"><div class="lc-num">1</div><div class="lc-text">Lead captured via website form or ManyChat flow<span class="lc-tag auto">MANYCHAT</span></div></div>
+          <div class="lc-step"><div class="lc-num">2</div><div class="lc-text">Budget · timeline · nationality qualified<span class="lc-tag auto">MANYCHAT</span></div></div>
+          <div class="lc-step"><div class="lc-num">3</div><div class="lc-text">Cambodia Guide delivered instantly<span class="lc-tag auto">MANYCHAT</span></div></div>
+          <div class="lc-step"><div class="lc-num">4</div><div class="lc-text">Lead scored → routed to right agent<span class="lc-tag ai">AI AGENT</span></div></div>
+          <div class="lc-step"><div class="lc-num">5</div><div class="lc-text">Nick alerted via Telegram instantly<span class="lc-tag ai">LIVE ✓</span></div></div>
+          <div class="lc-step"><div class="lc-num">6</div><div class="lc-text">$500K+ VIP routed directly to Nick<span class="lc-tag auto">MANYCHAT</span></div></div>
+          <div class="lc-step"><div class="lc-num">7</div><div class="lc-text">Agent follow-up within 2 hours<span class="lc-tag man">MANUAL</span></div></div>
+          <div class="lc-step"><div class="lc-num">8</div><div class="lc-text">Investment Explorer + Market Sheet sent<span class="lc-tag man">MANUAL</span></div></div>
+          <div class="lc-step"><div class="lc-num">9</div><div class="lc-text">Site visit booked via Calendly<span class="lc-tag auto">MANYCHAT</span></div></div>
+          <div class="lc-step"><div class="lc-num">10</div><div class="lc-text">Proposal generated and sent<span class="lc-tag man">MANUAL</span></div></div>
+          <div class="lc-step"><div class="lc-num">11</div><div class="lc-text">D1 · D3 · D7 follow-up if no reply<span class="lc-tag make">MAKE</span></div></div>
+        </div>
+      </div>
+      <div class="lc-col">
+        <div class="lc-hdr during">💼 During Sale</div>
+        <div class="lc-body">
+          <div class="lc-step"><div class="lc-num">1</div><div class="lc-text">Booking fee confirmed ($1,000)<span class="lc-tag man">MANUAL</span></div></div>
+          <div class="lc-step"><div class="lc-num">2</div><div class="lc-text">"Welcome to PHC" message auto-sent<span class="lc-tag auto">MANYCHAT</span></div></div>
+          <div class="lc-step"><div class="lc-num">3</div><div class="lc-text">SPA checklist auto-sent (24h after booking)<span class="lc-tag make">MAKE</span></div></div>
+          <div class="lc-step"><div class="lc-num">4</div><div class="lc-text">Personal payment schedule sent<span class="lc-tag make">MAKE</span></div></div>
+          <div class="lc-step"><div class="lc-num">5</div><div class="lc-text">SPA signing reminder (3 days before)<span class="lc-tag make">MAKE</span></div></div>
+          <div class="lc-step"><div class="lc-num">6</div><div class="lc-text">SPA signed · client added to CRM<span class="lc-tag man">MANUAL</span></div></div>
+          <div class="lc-step"><div class="lc-num">7</div><div class="lc-text">Client added to project Telegram group<span class="lc-tag man">MANUAL</span></div></div>
+          <div class="lc-step"><div class="lc-num">8</div><div class="lc-text">Payment reminder (5 days before due)<span class="lc-tag make">MAKE</span></div></div>
+        </div>
+      </div>
+      <div class="lc-col">
+        <div class="lc-hdr after">🏗️ After Sale</div>
+        <div class="lc-body">
+          <div class="lc-step"><div class="lc-num">1</div><div class="lc-text">Monthly payment reminders (auto)<span class="lc-tag make">MAKE</span></div></div>
+          <div class="lc-step"><div class="lc-num">2</div><div class="lc-text">Client sends receipt → agent confirms<span class="lc-tag man">MANUAL</span></div></div>
+          <div class="lc-step"><div class="lc-num">3</div><div class="lc-text">Construction milestone update → all clients on project<span class="lc-tag make">MAKE</span></div></div>
+          <div class="lc-step"><div class="lc-num">4</div><div class="lc-text">Progress photos in project Telegram group<span class="lc-tag tg">TELEGRAM</span></div></div>
+          <div class="lc-step"><div class="lc-num">5</div><div class="lc-text">Public channel announcement<span class="lc-tag tg">TELEGRAM</span></div></div>
+          <div class="lc-step"><div class="lc-num">6</div><div class="lc-text">Handover prep package (90 days out)<span class="lc-tag make">MAKE</span></div></div>
+          <div class="lc-step"><div class="lc-num">7</div><div class="lc-text">Key collection coordination<span class="lc-tag man">MANUAL</span></div></div>
+          <div class="lc-step"><div class="lc-num">8</div><div class="lc-text">Rental management referral<span class="lc-tag man">MANUAL</span></div></div>
+          <div class="lc-step"><div class="lc-num">9</div><div class="lc-text">Referral request → new lead loop begins<span class="lc-tag man">MANUAL</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="conn">
+    <div class="conn-line"></div>
+    <div class="conn-label">across all properties & segments</div>
+    <div class="conn-line"></div>
+    <div class="conn-arrow"></div>
+  </div>
+
+  <!-- ══ 08 PROJECTS ══ -->
+  <div class="sec">
+    <div class="sec-head">
+      <span class="sec-num">08</span>
+      <span class="sec-title">18 Properties in Portfolio</span>
+      <div class="sec-line"></div>
+    </div>
+    <div class="proj-section">
+      <div class="proj-city">🏙️ Phnom Penh (15)</div>
+      <div class="proj-row">
+        <div class="proj-chip"><div class="proj-name">Time Square 7</div><div class="proj-dev">MegaKim · Off-plan</div></div>
+        <div class="proj-chip"><div class="proj-name">Time Square 8</div><div class="proj-dev">MegaKim · Off-plan</div></div>
+        <div class="proj-chip"><div class="proj-name">Time Square 9</div><div class="proj-dev">BKK1 · Active</div></div>
+        <div class="proj-chip"><div class="proj-name">Time Square 10</div><div class="proj-dev">Ocean View · Active</div></div>
+        <div class="proj-chip"><div class="proj-name">Time Square 11</div><div class="proj-dev">MegaKim · Off-plan</div></div>
+        <div class="proj-chip"><div class="proj-name">Kingston Royale</div><div class="proj-dev">BKK1 · Premium</div></div>
+        <div class="proj-chip"><div class="proj-name">Le Conde BKK1</div><div class="proj-dev">BKK1 · Luxury</div></div>
+        <div class="proj-chip"><div class="proj-name">GATO Tower</div><div class="proj-dev">Off-plan</div></div>
+        <div class="proj-chip"><div class="proj-name">Odom Living</div><div class="proj-dev">BKK1 · Active</div></div>
+        <div class="proj-chip"><div class="proj-name">Odom Tower</div><div class="proj-dev">BKK1 · Active</div></div>
+        <div class="proj-chip"><div class="proj-name">UC88 Wyndham</div><div class="proj-dev">Hotel-branded</div></div>
+        <div class="proj-chip"><div class="proj-name">J Tower 3</div><div class="proj-dev">BKK1 · Premium</div></div>
+        <div class="proj-chip"><div class="proj-name">Diamond Bay Garden</div><div class="proj-dev">Riverside</div></div>
+        <div class="proj-chip"><div class="proj-name">Norea Square</div><div class="proj-dev">Active</div></div>
+        <div class="proj-chip"><div class="proj-name">Picasso Sky Gemme</div><div class="proj-dev">Off-plan · Active</div></div>
+      </div>
+    </div>
+    <div class="proj-section">
+      <div class="proj-city">🌿 Siem Reap (2)</div>
+      <div class="proj-row">
+        <div class="proj-chip"><div class="proj-name">Angkor Grace</div><div class="proj-dev">Siem Reap · Resort</div></div>
+        <div class="proj-chip"><div class="proj-name">Rose Apple Square</div><div class="proj-dev">Siem Reap · Active</div></div>
+      </div>
+    </div>
+    <div class="proj-section">
+      <div class="proj-city">🌊 Sihanoukville (1)</div>
+      <div class="proj-row">
+        <div class="proj-chip"><div class="proj-name">LZ Sea View Premium</div><div class="proj-dev">Beachfront · Off-plan</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 09 SEGMENTS ══ -->
+  <div class="sec">
+    <div class="sec-head">
+      <span class="sec-num">09</span>
+      <span class="sec-title">7 Client Segments</span>
+      <div class="sec-line"></div>
+    </div>
+    <div class="seg-row">
+      <div class="seg-chip" style="background:rgba(24,119,242,.08);border-color:rgba(24,119,242,.3);color:#60a5fa;">🇬🇧 English / Western</div>
+      <div class="seg-chip" style="background:rgba(230,57,70,.08);border-color:rgba(230,57,70,.3);color:#f87171;">🇯🇵 Japanese <span style="font-size:9px;opacity:.6;">(Score 5 · top priority)</span></div>
+      <div class="seg-chip" style="background:rgba(45,158,107,.08);border-color:rgba(45,158,107,.3);color:#4ade80;">🇩🇪 German / European <span style="font-size:9px;opacity:.6;">(Score 4)</span></div>
+      <div class="seg-chip" style="background:rgba(192,57,43,.08);border-color:rgba(192,57,43,.3);color:#f87171;">🇷🇺 Russian</div>
+      <div class="seg-chip" style="background:rgba(33,150,163,.08);border-color:rgba(33,150,163,.3);color:#67e8f9;">🇰🇭 Cambodian Local</div>
+      <div class="seg-chip" style="background:rgba(33,150,163,.08);border-color:rgba(33,150,163,.25);color:#a5f3fc;">🌏 Cambodian Overseas</div>
+      <div class="seg-chip" style="background:rgba(139,92,246,.08);border-color:rgba(139,92,246,.3);color:#c4b5fd;">⭐ VIP — $500K+ <span style="font-size:9px;opacity:.6;">(Nick direct)</span></div>
+    </div>
   </div>
 
 </div><!-- /diagram -->
+
+<div style="text-align:center;padding:32px;border-top:1px solid rgba(255,255,255,.04);">
+  <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.18);letter-spacing:.1em;">
+    PROPERTY HUB CAMBODIA · INTERNAL SYSTEM MAP · JUNE 2026 · DIRECTOR ONLY
+  </div>
+</div>
 
 </body>
 </html>
