@@ -418,9 +418,9 @@ select.vt-sel{padding:4px 8px;border:1px solid var(--border);border-radius:6px;b
     </div>
     <select class="vt-sel" id="fltNat" onchange="render()">
       <option value="">Nationality</option>
-      <option>Japanese</option><option>German</option><option>Cambodian</option>
+      <option>Japanese</option><option>German</option><option>European</option><option>Cambodian</option>
       <option>Russian</option><option>Chinese</option><option>Singaporean</option>
-      <option>British</option><option>Other</option>
+      <option>British</option><option>Australian</option><option>Other</option>
     </select>
     <div class="vt-right">
       <button class="csv-btn" onclick="exportCSV()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> CSV</button>
@@ -498,7 +498,7 @@ select.vt-sel{padding:4px 8px;border:1px solid var(--border);border-radius:6px;b
         <div class="m-group"><label class="m-lbl">Nationality</label>
           <select class="m-sel" id="mNat" onchange="autoAssignFromModal()"><option value="">-</option>
             <option>Japanese</option><option>German</option><option>Cambodian</option>
-            <option>Russian</option><option>Chinese</option><option>Singaporean</option><option>British</option><option>Other</option>
+            <option>Russian</option><option>Chinese</option><option>Singaporean</option><option>British</option><option>Australian</option><option>European</option><option>Other</option>
           </select>
         </div>
         <div class="m-group"><label class="m-lbl">Phone / WhatsApp</label>
@@ -526,7 +526,7 @@ select.vt-sel{padding:4px 8px;border:1px solid var(--border);border-radius:6px;b
             <option>J Tower 3</option><option>Odom Tower</option><option>Odom Living</option>
             <option>UC88 Wyndham Garden</option><option>Diamond Bay Garden</option><option>Angkor Grace</option>
             <option>LZ Sea View Premium</option><option>Picasso Sky Gemme</option>
-            <option>GATO Tower</option><option>Multiple/TBD</option>
+            <option>Time Square 11</option><option>GATO Tower</option><option>Norea Square</option><option>Rose Apple Square</option><option>Multiple/TBD</option>
           </select>
         </div>
         <div class="m-group"><label class="m-lbl">Source</label>
@@ -560,7 +560,8 @@ select.vt-sel{padding:4px 8px;border:1px solid var(--border);border-radius:6px;b
 // STATE
 const LS_API  = 'phc_api_v3';
 const LS_DATA = 'phc_leads_v3';
-let API_URL      = localStorage.getItem(LS_API) || '';
+const DEFAULT_API = 'https://script.google.com/macros/s/AKfycbzlAxcJqEI3upZ18sm-mj2Gxd3w2XSkD_YYqgkZ4kdw2_AV3V8f2B4qVcPESHZTOq2k8Q/exec';
+let API_URL      = localStorage.getItem(LS_API) || DEFAULT_API;
 let leads        = [];
 let currentView  = 'kanban';
 let stageFilter  = null;
@@ -607,6 +608,12 @@ const PHONE_NAT = {
   '+86':'Chinese',     // China mainland
   '+65':'Singaporean', // Singapore
   '+44':'British',     // UK
+  '+33':'European',    // France
+  '+41':'European',    // Switzerland
+  '+31':'European',    // Netherlands
+  '+32':'European',    // Belgium
+  '+61':'Australian',  // Australia
+  '+1':'Other',        // USA/Canada
 };
 function natFromPhone(phone){
   if(!phone) return '';
@@ -682,7 +689,8 @@ function autoAssign(nationality){
   // Definitive routing
   if(nationality==='Japanese') return 'Nick';
   if(nationality==='Cambodian'||nationality==='Chinese') return 'Monika';
-  if(nationality==='German'||nationality==='Russian') return 'Reza';
+  if(nationality==='German'||nationality==='European') return 'Reza';
+  if(nationality==='Russian') return 'Monika';
   // British / Singaporean / Other / blank → least loaded between Nick & Monika
   var active=leads.filter(function(l){return l.stage!=='Closed'&&l.stage!=='Released';});
   function cnt(a){return active.filter(function(l){return l.agent===a;}).length;}
@@ -699,7 +707,7 @@ function autoAssignFromDrawer(){
 }
 
 // SCORING
-const NS = {Japanese:5,German:4,Singaporean:4,British:3,Cambodian:3,Russian:3,Chinese:3,Other:2};
+const NS = {Japanese:5,German:4,European:4,Singaporean:4,British:3,Australian:3,Cambodian:3,Russian:3,Chinese:3,Other:2};
 const BS = {'$500K+':5,'$300K-$500K':4,'$200K-$300K':3,'$100K-$200K':2,'Under $100K':1};
 const TS = {'0-3 months':5,'3-6 months':4,'6-12 months':2,'12+ months':1};
 
@@ -714,7 +722,7 @@ function priority(l){
 }
 
 // BUDGET MIDPOINTS
-const BUDGET_MID = {'Under $100K':75000,'$100K-$200K':150000,'$200K-$300K':250000,'$300K-$500K':400000,'$500K+':500000};
+const BUDGET_MID = {'Under $100K':65000,'$100K-$200K':150000,'$200K-$300K':250000,'$300K-$500K':400000,'$500K+':650000};
 function pipeVal(ls){ return ls.reduce(function(s,l){return s+(BUDGET_MID[l.budget]||0);},0); }
 function fmtUSD(n){ if(n>=1000000) return '$'+(n/1000000).toFixed(1)+'M'; if(n>=1000) return '$'+Math.round(n/1000)+'K'; return '$'+n; }
 
@@ -778,15 +786,7 @@ async function persistLead(lead,isNew){
   else await apiPOST({action:'update',sheet:'Leads',id:lead.id,data:payload});
 }
 
-function sampleLeads(){
-  return [
-    {id:'s1',fullName:'Tanaka Hiroshi',nationality:'Japanese',phone:'+81 90-1234-5678',telegram:'',email:'tanaka@email.jp',budget:'$200K-$300K',timeline:'3-6 months',interestedIn:'J Tower 3',source:'LINE',stage:'Contacted',agent:'Nick',followUpDate:today(),followUpAction:'Send J Tower 3 brochure',notes:'Low risk tolerance. Needs strata title confirmation.',activities:[{type:'Call',note:'Initial call - interested in freehold condos near BKK1',ts:new Date(Date.now()-86400000*2).toISOString()}],createdAt:new Date().toISOString()},
-    {id:'s2',fullName:'Klaus Muller',nationality:'German',phone:'+49 151 2345678',telegram:'',email:'k.muller@gmail.com',budget:'$300K-$500K',timeline:'6-12 months',interestedIn:'Odom Tower',source:'LinkedIn',stage:'Viewing',agent:'Reza',followUpDate:'',followUpAction:'',notes:'Retirement income focus. Wants 7%+ net yield.',activities:[],createdAt:new Date().toISOString()},
-    {id:'s3',fullName:'Sophea Keo',nationality:'Cambodian',phone:'012 345 678',telegram:'',email:'',budget:'$100K-$200K',timeline:'0-3 months',interestedIn:'Kingston Royale',source:'Facebook',stage:'New Lead',agent:'Monika',followUpDate:'',followUpAction:'',notes:'Family purchase. School proximity important.',activities:[],createdAt:new Date().toISOString()},
-    {id:'s4',fullName:'Yamamoto Keiko',nationality:'Japanese',phone:'+81 80-9876-5432',telegram:'',email:'keiko.y@yahoo.jp',budget:'$500K+',timeline:'0-3 months',interestedIn:'J Tower 3',source:'LINE',stage:'Negotiating',agent:'Nick',followUpDate:'',followUpAction:'',notes:'Cash buyer. VIP referral from Osaka broker.',activities:[],createdAt:new Date().toISOString()},
-    {id:'s5',fullName:'Hans Weber',nationality:'German',phone:'+49 170 8765432',telegram:'',email:'hans.w@web.de',budget:'$200K-$300K',timeline:'3-6 months',interestedIn:'GATO Tower',source:'Facebook',stage:'New Lead',agent:'Monika',followUpDate:'',followUpAction:'',notes:'',activities:[],createdAt:new Date().toISOString()}
-  ];
-}
+function sampleLeads(){ return []; }
 
 // FILTER
 function getFiltered(){
@@ -1078,13 +1078,13 @@ function renderDrawerDetails(l){
       '<div class="dr-section-title">Client Details</div>'+
       '<div class="edit-grid">'+
         '<div class="edit-group"><label class="edit-lbl">Full Name</label><input class="edit-inp" id="eFullName" value="'+escAttr(l.fullName||'')+'"/></div>'+
-        '<div class="edit-group"><label class="edit-lbl">Nationality</label><select class="edit-sel" id="eNat" onchange="autoAssignFromDrawer()"><option value="">-</option>'+['Japanese','German','Cambodian','Russian','Chinese','Singaporean','British','Other'].map(function(n){return '<option'+(l.nationality===n?' selected':'')+'>'+n+'</option>';}).join('')+'</select></div>'+
+        '<div class="edit-group"><label class="edit-lbl">Nationality</label><select class="edit-sel" id="eNat" onchange="autoAssignFromDrawer()"><option value="">-</option>'+['Japanese','German','European','Cambodian','Russian','Chinese','Singaporean','British','Australian','Other'].map(function(n){return '<option'+(l.nationality===n?' selected':'')+'>'+n+'</option>';}).join('')+'</select></div>'+
         '<div class="edit-group"><label class="edit-lbl">Phone</label><input class="edit-inp" id="ePhone" value="'+escAttr(l.phone||'')+'"/></div>'+
         '<div class="edit-group"><label class="edit-lbl">Telegram</label><input class="edit-inp" id="eTelegram" value="'+escAttr(l.telegram||'')+'"/></div>'+
         '<div class="edit-group"><label class="edit-lbl">Email</label><input class="edit-inp" id="eEmail" value="'+escAttr(l.email||'')+'"/></div>'+
         '<div class="edit-group"><label class="edit-lbl">Budget</label><select class="edit-sel" id="eBudget"><option value="">-</option>'+['Under $100K','$100K-$200K','$200K-$300K','$300K-$500K','$500K+'].map(function(b){return '<option'+(l.budget===b?' selected':'')+'>'+b+'</option>';}).join('')+'</select></div>'+
         '<div class="edit-group"><label class="edit-lbl">Timeline</label><select class="edit-sel" id="eTimeline"><option value="">-</option>'+['0-3 months','3-6 months','6-12 months','12+ months'].map(function(t){return '<option'+(l.timeline===t?' selected':'')+'>'+t+'</option>';}).join('')+'</select></div>'+
-        '<div class="edit-group"><label class="edit-lbl">Project</label><select class="edit-sel" id="eProject"><option value="">-</option>'+['Time Square 7','Time Square 8','Time Square 9','Time Square 10','Kingston Royale','Le Conde BKK1','J Tower 3','Odom Tower','Odom Living','UC88 Wyndham Garden','Diamond Bay Garden','Angkor Grace','LZ Sea View Premium','Picasso Sky Gemme','GATO Tower','Multiple/TBD'].map(function(p){return '<option'+(l.interestedIn===p?' selected':'')+'>'+p+'</option>';}).join('')+'</select></div>'+
+        '<div class="edit-group"><label class="edit-lbl">Project</label><select class="edit-sel" id="eProject"><option value="">-</option>'+['Time Square 7','Time Square 8','Time Square 9','Time Square 10','Time Square 11','Kingston Royale','Le Conde BKK1','J Tower 3','Odom Tower','Odom Living','UC88 Wyndham Garden','Diamond Bay Garden','Norea Square','Angkor Grace','Rose Apple Square','LZ Sea View Premium','Picasso Sky Gemme','GATO Tower','Multiple/TBD'].map(function(p){return '<option'+(l.interestedIn===p?' selected':'')+'>'+p+'</option>';}).join('')+'</select></div>'+
         '<div class="edit-group"><label class="edit-lbl">Agent</label><select class="edit-sel" id="eAgent">'+['Nick','Monika','Reza'].map(function(a){return '<option'+(l.agent===a?' selected':'')+'>'+a+'</option>';}).join('')+'</select></div>'+
         '<div class="edit-group"><label class="edit-lbl">Source</label><select class="edit-sel" id="eSource"><option value="">-</option>'+['WhatsApp','Facebook','Instagram','Telegram','LINE','REAKH','PHC Website','Referral','Walk-in','TikTok','LinkedIn'].map(function(s){return '<option'+(l.source===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select></div>'+
         '<div class="edit-group full"><label class="edit-lbl">Notes</label><textarea class="edit-ta" id="eNotes">'+escHtml(l.notes||'')+'</textarea></div>'+
