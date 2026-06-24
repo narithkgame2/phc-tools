@@ -250,6 +250,75 @@ function migrateLeadsSchema() {
 }
 
 // ═══════════════════════════════════════════════════════════════
+//  TELEGRAM LEAD ALERT
+//
+//  Fires on every new Lead insert — sends instant ping to Nick's
+//  Telegram via @PHC_Lead_Bot.
+//
+//  SETUP (one-time):
+//  In Apps Script editor → Project Settings (⚙) → Script Properties
+//  Add:  TELEGRAM_BOT_TOKEN = 8870098224:AAG7S5RhiR2gdyiudNkTlxbyqAOCSAvuZcc
+//        TELEGRAM_CHAT_ID   = 8870098224
+// ═══════════════════════════════════════════════════════════════
+
+function sendTelegramAlert(lead) {
+  try {
+    const props    = PropertiesService.getScriptProperties();
+    const token    = props.getProperty('TELEGRAM_BOT_TOKEN');
+    const chatId   = props.getProperty('TELEGRAM_CHAT_ID');
+    if (!token || !chatId) { Logger.log('Telegram: missing Script Properties'); return; }
+
+    const name     = lead.fullName    || '—';
+    const phone    = lead.phone       || '—';
+    const email    = lead.email       || '—';
+    const nat      = lead.nationality || '—';
+    const budget   = lead.budget      || '—';
+    const timeline = lead.timeline    || '—';
+    const property = lead.interestedIn|| '—';
+    const source   = lead.source      || 'Website';
+    const score    = lead.score       ? lead.score + '/5' : '—';
+
+    // Score priority label
+    const scoreNum = parseInt(lead.score) || 0;
+    const priority = scoreNum >= 5 ? '🔴 VIP'
+                   : scoreNum >= 4 ? '🔴 High priority'
+                   : scoreNum >= 3 ? '🟡 Medium priority'
+                   : scoreNum >  0 ? '🟢 Low priority'
+                   : '⬜ Unscored';
+
+    const msg = [
+      '🔔 *New PHC Lead*',
+      '',
+      '👤 ' + name,
+      '📱 ' + phone,
+      '📧 ' + email,
+      nat !== '—' ? '🌏 ' + nat : null,
+      '💰 ' + budget,
+      timeline !== '—' ? '⏱ ' + timeline : null,
+      '🏢 ' + property,
+      '📍 ' + source,
+      '',
+      score !== '—' ? '⭐ ' + score + ' — ' + priority : priority,
+    ].filter(Boolean).join('\n');
+
+    const url = 'https://api.telegram.org/bot' + token + '/sendMessage';
+    UrlFetchApp.fetch(url, {
+      method: 'post',
+      contentType: 'application/json',
+      payload: JSON.stringify({
+        chat_id: chatId,
+        text: msg,
+        parse_mode: 'Markdown',
+      }),
+      muteHttpExceptions: true,
+    });
+    Logger.log('Telegram alert sent for lead: ' + name);
+  } catch (err) {
+    Logger.log('Telegram alert error: ' + err);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
 //  CONFIRMATION EMAIL SYSTEM
 //
 //  Fires automatically on every new Lead insert.
@@ -277,6 +346,7 @@ function sendConfirmationEmails(lead) {
     sendClientConfirmation(lead, scenario, lang);
   }
   sendAgentNotification(lead, scenario, lang);
+  try { sendTelegramAlert(lead); } catch(err) { Logger.log('Telegram error: ' + err); }
 }
 
 // ── Detection helpers ─────────────────────────────────────────────
