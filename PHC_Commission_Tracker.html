@@ -11,26 +11,69 @@
   --navy:#083467;--gold:#cc9d4d;--gold-light:#e8c47a;--gold-pale:#fdf3e3;
   --cream:#fdf8f0;--g1:#f5f6f8;--g2:#e8ecf2;--g3:#c0c8d4;--g4:#7a8799;
   --text:#1a2535;--red:#d63031;--green:#00b894;--orange:#e17055;
+  /* Sidebar uses the live site's actual dark theme tokens (propertyhubcambodia.com),
+     converted from its --navy/--gold/--foreground HSL values in src/index.css */
+  --sb:#0F192E;--sb-deep:#091120;--sb-hover:rgba(255,255,255,.06);--sb-active:rgba(192,154,89,.16);
+  --sb-text:rgba(245,243,240,.65);--sb-text-s:#F5F3F0;--sb-icon:rgba(245,243,240,.4);--sb-border:rgba(255,255,255,.08);
+  --sb-gold:#C09A59;--sb-gold-light:#D9BD8C;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--g1);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;}
+body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--g1);color:var(--text);height:100vh;overflow:hidden;-webkit-font-smoothing:antialiased;}
+a{text-decoration:none;cursor:pointer;color:inherit;}
 
-/* ── Topbar ── */
-.topbar{background:var(--navy);height:54px;display:flex;align-items:center;padding:0 24px;gap:16px;position:sticky;top:0;z-index:100;}
-.hub-link{color:rgba(255,255,255,.5);font-size:11px;font-family:'DM Mono',monospace;text-decoration:none;letter-spacing:.04em;white-space:nowrap;}
-.hub-link:hover{color:var(--gold-light);}
-.topbar-title{font-family:'DM Serif Display',serif;font-size:18px;color:#fff;flex:1;}
-.month-picker{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#fff;font-family:'DM Mono',monospace;font-size:11px;padding:5px 10px;border-radius:7px;cursor:pointer;outline:none;}
-.month-picker option{background:var(--navy);color:#fff;}
-.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--g3);flex-shrink:0;}
-.sync-dot.ok{background:var(--green);}
-.sync-dot.err{background:var(--red);}
-.sync-txt{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.4);white-space:nowrap;}
-.add-btn{background:var(--gold);color:var(--navy);font-size:12px;font-weight:600;padding:7px 16px;border:none;border-radius:8px;cursor:pointer;white-space:nowrap;transition:background .15s;}
-.add-btn:hover{background:var(--gold-light);}
+/* ── App shell ── */
+.app{display:flex;height:100vh;overflow:hidden;}
 
-/* ── Page ── */
-.page{max-width:1200px;margin:0 auto;padding:28px 24px 64px;}
+/* ── Sidebar ── */
+.sidebar{width:224px;flex-shrink:0;background:var(--sb);display:flex;flex-direction:column;border-right:1px solid var(--sb-border);transition:width .2s ease;overflow:hidden;}
+.sidebar.collapsed{width:52px;}
+.sidebar.collapsed .sb-label,.sidebar.collapsed .ws-info,.sidebar.collapsed .sb-section-label,.sidebar.collapsed .sb-count{display:none;}
+.sidebar.collapsed .ws-header{padding:14px 0;justify-content:center;}
+.sidebar.collapsed .ws-logo{display:none;}
+.sidebar.collapsed .collapse-btn{transform:rotate(180deg);}
+
+.ws-header{display:flex;align-items:center;gap:9px;padding:14px 12px 12px;border-bottom:1px solid var(--sb-border);flex-shrink:0;}
+.ws-logo{width:28px;height:28px;border-radius:7px;background:var(--sb-gold);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--sb-deep);flex-shrink:0;}
+.ws-info{flex:1;min-width:0;}
+.ws-name{font-size:13px;font-weight:700;color:var(--sb-text-s);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ws-sub{font-size:10px;color:var(--sb-icon);margin-top:1px;}
+.collapse-btn{background:none;border:none;color:var(--sb-icon);cursor:pointer;font-size:13px;padding:4px;border-radius:4px;flex-shrink:0;line-height:1;}
+.collapse-btn:hover{background:var(--sb-hover);color:var(--sb-text-s);}
+
+.sb-nav{flex:1;overflow-y:auto;padding:8px 0;scrollbar-width:none;}
+.sb-nav::-webkit-scrollbar{display:none;}
+.sb-section-label{font-size:9px;font-weight:600;color:var(--sb-icon);text-transform:uppercase;letter-spacing:.1em;padding:10px 14px 4px;}
+.sb-item{display:flex;align-items:center;gap:8px;padding:6px 10px;margin:1px 6px;border-radius:6px;color:var(--sb-text);font-size:12px;font-weight:400;transition:all .15s;cursor:pointer;user-select:none;}
+.sb-item:hover{background:var(--sb-hover);color:var(--sb-text-s);}
+.sb-item.active{background:var(--sb-active);color:var(--sb-gold-light);font-weight:600;}
+.sb-icon{width:18px;height:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;color:var(--sb-icon);}
+.sb-item.active .sb-icon{color:var(--sb-gold-light);}
+.sb-item:hover .sb-icon{color:var(--sb-text-s);}
+.sb-label{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-count{font-size:10px;color:var(--sb-icon);margin-left:auto;font-weight:500;}
+.sb-item.active .sb-count{color:var(--sb-gold-light);}
+.av-ring{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;flex-shrink:0;}
+
+.sb-footer{border-top:1px solid var(--sb-border);padding:8px 14px;display:flex;align-items:center;gap:7px;}
+.api-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.25);flex-shrink:0;}
+.api-dot.ok{background:var(--green);}
+.api-dot.err{background:var(--red);}
+.api-txt{font-size:10px;color:var(--sb-icon);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* ── Main ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+.topbar{background:#fff;border-bottom:1px solid var(--g2);height:44px;display:flex;align-items:center;padding:0 20px;gap:6px;flex-shrink:0;}
+.breadcrumb{font-size:12px;color:var(--g4);}
+.bc-sep{font-size:12px;color:var(--g3);margin:0 4px;}
+.bc-active{font-size:12px;font-weight:600;color:var(--text);}
+
+.toolbar{background:#fff;border-bottom:1px solid var(--g2);height:52px;display:flex;align-items:center;padding:0 20px;gap:10px;flex-shrink:0;}
+.month-picker{background:var(--g1);border:1px solid var(--g2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 12px;border-radius:7px;cursor:pointer;outline:none;}
+.add-btn{background:var(--navy);color:#fff;font-size:12px;font-weight:600;padding:8px 18px;border:none;border-radius:7px;cursor:pointer;white-space:nowrap;transition:background .15s;margin-left:auto;}
+.add-btn:hover{background:#0a4080;}
+
+.content-scroll{flex:1;overflow-y:auto;padding:24px 24px 60px;}
+.page{max-width:1200px;margin:0 auto;}
 .section-label{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--g4);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
 .section-label::after{content:"";flex:1;height:1px;background:var(--g2);}
 
@@ -69,8 +112,6 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--g1);color:v
 .table-wrap{background:#fff;border:1px solid var(--g2);border-radius:12px;overflow:hidden;}
 .table-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g2);}
 .table-title{font-size:13px;font-weight:600;color:var(--text);}
-.filter-row{display:flex;gap:8px;align-items:center;}
-.filter-sel{background:var(--g1);border:1px solid var(--g2);color:var(--text);font-size:11px;font-family:'DM Mono',monospace;padding:5px 10px;border-radius:7px;outline:none;cursor:pointer;}
 table{width:100%;border-collapse:collapse;}
 thead th{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--g4);text-align:left;padding:10px 14px;background:var(--g1);border-bottom:1px solid var(--g2);}
 tbody td{padding:12px 14px;border-bottom:1px solid var(--g2);font-size:12px;vertical-align:middle;}
@@ -145,10 +186,13 @@ tbody tr:hover{background:var(--g1);}
   .stats-grid{grid-template-columns:repeat(3,1fr);}
   .agent-grid{grid-template-columns:1fr;}
 }
+@media(max-width:700px){
+  .sidebar{width:52px;}
+  .sidebar .sb-label,.sidebar .ws-info,.sidebar .sb-section-label,.sidebar .sb-count{display:none;}
+}
 @media(max-width:600px){
   .stats-grid{grid-template-columns:1fr 1fr;}
-  .topbar{flex-wrap:wrap;height:auto;padding:10px 16px;gap:8px;}
-  .page{padding:20px 14px 48px;}
+  .content-scroll{padding:16px 14px 48px;}
   table{font-size:11px;}
   thead th,tbody td{padding:9px 10px;}
 }
@@ -293,83 +337,143 @@ tbody tr:hover{background:var(--g1);}
   </div>
 </div>
 
-<!-- Topbar -->
-<div class="topbar">
-  <a class="hub-link" href="index.html">← Hub</a>
-  <div class="topbar-title">Commission Tracker</div>
-  <select class="month-picker" id="monthPicker" onchange="renderAll()"></select>
-  <div class="sync-dot" id="syncDot"></div>
-  <div class="sync-txt" id="syncTxt">Loading…</div>
-  <button class="add-btn" onclick="openModal()">+ Log Deal</button>
-</div>
+<!-- ── App shell ── -->
+<div class="app">
 
-<div class="page">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="ws-header">
+      <div class="ws-logo">P</div>
+      <div class="ws-info">
+        <div class="ws-name">PHC CRM</div>
+        <div class="ws-sub">Commission Tracker</div>
+      </div>
+      <button class="collapse-btn" onclick="toggleSidebar()" title="Toggle sidebar"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="10,3 5,8 10,13"/></svg></button>
+    </div>
 
-  <!-- ── STAT CARDS ── -->
-  <div class="stats-grid" style="margin-bottom:28px;">
-    <div class="stat-card c-navy">
-      <div class="stat-label">Deals Closed</div>
-      <div class="stat-val" id="s-count">—</div>
-      <div class="stat-sub" id="s-count-sub">this period</div>
-    </div>
-    <div class="stat-card c-gold">
-      <div class="stat-label">Total Commission</div>
-      <div class="stat-val" id="s-total">—</div>
-      <div class="stat-sub" id="s-total-sub">this period</div>
-    </div>
-    <div class="stat-card c-nick">
-      <div class="stat-label">Nick</div>
-      <div class="stat-val" id="s-nick">—</div>
-      <div class="stat-sub" id="s-nick-sub">this period</div>
-    </div>
-    <div class="stat-card c-monika">
-      <div class="stat-label">Monika</div>
-      <div class="stat-val" id="s-monika">—</div>
-      <div class="stat-sub" id="s-monika-sub">this period</div>
-    </div>
-    <div class="stat-card c-reza">
-      <div class="stat-label">Reza</div>
-      <div class="stat-val" id="s-reza">—</div>
-      <div class="stat-sub" id="s-reza-sub">this period</div>
-    </div>
-    <div class="stat-card c-orange">
-      <div class="stat-label">Referral Payouts</div>
-      <div class="stat-val" id="s-referral">—</div>
-      <div class="stat-sub" id="s-referral-sub">this period</div>
-    </div>
-  </div>
+    <nav class="sb-nav">
+      <div class="sb-section-label">Deals</div>
+      <a class="sb-item active" id="sbAll" onclick="sbSetDealFilter('all',this)">
+        <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1.5" y="5" width="13" height="9" rx="1.5"/><path d="M5.5 5V3.5A1.5 1.5 0 0 1 7 2h2a1.5 1.5 0 0 1 1.5 1.5V5"/><path d="M1.5 9h13"/></svg></span><span class="sb-label">All Deals</span>
+        <span class="sb-count" id="sbCntAll">0</span>
+      </a>
+      <a class="sb-item" id="sbReferral" onclick="sbSetDealFilter('referral',this)">
+        <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3L2.5 6.5L6 10"/><path d="M2.5 6.5H10a3.5 3.5 0 0 1 3.5 3.5v2"/></svg></span><span class="sb-label">Referrals</span>
+        <span class="sb-count" id="sbCntReferral">0</span>
+      </a>
 
-  <!-- ── AGENT CARDS ── -->
-  <div class="section-label">Year to Date · All Deals</div>
-  <div class="agent-grid" id="agent-grid" style="margin-bottom:28px;"></div>
+      <div class="sb-section-label">Agents</div>
+      <a class="sb-item" id="sbAgentAll" onclick="sbSetAgent('',this)">
+        <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="5" r="2.5"/><path d="M1 13c0-2.76 2.24-5 5-5s5 2.24 5 5"/><circle cx="12.5" cy="5" r="2"/><path d="M15 13c0-2.21-1.34-4-3-4.5"/></svg></span><span class="sb-label">All Agents</span>
+      </a>
+      <a class="sb-item" id="sbAgentN" onclick="sbSetAgent('N',this)">
+        <div class="av-ring" style="background:#3b82f6">N</div><span class="sb-label">Nick</span>
+        <span class="sb-count" id="sbCntN">0</span>
+      </a>
+      <a class="sb-item" id="sbAgentM" onclick="sbSetAgent('M',this)">
+        <div class="av-ring" style="background:#8b5cf6">M</div><span class="sb-label">Monika</span>
+        <span class="sb-count" id="sbCntM">0</span>
+      </a>
+      <a class="sb-item" id="sbAgentR" onclick="sbSetAgent('R',this)">
+        <div class="av-ring" style="background:#10b981">R</div><span class="sb-label">Reza</span>
+        <span class="sb-count" id="sbCntR">0</span>
+      </a>
 
-  <!-- ── DEAL TABLE ── -->
-  <div class="table-wrap">
-    <div class="table-header">
-      <div class="table-title" id="table-title">Deals</div>
-      <div class="filter-row">
-        <select class="filter-sel" id="agentFilter" onchange="renderAll()">
-          <option value="">All Agents</option>
-          <option value="N">Nick</option>
-          <option value="M">Monika</option>
-          <option value="R">Reza</option>
-        </select>
+      <div class="sb-section-label" style="margin-top:6px">Other Tools</div>
+      <a class="sb-item" href="PHC_Lead_Tracker.html">
+        <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="1" width="14" height="14" rx="2"/><path d="M4 8h8M4 5h8M4 11h5"/></svg></span><span class="sb-label">Lead Tracker</span>
+      </a>
+      <a class="sb-item" href="PHC_Client_Manager.html">
+        <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="2.5" width="14" height="11" rx="1.5"/><circle cx="5.5" cy="7" r="1.6"/><path d="M3 11.2c0-1.6 1.1-2.7 2.5-2.7S8 9.6 8 11.2"/><path d="M10.2 6.2h3M10.2 8.7h3"/></svg></span><span class="sb-label">Client Manager</span>
+      </a>
+      <a class="sb-item" href="index.html">
+        <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9L8 4l5 5"/><path d="M5 14V9h6v5"/></svg></span><span class="sb-label">← Back to Hub</span>
+      </a>
+    </nav>
+
+    <div class="sb-footer">
+      <div class="api-dot" id="syncDot"></div>
+      <div class="api-txt" id="syncTxt">Loading…</div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <span class="breadcrumb">Commission Tracker</span>
+      <span class="bc-sep">/</span>
+      <span class="bc-active" id="bcCurrent">All Deals</span>
+    </div>
+
+    <div class="toolbar">
+      <select class="month-picker" id="monthPicker" onchange="renderAll()"></select>
+      <button class="add-btn" onclick="openModal()">+ Log Deal</button>
+    </div>
+
+    <div class="content-scroll">
+      <div class="page">
+
+        <!-- ── STAT CARDS ── -->
+        <div class="stats-grid">
+          <div class="stat-card c-navy">
+            <div class="stat-label">Deals Closed</div>
+            <div class="stat-val" id="s-count">—</div>
+            <div class="stat-sub" id="s-count-sub">this period</div>
+          </div>
+          <div class="stat-card c-gold">
+            <div class="stat-label">Total Commission</div>
+            <div class="stat-val" id="s-total">—</div>
+            <div class="stat-sub" id="s-total-sub">this period</div>
+          </div>
+          <div class="stat-card c-nick">
+            <div class="stat-label">Nick</div>
+            <div class="stat-val" id="s-nick">—</div>
+            <div class="stat-sub" id="s-nick-sub">this period</div>
+          </div>
+          <div class="stat-card c-monika">
+            <div class="stat-label">Monika</div>
+            <div class="stat-val" id="s-monika">—</div>
+            <div class="stat-sub" id="s-monika-sub">this period</div>
+          </div>
+          <div class="stat-card c-reza">
+            <div class="stat-label">Reza</div>
+            <div class="stat-val" id="s-reza">—</div>
+            <div class="stat-sub" id="s-reza-sub">this period</div>
+          </div>
+          <div class="stat-card c-orange">
+            <div class="stat-label">Referral Payouts</div>
+            <div class="stat-val" id="s-referral">—</div>
+            <div class="stat-sub" id="s-referral-sub">this period</div>
+          </div>
+        </div>
+
+        <!-- ── AGENT CARDS ── -->
+        <div class="section-label">Year to Date · All Deals</div>
+        <div class="agent-grid" id="agent-grid" style="margin-bottom:28px;"></div>
+
+        <!-- ── DEAL TABLE ── -->
+        <div class="table-wrap">
+          <div class="table-header">
+            <div class="table-title" id="table-title">Deals</div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Client & Project</th>
+                <th>Close Date</th>
+                <th>Sale Price</th>
+                <th>Commission</th>
+                <th>Split</th>
+                <th>Agent</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="deal-tbody"></tbody>
+          </table>
+        </div>
+
       </div>
     </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Client & Project</th>
-          <th>Close Date</th>
-          <th>Sale Price</th>
-          <th>Commission</th>
-          <th>Split</th>
-          <th>Agent</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody id="deal-tbody"></tbody>
-    </table>
   </div>
 
 </div>
@@ -381,6 +485,8 @@ const LS_KEY  = 'phc_deals_cache';
 let deals = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
 let editingId = null;
 let deletingId = null;
+let dealFilter = 'all';   // 'all' | 'referral'
+let agentFilter = '';     // '' | 'N' | 'M' | 'R'
 
 // ── Helpers ──────────────────────────────────────────────────────
 
@@ -399,6 +505,25 @@ function monthLabel(ym){ // "2026-05" → "May 2026"
 }
 
 function dealMonth(d){ return (d.closedDate||d.createdAt||'').slice(0,7); }
+
+function toggleSidebar(){ $('sidebar').classList.toggle('collapsed'); }
+
+// ── Sidebar filters ──────────────────────────────────────────────
+
+function sbSetDealFilter(type, el){
+  dealFilter = type;
+  document.querySelectorAll('#sbAll,#sbReferral').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active');
+  $('bcCurrent').textContent = type==='referral' ? 'Referrals' : 'All Deals';
+  renderAll();
+}
+
+function sbSetAgent(agent, el){
+  agentFilter = agent;
+  document.querySelectorAll('#sbAgentAll,#sbAgentN,#sbAgentM,#sbAgentR').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
 
 // ── Month picker ─────────────────────────────────────────────────
 
@@ -434,11 +559,11 @@ async function loadDeals(){
         referralPct:Number(d.referralPct)||0, referralAmount:Number(d.referralAmount)||0
       }));
       localStorage.setItem(LS_KEY,JSON.stringify(deals));
-      $('syncDot').className='sync-dot ok';
+      $('syncDot').className='api-dot ok';
       $('syncTxt').textContent='Live · '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
     }
   }catch{
-    $('syncDot').className='sync-dot err';
+    $('syncDot').className='api-dot err';
     $('syncTxt').textContent='Offline — cached';
   }
   buildMonthPicker();
@@ -447,14 +572,26 @@ async function loadDeals(){
 
 // ── Render ───────────────────────────────────────────────────────
 
-function filteredDeals(){
+function monthFilteredDeals(){
   const period=$('monthPicker').value||'ALL';
-  const agent=$('agentFilter').value;
-  return deals.filter(d=>{
-    if(period!=='ALL' && dealMonth(d)!==period) return false;
-    if(agent && d.agent!==agent) return false;
+  return deals.filter(d=> period==='ALL' || dealMonth(d)===period);
+}
+
+function filteredDeals(){
+  return monthFilteredDeals().filter(d=>{
+    if(agentFilter && d.agent!==agentFilter) return false;
+    if(dealFilter==='referral' && !d.referrerName) return false;
     return true;
   });
+}
+
+function updateSidebarCounts(){
+  const md=monthFilteredDeals();
+  $('sbCntAll').textContent=md.length;
+  $('sbCntReferral').textContent=md.filter(d=>d.referrerName).length;
+  $('sbCntN').textContent=md.filter(d=>d.agent==='N').length;
+  $('sbCntM').textContent=md.filter(d=>d.agent==='M').length;
+  $('sbCntR').textContent=md.filter(d=>d.agent==='R').length;
 }
 
 function renderAll(){
@@ -462,6 +599,7 @@ function renderAll(){
   renderStats(fd);
   renderAgents();
   renderTable(fd);
+  updateSidebarCounts();
 }
 
 function renderStats(fd){
@@ -499,7 +637,6 @@ function renderAgents(){
     const total=ytd.reduce((s,d)=>s+(a.key==='N'?d.nickAmt:a.key==='M'?d.monikaAmt:d.rezaAmt),0);
     const count=ytd.filter(d=>d.agent===a.key).length;
     const allDealsAmt=deals.reduce((s,d)=>s+(a.key==='N'?d.nickAmt:a.key==='M'?d.monikaAmt:d.rezaAmt),0);
-    const allDealsCount=deals.length;
     const initials=a.name.split(' ').map(w=>w[0]).join('');
     return `<div class="agent-card">
       <div class="agent-top">

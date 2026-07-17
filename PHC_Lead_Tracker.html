@@ -7,9 +7,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 :root{
-  --sb:#191b23;--sb-hover:rgba(255,255,255,.05);--sb-active:rgba(255,255,255,.09);
-  --sb-text:#a8b0c8;--sb-text-s:#ffffff;--sb-icon:#5a6180;--sb-border:rgba(255,255,255,.06);
-  --purple:#7c5cbf;--purple-l:#9d8ef0;--purple-pale:#f3f0ff;--purple-btn:#7c5cbf;
+  /* Sidebar uses the live site's actual dark theme tokens (propertyhubcambodia.com),
+     converted from its --navy/--gold/--foreground HSL values in src/index.css */
+  --sb:#0F192E;--sb-deep:#091120;--sb-hover:rgba(255,255,255,.06);--sb-active:rgba(192,154,89,.16);
+  --sb-text:rgba(245,243,240,.65);--sb-text-s:#F5F3F0;--sb-icon:rgba(245,243,240,.4);--sb-border:rgba(255,255,255,.08);
+  --sb-gold:#C09A59;--sb-gold-light:#D9BD8C;
+  --purple:#083467;--purple-l:#0a4080;--purple-pale:#e8ecf5;--purple-btn:#083467;
   --bg:#f7f8fa;--card:#ffffff;--white:#ffffff;
   --border:#e3e5ea;--border-h:#c8cdd8;
   --text:#1f2437;--text-s:#5e6882;--text-m:#9ca3af;
@@ -32,10 +35,13 @@ a{text-decoration:none;cursor:pointer}
 .sidebar.collapsed{width:52px}
 .sidebar.collapsed .sb-label,.sidebar.collapsed .ws-info,.sidebar.collapsed .sb-section-label,
 .sidebar.collapsed .sb-badge,.sidebar.collapsed .sb-space-items{display:none}
+.sidebar.collapsed .ws-header{padding:14px 0;justify-content:center}
+.sidebar.collapsed .ws-logo{display:none}
+.sidebar.collapsed .collapse-btn{transform:rotate(180deg)}
 
 /* sidebar header */
 .ws-header{display:flex;align-items:center;gap:9px;padding:14px 12px 12px;border-bottom:1px solid var(--sb-border);flex-shrink:0}
-.ws-logo{width:28px;height:28px;border-radius:7px;background:var(--purple);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;cursor:pointer}
+.ws-logo{width:28px;height:28px;border-radius:7px;background:var(--sb-gold);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--sb-deep);flex-shrink:0;cursor:pointer}
 .ws-info{flex:1;min-width:0}
 .ws-name{font-size:12px;font-weight:600;color:var(--sb-text-s);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ws-sub{font-size:10px;color:var(--sb-icon);margin-top:1px}
@@ -56,9 +62,10 @@ a{text-decoration:none;cursor:pointer}
 .sb-section-label{font-size:9px;font-weight:600;color:var(--sb-icon);text-transform:uppercase;letter-spacing:.1em;padding:12px 14px 4px}
 .sb-item{display:flex;align-items:center;gap:8px;padding:6px 10px;margin:1px 6px;border-radius:6px;color:var(--sb-text);font-size:12px;font-weight:400;transition:all .15s;cursor:pointer;position:relative;user-select:none}
 .sb-item:hover{background:var(--sb-hover);color:var(--sb-text-s)}
-.sb-item.active{background:var(--sb-active);color:var(--sb-text-s)}
+.sb-item.active{background:var(--sb-active);color:var(--sb-gold-light)}
 .sb-icon{width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;color:var(--sb-icon)}
-.sb-item.active .sb-icon,.sb-item:hover .sb-icon{color:var(--sb-text-s)}
+.sb-item.active .sb-icon{color:var(--sb-gold-light)}
+.sb-item:hover .sb-icon{color:var(--sb-text-s)}
 .sb-label{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sb-badge{background:var(--urgent);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:8px;min-width:16px;text-align:center;flex-shrink:0}
 .sb-badge.zero{background:rgba(255,255,255,.12);color:var(--sb-icon)}
