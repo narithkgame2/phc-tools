@@ -35,7 +35,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--g1);color:v
 .section-label::after{content:"";flex:1;height:1px;background:var(--g2);}
 
 /* ── Stat cards ── */
-.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:28px;}
+.stats-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:28px;}
 .stat-card{background:#fff;border:1px solid var(--g2);border-radius:12px;padding:18px 20px;position:relative;overflow:hidden;}
 .stat-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;}
 .stat-card.c-navy::before{background:var(--navy);}
@@ -43,6 +43,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--g1);color:v
 .stat-card.c-nick::before{background:#3b82f6;}
 .stat-card.c-monika::before{background:#8b5cf6;}
 .stat-card.c-reza::before{background:#10b981;}
+.stat-card.c-orange::before{background:var(--orange);}
 .stat-label{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--g4);margin-bottom:8px;}
 .stat-val{font-family:'DM Serif Display',serif;font-size:28px;color:var(--text);line-height:1;margin-bottom:4px;}
 .stat-sub{font-size:11px;color:var(--g4);}
@@ -141,7 +142,7 @@ tbody tr:hover{background:var(--g1);}
 .btn-del-cancel{background:var(--g1);border:1px solid var(--g2);color:var(--text);font-size:13px;padding:9px 20px;border-radius:9px;cursor:pointer;}
 
 @media(max-width:900px){
-  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .stats-grid{grid-template-columns:repeat(3,1fr);}
   .agent-grid{grid-template-columns:1fr;}
 }
 @media(max-width:600px){
@@ -260,6 +261,15 @@ tbody tr:hover{background:var(--g1);}
         <div class="split-warning" id="split-warn">⚠ Percentages must add up to 100%</div>
       </div>
 
+      <div class="split-section" style="border-left:3px solid var(--orange)">
+        <div class="split-title">Referral (optional)</div>
+        <div class="split-row">
+          <input class="form-input" id="f-referrer" placeholder="Referrer name — leave blank if none" oninput="recalc()">
+          <input class="split-pct-input" id="f-referral-pct" type="number" min="0" max="100" step="1" value="15" oninput="recalc()">
+          <div class="split-amt" id="referral-amt" style="color:var(--orange)">$0</div>
+        </div>
+      </div>
+
       <div class="form-row-2">
         <div>
           <label class="form-label">Lead Agent</label>
@@ -321,6 +331,11 @@ tbody tr:hover{background:var(--g1);}
       <div class="stat-label">Reza</div>
       <div class="stat-val" id="s-reza">—</div>
       <div class="stat-sub" id="s-reza-sub">this period</div>
+    </div>
+    <div class="stat-card c-orange">
+      <div class="stat-label">Referral Payouts</div>
+      <div class="stat-val" id="s-referral">—</div>
+      <div class="stat-sub" id="s-referral-sub">this period</div>
     </div>
   </div>
 
@@ -415,7 +430,8 @@ async function loadDeals(){
         commissionRate:Number(d.commissionRate)||0,
         commissionTotal:Number(d.commissionTotal)||0,
         nickPct:Number(d.nickPct)||0, monikaPct:Number(d.monikaPct)||0, rezaPct:Number(d.rezaPct)||0,
-        nickAmt:Number(d.nickAmt)||0, monikaAmt:Number(d.monikaAmt)||0, rezaAmt:Number(d.rezaAmt)||0
+        nickAmt:Number(d.nickAmt)||0, monikaAmt:Number(d.monikaAmt)||0, rezaAmt:Number(d.rezaAmt)||0,
+        referralPct:Number(d.referralPct)||0, referralAmount:Number(d.referralAmount)||0
       }));
       localStorage.setItem(LS_KEY,JSON.stringify(deals));
       $('syncDot').className='sync-dot ok';
@@ -453,6 +469,8 @@ function renderStats(fd){
   const nick=fd.reduce((s,d)=>s+d.nickAmt,0);
   const monika=fd.reduce((s,d)=>s+d.monikaAmt,0);
   const reza=fd.reduce((s,d)=>s+d.rezaAmt,0);
+  const referred=fd.filter(d=>d.referrerName);
+  const referralTotal=referred.reduce((s,d)=>s+d.referralAmount,0);
   const period=$('monthPicker').value==='ALL'?'all time':monthLabel($('monthPicker').value);
   $('s-count').textContent=fd.length;
   $('s-count-sub').textContent=fd.length===1?'deal · '+period:'deals · '+period;
@@ -464,6 +482,8 @@ function renderStats(fd){
   $('s-monika-sub').textContent=period;
   $('s-reza').textContent=usd(reza);
   $('s-reza-sub').textContent=period;
+  $('s-referral').textContent=usd(referralTotal);
+  $('s-referral-sub').textContent=(referred.length===1?'1 referral · ':referred.length+' referrals · ')+period;
 }
 
 function renderAgents(){
@@ -517,6 +537,7 @@ function renderTable(fd){
       <td>
         <div class="deal-client">${d.clientName||'—'}</div>
         <div class="deal-project">${d.project||''} ${d.unit?'· Unit '+d.unit:''}</div>
+        ${d.referrerName?`<div style="font-size:10px;font-family:'DM Mono',monospace;color:var(--orange);margin-top:2px;">↩ ${d.referrerName} · ${usdFull(d.referralAmount)}</div>`:''}
       </td>
       <td style="font-family:'DM Mono',monospace;font-size:11px">${dateStr}</td>
       <td class="price-cell">${usdFull(d.salePrice)}</td>
@@ -557,6 +578,10 @@ function recalc(){
   $('monika-amt').textContent=usdFull(Math.round(comm*(monikaP/100)));
   $('reza-amt').textContent=usdFull(Math.round(comm*(rezaP/100)));
   $('split-warn').style.display=total!==100?'block':'none';
+
+  const referrerSet=$('f-referrer').value.trim().length>0;
+  const referralP=Number($('f-referral-pct').value)||0;
+  $('referral-amt').textContent=referrerSet?usdFull(Math.round(comm*(referralP/100))):'$0';
 }
 
 function openModal(){
@@ -573,6 +598,8 @@ function openModal(){
   $('f-reza-pct').value='33';
   $('f-agent').value='N';
   $('f-notes').value='';
+  $('f-referrer').value='';
+  $('f-referral-pct').value='15';
   recalc();
   $('modal').classList.add('show');
 }
@@ -593,6 +620,8 @@ function openEdit(id){
   $('f-reza-pct').value=d.rezaPct||0;
   $('f-agent').value=d.agent||'N';
   $('f-notes').value=d.notes||'';
+  $('f-referrer').value=d.referrerName||'';
+  $('f-referral-pct').value=d.referralPct||15;
   recalc();
   $('modal').classList.add('show');
 }
@@ -610,6 +639,10 @@ function saveDeal(){
   const comm=Math.round(price*(rate/100)*100)/100;
   const now=new Date().toISOString();
 
+  const referrerName=$('f-referrer').value.trim();
+  const referralPct=referrerName?(Number($('f-referral-pct').value)||0):0;
+  const referralAmount=referrerName?Math.round(comm*(referralPct/100)):0;
+
   const payload={
     id: editingId||('D'+Date.now()),
     createdAt: editingId?(deals.find(d=>d.id===editingId)||{}).createdAt||now : now,
@@ -626,7 +659,10 @@ function saveDeal(){
     monikaAmt: Math.round(comm*(monikaP/100)),
     rezaAmt: Math.round(comm*(rezaP/100)),
     agent: $('f-agent').value,
-    notes: $('f-notes').value.trim()
+    notes: $('f-notes').value.trim(),
+    referrerName: referrerName,
+    referralPct: referralPct,
+    referralAmount: referralAmount
   };
 
   if(editingId){

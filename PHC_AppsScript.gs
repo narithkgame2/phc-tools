@@ -33,7 +33,7 @@ const SHEET_HEADERS = {
     'id', 'createdAt', 'updatedAt', 'closedDate', 'clientName',
     'project', 'unit', 'salePrice', 'commissionRate', 'commissionTotal',
     'nickPct', 'monikaPct', 'rezaPct', 'nickAmt', 'monikaAmt', 'rezaAmt',
-    'agent', 'notes'
+    'agent', 'notes', 'referrerName', 'referralPct', 'referralAmount'
   ]
 };
 
@@ -247,6 +247,38 @@ function migrateLeadsSchema() {
     .setFontSize(10);
 
   Logger.log('✅ telegram column added to Leads at position ' + (phoneIdx + 2));
+}
+
+/**
+ * Run once after adding 'referrerName', 'referralPct', 'referralAmount' to
+ * Deals SHEET_HEADERS. Appends the three new columns after 'notes' (the last
+ * existing column) without disturbing existing data.
+ */
+function migrateDealsSchema() {
+  const ss    = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName('Deals');
+  if (!sheet) { Logger.log('❌ Deals sheet not found'); return; }
+
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  const newCols = ['referrerName', 'referralPct', 'referralAmount'];
+  const toAdd = newCols.filter(c => !headers.includes(c));
+
+  if (toAdd.length === 0) {
+    Logger.log('✅ referral columns already exist — no migration needed');
+    return;
+  }
+
+  let nextCol = sheet.getLastColumn() + 1;
+  toAdd.forEach(col => {
+    sheet.getRange(1, nextCol).setValue(col)
+      .setBackground('#083467')
+      .setFontColor('#ffffff')
+      .setFontWeight('bold')
+      .setFontSize(10);
+    nextCol++;
+  });
+
+  Logger.log('✅ Added columns to Deals: ' + toAdd.join(', '));
 }
 
 // ═══════════════════════════════════════════════════════════════
