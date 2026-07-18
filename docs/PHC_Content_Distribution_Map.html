@@ -1,0 +1,316 @@
+<title>PHC · Content &amp; Distribution — Progress Map</title>
+<style>
+:root{
+  --navy:#06264f; --navy-d:#040f24; --navy-m:#0b3d7a;
+  --gold:#c9993f; --gold-l:#e0b86a; --gold-s:rgba(201,153,63,.10); --gold-b:rgba(201,153,63,.22);
+  --ink:#1a2535; --ink-2:#4a5e74; --ink-3:#8a9bb0;
+  --bg:#f0f3f8; --card:#ffffff; --line:#e0e5ee;
+  --r:12px;
+  --sf:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Inter",sans-serif;
+  --t:.2s cubic-bezier(.4,0,.2,1);
+}
+:root[data-theme="dark"]{
+  --navy:#0b3d7a; --navy-d:#050e1e; --bg:#0a1220; --card:#101a2c; --line:#1e2c45;
+  --ink:#e7ecf5; --ink-2:#a9b7cc; --ink-3:#6d7f9c;
+  --gold-s:rgba(224,184,106,.12); --gold-b:rgba(224,184,106,.3);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --navy:#0b3d7a; --navy-d:#050e1e; --bg:#0a1220; --card:#101a2c; --line:#1e2c45;
+    --ink:#e7ecf5; --ink-2:#a9b7cc; --ink-3:#6d7f9c;
+    --gold-s:rgba(224,184,106,.12); --gold-b:rgba(224,184,106,.3);
+  }
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{min-height:100%;font-family:var(--sf)}
+body{background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+
+.topbar{background:var(--navy-d);height:52px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(255,255,255,.05)}
+.tb-name{font-family:'Playfair Display',Georgia,serif;font-size:14px;color:#fff}
+.tb-name span{color:var(--gold)}
+.tb-tag{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--gold);opacity:.55;letter-spacing:.15em;text-transform:uppercase}
+
+.page{max-width:1080px;margin:0 auto;padding:32px 28px 80px}
+
+.hero{background:linear-gradient(135deg,var(--navy-d) 0%,var(--navy) 100%);border-radius:var(--r);padding:30px 34px;margin-bottom:26px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.06)}
+.hero::before{content:'';position:absolute;top:-80px;right:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(201,153,63,.07) 0%,transparent 70%)}
+.hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);opacity:.7;margin-bottom:8px}
+.hero-title{font-family:'Playfair Display',Georgia,serif;font-size:28px;font-weight:700;color:#fff;letter-spacing:-.02em;line-height:1.15}
+.hero-title span{color:var(--gold)}
+.hero-stats{display:flex;gap:0;flex-shrink:0}
+.hs{padding:10px 20px;text-align:center;border-left:1px solid rgba(255,255,255,.07)}
+.hs:first-child{border-left:none}
+.hs-n{font-family:'Playfair Display',Georgia,serif;font-size:22px;color:var(--gold);line-height:1;margin-bottom:3px}
+.hs-l{font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.06em}
+
+/* progress bar */
+.pbar-wrap{margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,.08)}
+.pbar-label{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.pbar-label b{color:var(--gold)}
+.pbar{height:6px;border-radius:4px;background:rgba(255,255,255,.08);overflow:hidden;display:flex}
+.pbar-seg{height:100%}
+.pbar-seg.live{background:#6BC950}
+.pbar-seg.build{background:#FF9800}
+.pbar-seg.plan{background:rgba(255,255,255,.18)}
+
+.section-label{display:flex;align-items:center;gap:10px;margin:26px 0 14px}
+.sl-num{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--gold);opacity:.6;letter-spacing:.2em}
+.sl-text{font-size:11px;font-weight:600;color:var(--ink-2);text-transform:uppercase;letter-spacing:.06em}
+.sl-line{flex:1;height:1px;background:var(--line)}
+
+/* nodes */
+.nodes{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.node{background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:16px 17px;cursor:pointer;transition:all var(--t);position:relative}
+.node:hover,.node.open{border-color:var(--gold);background:var(--gold-s);box-shadow:0 4px 18px rgba(201,153,63,.12);transform:translateY(-2px)}
+.node.open .node-caret{transform:rotate(180deg)}
+.node-name{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:5px}
+.node-sub{font-size:10.5px;color:var(--ink-3);line-height:1.55;margin-bottom:10px}
+.node-caret{position:absolute;bottom:9px;right:11px;font-size:9px;color:var(--gold);opacity:.45;transition:transform var(--t)}
+.node-pill{display:inline-flex;align-items:center;gap:4px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.06em;padding:2px 8px;border-radius:10px}
+.node-pill::before{content:'●';font-size:6px}
+.np-live{background:rgba(107,201,80,.12);color:#3a9e1e;border:1px solid rgba(107,201,80,.3)}
+.np-build{background:rgba(255,152,0,.10);color:#d97000;border:1px solid rgba(255,152,0,.25)}
+.np-plan{background:rgba(123,104,238,.09);color:#7B68EE;border:1px solid rgba(123,104,238,.2)}
+
+/* detail panel */
+.detail{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:none;margin-bottom:10px}
+.detail.open{display:block;animation:rise .2s ease}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.detail-head{background:var(--navy-d);padding:14px 20px;display:flex;align-items:center;gap:12px;border-bottom:2px solid var(--gold)}
+.dh-title{font-family:'Playfair Display',Georgia,serif;font-size:16px;color:#fff;flex:1}
+.dh-tag{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.08em;padding:3px 9px;border-radius:4px;text-transform:uppercase}
+.dt-live{background:rgba(107,201,80,.2);color:#6BC950}
+.dt-build{background:rgba(255,152,0,.2);color:#FF9800}
+.dt-plan{background:rgba(123,104,238,.2);color:#b0a8ff}
+.detail-body{padding:20px 22px;display:flex;flex-direction:column;gap:12px}
+.d-label{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.d-text{font-size:12.5px;color:var(--ink-2);line-height:1.7}
+.d-text strong{color:var(--ink);font-weight:600}
+.step-list{display:flex;flex-direction:column;gap:6px}
+.step{display:flex;align-items:flex-start;gap:10px;padding:8px 12px;background:var(--bg);border-radius:8px;border:1px solid var(--line)}
+.step-n{width:20px;height:20px;border-radius:50%;flex-shrink:0;background:var(--navy);color:var(--gold);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;margin-top:1px}
+.step-t{font-size:11.5px;color:var(--ink-2);line-height:1.6;flex:1}
+
+/* team, positions only */
+.team-list{display:flex;flex-direction:column;gap:8px}
+.team-row{display:flex;align-items:flex-start;gap:12px;background:var(--bg);border-radius:10px;padding:12px 14px;border:1px solid var(--line)}
+.tr-role{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.07em;padding:3px 8px;border-radius:4px;white-space:nowrap;margin-top:2px}
+.tr-ceo{background:rgba(201,153,63,.12);color:var(--gold)}
+.tr-co{background:rgba(6,38,79,.07);color:var(--navy);border:1px solid var(--line)}
+:root[data-theme="dark"] .tr-co,@media (prefers-color-scheme:dark){.tr-co{color:#9db4d9}}
+.tr-content{background:rgba(34,158,217,.1);color:#0ea5e9}
+.tr-detail{font-size:11px;color:var(--ink-2);line-height:1.75}
+
+.foot{text-align:center;padding:22px 0;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink-3);letter-spacing:.1em}
+</style>
+
+<div class="topbar">
+  <div class="tb-name">Property Hub <span>Cambodia</span></div>
+  <div class="tb-tag">Content &amp; Distribution — Progress</div>
+</div>
+
+<div class="page">
+
+  <div class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="hero-eyebrow">Click any block below to see the detail</div>
+        <div class="hero-title">Content &amp; Distribution<br><span>— where we actually are</span></div>
+      </div>
+      <div class="hero-stats">
+        <div class="hs"><div class="hs-n">1</div><div class="hs-l">Live</div></div>
+        <div class="hs"><div class="hs-n">1</div><div class="hs-l">Building</div></div>
+        <div class="hs"><div class="hs-n">7</div><div class="hs-l">Planned</div></div>
+      </div>
+    </div>
+    <div class="pbar-wrap">
+      <div class="pbar-label"><span>9 pieces total</span><b>1 live · 1 building · 7 planned</b></div>
+      <div class="pbar"><div class="pbar-seg live" style="width:11%"></div><div class="pbar-seg build" style="width:11%"></div><div class="pbar-seg plan" style="width:78%"></div></div>
+    </div>
+  </div>
+
+  <div class="section-label"><span class="sl-num">01</span><span class="sl-text">Content Creation</span><div class="sl-line"></div></div>
+  <div class="nodes">
+    <div class="node" onclick="toggle('d-mix')" id="n-mix">
+      <div class="node-name">70/30 Content Mix</div>
+      <div class="node-sub">70% educational, 30% listings</div>
+      <span class="node-pill np-plan">Planned</span>
+      <span class="node-caret">▼</span>
+    </div>
+  </div>
+  <div class="detail" id="d-mix">
+    <div class="detail-head"><div class="dh-title">70/30 Content Mix</div><span class="dh-tag dt-plan">Planned</span></div>
+    <div class="detail-body">
+      <div class="d-label">Why</div>
+      <div class="d-text">Current posting is nearly all listings. Diagnosed root cause of <strong>100+ posts → 2 leads</strong>. This is an editorial rule change, not a tool — costs nothing to start.</div>
+      <div class="d-label">What changes</div>
+      <div class="step-list">
+        <div class="step"><div class="step-n">1</div><div class="step-t"><strong>70% educational</strong> — market insights, ROI guides, investor stories, "why Cambodia"</div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-t"><strong>30% listing</strong> — property features, unit types, pricing, floor plans</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label"><span class="sl-num">02</span><span class="sl-text">Own Channels — Telegram</span><div class="sl-line"></div></div>
+  <div class="nodes">
+    <div class="node" onclick="toggle('d-bot')" id="n-bot">
+      <div class="node-name">Telegram Content Bot</div>
+      <div class="node-sub">Detect · translate · one-tap post</div>
+      <span class="node-pill np-live">Live</span>
+      <span class="node-caret">▼</span>
+    </div>
+    <div class="node" onclick="toggle('d-channels')" id="n-channels">
+      <div class="node-name">EN / JP / DE Channels</div>
+      <div class="node-sub">Real channels + subscribers</div>
+      <span class="node-pill np-plan">Planned</span>
+      <span class="node-caret">▼</span>
+    </div>
+  </div>
+  <div class="detail" id="d-bot">
+    <div class="detail-head"><div class="dh-title">Telegram Content Bot</div><span class="dh-tag dt-live">Live</span></div>
+    <div class="detail-body">
+      <div class="d-label">What it does</div>
+      <div class="d-text">Forward a listing (already formatted, or raw/foreign-language) to the bot's private chat. It detects the format, translates to EN/JP/DE, and sends one review message with <strong>✅ Approve All / ❌ Reject All</strong>.</div>
+      <div class="d-label">Flow</div>
+      <div class="step-list">
+        <div class="step"><div class="step-n">1</div><div class="step-t">Forward listing to bot</div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-t">Bot detects format, translates EN/JP/DE</div></div>
+        <div class="step"><div class="step-n">3</div><div class="step-t">One review message, one Approve tap</div></div>
+        <div class="step"><div class="step-n">4</div><div class="step-t">Posts to all 3 language channels at once</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="detail" id="d-channels">
+    <div class="detail-head"><div class="dh-title">EN / JP / DE Channels</div><span class="dh-tag dt-plan">Planned</span></div>
+    <div class="detail-body">
+      <div class="d-label">Status</div>
+      <div class="d-text">The bot works — but all 3 languages currently post into <strong>one pilot test channel</strong>. Real channels don't exist yet, so nothing the bot posts reaches a real audience.</div>
+      <div class="d-label">Needed</div>
+      <div class="step-list">
+        <div class="step"><div class="step-n">1</div><div class="step-t">Create real EN / JP / DE channels</div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-t">Grow subscribers — QR codes at viewings, bio links, cross-promotion</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label"><span class="sl-num">03</span><span class="sl-text">Social Platforms</span><div class="sl-line"></div></div>
+  <div class="nodes">
+    <div class="node" onclick="toggle('d-igfb')" id="n-igfb">
+      <div class="node-name">Instagram &amp; Facebook</div>
+      <div class="node-sub">Manual posting, ongoing</div>
+      <span class="node-pill np-live">Live</span>
+      <span class="node-caret">▼</span>
+    </div>
+    <div class="node" onclick="toggle('d-linkedin')" id="n-linkedin">
+      <div class="node-name">LinkedIn</div>
+      <div class="node-sub">DE / European audience gap</div>
+      <span class="node-pill np-plan">Planned</span>
+      <span class="node-caret">▼</span>
+    </div>
+    <div class="node" onclick="toggle('d-buffer')" id="n-buffer">
+      <div class="node-name">Buffer — Free</div>
+      <div class="node-sub">Auto-schedule, 3 channels, $0</div>
+      <span class="node-pill np-plan">Planned</span>
+      <span class="node-caret">▼</span>
+    </div>
+  </div>
+  <div class="detail" id="d-igfb">
+    <div class="detail-head"><div class="dh-title">Instagram &amp; Facebook</div><span class="dh-tag dt-live">Live</span></div>
+    <div class="detail-body">
+      <div class="d-label">Status</div>
+      <div class="d-text">Actively posted to today — but the content is nearly all listings, which is the diagnosed reason for the low lead conversion. Fixing this depends on the 70/30 mix above, not a new tool.</div>
+    </div>
+  </div>
+  <div class="detail" id="d-linkedin">
+    <div class="detail-head"><div class="dh-title">LinkedIn</div><span class="dh-tag dt-plan">Planned</span></div>
+    <div class="detail-body">
+      <div class="d-label">Why</div>
+      <div class="d-text">Not currently used at all. Called out specifically as the missing platform for the <strong>German / European</strong> investor segment. Free to post manually — no tool needed to start.</div>
+    </div>
+  </div>
+  <div class="detail" id="d-buffer">
+    <div class="detail-head"><div class="dh-title">Buffer — Free Plan</div><span class="dh-tag dt-plan">Planned</span></div>
+    <div class="detail-body">
+      <div class="d-label">When</div>
+      <div class="d-text">Not needed yet — manual posting to 3 platforms is not the bottleneck right now. Worth adding once posting is consistent enough that logging into each app becomes real friction.</div>
+      <div class="d-label">What it gives</div>
+      <div class="d-text">3 channels, auto-publish, 10 queued posts each — <strong>$0/mo</strong>, matches the "3 platforms first" plan exactly.</div>
+    </div>
+  </div>
+
+  <div class="section-label"><span class="sl-num">04</span><span class="sl-text">Later — Once There's Budget</span><div class="sl-line"></div></div>
+  <div class="nodes">
+    <div class="node" onclick="toggle('d-bufferpaid')" id="n-bufferpaid">
+      <div class="node-name">Buffer — Paid</div>
+      <div class="node-sub">Analytics · 4th channel · team seats</div>
+      <span class="node-pill np-plan">Planned</span>
+      <span class="node-caret">▼</span>
+    </div>
+    <div class="node" onclick="toggle('d-video')" id="n-video">
+      <div class="node-name">TikTok &amp; YouTube Shorts</div>
+      <div class="node-sub">Short-form video</div>
+      <span class="node-pill np-plan">Planned</span>
+      <span class="node-caret">▼</span>
+    </div>
+    <div class="node" onclick="toggle('d-contentos')" id="n-contentos">
+      <div class="node-name">PHC Content OS</div>
+      <div class="node-sub">Campaign · review · publish dashboard</div>
+      <span class="node-pill np-build">Building</span>
+      <span class="node-caret">▼</span>
+    </div>
+    <div class="node" onclick="toggle('d-manychat')" id="n-manychat">
+      <div class="node-name">ManyChat</div>
+      <div class="node-sub">Turns comments/DMs into leads</div>
+      <span class="node-pill np-plan">Planned</span>
+      <span class="node-caret">▼</span>
+    </div>
+  </div>
+  <div class="detail" id="d-bufferpaid">
+    <div class="detail-head"><div class="dh-title">Buffer — Paid (Essentials)</div><span class="dh-tag dt-plan">Planned</span></div>
+    <div class="detail-body"><div class="d-text">$5/channel/month. Adds analytics (proves the content mix fix is working), unlimited queue, and team seats. Upgrade trigger, not a start-now item.</div></div>
+  </div>
+  <div class="detail" id="d-video">
+    <div class="detail-head"><div class="dh-title">TikTok &amp; YouTube Shorts</div><span class="dh-tag dt-plan">Planned</span></div>
+    <div class="detail-body"><div class="d-text">Auto-schedulable once added as a channel. Long-form YouTube stays manual regardless — no scheduler supports it at any price.</div></div>
+  </div>
+  <div class="detail" id="d-contentos">
+    <div class="detail-head"><div class="dh-title">PHC Content OS</div><span class="dh-tag dt-build">Building</span></div>
+    <div class="detail-body"><div class="d-text">Structural prototype only right now — dashboard, campaigns, review pipeline, publishing queue. Runs on a paid platform, so polishing it is parked until there's budget. Will likely absorb the Telegram bot's approval flow eventually.</div></div>
+  </div>
+  <div class="detail" id="d-manychat">
+    <div class="detail-head"><div class="dh-title">ManyChat</div><span class="dh-tag dt-plan">Planned</span></div>
+    <div class="detail-body"><div class="d-text">Captures the comments/DMs that content generates and turns them into scored, routed leads. Closes the loop — but downstream of having content worth capturing engagement from.</div></div>
+  </div>
+
+  <div class="section-label"><span class="sl-num">05</span><span class="sl-text">Who's Involved</span><div class="sl-line"></div></div>
+  <div class="team-list">
+    <div class="team-row"><span class="tr-role tr-ceo">CEO</span><div class="tr-detail">Reviews and approves every listing before it posts — taps Approve/Reject on the Telegram bot.</div></div>
+    <div class="team-row"><span class="tr-role tr-content">CONTENT</span><div class="tr-detail">Writes posts, applies the 70/30 mix, posts manually to Instagram, Facebook, and LinkedIn.</div></div>
+    <div class="team-row"><span class="tr-role tr-co">CO-FOUNDER — JP / RU / EN</span><div class="tr-detail">Owns the Japanese-language channel and its audience.</div></div>
+    <div class="team-row"><span class="tr-role tr-co">CO-FOUNDER — DE / European</span><div class="tr-detail">Owns the German-language channel and the new LinkedIn push.</div></div>
+  </div>
+
+  <div class="foot">PROPERTY HUB CAMBODIA · CONTENT &amp; DISTRIBUTION PROGRESS · JULY 2026</div>
+
+</div>
+
+<script>
+function toggle(id){
+  var detail=document.getElementById(id);
+  var nodeMap={
+    'd-mix':'n-mix','d-bot':'n-bot','d-channels':'n-channels',
+    'd-igfb':'n-igfb','d-linkedin':'n-linkedin','d-buffer':'n-buffer',
+    'd-bufferpaid':'n-bufferpaid','d-video':'n-video','d-contentos':'n-contentos','d-manychat':'n-manychat'
+  };
+  var node=document.getElementById(nodeMap[id]);
+  if(detail.classList.contains('open')){
+    detail.classList.remove('open'); detail.style.display='none';
+    if(node) node.classList.remove('open');
+  } else {
+    detail.classList.add('open'); detail.style.display='block';
+    if(node) node.classList.add('open');
+    setTimeout(function(){ detail.scrollIntoView({behavior:'smooth',block:'nearest'}); },50);
+  }
+}
+</script>

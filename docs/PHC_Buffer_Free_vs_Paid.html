@@ -1,0 +1,203 @@
+<title>Buffer — Free vs Paid</title>
+<style>
+:root{
+  --navy:#06264f; --navy-d:#040f24; --navy-m:#0b3d7a;
+  --gold:#c9993f; --gold-l:#e0b86a; --gold-s:rgba(201,153,63,.10); --gold-b:rgba(201,153,63,.28);
+  --ink:#1a2535; --ink-2:#4a5e74; --ink-3:#8a9bb0;
+  --bg:#f0f3f8; --card:#ffffff; --line:#e0e5ee;
+  --ok:#1a7a4a; --ok-s:rgba(26,122,74,.09);
+  --warn:#a45a11; --warn-s:rgba(164,90,17,.09);
+  --r:12px;
+  --serif: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Times New Roman', serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", sans-serif;
+  --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+}
+:root[data-theme="dark"]{
+  --navy:#0b3d7a; --navy-d:#050e1e; --bg:#0a1220; --card:#101a2c; --line:#1e2c45;
+  --ink:#e7ecf5; --ink-2:#a9b7cc; --ink-3:#6d7f9c;
+  --gold-s:rgba(224,184,106,.12); --gold-b:rgba(224,184,106,.3);
+  --ok-s:rgba(56,178,120,.14); --warn-s:rgba(224,158,90,.14);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --navy:#0b3d7a; --navy-d:#050e1e; --bg:#0a1220; --card:#101a2c; --line:#1e2c45;
+    --ink:#e7ecf5; --ink-2:#a9b7cc; --ink-3:#6d7f9c;
+    --gold-s:rgba(224,184,106,.12); --gold-b:rgba(224,184,106,.3);
+    --ok-s:rgba(56,178,120,.14); --warn-s:rgba(224,158,90,.14);
+  }
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.5}
+a{color:inherit}
+
+.topbar{background:var(--navy-d);height:52px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(255,255,255,.06)}
+.tb-name{font-family:var(--serif);font-size:14px;color:#fff;letter-spacing:-.01em}
+.tb-name span{color:var(--gold-l)}
+.tb-tag{font-family:var(--mono);font-size:9px;color:var(--gold-l);opacity:.6;letter-spacing:.16em;text-transform:uppercase}
+
+.page{max-width:1080px;margin:0 auto;padding:40px 28px 90px}
+
+.hero{background:linear-gradient(135deg,var(--navy-d) 0%,var(--navy) 100%);border-radius:var(--r);padding:34px 38px;margin-bottom:30px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.07)}
+.hero::before{content:'';position:absolute;top:-90px;right:-70px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(224,184,106,.09) 0%,transparent 70%)}
+.hero-eyebrow{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-l);opacity:.85;margin-bottom:10px}
+.hero-title{font-family:var(--serif);font-size:30px;font-weight:700;color:#fff;letter-spacing:-.02em;line-height:1.18;margin-bottom:10px;max-width:640px}
+.hero-title em{font-style:normal;color:var(--gold-l)}
+.hero-sub{font-size:13.5px;color:rgba(255,255,255,.55);line-height:1.7;max-width:560px}
+.hero-baseline{margin-top:20px;padding-top:18px;border-top:1px solid rgba(255,255,255,.1);display:flex;gap:28px;flex-wrap:wrap}
+.hb-item{display:flex;flex-direction:column;gap:2px}
+.hb-n{font-family:var(--serif);font-size:19px;color:var(--gold-l);letter-spacing:-.01em}
+.hb-l{font-family:var(--mono);font-size:8.5px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em}
+
+.section-label{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin:34px 0 14px}
+.section-label:first-of-type{margin-top:0}
+
+/* ── side-by-side option cards ── */
+.options{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:720px){.options{grid-template-columns:1fr}}
+.opt{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px;display:flex;flex-direction:column;gap:16px;position:relative}
+.opt.paid{border-color:var(--gold-b)}
+.opt-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.opt-name{font-family:var(--serif);font-size:20px;letter-spacing:-.01em}
+.opt-price{font-family:var(--mono);font-size:13px;color:var(--ink-2)}
+.opt.paid .opt-price{color:var(--gold);font-weight:600}
+.opt-pill{display:inline-block;font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:20px;width:fit-content}
+.opt.free .opt-pill{background:var(--navy);color:#fff}
+.opt.paid .opt-pill{background:var(--gold-s);color:var(--gold);border:1px solid var(--gold-b)}
+.opt-list{list-style:none;display:flex;flex-direction:column;gap:9px;font-size:13px;color:var(--ink-2)}
+.opt-list li{display:flex;gap:9px;align-items:flex-start}
+.opt-list b{color:var(--ink);font-weight:600}
+.chk{flex-shrink:0;width:14px;height:14px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;margin-top:2px}
+.opt.free .chk{background:var(--navy);color:#fff}
+.opt.paid .chk{background:var(--gold);color:var(--navy-d)}
+.opt-fit{margin-top:auto;padding-top:14px;border-top:1px dashed var(--line);font-size:12px;color:var(--ink-3);font-style:italic}
+
+/* ── feature table ── */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--card)}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:560px}
+th,td{text-align:left;padding:11px 16px;border-bottom:1px solid var(--line)}
+thead th{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:600;background:var(--bg)}
+tbody tr:last-child td{border-bottom:none}
+td:first-child{color:var(--ink-2);font-weight:500;width:34%}
+td.f-free,td.f-paid{font-variant-numeric:tabular-nums}
+td.f-paid{color:var(--gold);font-weight:600}
+td.f-free{color:var(--ink)}
+
+/* ── ROI panel ── */
+.roi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:28px 30px}
+.roi-head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.roi-title{font-family:var(--serif);font-size:18px}
+.roi-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+@media (max-width:640px){.roi-grid{grid-template-columns:1fr}}
+.roi-card{border-radius:10px;padding:16px 18px}
+.roi-card.drives{background:var(--ok-s);border:1px solid rgba(26,122,74,.25)}
+.roi-card.doesnt{background:var(--warn-s);border:1px solid rgba(164,90,17,.25)}
+.roi-card h4{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);margin-bottom:10px}
+.roi-card.drives h4{color:var(--ok)}
+.roi-card.doesnt h4{color:var(--warn)}
+.roi-card p{font-size:13px;color:var(--ink-2);line-height:1.6}
+.roi-verdict{background:var(--navy);color:#fff;border-radius:10px;padding:18px 20px;display:flex;gap:14px;align-items:flex-start}
+.roi-verdict .mark{font-family:var(--serif);font-size:22px;color:var(--gold-l);line-height:1;flex-shrink:0}
+.roi-verdict p{font-size:13.5px;line-height:1.65;color:rgba(255,255,255,.88)}
+.roi-verdict b{color:var(--gold-l)}
+
+/* ── triggers ── */
+.triggers{display:flex;flex-direction:column;gap:10px}
+.trig{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:12px 16px;font-size:13px}
+.trig .n{font-family:var(--mono);font-size:10px;color:var(--gold);border:1px solid var(--gold-b);background:var(--gold-s);width:20px;height:20px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.trig span{color:var(--ink-2)}
+.trig b{color:var(--ink)}
+
+.foot{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);font-family:var(--mono);font-size:9.5px;color:var(--ink-3);letter-spacing:.06em;text-transform:uppercase;text-align:center}
+</style>
+
+<div class="topbar">
+  <div class="tb-name">Property Hub <span>Cambodia</span></div>
+  <div class="tb-tag">Distribution Automation · Free vs Paid</div>
+</div>
+
+<div class="page">
+
+  <div class="hero">
+    <div class="hero-eyebrow">Content Distribution · Buffer</div>
+    <h1 class="hero-title">Free tier covers the <em>3-platform</em> starting plan exactly. Paid buys visibility, not more leads.</h1>
+    <p class="hero-sub">Comparing Buffer's Free plan against Essentials ($5/channel/mo) for the IG · FB · LinkedIn rollout, against PHC's own diagnosed baseline for social distribution.</p>
+    <div class="hero-baseline">
+      <div class="hb-item"><span class="hb-n">100+ → 2</span><span class="hb-l">Posts to leads, current</span></div>
+      <div class="hb-item"><span class="hb-n">3</span><span class="hb-l">Channels in Free plan</span></div>
+      <div class="hb-item"><span class="hb-n">$0</span><span class="hb-l">Cost at 3 channels, Free</span></div>
+      <div class="hb-item"><span class="hb-n">$15</span><span class="hb-l">Cost at 3 channels, Paid /mo</span></div>
+    </div>
+  </div>
+
+  <div class="section-label">The two options</div>
+  <div class="options">
+    <div class="opt free">
+      <div class="opt-head"><span class="opt-name">Free</span><span class="opt-price">$0 / mo</span></div>
+      <span class="opt-pill">Start here</span>
+      <ul class="opt-list">
+        <li><span class="chk">✓</span><span><b>3 channels</b> connected — exactly matches IG + FB + LinkedIn</span></li>
+        <li><span class="chk">✓</span><span><b>10 queued posts</b> per channel at a time</span></li>
+        <li><span class="chk">✓</span><span>Manual + scheduled publishing, all core platforms</span></li>
+        <li><span class="chk">✓</span><span>One user (Mey posts directly, no shared seat needed yet)</span></li>
+      </ul>
+      <div class="opt-fit">Fits the "focus 3 platforms first" plan with zero cost and zero waste.</div>
+    </div>
+    <div class="opt paid">
+      <div class="opt-head"><span class="opt-name">Essentials</span><span class="opt-price">$5 / channel / mo</span></div>
+      <span class="opt-pill">Upgrade when it binds</span>
+      <ul class="opt-list">
+        <li><span class="chk">✓</span><span><b>Unlimited queue</b> — no 10-post cap per channel</span></li>
+        <li><span class="chk">✓</span><span><b>Analytics</b> — which posts / platforms actually drive clicks</span></li>
+        <li><span class="chk">✓</span><span>Add channels past 3 (TikTok, YouTube Shorts) without a wall</span></li>
+        <li><span class="chk">✓</span><span>Team seats — Mey, Monika, Reza can each queue content</span></li>
+      </ul>
+      <div class="opt-fit">Buys scale and proof, once there's something worth scaling.</div>
+    </div>
+  </div>
+
+  <div class="section-label">Feature by feature</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Feature</th><th>Free</th><th>Essentials</th></tr></thead>
+      <tbody>
+        <tr><td>Connected channels</td><td class="f-free">3</td><td class="f-paid">Unlimited (pay per channel)</td></tr>
+        <tr><td>Scheduled queue</td><td class="f-free">10 posts / channel</td><td class="f-paid">Unlimited</td></tr>
+        <tr><td>Platforms supported</td><td class="f-free">IG · FB · LinkedIn · X · TikTok · YT Shorts</td><td class="f-paid">Same, no cap</td></tr>
+        <tr><td>Post analytics</td><td class="f-free">— none</td><td class="f-paid">Per-post, per-platform</td></tr>
+        <tr><td>Team collaboration</td><td class="f-free">Single user</td><td class="f-paid">Shared seats</td></tr>
+        <tr><td>Cost at 3 channels</td><td class="f-free">$0 / mo</td><td class="f-paid">$15 / mo</td></tr>
+        <tr><td>Cost at 5 channels</td><td class="f-free">Locked — must drop to 3</td><td class="f-paid">$25 / mo</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-label">Where the ROI actually comes from</div>
+  <div class="roi">
+    <div class="roi-grid">
+      <div class="roi-card drives">
+        <h4>Drives more leads</h4>
+        <p>The 70/30 educational-to-listing content mix, and posting on the platform JP/DE buyers actually use (LinkedIn). Both are <b>free regardless of Buffer tier</b> — they're editorial decisions, not tooling.</p>
+      </div>
+      <div class="roi-card doesnt">
+        <h4>Doesn't, by itself</h4>
+        <p>Upgrading to Essentials. Paying for more channels or analytics doesn't fix a content mix that's currently 100% listings — it just automates the same low-conversion posts faster.</p>
+      </div>
+    </div>
+    <div class="roi-verdict">
+      <span class="mark">”</span>
+      <p>Buffer's tier is an <b>efficiency layer</b>, not a lead-generation lever. Free tier removes zero capability PHC needs at 3 channels — the fix for "100+ posts → 2 leads" is the content mix, which costs the same either way. Spend the $0 now; spend the $15/mo later, once there's data worth analyzing.</p>
+    </div>
+  </div>
+
+  <div class="section-label">When to actually upgrade</div>
+  <div class="triggers">
+    <div class="trig"><span class="n">1</span><span>Adding a <b>4th channel</b> (TikTok or YouTube Shorts) once video content exists</span></div>
+    <div class="trig"><span class="n">2</span><span>Need <b>analytics</b> to prove the 70/30 mix is actually improving lead flow, not just a hunch</span></div>
+    <div class="trig"><span class="n">3</span><span>Mey needs to queue content <b>without routing through one shared login</b></span></div>
+    <div class="trig"><span class="n">4</span><span>Post volume regularly exceeds <b>10 queued items</b> per channel</span></div>
+  </div>
+
+  <div class="foot">Property Hub Cambodia · Internal Planning Note · July 2026</div>
+
+</div>
