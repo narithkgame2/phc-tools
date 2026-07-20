@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHC · Team Handbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sf: -apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue","Inter",sans-serif;
+  --sf-mono: "SF Mono","SFMono-Regular",ui-monospace,"JetBrains Mono","Courier New",monospace;
+  --navy: #06264f; --navy-d: #040f24; --navy-md: #0b3d7a;
+  --gold: #c9993f; --gold-lt: #e0b86a; --gold-dim: #a07a2e;
+  --gold-soft: rgba(201,153,63,.10); --gold-border: rgba(201,153,63,.22);
+  --ok: #1a7a4a; --ok-soft: rgba(26,122,74,.08); --ok-border: rgba(26,122,74,.22);
+  --err: #b83030; --err-soft: rgba(184,48,48,.08); --err-border: rgba(184,48,48,.20);
+  --ink: #0c1b2e; --ink-2: #374f66; --ink-3: #7490a8;
+  --line: rgba(6,38,79,.09); --line-md: rgba(6,38,79,.16);
+  --bg: #ffffff; --bg-2: #f6f8fb; --bg-3: #edf0f5;
+  --r: 10px; --r-lg: 16px;
+  --transition: .2s cubic-bezier(.4,0,.2,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{min-height:100%;font-family:var(--sf);}
+body{background:#e8ecf3;-webkit-font-smoothing:antialiased;min-height:100%;display:flex;align-items:flex-start;justify-content:center;padding:16px;}
+
+/* ── GATE ── */
+#phc-gate{display:none;position:fixed;inset:0;background:var(--navy-d);z-index:99999;align-items:center;justify-content:center;}
+#phc-gate .card{background:var(--navy);border:1px solid rgba(201,153,63,.25);border-radius:16px;padding:44px 40px;width:340px;text-align:center;box-shadow:0 32px 80px rgba(0,0,0,.6);}
+#phc-gate .t1{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:4px;}
+#phc-gate .t2{font-size:12px;color:rgba(255,255,255,.35);margin-bottom:28px;}
+#phc-gate input{width:100%;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:12px 16px;font-size:14px;text-align:center;letter-spacing:.1em;color:#fff;outline:none;margin-bottom:12px;}
+#phc-gate input:focus{border-color:var(--gold);}
+#phc-gate button{width:100%;background:var(--gold);color:var(--navy-d);border:none;border-radius:9px;padding:13px;font-size:13px;font-weight:700;cursor:pointer;}
+#phc-gate .err{display:none;color:#f87171;font-size:12px;margin-top:12px;}
+
+/* ── APP SHELL ── */
+#app{width:100%;max-width:1180px;background:var(--bg);border-radius:20px;box-shadow:0 12px 60px rgba(6,38,79,.18),0 2px 8px rgba(6,38,79,.08);overflow:hidden;display:flex;flex-direction:column;min-height:calc(100vh - 32px);border:1px solid var(--line-md);}
+.layout{display:flex;flex:1;min-height:0;}
+
+.topbar{background:var(--navy-d);height:56px;padding:0 20px;display:flex;align-items:center;gap:12px;flex-shrink:0;position:relative;border-bottom:1px solid rgba(255,255,255,.05);}
+.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--gold) 0%,rgba(201,153,63,.3) 40%,transparent 70%);}
+.tb-mark{width:32px;height:32px;border-radius:8px;background:var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Playfair Display',serif;font-weight:700;color:var(--navy-d);font-size:15px;}
+.tb-wordmark{font-size:13px;font-weight:600;color:#fff;letter-spacing:-.01em;white-space:nowrap;}
+.tb-wordmark span{color:var(--gold);}
+.tb-sep{width:1px;height:18px;background:rgba(255,255,255,.12);flex-shrink:0;}
+.tb-ctx{font-family:var(--sf-mono);font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.1em;text-transform:uppercase;flex:1;}
+.tb-home{font-size:11px;color:rgba(255,255,255,.4);text-decoration:none;padding:5px 11px;border:1px solid rgba(255,255,255,.1);border-radius:6px;white-space:nowrap;}
+.tb-home:hover{color:var(--gold);border-color:var(--gold-border);}
+
+/* ── SIDEBAR ── */
+.sidebar{width:236px;flex-shrink:0;background:var(--bg-2);border-right:1px solid var(--line);overflow-y:auto;padding:14px 0 24px;}
+.sb-group{padding:14px 16px 4px;display:flex;align-items:center;gap:7px;}
+.sb-group-txt{font-family:var(--sf-mono);font-size:9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);}
+.sb-row{display:flex;align-items:center;gap:10px;padding:9px 14px 9px 16px;cursor:pointer;border-left:2px solid transparent;transition:background var(--transition),border-color var(--transition);min-height:40px;}
+.sb-row:hover{background:rgba(6,38,79,.04);}
+.sb-row.active{background:var(--gold-soft);border-left-color:var(--gold);}
+.sb-badge{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--line-md);background:var(--bg-3);color:var(--ink-3);}
+.sb-badge svg{width:14px;height:14px;}
+.bub-btn svg{width:10px;height:10px;vertical-align:-1px;margin-right:3px;}
+.sb-row.active .sb-badge{background:var(--gold);border-color:var(--gold);color:#fff;}
+.sb-label{font-size:12.5px;font-weight:500;color:var(--ink-2);}
+.sb-row.active .sb-label{color:var(--ink);font-weight:600;}
+.sb-owner{font-size:9.5px;color:var(--ink-3);margin-top:1px;}
+
+/* ── MAIN ── */
+.main{flex:1;min-width:0;overflow-y:auto;background:var(--bg);}
+.scroll{padding:36px 44px 60px;max-width:760px;}
+
+.eyebrow{font-family:var(--sf-mono);font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:8px;}
+.heading{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--ink);line-height:1.2;letter-spacing:-.02em;margin-bottom:6px;}
+.subhead{font-size:14px;color:var(--ink-2);line-height:1.65;margin-bottom:22px;max-width:600px;}
+
+.obj-card{background:var(--navy-d);border-radius:var(--r-lg);padding:20px 22px;margin-bottom:24px;position:relative;overflow:hidden;}
+.obj-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent 70%);}
+.obj-row{display:flex;align-items:flex-start;gap:10px;padding:6px 0;font-size:13px;color:rgba(255,255,255,.82);line-height:1.6;border-bottom:1px solid rgba(255,255,255,.05);}
+.obj-row:last-child{border-bottom:none;}
+.obj-arrow{color:var(--gold);flex-shrink:0;margin-top:1px;font-size:11px;}
+.obj-row b{color:#fff;}
+
+/* mock preview frame */
+.frame{border-radius:var(--r-lg);border:1px solid var(--line-md);overflow:hidden;margin-bottom:26px;box-shadow:0 8px 28px rgba(6,38,79,.08);}
+.frame-bar{background:var(--bg-2);border-bottom:1px solid var(--line);padding:9px 14px;display:flex;align-items:center;gap:6px;}
+.frame-dot{width:8px;height:8px;border-radius:50%;background:var(--line-md);}
+.frame-url{margin-left:8px;font-family:var(--sf-mono);font-size:9.5px;color:var(--ink-3);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:3px 10px;}
+.frame-body{background:var(--bg);padding:0;display:flex;min-height:180px;}
+
+/* telegram-style chat preview */
+.chat-frame{background:#e6ecf5;padding:16px;display:flex;flex-direction:column;gap:8px;}
+.bub{max-width:78%;padding:9px 13px;border-radius:14px;font-size:12px;line-height:1.55;}
+.bub.in{background:#fff;color:var(--ink);align-self:flex-start;border-bottom-left-radius:4px;box-shadow:0 1px 2px rgba(0,0,0,.06);}
+.bub.out{background:var(--navy);color:#fff;align-self:flex-end;border-bottom-right-radius:4px;}
+.bub.sys{align-self:center;background:rgba(6,38,79,.06);color:var(--ink-3);font-size:10.5px;padding:4px 10px;border-radius:10px;}
+.bub .tag{font-family:var(--sf-mono);font-size:9px;color:var(--gold-dim);margin-bottom:3px;display:block;text-transform:uppercase;letter-spacing:.05em;}
+.bub-btns{display:flex;gap:6px;margin-top:6px;}
+.bub-btn{font-size:10.5px;padding:4px 10px;border-radius:6px;font-weight:600;}
+.bub-btn.ok{background:var(--ok-soft);color:var(--ok);border:1px solid var(--ok-border);}
+.bub-btn.no{background:var(--err-soft);color:var(--err);border:1px solid var(--err-border);}
+
+/* rules list */
+.rules{margin:0 0 24px;}
+.rule{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);}
+.rule:last-child{border-bottom:none;}
+.rule-n{width:26px;height:26px;border-radius:50%;background:var(--navy);color:var(--gold);font-family:var(--sf-mono);font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.rule-title{font-size:13.5px;font-weight:600;color:var(--ink);margin-bottom:3px;}
+.rule-detail{font-size:12.5px;color:var(--ink-2);line-height:1.6;}
+
+.info-box{border-left:2px solid var(--gold);background:var(--gold-soft);padding:14px 18px;border-radius:0 var(--r) var(--r) 0;margin:0 0 16px;font-size:13px;color:var(--ink);line-height:1.68;}
+.info-box .ib-label{font-family:var(--sf-mono);font-size:9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:6px;}
+.warn-box{border-left:2px solid var(--err);background:var(--err-soft);padding:14px 18px;border-radius:0 var(--r) var(--r) 0;margin:0 0 16px;font-size:13px;color:#8b1e1e;line-height:1.68;}
+.warn-box .ib-label{font-family:var(--sf-mono);font-size:9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--err);margin-bottom:6px;}
+
+.btnrow{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;}
+.btn{padding:10px 20px;border-radius:9px;font-size:13px;font-weight:600;border:1px solid var(--line-md);background:var(--bg);color:var(--ink-2);transition:all var(--transition);white-space:nowrap;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+.btn:hover{background:var(--bg-2);color:var(--ink);}
+.btn.primary{background:var(--navy);color:#fff;border-color:var(--navy);}
+.btn.primary:hover{background:var(--navy-md);border-color:var(--navy-md);}
+.btn.cta{background:var(--gold);color:#fff;border-color:var(--gold);}
+.btn.cta:hover{background:var(--gold-lt);border-color:var(--gold-lt);}
+
+.tag-list{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:24px;}
+.tag{font-size:11px;padding:4px 11px;border-radius:12px;background:var(--bg-2);border:1px solid var(--line);color:var(--ink-2);font-weight:500;}
+.tag.owner{background:var(--gold-soft);border-color:var(--gold-border);color:var(--gold-dim);}
+
+.section-lbl{font-family:var(--sf-mono);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin:26px 0 12px;}
+
+/* mockup mini-UI pieces */
+.mock-side{width:34%;background:var(--bg-2);border-right:1px solid var(--line);padding:12px;}
+.mock-row{background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 8px;font-size:9.5px;color:var(--ink-2);margin-bottom:5px;}
+.mock-row.on{background:var(--gold-soft);border-color:var(--gold-border);color:var(--gold-dim);font-weight:600;}
+.mock-main{flex:1;padding:14px;display:flex;flex-direction:column;gap:8px;}
+.mock-card{background:var(--bg-2);border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:10px;color:var(--ink-2);}
+.mock-card b{color:var(--ink);display:block;font-size:11px;margin-bottom:2px;}
+.mock-pill{display:inline-block;font-size:8.5px;padding:2px 7px;border-radius:8px;font-weight:600;margin-left:6px;}
+.mock-cols{display:flex;gap:8px;flex:1;}
+.mock-col{flex:1;background:var(--bg-2);border-radius:7px;padding:7px;}
+.mock-col-h{font-size:9px;font-weight:700;color:var(--ink-2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;}
+.mock-chip{background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 7px;font-size:9px;color:var(--ink-2);margin-bottom:5px;}
+
+.view{display:none;}
+.view.active{display:block;animation:rise .25s cubic-bezier(.4,0,.2,1);}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:22px 0 6px;}
+.hs{background:var(--bg-2);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center;}
+.hs-n{font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);font-weight:700;line-height:1;margin-bottom:3px;}
+.hs-l{font-family:var(--sf-mono);font-size:8.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;}
+
+@media(max-width:860px){
+  body{padding:0;}
+  #app{border-radius:0;min-height:100dvh;border:none;box-shadow:none;}
+  .layout{flex-direction:column;}
+  .sidebar{width:100%;border-right:none;border-bottom:1px solid var(--line);display:flex;overflow-x:auto;padding:8px;gap:4px;white-space:nowrap;}
+  .sb-group{display:none;}
+  .sb-row{border-left:none;border-bottom:2px solid transparent;flex-shrink:0;padding:8px 12px;}
+  .sb-row.active{border-bottom-color:var(--gold);}
+  .sb-owner{display:none;}
+  .scroll{padding:24px 18px 50px;}
+  .hero-stats{grid-template-columns:repeat(2,1fr);}
+  .tb-wordmark{display:none;}
+  .frame-body{flex-direction:column;}
+  .mock-side{width:100%;border-right:none;border-bottom:1px solid var(--line);}
+}
+</style>
+</head>
+<body>
+
+<!-- PASSWORD GATE -->
+<div id="phc-gate">
+  <div class="card">
+    <div class="t1">PHC Team Handbook</div>
+    <div class="t2">Property Hub Cambodia — Internal Only</div>
+    <input id="phc-gate-pw" type="password" placeholder="Team password" onkeydown="if(event.key==='Enter')phcCheck()">
+    <button onclick="phcCheck()">Continue →</button>
+    <div id="phc-gate-err" class="err">Incorrect password.</div>
+  </div>
+</div>
+<script>
+(function(){
+  var g=document.getElementById('phc-gate');
+  if(sessionStorage.getItem('phc_agent_auth')==='1'||sessionStorage.getItem('phc_ceo_auth')==='1'){g.style.display='none';}
+  else{g.style.display='flex';setTimeout(function(){document.getElementById('phc-gate-pw').focus();},50);}
+  window.phcCheck=function(){
+    var v=document.getElementById('phc-gate-pw').value;
+    if(v==='PHC2026'||v==='Nick@PHC2026'){
+      sessionStorage.setItem('phc_agent_auth','1');
+      if(v==='Nick@PHC2026')sessionStorage.setItem('phc_ceo_auth','1');
+      g.style.display='none';
+    } else {
+      document.getElementById('phc-gate-err').style.display='block';
+      document.getElementById('phc-gate-pw').value='';
+    }
+  };
+})();
+</script>
+
+<div id="app">
+  <div class="topbar">
+    <div class="tb-mark">P</div>
+    <div class="tb-wordmark">Property Hub <span>Cambodia</span></div>
+    <div class="tb-sep"></div>
+    <div class="tb-ctx" id="tb-ctx">Team Handbook</div>
+    <a href="index.html" class="tb-home">← Hub</a>
+  </div>
+  <div class="layout">
+    <div class="sidebar" id="sidebar">
+      <div class="sb-row active" data-view="overview" onclick="showView('overview')">
+        <div class="sb-badge"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 2.5h7a2 2 0 0 1 2 2v9H5.5a2 2 0 0 0-2 2v-13Z"/><path d="M3 12.5h9"/></svg></div>
+        <div><div class="sb-label">Start Here</div></div>
+      </div>
+
+      <div class="sb-group"><span class="sb-group-txt">Web Tools</span></div>
+      <div class="sb-row" data-view="tasks" onclick="showView('tasks')">
+        <div class="sb-badge"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M4.5 5.5h7M4.5 8h7M4.5 10.5h4.5"/></svg></div>
+        <div><div class="sb-label">Task Manager</div><div class="sb-owner">Everyone</div></div>
+      </div>
+      <div class="sb-row" data-view="leads" onclick="showView('leads')">
+        <div class="sb-badge"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M4.5 8h7M4.5 5.5h7M4.5 10.5h4.5"/></svg></div>
+        <div><div class="sb-label">Lead Tracker</div><div class="sb-owner">Monika · Reza · Marina</div></div>
+      </div>
+      <div class="sb-row" data-view="clients" onclick="showView('clients')">
+        <div class="sb-badge"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="5.5" r="2.5"/><path d="M3 13c0-2.76 2.24-5 5-5s5 2.24 5 5"/></svg></div>
+        <div><div class="sb-label">Client Manager</div><div class="sb-owner">Marina</div></div>
+      </div>
+      <div class="sb-row" data-view="messages" onclick="showView('messages')">
+        <div class="sb-badge"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="3" width="12" height="9" rx="2"/><path d="M4.5 6.5h7M4.5 9h4.5"/></svg></div>
+        <div><div class="sb-label">Message Builder</div><div class="sb-owner">Monika · Reza · Marina</div></div>
+      </div>
+      <div class="sb-row" data-view="proposal" onclick="showView('proposal')">
+        <div class="sb-badge"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="2" width="10" height="12" rx="1.3"/><path d="M5.3 5.3h5.4M5.3 7.8h5.4M5.3 10.3h3"/></svg></div>
+        <div><div class="sb-label">Proposal Generator</div><div class="sb-owner">Monika · Reza</div></div>
+      </div>
+      <div class="sb-row" data-view="explorer" onclick="showView('explorer')">
+        <div class="sb-badge"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.7 8.5l2.8 2.8 7-6.6"/></svg></div>
+        <div><div class="sb-label">Investment Explorer</div><div class="sb-owner">Any agent, with a client</div></div>
+      </div>
+
+      <div class="sb-group"><span class="sb-group-txt">Telegram Bots</span></div>
+      <div class="sb-row" data-view="contentbot" onclick="showView('contentbot')">
+        <div class="sb-badge"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9.8 3.2l3 3-6.4 6.4-3.6.6.6-3.6z"/></svg></div>
+        <div><div class="sb-label">Content Bot</div><div class="sb-owner">Marina</div></div>
+      </div>
+      <div class="sb-row" data-view="paymentbot" onclick="showView('paymentbot')">
+        <div class="sb-badge"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="5.8"/><path d="M8 5v1M8 10v1M6.2 7a1.8 1.8 0 0 1 3.6 0c0 1-1.8 1.4-1.8 2.2"/></svg></div>
+        <div><div class="sb-label">Payment Reminder Bot</div><div class="sb-owner">Marina</div></div>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="scroll">
+
+        <!-- OVERVIEW -->
+        <div class="view active" id="v-overview">
+          <div class="eyebrow">Welcome</div>
+          <div class="heading">How to use this handbook</div>
+          <div class="subhead">Eight tools, one page each. Every page tells you three things: what the tool is for, who's responsible for it, and the exact steps to use it. Pick your name below to jump to what's yours.</div>
+
+          <div class="hero-stats">
+            <div class="hs"><div class="hs-n">6</div><div class="hs-l">Web Tools</div></div>
+            <div class="hs"><div class="hs-n">2</div><div class="hs-l">Telegram Bots</div></div>
+            <div class="hs"><div class="hs-n">4</div><div class="hs-l">Team Members</div></div>
+          </div>
+          <div style="font-size:11px;color:var(--ink-3);margin-bottom:6px;">Team password: <b style="color:var(--ink-2);font-family:var(--sf-mono);">PHC2026</b></div>
+
+          <div class="section-lbl">Find your tools</div>
+          <div class="rules">
+            <div class="rule">
+              <div class="rule-n">M</div>
+              <div><div class="rule-title">Monika — JP / RU / EN market</div><div class="rule-detail">Lead Tracker, Message Builder, Proposal Generator, Investment Explorer, Task Manager.</div></div>
+            </div>
+            <div class="rule">
+              <div class="rule-n">R</div>
+              <div><div class="rule-title">Reza — DE / European market</div><div class="rule-detail">Lead Tracker, Message Builder, Proposal Generator, Investment Explorer, Task Manager.</div></div>
+            </div>
+            <div class="rule">
+              <div class="rule-n">Ma</div>
+              <div><div class="rule-title">Marina — Support &amp; Content</div><div class="rule-detail">Client Manager, Lead Tracker, Payment Reminder Bot, Message Builder, Content Bot (@PHC_Content_Bot), Task Manager. Content Bot moved to Marina after Mey's departure.</div></div>
+            </div>
+          </div>
+
+          <div class="info-box">
+            <div class="ib-label">One rule for every tool</div>
+            If you're not sure whether an action is right, it's always safer to ask in the team chat before deleting or changing something for a client. Every tool keeps a live connection to the same Google Sheet — a mistake in one tool shows up everywhere.
+          </div>
+        </div>
+
+        <!-- TASK MANAGER -->
+        <div class="view" id="v-tasks">
+          <div class="eyebrow">Web Tool · Everyone</div>
+          <div class="heading">Task Manager</div>
+          <div class="subhead">Your personal to-do list for PHC — see what's due, what's overdue, and mark things done. Everyone has their own tab.</div>
+
+          <div class="obj-card">
+            <div class="obj-row"><span class="obj-arrow">→</span><span>Who uses it: <b>Everyone</b> — Nick, Monika, Reza, and Marina each have a tab.</span></div>
+            <div class="obj-row"><span class="obj-arrow">→</span><span>What it replaces: chasing each other on Telegram to ask "did you do X?"</span></div>
+          </div>
+
+          <div class="frame">
+            <div class="frame-bar"><div class="frame-dot"></div><div class="frame-dot"></div><div class="frame-dot"></div><div class="frame-url">phc-tools/PHC_Task_Manager_v4.html</div></div>
+            <div class="frame-body">
+              <div class="mock-side">
+                <div class="mock-row">Sales &amp; Listings</div>
+                <div class="mock-row">Content &amp; Marketing</div>
+                <div class="mock-row on">Admin &amp; Operations</div>
+                <div class="mock-row">Training</div>
+                <div class="mock-row" style="margin-top:8px;">Japanese Market</div>
+              </div>
+              <div class="mock-main">
+                <div class="mock-card"><b>ManyChat Lead Automation Setup</b>Due Apr 28 <span class="mock-pill" style="background:var(--err-soft);color:var(--err);">Urgent</span></div>
+                <div class="mock-card"><b>Weekly CEO Metrics Report — Week 18</b>Due May 11 <span class="mock-pill" style="background:var(--gold-soft);color:var(--gold-dim);">Normal</span></div>
+                <div class="mock-card"><b>German Market Outreach — Brief Reza</b>Due May 10 <span class="mock-pill" style="background:var(--ok-soft);color:var(--ok);">Done</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-lbl">How to use it</div>
+          <div class="rules">
+            <div class="rule"><div class="rule-n">1</div><div><div class="rule-title">Open the tool and find your name</div><div class="rule-detail">Left sidebar — click your tab to see only your tasks.</div></div></div>
+            <div class="rule"><div class="rule-n">2</div><div><div class="rule-title">Check the "List" view every morning</div><div class="rule-detail">Tasks are grouped: Overdue → In Progress → To Do → Done. Deal with Overdue first.</div></div></div>
+            <div class="rule"><div class="rule-n">3</div><div><div class="rule-title">Click a task to open it</div><div class="rule-detail">Update status, add a note, or tick it complete.</div></div></div>
+            <div class="rule"><div class="rule-n">4</div><div><div class="rule-title">Prefer cards? Switch to "Board" view</div><div class="rule-detail">Same tasks, drag-and-drop between columns instead of a list.</div></div></div>
+            <div class="rule"><div class="rule-n">5</div><div><div class="rule-title">Add a new task any time</div><div class="rule-detail">"+ New Task" — give it a name, due date, and priority.</div></div></div>
+          </div>
+
+          <div class="btnrow">
+            <a class="btn cta" href="https://narithkgame2.github.io/phc-tools/PHC_Task_Manager_v4.html" target="_blank">Open Task Manager →</a>
+          </div>
+        </div>
+
+        <!-- LEAD TRACKER -->
+        <div class="view" id="v-leads">
+          <div class="eyebrow">Web Tool · Monika · Reza · Marina</div>
+          <div class="heading">Lead Tracker</div>
+          <div class="subhead">Every person who's shown interest lives here. This is where a name becomes a client — or gets lost, if nobody updates it.</div>
+
+          <div class="obj-card">
+            <div class="obj-row"><span class="obj-arrow">→</span><span>Who uses it: <b>Monika, Reza, Marina</b> — anyone talking to a lead.</span></div>
+            <div class="obj-row"><span class="obj-arrow">→</span><span>Stages: New Lead → Contacted → Viewing → Negotiating → Closed (or Hold / Released).</span></div>
+          </div>
+
+          <div class="frame">
+            <div class="frame-bar"><div class="frame-dot"></div><div class="frame-dot"></div><div class="frame-dot"></div><div class="frame-url">phc-tools/PHC_Lead_Tracker.html</div></div>
+            <div class="frame-body" style="padding:12px;">
+              <div class="mock-cols">
+                <div class="mock-col"><div class="mock-col-h" style="color:#1d4ed8;">New Lead</div><div class="mock-chip"><b style="display:block;font-size:9.5px;color:var(--ink)">Sokha Meas</b>Odom Tower · $100–200K</div></div>
+                <div class="mock-col"><div class="mock-col-h" style="color:#a16207;">Contacted</div><div class="mock-chip"><b style="display:block;font-size:9.5px;color:var(--ink)">Yamato</b>Time Square 9</div></div>
+                <div class="mock-col"><div class="mock-col-h" style="color:#15803d;">Viewing</div><div class="mock-chip"><b style="display:block;font-size:9.5px;color:var(--ink)">Khmer</b>Norea Square</div></div>
+                <div class="mock-col"><div class="mock-col-h" style="color:#7c3aed;">Negotiating</div><div class="mock-chip"><b style="display:block;font-size:9.5px;color:var(--ink)">—</b>Time Square 10</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-lbl">How to use it</div>
+          <div class="rules">
+            <div class="rule"><div class="rule-n">1</div><div><div class="rule-title">Open "Board" view</div><div class="rule-detail">Leads shown as cards, grouped by stage.</div></div></div>
+            <div class="rule"><div class="rule-n">2</div><div><div class="rule-title">Click a card to log what happened</div><div class="rule-detail">Add a note every time you call, message, or meet the lead — this is the lead's whole history.</div></div></div>
+            <div class="rule"><div class="rule-n">3</div><div><div class="rule-title">Drag the card when the stage changes</div><div class="rule-detail">Moved from "Contacted" to "Viewing"? Drag it there — don't leave it stale.</div></div></div>
+            <div class="rule"><div class="rule-n">4</div><div><div class="rule-title">New lead came in on WhatsApp or in person?</div><div class="rule-detail">Click "+ New Lead" and add it manually — it won't appear here on its own.</div></div></div>
+            <div class="rule"><div class="rule-n">5</div><div><div class="rule-title">Check "Overdue" every morning</div><div class="rule-detail">Sidebar tab — shows every lead with no follow-up date set. Set one for each.</div></div></div>
+          </div>
+
+          <div class="info-box">
+            <div class="ib-label">Why this matters</div>
+            The Lead Alert bot pings Nick the moment a new lead comes in — but only this tool tracks what happens after. If it's not logged here, the deal's history only lives in your head.
+          </div>
+
+          <div class="btnrow">
+            <a class="btn cta" href="https://narithkgame2.github.io/phc-tools/PHC_Lead_Tracker.html" target="_blank">Open Lead Tracker →</a>
+          </div>
+        </div>
+
+        <!-- CLIENT MANAGER -->
+        <div class="view" id="v-clients">
+          <div class="eyebrow">Web Tool · Marina</div>
+          <div class="heading">Client Manager</div>
+          <div class="subhead">Once someone signs, they move here. This tracks their payment schedule, SPA status, and is what the Payment Reminder Bot reads from.</div>
+
+          <div class="warn-box">
+            <div class="ib-label">A decision, not a bug</div>
+            This tool is listed under "Director Tools" on the hub and asks for the <b>Director password</b> — that was set up on purpose, since it holds client payment data. Handing it to Marina means Nick deciding to move it to the team password first. Until that decision is made, this page is for reference only.
+          </div>
+
+          <div class="obj-card">
+            <div class="obj-row"><span class="obj-arrow">→</span><span>Who uses it: <b>Marina</b> — once Nick opens up access.</span></div>
+            <div class="obj-row"><span class="obj-arrow">→</span><span>Why it matters: the Payment Reminder Bot has zero real clients loaded in today — this tool is how that gets fixed.</span></div>
+          </div>
+
+          <div class="frame">
+            <div class="frame-bar"><div class="frame-dot"></div><div class="frame-dot"></div><div class="frame-dot"></div><div class="frame-url">phc-tools/PHC_Client_Manager.html</div></div>
+            <div class="frame-body" style="padding:12px;">
+              <div class="mock-cols">
+                <div class="mock-col"><div class="mock-col-h">Total Clients</div><div class="mock-chip" style="font-size:16px;font-weight:700;color:var(--navy);">2</div></div>
+                <div class="mock-col"><div class="mock-col-h">Due This Week</div><div class="mock-chip" style="font-size:16px;font-weight:700;color:var(--navy);">0</div></div>
+                <div class="mock-col"><div class="mock-col-h">Monthly Collection</div><div class="mock-chip" style="font-size:16px;font-weight:700;color:var(--navy);">$1,000</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-lbl">How to use it</div>
+          <div class="rules">
+            <div class="rule"><div class="rule-n">1</div><div><div class="rule-title">Every new signed client gets added here</div><div class="rule-detail">"+ Add Client" — name, nationality, project, unit, floor.</div></div></div>
+            <div class="rule"><div class="rule-n">2</div><div><div class="rule-title">Fill in the payment schedule</div><div class="rule-detail">Due day, amount, total, and how much is paid so far.</div></div></div>
+            <div class="rule"><div class="rule-n">3</div><div><div class="rule-title">Add their Telegram info if they have it</div><div class="rule-detail">This is the exact field the Payment Reminder Bot reads — without it, the bot can't message them.</div></div></div>
+            <div class="rule"><div class="rule-n">4</div><div><div class="rule-title">Check the Dashboard weekly</div><div class="rule-detail">"Due This Week" shows who needs a reminder or a manual nudge.</div></div></div>
+          </div>
+
+          <div class="btnrow">
+            <a class="btn cta" href="https://narithkgame2.github.io/phc-tools/PHC_Client_Manager.html" target="_blank">Open Client Manager →</a>
+          </div>
+        </div>
+
+        <!-- MESSAGE BUILDER -->
+        <div class="view" id="v-messages">
+          <div class="eyebrow">Web Tool · Monika · Reza · Marina</div>
+          <div class="heading">Message Builder</div>
+          <div class="subhead">Ready-made scripts for every stage of a conversation, in every language PHC serves. No more starting from a blank chat box.</div>
+
+          <div class="obj-card">
+            <div class="obj-row"><span class="obj-arrow">→</span><span>Who uses it: <b>Monika, Reza, Marina</b> — anyone messaging a lead or client.</span></div>
+            <div class="obj-row"><span class="obj-arrow">→</span><span>Segments: EN · JP · DE · RU · KH · VIP. Scenarios: follow-ups, pricing questions, site-visit replies, and more.</span></div>
+          </div>
+
+          <div class="frame">
+            <div class="frame-bar"><div class="frame-dot"></div><div class="frame-dot"></div><div class="frame-dot"></div><div class="frame-url">phc-tools/PHC_Message_Builder.html</div></div>
+            <div class="frame-body" style="padding:14px;flex-direction:column;gap:8px;">
+              <div style="font-size:10px;color:var(--ink-3);">① Segment: <b style="color:var(--gold-dim);">EN</b> &nbsp; ② Scenario: <b style="color:var(--gold-dim);">Day 2 — First Follow-Up</b></div>
+              <div class="mock-card" style="font-size:10.5px;line-height:1.6;">Hi [First Name],<br>Just checking the property overview for [Project] reached you — I sent it a couple of days ago...</div>
+              <div style="align-self:flex-end;"><span class="mock-pill" style="background:var(--navy);color:#fff;">Copy message</span></div>
+            </div>
+          </div>
+
+          <div class="section-lbl">How to use it</div>
+          <div class="rules">
+            <div class="rule"><div class="rule-n">1</div><div><div class="rule-title">Pick the client's segment</div><div class="rule-detail">EN, JP, DE, RU, KH, or VIP — top of the page.</div></div></div>
+            <div class="rule"><div class="rule-n">2</div><div><div class="rule-title">Pick the situation</div><div class="rule-detail">e.g. "Day 2 Follow-Up," "Pricing & Payment Plan," "Post Site-Visit."</div></div></div>
+            <div class="rule"><div class="rule-n">3</div><div><div class="rule-title">Fill in the blanks</div><div class="rule-detail">First name, project, unit type — the message updates live as you type.</div></div></div>
+            <div class="rule"><div class="rule-n">4</div><div><div class="rule-title">Copy and send</div><div class="rule-detail">Click "Copy message," paste into WhatsApp or Telegram, send.</div></div></div>
+          </div>
+
+          <div class="btnrow">
+            <a class="btn cta" href="https://narithkgame2.github.io/phc-tools/PHC_Message_Builder.html" target="_blank">Open Message Builder →</a>
+          </div>
+        </div>
+
+        <!-- PROPOSAL GENERATOR -->
+        <div class="view" id="v-proposal">
+          <div class="eyebrow">Web Tool · Monika · Reza</div>
+          <div class="heading">Proposal Generator</div>
+          <div class="subhead">Builds a client-ready shortlist document from PHC's property library — pick properties, fill in client details, done.</div>
+
+          <div class="obj-card">
+            <div class="obj-row"><span class="obj-arrow">→</span><span>Who uses it: <b>Monika, Reza</b> — whoever's ready to send a client a shortlist.</span></div>
+            <div class="obj-row"><span class="obj-arrow">→</span><span>Rule of thumb: include 3–6 properties per proposal — fewer feels thin, more overwhelms the client.</span></div>
+          </div>
+
+          <div class="frame">
+            <div class="frame-bar"><div class="frame-dot"></div><div class="frame-dot"></div><div class="frame-dot"></div><div class="frame-url">phc-tools/PHC_Proposal_Generator.html</div></div>
+            <div class="frame-body" style="padding:12px;">
+              <div class="mock-cols">
+                <div class="mock-col"><div class="mock-col-h">Client Details</div><div class="mock-chip">Salutation · Name · Date · Investment focus</div></div>
+                <div class="mock-col"><div class="mock-col-h">Property Library</div><div class="mock-chip">L'attrait — Studio · $70,000</div><div class="mock-chip">Time Square 5 · $78,000</div></div>
+                <div class="mock-col"><div class="mock-col-h">Selected (0/6)</div><div class="mock-chip" style="text-align:center;color:var(--ink-3);">Click properties to add</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-lbl">How to use it</div>
+          <div class="rules">
+            <div class="rule"><div class="rule-n">1</div><div><div class="rule-title">Fill in client details</div><div class="rule-detail">Salutation, name, date, and their investment focus if you know it (e.g. "passive income, $70–130K").</div></div></div>
+            <div class="rule"><div class="rule-n">2</div><div><div class="rule-title">Add 3–6 properties from the library</div><div class="rule-detail">Click the "+" next to each one you want to include.</div></div></div>
+            <div class="rule"><div class="rule-n">3</div><div><div class="rule-title">Write or auto-generate the intro letter</div><div class="rule-detail">"Auto-Generate from Template" gives you a starting point — personalize it before sending.</div></div></div>
+            <div class="rule"><div class="rule-n">4</div><div><div class="rule-title">Click "Generate Proposal" and send</div><div class="rule-detail">Review the output once, then send to the client.</div></div></div>
+          </div>
+
+          <div class="btnrow">
+            <a class="btn cta" href="https://narithkgame2.github.io/phc-tools/PHC_Proposal_Generator.html" target="_blank">Open Proposal Generator →</a>
+          </div>
+        </div>
+
+        <!-- INVESTMENT EXPLORER -->
+        <div class="view" id="v-explorer">
+          <div class="eyebrow">Web Tool · Client-facing</div>
+          <div class="heading">Investment Explorer</div>
+          <div class="subhead">A tool you show the client directly — they pick their budget, it shows what's realistic at that level. Use it to guide a conversation, not replace one.</div>
+
+          <div class="obj-card">
+            <div class="obj-row"><span class="obj-arrow">→</span><span>Who uses it: <b>Any agent</b>, with a client in the room or on a call.</span></div>
+            <div class="obj-row"><span class="obj-arrow">→</span><span>8 budget tiers: $10K up to $100M+, each with real numbers — no brochure language.</span></div>
+          </div>
+
+          <div class="frame">
+            <div class="frame-bar"><div class="frame-dot"></div><div class="frame-dot"></div><div class="frame-dot"></div><div class="frame-url">phc-tools/PHC_Investment_Explorer.html</div></div>
+            <div class="frame-body" style="padding:12px;">
+              <div class="mock-side" style="width:40%;">
+                <div class="mock-row">$10,000 — The First Step</div>
+                <div class="mock-row on">$100,000 — The Entry Investor</div>
+                <div class="mock-row">$500,000 — The Serious Player</div>
+                <div class="mock-row">$1,000,000 — The Investor</div>
+              </div>
+              <div class="mock-main" style="align-items:center;justify-content:center;text-align:center;">
+                <div style="font-size:11px;color:var(--ink-3);">Client picks a level on the left,<br>sees real numbers on the right.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-lbl">How to use it</div>
+          <div class="rules">
+            <div class="rule"><div class="rule-n">1</div><div><div class="rule-title">Open it with the client present</div><div class="rule-detail">On your laptop or phone during a call or meeting — or send them the link directly.</div></div></div>
+            <div class="rule"><div class="rule-n">2</div><div><div class="rule-title">Let them click their budget</div><div class="rule-detail">It's designed for them to explore — don't rush past this part.</div></div></div>
+            <div class="rule"><div class="rule-n">3</div><div><div class="rule-title">Use what it shows to guide the conversation</div><div class="rule-detail">It's a starting point for questions, not a replacement for your advice.</div></div></div>
+          </div>
+
+          <div class="btnrow">
+            <a class="btn cta" href="https://narithkgame2.github.io/phc-tools/PHC_Investment_Explorer.html" target="_blank">Open Investment Explorer →</a>
+          </div>
+        </div>
+
+        <!-- CONTENT BOT -->
+        <div class="view" id="v-contentbot">
+          <div class="eyebrow">Telegram Bot · Marina</div>
+          <div class="heading">Content Bot — @PHC_Content_Bot</div>
+          <div class="subhead">Forward a listing, get it back translated and formatted in four languages, tap approve, it posts everywhere at once. This was Mey's tool — since her departure, it's now Marina's to run daily, on top of her existing responsibilities.</div>
+
+          <div class="obj-card">
+            <div class="obj-row"><span class="obj-arrow">→</span><span>Who uses it: <b>Marina</b> — this is the daily job, not an occasional task.</span></div>
+            <div class="obj-row"><span class="obj-arrow">→</span><span>Posts to 4 channels at once: t.me/PHC_EN · PHC_JP · PHC_RU · PHC_DE.</span></div>
+          </div>
+
+          <div class="frame">
+            <div class="frame-bar"><div class="frame-dot"></div><div class="frame-dot"></div><div class="frame-dot"></div><div class="frame-url">Telegram · @PHC_Content_Bot</div></div>
+            <div class="frame-body chat-frame">
+              <div class="bub sys">You forwarded a listing</div>
+              <div class="bub in"><span class="tag">Bot</span>Detected format: PHC template — matched<br>Translating to EN / JP / RU / DE...</div>
+              <div class="bub in"><span class="tag">Bot · Review</span>EN: "GATO Tower — 1BR from $98,115..."<br>JP: "ガトータワー — 1ベッドルーム..."
+                <div class="bub-btns">
+                  <span class="bub-btn ok"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.7 8.5l2.8 2.8 7-6.6"/></svg>Approve All</span>
+                  <span class="bub-btn no"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l10 10M13 3L3 13"/></svg>Reject</span>
+                </div>
+              </div>
+              <div class="bub out"><svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.7 8.5l2.8 2.8 7-6.6"/></svg></div>
+              <div class="bub sys">Posted to 4 channels</div>
+            </div>
+          </div>
+
+          <div class="section-lbl">How to use it</div>
+          <div class="rules">
+            <div class="rule"><div class="rule-n">1</div><div><div class="rule-title">Find a listing to post</div><div class="rule-detail">From Nick's channel, another agent's post, or write one fresh.</div></div></div>
+            <div class="rule"><div class="rule-n">2</div><div><div class="rule-title">Forward or paste it to @PHC_Content_Bot</div><div class="rule-detail">In Telegram, forward the message directly, or paste the text.</div></div></div>
+            <div class="rule"><div class="rule-n">3</div><div><div class="rule-title">Bot replies with one review message</div><div class="rule-detail">Shows EN / JP / RU / DE versions together — check it reads correctly.</div></div></div>
+            <div class="rule"><div class="rule-n">4</div><div><div class="rule-title">Tap Approve or Reject</div><div class="rule-detail">Approve posts to all 4 channels immediately. Reject clears it — fix and resend.</div></div></div>
+          </div>
+
+          <div class="info-box">
+            <div class="ib-label">The 70/30 rule</div>
+            Aim for more educational posts (market insight, guides, why-Cambodia stories) than pure listing posts. Right now the channels are almost all listings — that's the thing to change as you take this over, not just posting more of the same.
+          </div>
+        </div>
+
+        <!-- PAYMENT BOT -->
+        <div class="view" id="v-paymentbot">
+          <div class="eyebrow">Telegram Bot · Marina</div>
+          <div class="heading">Payment Reminder Bot — @PHC_ClientCare_Bot</div>
+          <div class="subhead">Every morning, it checks for clients with a payment due in 5 days and drafts a reminder — you just approve it before it sends.</div>
+
+          <div class="obj-card">
+            <div class="obj-row"><span class="obj-arrow">→</span><span>Who uses it: <b>Marina</b> — once real clients are loaded into Client Manager.</span></div>
+            <div class="obj-row"><span class="obj-arrow">→</span><span>Reads directly from the Clients tab — no data there means no reminders go out.</span></div>
+          </div>
+
+          <div class="frame">
+            <div class="frame-bar"><div class="frame-dot"></div><div class="frame-dot"></div><div class="frame-dot"></div><div class="frame-url">Telegram · @PHC_ClientCare_Bot</div></div>
+            <div class="frame-body chat-frame">
+              <div class="bub sys">Daily 9am scan</div>
+              <div class="bub in"><span class="tag">Bot · Review</span>Payment due in 5 days:<br>Test Client — Time Square 9, Unit 01A — $1,000, due 1 Aug 2026<br>Translated for JP nationality.
+                <div class="bub-btns">
+                  <span class="bub-btn ok"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.7 8.5l2.8 2.8 7-6.6"/></svg>Approve</span>
+                  <span class="bub-btn no"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l10 10M13 3L3 13"/></svg>Reject</span>
+                </div>
+              </div>
+              <div class="bub out"><svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.7 8.5l2.8 2.8 7-6.6"/></svg></div>
+              <div class="bub sys">Sent to client's Telegram group</div>
+            </div>
+          </div>
+
+          <div class="section-lbl">How to use it</div>
+          <div class="rules">
+            <div class="rule"><div class="rule-n">1</div><div><div class="rule-title">Make sure the client is in Client Manager</div><div class="rule-detail">Payment date, amount, nationality, and Telegram group filled in — this is what the bot reads.</div></div></div>
+            <div class="rule"><div class="rule-n">2</div><div><div class="rule-title">Check Telegram each morning</div><div class="rule-detail">If anyone has a payment due in 5 days, the bot sends a review message.</div></div></div>
+            <div class="rule"><div class="rule-n">3</div><div><div class="rule-title">Read it, then tap Approve or Reject</div><div class="rule-detail">Approve sends it straight to the client's group. Reject if something looks wrong.</div></div></div>
+            <div class="rule"><div class="rule-n">4</div><div><div class="rule-title">Non-Telegram clients get flagged separately</div><div class="rule-detail">The bot lists them by name instead of guessing — message those clients manually on WhatsApp.</div></div></div>
+          </div>
+
+          <div class="warn-box">
+            <div class="ib-label">Why nothing's happening yet</div>
+            Only 2 test clients exist in Client Manager today — that's why this bot hasn't sent a single real reminder. Loading real clients in is the actual first step, not a bug.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showView(id){
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});
+  document.getElementById('v-'+id).classList.add('active');
+  document.querySelectorAll('.sb-row').forEach(function(r){r.classList.remove('active');});
+  document.querySelector('.sb-row[data-view="'+id+'"]').classList.add('active');
+  var labels={overview:'Team Handbook',tasks:'Task Manager',leads:'Lead Tracker',clients:'Client Manager',messages:'Message Builder',proposal:'Proposal Generator',explorer:'Investment Explorer',contentbot:'Content Bot',paymentbot:'Payment Reminder Bot'};
+  document.getElementById('tb-ctx').textContent = labels[id] || 'Team Handbook';
+  document.querySelector('.main').scrollTop = 0;
+}
+</script>
+
+</body>
+</html>

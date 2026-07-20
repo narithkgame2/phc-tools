@@ -75,7 +75,7 @@ Every tool has an inline password gate (sessionStorage — clears when browser c
 
 | Level | Password | Who |
 |-------|----------|-----|
-| Agent | `PHC2026` | All team — Monika, Reza, Mey, Marina |
+| Agent | `PHC2026` | All team — Monika, Reza, Marina |
 | Director | `Nick@PHC2026` | Nick only |
 
 - Nick's director password also unlocks all agent tools automatically
@@ -189,7 +189,7 @@ This applies everywhere: `openEditModal`, `toggleDone`, `cycleStatus`, `deleteTa
 - **Priority:** `urgent` / `high` / `normal`
 - **Status:** `To Do` / `In Progress` / `Review` / `Done` / `Stuck`
 - **Category:** `Sales & Listings` / `Content & Marketing` / `Admin & Operations` / `Training` / `Japanese Market`
-- **Assignees:** `N` (Nick) · `M` (Monika) · `R` (Reza) · `Me` (Mey/Content) · `Ma` (Marina/Support)
+- **Assignees:** `N` (Nick) · `M` (Monika) · `R` (Reza) · `Ma` (Marina/Support & Content). Legacy code `Me` (formerly Mey) still resolves in the UI, relabeled to Marina — she absorbed Content responsibilities after Mey's departure — but is no longer offered for new tasks.
 
 ---
 
