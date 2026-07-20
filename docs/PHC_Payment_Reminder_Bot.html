@@ -1,0 +1,151 @@
+<title>PHC · Payment Reminder Bot — Structure</title>
+<style>
+:root{
+  --navy:#06264f; --navy-d:#040f24; --navy-m:#0b3d7a;
+  --gold:#c9993f; --gold-l:#e0b86a; --gold-s:rgba(201,153,63,.10); --gold-b:rgba(201,153,63,.28);
+  --ink:#1a2535; --ink-2:#4a5e74; --ink-3:#8a9bb0;
+  --bg:#f0f3f8; --card:#ffffff; --line:#e0e5ee;
+  --ok:#1a7a4a; --ok-s:rgba(26,122,74,.09); --ok-b:rgba(26,122,74,.25);
+  --amber:#a45a11; --amber-s:rgba(164,90,17,.10); --amber-b:rgba(164,90,17,.3);
+  --r:12px;
+  --sf:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Inter",sans-serif;
+}
+:root[data-theme="dark"]{
+  --navy:#0b3d7a; --navy-d:#050e1e; --bg:#0a1220; --card:#101a2c; --line:#1e2c45;
+  --ink:#e7ecf5; --ink-2:#a9b7cc; --ink-3:#6d7f9c;
+  --gold-s:rgba(224,184,106,.12); --gold-b:rgba(224,184,106,.3);
+  --ok-s:rgba(56,178,120,.14); --ok-b:rgba(56,178,120,.3);
+  --amber-s:rgba(224,158,90,.14); --amber-b:rgba(224,158,90,.35);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --navy:#0b3d7a; --navy-d:#050e1e; --bg:#0a1220; --card:#101a2c; --line:#1e2c45;
+    --ink:#e7ecf5; --ink-2:#a9b7cc; --ink-3:#6d7f9c;
+    --gold-s:rgba(224,184,106,.12); --gold-b:rgba(224,184,106,.3);
+    --ok-s:rgba(56,178,120,.14); --ok-b:rgba(56,178,120,.3);
+    --amber-s:rgba(224,158,90,.14); --amber-b:rgba(224,158,90,.35);
+  }
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{min-height:100%;font-family:var(--sf)}
+body{background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+
+.topbar{background:var(--navy-d);height:52px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(255,255,255,.05)}
+.tb-name{font-family:'Playfair Display',Georgia,serif;font-size:14px;color:#fff}
+.tb-name span{color:var(--gold)}
+.tb-tag{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--gold);opacity:.55;letter-spacing:.15em;text-transform:uppercase}
+
+.page{max-width:960px;margin:0 auto;padding:32px 28px 80px}
+
+.hero{background:linear-gradient(135deg,var(--navy-d) 0%,var(--navy) 100%);border-radius:var(--r);padding:30px 34px;margin-bottom:30px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.06)}
+.hero::before{content:'';position:absolute;top:-80px;right:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(201,153,63,.07) 0%,transparent 70%)}
+.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);opacity:.7;margin-bottom:8px}
+.hero-title{font-family:'Playfair Display',Georgia,serif;font-size:26px;font-weight:700;color:#fff;letter-spacing:-.02em;line-height:1.25;max-width:620px}
+.hero-title span{color:var(--gold)}
+.hero-sub{font-size:13px;color:rgba(255,255,255,.5);line-height:1.7;max-width:600px;margin-top:10px}
+
+.flow{display:flex;flex-direction:column;position:relative;padding-left:36px}
+.flow::before{content:'';position:absolute;left:11px;top:8px;bottom:8px;width:1.5px;background:linear-gradient(180deg,var(--gold-b),var(--line) 92%)}
+
+.stage{position:relative;margin-bottom:26px}
+.stage:last-child{margin-bottom:0}
+.stage-dot{position:absolute;left:-36px;top:2px;width:23px;height:23px;border-radius:50%;background:var(--card);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--gold)}
+.stage-head{display:flex;align-items:baseline;gap:10px;margin-bottom:4px;flex-wrap:wrap}
+.stage-title{font-family:'Playfair Display',Georgia,serif;font-size:17px;letter-spacing:-.01em}
+.stage-when{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em}
+
+.items{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.item{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:12px 15px}
+.item-tag{flex-shrink:0;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:20px;margin-top:1px;white-space:nowrap}
+.tag-existing{background:var(--ok-s);color:var(--ok);border:1px solid var(--ok-b)}
+.tag-new{background:var(--gold-s);color:var(--gold);border:1px solid var(--gold-b)}
+.tag-you{background:var(--amber-s);color:var(--amber);border:1px solid var(--amber-b)}
+.item-body b{display:block;font-size:13px;color:var(--ink);margin-bottom:2px}
+.item-body span{font-size:12px;color:var(--ink-2);line-height:1.55}
+
+.branch{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+@media (max-width:640px){.branch{grid-template-columns:1fr}}
+.branch-card{border-radius:9px;padding:13px 15px;border:1.5px solid}
+.branch-card.go{background:var(--ok-s);border-color:var(--ok-b)}
+.branch-card.flag{background:var(--amber-s);border-color:var(--amber-b)}
+.branch-card b{display:block;font-size:12.5px;margin-bottom:3px}
+.branch-card.go b{color:var(--ok)}
+.branch-card.flag b{color:var(--amber)}
+.branch-card span{font-size:11.5px;color:var(--ink-2);line-height:1.5}
+
+.foot{text-align:center;padding:30px 0 0;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink-3);letter-spacing:.1em}
+</style>
+
+<div class="topbar">
+  <div class="tb-name">Property Hub <span>Cambodia</span></div>
+  <div class="tb-tag">Payment Reminder Bot — Structure</div>
+</div>
+
+<div class="page">
+
+  <div class="hero">
+    <div class="hero-eyebrow">New — client-facing, scheduled, reviewed before it sends</div>
+    <h1 class="hero-title">Your CRM already has the data. <span>This just acts on it, on time.</span></h1>
+    <p class="hero-sub">No new client list to build — it reads your existing "Clients" sheet directly. New pieces are the trigger, the personalization, and a dedicated bot to send it.</p>
+  </div>
+
+  <div class="flow">
+
+    <div class="stage">
+      <div class="stage-dot">1</div>
+      <div class="stage-head"><span class="stage-title">Data source — your existing CRM</span></div>
+      <div class="items">
+        <div class="item"><span class="item-tag tag-existing">Already have</span><div class="item-body"><b>"Clients" sheet</b><span>name, nat, project, unit, payDay, payAmount — all already tracked, nothing to re-enter.</span></div></div>
+        <div class="item"><span class="item-tag tag-new">New column</span><div class="item-body"><b>groupChatId</b><span>Each client's Telegram group ID — you fill these in over time as you add the bot to each group.</span></div></div>
+        <div class="item"><span class="item-tag tag-new">New column</span><div class="item-body"><b>channel</b><span>Telegram / WhatsApp / Other — decides whether this automation applies to that client at all.</span></div></div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-dot">2</div>
+      <div class="stage-head"><span class="stage-title">Daily check</span><span class="stage-when">Runs automatically, no one has to remember</span></div>
+      <div class="items">
+        <div class="item"><span class="item-tag tag-new">New</span><div class="item-body"><b>Scheduled trigger, once a day</b><span>Scans every client row — is payDay exactly 5 days away, and has this reminder not already been sent?</span></div></div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-dot">3</div>
+      <div class="stage-head"><span class="stage-title">Split by channel</span></div>
+      <div class="branch">
+        <div class="branch-card go"><b>✅ On Telegram</b><span>Proceeds to personalization + translation, then your review.</span></div>
+        <div class="branch-card flag"><b>⚠️ Not on Telegram</b><span>Never silently skipped — listed clearly in your review message so you handle it manually on their actual platform.</span></div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-dot">4</div>
+      <div class="stage-head"><span class="stage-title">Personalize + translate</span></div>
+      <div class="items">
+        <div class="item"><span class="item-tag tag-new">New</span><div class="item-body"><b>Merge client details into the template</b><span>Name, amount, project, unit, due date — pulled straight from that client's own row.</span></div></div>
+        <div class="item"><span class="item-tag tag-new">New</span><div class="item-body"><b>Translate based on nationality</b><span>Reuses the same free translation already built for the Content Bot — Japanese client gets it in Japanese, automatically, from the "nat" field.</span></div></div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-dot">5</div>
+      <div class="stage-head"><span class="stage-title">Review — sent to you</span></div>
+      <div class="items">
+        <div class="item"><span class="item-tag tag-existing">Same pattern</span><div class="item-body"><b>✅ Approve / ❌ Reject</b><span>Same mechanism as the Content Bot — nothing reaches a client without your tap first.</span></div></div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-dot">6</div>
+      <div class="stage-head"><span class="stage-title">Sends — dedicated bot</span></div>
+      <div class="items">
+        <div class="item"><span class="item-tag tag-you">You create</span><div class="item-body"><b>New bot via @BotFather</b><span>Separate from @PHC_Content_Bot — this one lives inside client groups, so it's kept distinct from the public listing-distribution bot.</span></div></div>
+        <div class="item"><span class="item-tag tag-new">New</span><div class="item-body"><b>Posts the personalized reminder</b><span>Straight into that one client's own group — never a broadcast, always 1-to-1.</span></div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="foot">PROPERTY HUB CAMBODIA · PAYMENT REMINDER BOT · JULY 2026</div>
+
+</div>

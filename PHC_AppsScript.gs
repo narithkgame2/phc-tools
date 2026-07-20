@@ -666,6 +666,288 @@ function testTelegramRaw() {
   Logger.log('Response: ' + res.getContentText());
 }
 
+// ═══════════════════════════════════════════════════════════════
+//  PAYMENT REMINDER BOT
+//
+//  Separate bot from @PHC_Lead_Bot (lead alerts, one-way) and
+//  @PHC_Content_Bot (listing distribution) — this one lives inside
+//  individual client groups and sends scheduled, personalized,
+//  reviewed payment reminders. Reuses the Clients sheet directly —
+//  no separate client list to maintain.
+//
+//  SETUP (one-time):
+//  1. Create a new bot via @BotFather, copy its token
+//  2. Script Properties → add: PAYMENT_BOT_TOKEN = <token>
+//  3. Message the new bot once from your personal Telegram, then run
+//     testPaymentBotGetUpdates() — your chat_id is in the log output
+//  4. Script Properties → add: PAYMENT_REVIEWER_CHAT_ID = <that id>
+//  5. Run migrateClientsSchemaForReminders() once — adds channel /
+//     groupChatId / lastReminderSent columns to Clients
+//  6. Fill in each client's channel ('Telegram'/'WhatsApp'/'Other')
+//     and groupChatId (for Telegram clients — add the bot to their
+//     group, post any message, run testPaymentBotGetUpdates() again
+//     to read that group's chat_id off the log)
+//  7. Run installPaymentReminderTriggers() once
+// ═══════════════════════════════════════════════════════════════
+
+const REMINDER_LEAD_DAYS = 5;
+
+// Extend Clients schema — append-only, safe. Other tools reference
+// columns by name via headers.indexOf(), never by fixed position, so
+// adding columns at the end never breaks Lead Tracker / Client Manager / etc.
+function migrateClientsSchemaForReminders() {
+  const sheet = getOrCreateSheet('Clients');
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  const newCols = ['channel', 'groupChatId', 'lastReminderSent'];
+  const toAdd = newCols.filter(c => !headers.includes(c));
+
+  if (!toAdd.length) { Logger.log('✅ Reminder columns already exist — no migration needed'); return; }
+
+  let nextCol = sheet.getLastColumn() + 1;
+  toAdd.forEach(col => {
+    sheet.getRange(1, nextCol).setValue(col)
+      .setBackground('#083467').setFontColor('#ffffff').setFontWeight('bold').setFontSize(10);
+    nextCol++;
+  });
+  Logger.log('✅ Added columns to Clients: ' + toAdd.join(', '));
+}
+
+function testPaymentBotGetUpdates() {
+  const token = PropertiesService.getScriptProperties().getProperty('PAYMENT_BOT_TOKEN');
+  const res = UrlFetchApp.fetch('https://api.telegram.org/bot' + token + '/getUpdates', { muteHttpExceptions: true });
+  Logger.log(res.getContentText());
+}
+
+// Diagnostic: a bot can only deliver updates via webhook OR getUpdates
+// polling, never both — if a webhook URL is set, getUpdates always returns
+// empty regardless of real activity. Checks which mode this bot is in.
+function testPaymentBotWebhookInfo() {
+  const token = PropertiesService.getScriptProperties().getProperty('PAYMENT_BOT_TOKEN');
+  const res = UrlFetchApp.fetch('https://api.telegram.org/bot' + token + '/getWebhookInfo', { muteHttpExceptions: true });
+  Logger.log(res.getContentText());
+}
+
+// Reuses Google Translate's language codes directly (matches the Content
+// Bot's approach) — 'kh' isn't a valid Translate code, so Khmer is 'km' here,
+// unlike the internal 'kh' label used elsewhere in this file for email copy.
+const PAYMENT_LANG_MAP = { japanese: 'ja', german: 'de', russian: 'ru', cambodian: 'km' };
+
+function detectClientLang(nat) {
+  const key = (nat || '').toLowerCase().trim();
+  return PAYMENT_LANG_MAP[key] || 'en';
+}
+
+// payDay comes back as a native Date object when typed directly into the
+// sheet (Sheets auto-converts it), but as a plain string when set via the
+// REST API — handle both, and fall back to the raw value if unparseable.
+function formatPayDay(payDay) {
+  if (!payDay) return '';
+  const d = (payDay instanceof Date) ? payDay : new Date(payDay);
+  if (isNaN(d.getTime())) return String(payDay);
+  return Utilities.formatDate(d, Session.getScriptTimeZone(), 'MMMM d, yyyy');
+}
+
+function buildReminderMessage(client) {
+  const en = '👋 Hi ' + (client.name || 'there') + ',\n\n' +
+    'This is a friendly reminder that your payment of $' + (client.payAmount || '') +
+    ' for ' + (client.project || '') + ' — Unit ' + (client.unit || '') +
+    ' is due on ' + formatPayDay(client.payDay) + '.\n\n' +
+    'Please let us know if you have any questions.\n\n' +
+    '— Property Hub Cambodia';
+
+  const lang = detectClientLang(client.nat);
+  if (lang === 'en') return en;
+  try {
+    return LanguageApp.translate(en, 'en', lang);
+  } catch (err) {
+    Logger.log('buildReminderMessage translate error: ' + err);
+    return en; // fall back to English rather than send nothing
+  }
+}
+
+// True if payDay is exactly `daysAhead` days from today — fires once, on
+// that exact day, not every day from then until the due date.
+function isDueInDays(payDay, daysAhead) {
+  if (!payDay) return false;
+  const due = new Date(payDay);
+  if (isNaN(due.getTime())) return false;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  due.setHours(0, 0, 0, 0);
+  return Math.round((due - today) / 86400000) === daysAhead;
+}
+
+function checkPaymentReminders() {
+  const token = PropertiesService.getScriptProperties().getProperty('PAYMENT_BOT_TOKEN');
+  const reviewerChatId = PropertiesService.getScriptProperties().getProperty('PAYMENT_REVIEWER_CHAT_ID');
+  if (!token || !reviewerChatId) { Logger.log('Payment reminders: missing Script Properties'); return; }
+
+  const sheet = getOrCreateSheet('Clients');
+  const rows = sheet.getDataRange().getValues();
+  const headers = rows[0];
+  const todayStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd');
+
+  const idIdx = headers.indexOf('id');
+  const payDayIdx = headers.indexOf('payDay');
+  const lastSentIdx = headers.indexOf('lastReminderSent');
+
+  const dueTelegram = [];
+  const dueOther = [];
+
+  for (let i = 1; i < rows.length; i++) {
+    const row = rows[i];
+    if (!row[idIdx]) continue;
+    if (String(row[lastSentIdx]) === todayStr) continue; // already handled this cycle
+    if (!isDueInDays(row[payDayIdx], REMINDER_LEAD_DAYS)) continue;
+
+    const client = {};
+    headers.forEach((h, c) => client[h] = row[c]);
+    client._row = i + 1;
+
+    if ((client.channel || '').toLowerCase() === 'telegram') dueTelegram.push(client);
+    else dueOther.push(client);
+  }
+
+  if (!dueTelegram.length && !dueOther.length) { Logger.log('No payment reminders due today.'); return; }
+
+  dueTelegram.forEach(client => sendReminderForReview(token, reviewerChatId, client, sheet, headers));
+
+  if (dueOther.length) {
+    const names = dueOther.map(c => c.name + ' (' + (c.channel || 'no channel set') + ')').join('\n');
+    sendPaymentBotMessage(token, reviewerChatId,
+      '⚠️ ' + dueOther.length + ' client(s) due for a payment reminder are NOT on Telegram — handle manually:\n\n' + names);
+    const lastSentIdx2 = headers.indexOf('lastReminderSent');
+    dueOther.forEach(c => sheet.getRange(c._row, lastSentIdx2 + 1).setValue(todayStr));
+  }
+}
+
+function sendReminderForReview(token, reviewerChatId, client, sheet, headers) {
+  const message = buildReminderMessage(client);
+  const reviewText = '💳 Payment reminder ready — ' + client.name + ' (' + client.project + ' Unit ' + client.unit + ')\n\n' + message;
+  const keyboard = { inline_keyboard: [[
+    { text: '✅ Approve', callback_data: 'pr_approve_' + client.id },
+    { text: '❌ Reject', callback_data: 'pr_reject_' + client.id },
+  ]] };
+  sendPaymentBotMessage(token, reviewerChatId, reviewText, keyboard);
+
+  const lastSentIdx = headers.indexOf('lastReminderSent');
+  const todayStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd');
+  sheet.getRange(client._row, lastSentIdx + 1).setValue(todayStr);
+}
+
+function sendPaymentBotMessage(token, chatId, text, replyMarkup) {
+  const payload = { chat_id: chatId, text: text };
+  if (replyMarkup) payload.reply_markup = JSON.stringify(replyMarkup);
+  const resp = UrlFetchApp.fetch('https://api.telegram.org/bot' + token + '/sendMessage', {
+    method: 'post', contentType: 'application/x-www-form-urlencoded', payload: payload, muteHttpExceptions: true,
+  });
+  const data = JSON.parse(resp.getContentText());
+  if (!data.ok) Logger.log('Payment bot sendMessage failed: chatId=' + JSON.stringify(chatId) + ' (type=' + typeof chatId + ') response=' + resp.getContentText());
+  return data.result;
+}
+
+// ── Polling for Approve/Reject taps (same pattern as the Content Bot) ────
+
+function checkPaymentBotUpdates() {
+  const token = PropertiesService.getScriptProperties().getProperty('PAYMENT_BOT_TOKEN');
+  if (!token) return;
+  const props = PropertiesService.getScriptProperties();
+  const lastOffset = Number(props.getProperty('PAYMENT_BOT_OFFSET') || '0');
+
+  const resp = UrlFetchApp.fetch(
+    'https://api.telegram.org/bot' + token + '/getUpdates?offset=' + (lastOffset + 1) + '&timeout=0',
+    { muteHttpExceptions: true }
+  );
+  const data = JSON.parse(resp.getContentText());
+  if (!data.ok) { Logger.log('Payment bot getUpdates failed: ' + resp.getContentText()); return; }
+  Logger.log('Payment bot: fetched ' + data.result.length + ' update(s), offset=' + (lastOffset + 1));
+  if (!data.result.length) return;
+
+  data.result.forEach(update => {
+    if (update.callback_query) {
+      try { handlePaymentCallback(token, update.callback_query); }
+      catch (err) { Logger.log('handlePaymentCallback error: ' + err); }
+    } else if (update.message) {
+      // Logged so a chat ID (personal or group) can be read off the
+      // Executions log even when the 1-minute trigger consumes the message
+      // before a manual test run gets a chance to see it via getUpdates.
+      const m = update.message;
+      Logger.log('message: chat.id=' + m.chat.id + ' chat.type=' + m.chat.type + ' chat.title="' + (m.chat.title || '') + '" text="' + (m.text || m.caption || '') + '"');
+    }
+    props.setProperty('PAYMENT_BOT_OFFSET', String(update.update_id));
+  });
+}
+
+// Sheet-sourced numeric IDs can pick up subtle formatting quirks (e.g. a
+// trailing ".0") when Apps Script serializes them for the API request —
+// Telegram then rejects the malformed chat_id as "chat not found" even
+// though it displays identically to a working string ID. Force a clean
+// integer string regardless of whether Sheets stored it as text or a number.
+function normalizeChatId(id) {
+  if (typeof id === 'number') return String(Math.trunc(id));
+  return String(id).trim();
+}
+
+function handlePaymentCallback(token, cb) {
+  const data = cb.data || ''; // "pr_approve_<id>" or "pr_reject_<id>"
+  const parts = data.split('_');
+  const action = parts[1];
+  const clientId = parts.slice(2).join('_');
+
+  const sheet = getOrCreateSheet('Clients');
+  const rows = sheet.getDataRange().getValues();
+  const headers = rows[0];
+  const idIdx = headers.indexOf('id');
+
+  for (let i = 1; i < rows.length; i++) {
+    if (String(rows[i][idIdx]) !== String(clientId)) continue;
+    const client = {};
+    headers.forEach((h, c) => client[h] = rows[i][c]);
+
+    if (action === 'approve') {
+      if (!client.groupChatId) {
+        answerPaymentCallback(token, cb.id, 'No groupChatId set for ' + client.name + ' — add it to the sheet first.');
+        return;
+      }
+      const message = buildReminderMessage(client);
+      sendPaymentBotMessage(token, normalizeChatId(client.groupChatId), message);
+      finishPaymentReview(token, cb.message.chat.id, cb.message.message_id, '✅ SENT to ' + client.name);
+      answerPaymentCallback(token, cb.id, 'Sent to ' + client.name + '!');
+    } else {
+      finishPaymentReview(token, cb.message.chat.id, cb.message.message_id, '❌ REJECTED — ' + client.name);
+      answerPaymentCallback(token, cb.id, 'Rejected.');
+    }
+    return;
+  }
+  answerPaymentCallback(token, cb.id, 'Client not found.');
+}
+
+function finishPaymentReview(token, chatId, messageId, statusText) {
+  UrlFetchApp.fetch('https://api.telegram.org/bot' + token + '/editMessageReplyMarkup', {
+    method: 'post', contentType: 'application/x-www-form-urlencoded',
+    payload: { chat_id: chatId, message_id: messageId, reply_markup: JSON.stringify({ inline_keyboard: [] }) },
+    muteHttpExceptions: true,
+  });
+  sendPaymentBotMessage(token, chatId, statusText);
+}
+
+function answerPaymentCallback(token, callbackQueryId, text) {
+  UrlFetchApp.fetch('https://api.telegram.org/bot' + token + '/answerCallbackQuery', {
+    method: 'post', contentType: 'application/x-www-form-urlencoded',
+    payload: { callback_query_id: callbackQueryId, text: text }, muteHttpExceptions: true,
+  });
+}
+
+function installPaymentReminderTriggers() {
+  ScriptApp.getProjectTriggers().forEach(t => {
+    const fn = t.getHandlerFunction();
+    if (fn === 'checkPaymentReminders' || fn === 'checkPaymentBotUpdates') ScriptApp.deleteTrigger(t);
+  });
+  ScriptApp.newTrigger('checkPaymentReminders').timeBased().everyDays(1).atHour(9).create();
+  ScriptApp.newTrigger('checkPaymentBotUpdates').timeBased().everyMinutes(1).create();
+  Logger.log('✅ Payment reminder triggers installed — daily check at 9am, button polling every minute.');
+}
+
 function sendAgentNotification(lead, scenario, lang) {
   const label   = { viewing:'Viewing Request', property:'Property Inquiry', general:'General Inquiry' }[scenario] || 'New Lead';
   const subject = '[PHC] New ' + label + ' — ' + escH(lead.fullName || 'Unknown') + ' · ' + escH(lead.interestedIn || lead.budget || 'Website');

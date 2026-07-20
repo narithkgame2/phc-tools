@@ -1,0 +1,219 @@
+<title>PHC · Telegram Bots — Technical Reference</title>
+<style>
+:root{
+  --navy:#06264f; --navy-d:#040f24; --navy-m:#0b3d7a;
+  --gold:#c9993f; --gold-l:#e0b86a; --gold-s:rgba(201,153,63,.10); --gold-b:rgba(201,153,63,.28);
+  --ink:#1a2535; --ink-2:#4a5e74; --ink-3:#8a9bb0;
+  --bg:#f0f3f8; --card:#ffffff; --line:#e0e5ee;
+  --ok:#1a7a4a; --ok-s:rgba(26,122,74,.09); --ok-b:rgba(26,122,74,.25);
+  --amber:#a45a11; --amber-s:rgba(164,90,17,.10); --amber-b:rgba(164,90,17,.3);
+  --r:12px;
+  --sf:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Inter",sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+:root[data-theme="dark"]{
+  --navy:#0b3d7a; --navy-d:#050e1e; --bg:#0a1220; --card:#101a2c; --line:#1e2c45;
+  --ink:#e7ecf5; --ink-2:#a9b7cc; --ink-3:#6d7f9c;
+  --gold-s:rgba(224,184,106,.12); --gold-b:rgba(224,184,106,.3);
+  --ok-s:rgba(56,178,120,.14); --ok-b:rgba(56,178,120,.3);
+  --amber-s:rgba(224,158,90,.14); --amber-b:rgba(224,158,90,.35);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --navy:#0b3d7a; --navy-d:#050e1e; --bg:#0a1220; --card:#101a2c; --line:#1e2c45;
+    --ink:#e7ecf5; --ink-2:#a9b7cc; --ink-3:#6d7f9c;
+    --gold-s:rgba(224,184,106,.12); --gold-b:rgba(224,184,106,.3);
+    --ok-s:rgba(56,178,120,.14); --ok-b:rgba(56,178,120,.3);
+    --amber-s:rgba(224,158,90,.14); --amber-b:rgba(224,158,90,.35);
+  }
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{min-height:100%;font-family:var(--sf)}
+body{background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+
+.topbar{background:var(--navy-d);height:52px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(255,255,255,.05)}
+.tb-name{font-family:'Playfair Display',Georgia,serif;font-size:14px;color:#fff}
+.tb-name span{color:var(--gold)}
+.tb-tag{font-family:var(--mono);font-size:9px;color:var(--gold);opacity:.55;letter-spacing:.15em;text-transform:uppercase}
+
+.page{max-width:1000px;margin:0 auto;padding:32px 28px 80px}
+
+.hero{background:linear-gradient(135deg,var(--navy-d) 0%,var(--navy) 100%);border-radius:var(--r);padding:30px 34px;margin-bottom:28px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.06)}
+.hero::before{content:'';position:absolute;top:-80px;right:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(201,153,63,.07) 0%,transparent 70%)}
+.hero-eyebrow{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);opacity:.7;margin-bottom:8px}
+.hero-title{font-family:'Playfair Display',Georgia,serif;font-size:26px;font-weight:700;color:#fff;letter-spacing:-.02em;line-height:1.25;max-width:660px}
+.hero-title span{color:var(--gold)}
+.hero-sub{font-size:13px;color:rgba(255,255,255,.5);line-height:1.7;max-width:620px;margin-top:10px}
+
+/* bot summary cards */
+.botcards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:34px}
+@media (max-width:720px){.botcards{grid-template-columns:1fr}}
+.botcard{background:var(--card);border:1.5px solid var(--line);border-radius:var(--r);overflow:hidden}
+.botcard-head{padding:16px 20px;background:var(--navy-d);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.botcard-name{font-family:'Playfair Display',Georgia,serif;color:#fff;font-size:15px}
+.botcard-handle{font-family:var(--mono);font-size:10px;color:var(--gold)}
+.botcard-status{margin-left:auto;font-family:var(--mono);font-size:8px;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:20px;background:var(--ok);color:#fff}
+.botcard-body{padding:16px 20px;display:flex;flex-direction:column;gap:10px}
+.botcard-row{display:flex;flex-direction:column;gap:2px}
+.botcard-row b{font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em;font-family:var(--mono);font-weight:500}
+.botcard-row span{font-size:12.5px;color:var(--ink-2);line-height:1.6}
+.botcard-row code{font-family:var(--mono);font-size:11px;background:var(--gold-s);color:var(--ink);padding:1px 6px;border-radius:4px}
+
+.section-label{display:flex;align-items:center;gap:10px;margin:32px 0 14px}
+.sl-num{font-family:var(--mono);font-size:9px;color:var(--gold);opacity:.6;letter-spacing:.2em}
+.sl-text{font-size:11px;font-weight:600;color:var(--ink-2);text-transform:uppercase;letter-spacing:.06em}
+.sl-line{flex:1;height:1px;background:var(--line)}
+
+/* architecture flow */
+.flow{display:flex;flex-direction:column;position:relative;padding-left:36px}
+.flow::before{content:'';position:absolute;left:11px;top:8px;bottom:8px;width:1.5px;background:linear-gradient(180deg,var(--gold-b),var(--line) 92%)}
+.stage{position:relative;margin-bottom:14px}
+.stage:last-child{margin-bottom:0}
+.stage-dot{position:absolute;left:-36px;top:2px;width:23px;height:23px;border-radius:50%;background:var(--card);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700;color:var(--gold)}
+.stage-body{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:12px 16px}
+.stage-body b{display:block;font-size:13px;color:var(--ink);margin-bottom:3px}
+.stage-body span{font-size:12px;color:var(--ink-2);line-height:1.6}
+
+/* gotcha callouts */
+.gotcha{background:var(--amber-s);border:1.5px solid var(--amber-b);border-radius:9px;padding:14px 18px;margin-bottom:10px;display:flex;gap:12px}
+.gotcha .mark{font-family:'Playfair Display',Georgia,serif;font-size:20px;color:var(--amber);line-height:1;flex-shrink:0}
+.gotcha-body b{display:block;font-size:12.5px;color:var(--ink);margin-bottom:3px}
+.gotcha-body span{font-size:12px;color:var(--ink-2);line-height:1.65}
+.gotcha-body code{font-family:var(--mono);font-size:10.5px;background:rgba(0,0,0,.06);padding:1px 5px;border-radius:4px}
+:root[data-theme="dark"] .gotcha-body code{background:rgba(255,255,255,.08)}
+
+/* tables */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--card);margin-bottom:10px}
+table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:520px}
+th,td{text-align:left;padding:11px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+thead th{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600;background:var(--bg)}
+tbody tr:last-child td{border-bottom:none}
+td:first-child{color:var(--ink-2);font-weight:500;white-space:nowrap}
+td strong,td code{color:var(--ink)}
+td code{font-family:var(--mono);font-size:11px;background:var(--gold-s);padding:1px 6px;border-radius:4px}
+
+.rule{background:var(--navy);color:#fff;border-radius:var(--r);padding:20px 24px;display:flex;gap:16px;align-items:flex-start;margin-top:10px}
+.rule .mark{font-family:'Playfair Display',Georgia,serif;font-size:22px;color:var(--gold-l);line-height:1;flex-shrink:0}
+.rule p{font-size:13px;line-height:1.7;color:rgba(255,255,255,.85)}
+.rule b{color:var(--gold-l)}
+
+.foot{text-align:center;padding:30px 0 0;font-family:var(--mono);font-size:9px;color:var(--ink-3);letter-spacing:.1em}
+</style>
+
+<div class="topbar">
+  <div class="tb-name">Property Hub <span>Cambodia</span></div>
+  <div class="tb-tag">Telegram Bots — Technical Reference</div>
+</div>
+
+<div class="page">
+
+  <div class="hero">
+    <div class="hero-eyebrow">Both bots — architecture, config, known gotchas</div>
+    <h1 class="hero-title">Two bots, one shared pattern: <span>poll, personalize, review, send.</span></h1>
+    <p class="hero-sub">Content Bot distributes listings to public channels. Payment Reminder Bot sends private, scheduled client reminders. Different jobs, same underlying playbook — this page is the single reference for both.</p>
+  </div>
+
+  <div class="botcards">
+    <div class="botcard">
+      <div class="botcard-head">
+        <div><div class="botcard-name">Content Bot</div><div class="botcard-handle">@PHC_Content_Bot</div></div>
+        <span class="botcard-status">Live</span>
+      </div>
+      <div class="botcard-body">
+        <div class="botcard-row"><b>File</b><span><code>PHC_ContentBot_AppsScript.gs</code></span></div>
+        <div class="botcard-row"><b>Bound to</b><span>"PHC Content Queue" Google Sheet</span></div>
+        <div class="botcard-row"><b>Job</b><span>Nick forwards a listing → bot detects format, reformats, translates EN/JP/RU/DE, sends one Approve-All review → posts to 4 pilot channels</span></div>
+        <div class="botcard-row"><b>Channels</b><span>t.me/PHC_EN · PHC_JP · PHC_RU · PHC_DE (pilot only — not the live client-facing channel)</span></div>
+      </div>
+    </div>
+    <div class="botcard">
+      <div class="botcard-head">
+        <div><div class="botcard-name">Payment Reminder Bot</div><div class="botcard-handle">@PHC_ClientCare_Bot</div></div>
+        <span class="botcard-status">Live</span>
+      </div>
+      <div class="botcard-body">
+        <div class="botcard-row"><b>File</b><span><code>PHC_AppsScript.gs</code> (the PHC CRM script — bot code lives inside it)</span></div>
+        <div class="botcard-row"><b>Bound to</b><span>"PHC CRM" Google Sheet, <code>Clients</code> tab</span></div>
+        <div class="botcard-row"><b>Job</b><span>Daily scan for payments due in 5 days → personalized + translated reminder → Approve/Reject review → posts to that client's own Telegram group</span></div>
+        <div class="botcard-row"><b>Confirmed working</b><span>End-to-end live test passed 2026-07-20</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label"><span class="sl-num">01</span><span class="sl-text">Shared architecture pattern</span><div class="sl-line"></div></div>
+  <div class="flow">
+    <div class="stage"><div class="stage-dot">1</div><div class="stage-body"><b>Polling, not webhook</b><span>Both bots use <code style="font-family:var(--mono);background:var(--gold-s);padding:1px 6px;border-radius:4px">getUpdates</code> on a 1-minute time-driven trigger. Apps Script Web App URLs always 302-redirect, which breaks Telegram's webhook delivery — polling sidesteps this entirely.</span></div></div>
+    <div class="stage"><div class="stage-dot">2</div><div class="stage-body"><b>Nothing sends without a human tap</b><span>Every outbound message — public listing or private reminder — goes to Nick first as a review message with inline ✅ Approve / ❌ Reject buttons. Approve triggers the real send; Reject just clears the buttons.</span></div></div>
+    <div class="stage"><div class="stage-dot">3</div><div class="stage-body"><b>Free translation via LanguageApp</b><span>Both reuse Apps Script's built-in <code style="font-family:var(--mono);background:var(--gold-s);padding:1px 6px;border-radius:4px">LanguageApp.translate()</code> — no paid API needed for JP/RU/DE/KM output.</span></div></div>
+    <div class="stage"><div class="stage-dot">4</div><div class="stage-body"><b>Secrets live in Script Properties, never in chat</b><span>Bot tokens and chat IDs are added directly by Nick in each project's Script Properties. Each Apps Script project (Content Queue vs. PHC CRM) has its own independent property store — a token added to one is invisible to the other.</span></div></div>
+  </div>
+
+  <div class="section-label"><span class="sl-num">02</span><span class="sl-text">Script Properties by bot</span><div class="sl-line"></div></div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Bot</th><th>Property</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>Content Bot</td><td><code>BOT_TOKEN</code></td><td>Telegram Bot API token for @PHC_Content_Bot</td></tr>
+        <tr><td></td><td><code>CLAUDE_API_KEY</code></td><td>Optional — tier-6 fallback for unrecognized formats. Not yet active (Nick's Anthropic Console payment pending).</td></tr>
+        <tr><td>Payment Bot</td><td><code>PAYMENT_BOT_TOKEN</code></td><td>Telegram Bot API token for @PHC_ClientCare_Bot</td></tr>
+        <tr><td></td><td><code>PAYMENT_REVIEWER_CHAT_ID</code></td><td>Nick's own chat ID — where every review message is sent</td></tr>
+        <tr><td></td><td><code>PAYMENT_BOT_OFFSET</code></td><td>Auto-managed polling cursor — do not edit by hand</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-label"><span class="sl-num">03</span><span class="sl-text">Payment Reminder Bot — decision flow</span><div class="sl-line"></div></div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Step</th><th>Logic</th></tr></thead>
+      <tbody>
+        <tr><td>Daily 9am trigger</td><td>Scans every row in <code>Clients</code> — is <code>payDay</code> exactly 5 days out, and is <code>lastReminderSent</code> not already today?</td></tr>
+        <tr><td>Split by <code>channel</code></td><td><strong>telegram</strong> → goes through personalize → review → send. <strong>anything else</strong> → never sent automatically; listed by name in a separate warning message so Nick handles it manually on that client's real platform.</td></tr>
+        <tr><td>Personalize + translate</td><td>Merges name, amount, project, unit, formatted due date into the template; translates by the client's <code>nat</code> field via <code>PAYMENT_LANG_MAP</code> (japanese/german/russian/cambodian → ja/de/ru/km).</td></tr>
+        <tr><td>Approve</td><td>Sends the message straight into that client's <code>groupChatId</code> — always 1-to-1, never a broadcast.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-label"><span class="sl-num">04</span><span class="sl-text">Known gotchas — read before touching either bot</span><div class="sl-line"></div></div>
+
+  <div class="gotcha">
+    <span class="mark">⚠</span>
+    <div class="gotcha-body">
+      <b>Two files are named PHC_AppsScript.gs</b>
+      <span>A stale duplicate lives at <code>~/Desktop/phc-website/PHC Website (Claude Code)/PHC_AppsScript.gs</code> — missing the referral columns and the entire Payment Reminder Bot. Always edit the one in <code>~/Desktop/Claude Code/phc-tools/</code>. If a function "can't be found" right after pasting, this is the first thing to check.</span>
+    </div>
+  </div>
+
+  <div class="gotcha">
+    <span class="mark">⚠</span>
+    <div class="gotcha-body">
+      <b>Sheets silently converts typed chat IDs to Number — normalize before sending</b>
+      <span>A chat/group ID typed directly into a Sheets cell comes back from <code>getValues()</code> as a JS <code>Number</code>, not a <code>String</code>. Passed straight into Telegram's API, this produces a <code>400 "chat not found"</code> error even though the exact same value as a string works fine. Always run any Sheets-sourced chat ID through <code>normalizeChatId(id)</code> before using it — this bit the Payment Bot's <code>groupChatId</code> field and cost a long debugging session before the root cause was found. Apply this to any future feature reading a Telegram ID from a Sheet.</span>
+    </div>
+  </div>
+
+  <div class="gotcha">
+    <span class="mark">⚠</span>
+    <div class="gotcha-body">
+      <b>Sheets Date objects need explicit formatting</b>
+      <span>A <code>payDay</code> cell comes back as a native JS <code>Date</code>; concatenating it raw into a message produces <code>"Sat Jul 25 2026 00:00:00 GMT+0700..."</code>. Always format client-facing dates with <code>Utilities.formatDate(d, Session.getScriptTimeZone(), 'MMMM d, yyyy')</code> first.</span>
+    </div>
+  </div>
+
+  <div class="gotcha">
+    <span class="mark">⚠</span>
+    <div class="gotcha-body">
+      <b>A bot can only use ONE delivery mechanism at a time</b>
+      <span>Webhook and <code>getUpdates</code> polling are mutually exclusive — if a webhook URL is ever set (even by accident, or a leftover from testing), polling silently returns empty forever regardless of real activity. <code>testPaymentBotWebhookInfo()</code> / the Content Bot's equivalent exist specifically to rule this out during debugging.</span>
+    </div>
+  </div>
+
+  <div class="rule">
+    <span class="mark">”</span>
+    <p>Both bots are single-purpose on principle: <b>the Content Bot never touches client-private data, the Payment Bot never posts to public channels.</b> If a future automation needs both, build it as a third bot rather than merging these two.</p>
+  </div>
+
+  <div class="foot">PROPERTY HUB CAMBODIA · TELEGRAM BOTS · JULY 2026</div>
+
+</div>

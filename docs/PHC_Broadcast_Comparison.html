@@ -1,0 +1,151 @@
+<title>PHC · Blasting Messages to Clients — Two Ways</title>
+<style>
+:root{
+  --navy:#06264f; --navy-d:#040f24; --navy-m:#0b3d7a;
+  --gold:#c9993f; --gold-l:#e0b86a; --gold-s:rgba(201,153,63,.10); --gold-b:rgba(201,153,63,.28);
+  --ink:#1a2535; --ink-2:#4a5e74; --ink-3:#8a9bb0;
+  --bg:#f0f3f8; --card:#ffffff; --line:#e0e5ee;
+  --ok:#1a7a4a; --ok-s:rgba(26,122,74,.09); --ok-b:rgba(26,122,74,.25);
+  --amber:#a45a11; --amber-s:rgba(164,90,17,.10); --amber-b:rgba(164,90,17,.3);
+  --r:12px;
+  --sf:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Inter",sans-serif;
+}
+:root[data-theme="dark"]{
+  --navy:#0b3d7a; --navy-d:#050e1e; --bg:#0a1220; --card:#101a2c; --line:#1e2c45;
+  --ink:#e7ecf5; --ink-2:#a9b7cc; --ink-3:#6d7f9c;
+  --gold-s:rgba(224,184,106,.12); --gold-b:rgba(224,184,106,.3);
+  --ok-s:rgba(56,178,120,.14); --ok-b:rgba(56,178,120,.3);
+  --amber-s:rgba(224,158,90,.14); --amber-b:rgba(224,158,90,.35);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --navy:#0b3d7a; --navy-d:#050e1e; --bg:#0a1220; --card:#101a2c; --line:#1e2c45;
+    --ink:#e7ecf5; --ink-2:#a9b7cc; --ink-3:#6d7f9c;
+    --gold-s:rgba(224,184,106,.12); --gold-b:rgba(224,184,106,.3);
+    --ok-s:rgba(56,178,120,.14); --ok-b:rgba(56,178,120,.3);
+    --amber-s:rgba(224,158,90,.14); --amber-b:rgba(224,158,90,.35);
+  }
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{min-height:100%;font-family:var(--sf)}
+body{background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+
+.topbar{background:var(--navy-d);height:52px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(255,255,255,.05)}
+.tb-name{font-family:'Playfair Display',Georgia,serif;font-size:14px;color:#fff}
+.tb-name span{color:var(--gold)}
+.tb-tag{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--gold);opacity:.55;letter-spacing:.15em;text-transform:uppercase}
+
+.page{max-width:980px;margin:0 auto;padding:32px 28px 80px}
+
+.hero{background:linear-gradient(135deg,var(--navy-d) 0%,var(--navy) 100%);border-radius:var(--r);padding:30px 34px;margin-bottom:30px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.06)}
+.hero::before{content:'';position:absolute;top:-80px;right:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(201,153,63,.07) 0%,transparent 70%)}
+.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);opacity:.7;margin-bottom:8px}
+.hero-title{font-family:'Playfair Display',Georgia,serif;font-size:26px;font-weight:700;color:#fff;letter-spacing:-.02em;line-height:1.25;max-width:640px}
+.hero-title span{color:var(--gold)}
+.hero-sub{font-size:13px;color:rgba(255,255,255,.5);line-height:1.7;max-width:600px;margin-top:10px}
+
+.split{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:28px}
+@media (max-width:720px){.split{grid-template-columns:1fr}}
+
+.path{border-radius:var(--r);overflow:hidden;border:1.5px solid}
+.path.native{border-color:var(--ok-b)}
+.path.bot{border-color:var(--gold-b)}
+.path-head{padding:18px 20px;display:flex;align-items:center;gap:10px}
+.path.native .path-head{background:var(--ok-s)}
+.path.bot .path-head{background:var(--gold-s)}
+.path-title{font-family:'Playfair Display',Georgia,serif;font-size:16px}
+.path-pill{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:20px}
+.path.native .path-pill{background:var(--ok);color:#fff}
+.path.bot .path-pill{background:var(--gold);color:var(--navy-d)}
+
+.steps{padding:18px 20px;display:flex;flex-direction:column;gap:0;background:var(--card)}
+.step{display:flex;gap:12px;position:relative;padding-bottom:20px}
+.step:last-child{padding-bottom:0}
+.step::before{content:'';position:absolute;left:11px;top:26px;bottom:0;width:1.5px;background:var(--line)}
+.step:last-child::before{display:none}
+.step-n{width:23px;height:23px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;z-index:1}
+.path.native .step-n{background:var(--ok);color:#fff}
+.path.bot .step-n{background:var(--gold);color:var(--navy-d)}
+.step-t{font-size:12.5px;color:var(--ink-2);line-height:1.6;padding-top:2px}
+.step-t b{color:var(--ink)}
+
+.path-footer{padding:14px 20px;border-top:1px dashed var(--line);font-size:11.5px;color:var(--ink-3);font-style:italic;background:var(--bg)}
+
+.section-label{display:flex;align-items:center;gap:10px;margin:26px 0 14px}
+.sl-text{font-size:11px;font-weight:600;color:var(--ink-2);text-transform:uppercase;letter-spacing:.06em}
+.sl-line{flex:1;height:1px;background:var(--line)}
+
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--card)}
+table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:480px}
+th,td{text-align:left;padding:11px 16px;border-bottom:1px solid var(--line)}
+thead th{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600;background:var(--bg)}
+tbody tr:last-child td{border-bottom:none}
+td:first-child{color:var(--ink-2);font-weight:500}
+td strong{color:var(--ink)}
+
+.rule{background:var(--navy);color:#fff;border-radius:var(--r);padding:20px 24px;display:flex;gap:16px;align-items:flex-start;margin-top:24px}
+.rule .mark{font-family:'Playfair Display',Georgia,serif;font-size:22px;color:var(--gold-l);line-height:1;flex-shrink:0}
+.rule p{font-size:13px;line-height:1.7;color:rgba(255,255,255,.85)}
+.rule b{color:var(--gold-l)}
+
+.foot{text-align:center;padding:24px 0 0;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink-3);letter-spacing:.1em}
+</style>
+
+<div class="topbar">
+  <div class="tb-name">Property Hub <span>Cambodia</span></div>
+  <div class="tb-tag">Blasting Messages to Clients</div>
+</div>
+
+<div class="page">
+
+  <div class="hero">
+    <div class="hero-eyebrow">Two ways to reach every client at once</div>
+    <h1 class="hero-title">One's already built into Telegram. <span>One's worth building.</span></h1>
+    <p class="hero-sub">You don't need a bot for a one-off blast — Telegram already does that. A bot earns its keep specifically for things that should happen automatically, on a schedule, without anyone remembering to tap Forward.</p>
+  </div>
+
+  <div class="split">
+    <div class="path native">
+      <div class="path-head"><div class="path-title">Native Forward</div><span class="path-pill">Already works</span></div>
+      <div class="steps">
+        <div class="step"><div class="step-n">1</div><div class="step-t">You write the update (or attach a photo/file) as a normal message</div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-t">Tap <b>Forward</b> on that message</div></div>
+        <div class="step"><div class="step-n">3</div><div class="step-t"><b>Multi-select</b> every client group it should go to</div></div>
+        <div class="step"><div class="step-n">4</div><div class="step-t">Tap <b>Send</b> — it posts to all selected groups at once</div></div>
+      </div>
+      <div class="path-footer">No bot, no code, no setup. Works today, exactly as you saw it.</div>
+    </div>
+
+    <div class="path bot">
+      <div class="path-head"><div class="path-title">Custom Bot</div><span class="path-pill">Worth building</span></div>
+      <div class="steps">
+        <div class="step"><div class="step-n">1</div><div class="step-t">A trigger fires — either a <b>schedule</b> (5 days before payment due) or you send an update to the bot</div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-t">Bot looks up <b>which groups match</b> from a stored list (e.g. "everyone who bought Time Square 5")</div></div>
+        <div class="step"><div class="step-n">3</div><div class="step-t"><em>(Optional)</em> Sends you a review message first — same Approve/Reject pattern as the Content Bot</div></div>
+        <div class="step"><div class="step-n">4</div><div class="step-t">Posts to every matched group automatically, no one has to remember or pick anything</div></div>
+      </div>
+      <div class="path-footer">Needs building — but reuses the exact same Apps Script pattern already proven with the Content Bot.</div>
+    </div>
+  </div>
+
+  <div class="section-label"><span class="sl-text">Which one for which job</span><div class="sl-line"></div></div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Situation</th><th>Best fit</th></tr></thead>
+      <tbody>
+        <tr><td>One-off announcement, you're already looking at the message</td><td><strong>Native Forward</strong> — faster than any bot for a single manual action</td></tr>
+        <tr><td>Payment reminder that must fire on a specific date, every time</td><td><strong>Bot</strong> — nobody has to remember it exists</td></tr>
+        <tr><td>Construction milestone hit today, share it now</td><td><strong>Native Forward</strong> — it's already happening, just send it</td></tr>
+        <tr><td>Recurring notice (monthly building update, etc.)</td><td><strong>Bot</strong> — set once, fires every time without manual repetition</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="rule">
+    <span class="mark">”</span>
+    <p>The real dividing line isn't "how many people" — it's <b>does a human need to remember to do this, or should it just happen</b>. Forward handles the first case for free today. The bot is only worth building for the second.</p>
+  </div>
+
+  <div class="foot">PROPERTY HUB CAMBODIA · CLIENT COMMUNICATION · JULY 2026</div>
+
+</div>

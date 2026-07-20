@@ -1,10 +1,18 @@
 # CLAUDE.md — Property Hub Cambodia (PHC) Internal OS
 
+## SESSION MEMORY
+
+Persistent context for Nick's Cowork sessions is stored in `claude-memory/`. At the start of any new session, read `claude-memory/MEMORY.md` to load full context — video workflow, content system, style rules, and file references.
+
+---
+
 ## WHO WE ARE
 
 **Company:** Property Hub Cambodia (PHC) — premium multilingual real estate advisory, BKK1 Phnom Penh  
 **Website:** https://propertyhubcambodia.com  
-**Team:** Nick (CEO) · Monika (Co-Founder, Japanese/Russian/EN market) · Reza (Co-Founder, European/German market)  
+**Team (internal):** Nick (CEO) · Monika (Co-Founder, Japanese/Russian/EN market) · Reza (Co-Founder, European/German market)
+**Team (website/public):** Monika (CEO, EN/KH) · Nick (Co-Founder, JP/EN) · Reza (Co-Founder, DE/EU)
+*Note: Different team structures are intentional — do not "correct" the website to match internal roles.*  
 **Main line:** 011 666 952 · t.me/PropertyHubCambodia
 
 **7 buyer segments:** English/Western · Japanese · German/European · Russian · Cambodian Local · Cambodian Overseas · VIP ($500K+)
@@ -51,10 +59,13 @@ The website has its own CLAUDE.md at `~/Desktop/phc-website/CLAUDE.md`.
 | `PHC_Market_Intelligence_Cheat_Sheet.html` | ✅ Live | /phc-tools/PHC_Market_Intelligence_Cheat_Sheet.html |
 | `PHC_CEO_Dashboard.html` | ✅ Live | /phc-tools/PHC_CEO_Dashboard.html |
 | `PHC_Commission_Tracker.html` | ✅ Live | /phc-tools/PHC_Commission_Tracker.html |
-| `PHC_CEO_Business_Plan.html` | ✅ Live | /phc-tools/PHC_CEO_Business_Plan.html |
-| `PHC_System_Map.html` | ✅ Live | /phc-tools/PHC_System_Map.html |
-| `PHC_AppsScript.gs` | ✅ Deployed | Google Apps Script (bound to PHC CRM sheet) |
+| `PHC_CEO_Business_Plan.html` | ✅ Live | /phc-tools/PHC_CEO_Business_Plan.html — **the company-level roadmap/phase plan**. Redesigned July 2026 from sidebar+dense-text into System Map's cascading click-to-expand layout (5 layers, 12 clickable section nodes — same `toggle()` pattern, same password gate/session key as PHC_System_Map.html). Every node carries a freshness pill: `REFRESHED JUL 2026` (Mission Control, 90-Day Sprint) vs `Q2 DRAFT` (the other 10 sections — content unchanged since the original plan, still useful as reference but not current-state fact). Section 01's revenue/lead-count stats are still placeholders pending Nick's real numbers. |
+| `PHC_System_Map.html` | ✅ Live | /phc-tools/PHC_System_Map.html — Nick's living progress tracker; update its "Focus Next" panel + node statuses whenever something ships |
+| `PHC_Progress_Dashboard.html` | ✅ Live | /phc-tools/PHC_Progress_Dashboard.html — % built per System Map section (Live/Manual/Planned breakdown + overall ring). Update its `pcts` array and item lists in lockstep with PHC_System_Map.html whenever something ships. **"Live" = deployed, not finished** — add an `.item-comment` line (amber, italic) under any item that's live-but-rough/unoptimized/not-yet-in-real-use, don't just flip the dot. Ask Nick which specific PHC tools need this before marking the Team & Tools section fully polished. |
+| `PHC_AppsScript.gs` | ✅ Deployed | Google Apps Script (bound to PHC CRM sheet) — also contains the Payment Reminder Bot (@PHC_ClientCare_Bot) |
+| `PHC_ContentBot_AppsScript.gs` | ✅ Deployed | Google Apps Script (bound to PHC Content Queue sheet) — @PHC_Content_Bot |
 | `PHC_Bridge_Script.gs` | ✅ Done | Apps Script bound to lead inquiry sheet |
+| `docs/PHC_Telegram_Bots_Reference.html` | ✅ Done | Technical reference — both Telegram bots, architecture, Script Properties, gotchas |
 
 ---
 
@@ -249,8 +260,8 @@ rezaAmt  = commissionTotal * (rezaPct  / 100)
 ## DESIGN SYSTEM
 
 ```css
---navy:       #083467   /* topbar, headers, primary CTA */
---gold:       #cc9d4d   /* accents, hover, badges */
+--navy:       #083467   /* content-area buttons, headers, primary CTA */
+--gold:       #cc9d4d   /* accents, hover, badges (light/content areas) */
 --gold-light: #e8c47a
 --gold-pale:  #fdf3e3
 --cream:      #fdf8f0
@@ -266,9 +277,61 @@ rezaAmt  = commissionTotal * (rezaPct  / 100)
 
 **Fonts:** DM Sans (UI) · DM Serif Display (hero only) · DM Mono (labels/numbers)
 
-**Component patterns:**
-- Header: navy 54px, sticky
-- Primary btn: gold bg, navy text
+### Sidebar shell (standard for every new tool — as of 2026-07-17)
+
+Every tool now uses a persistent left sidebar + main content area, not a topbar-only
+layout. The sidebar's colors are pulled directly from the **live website's** actual
+dark theme (`propertyhubcambodia.com`'s `src/index.css` HSL tokens), not the light
+`--navy`/`--gold` above — the sidebar is deliberately darker/moodier to match the
+site's real brand feel, while the main content area stays light for data readability.
+
+```css
+--sb:          #0F192E   /* sidebar background */
+--sb-deep:     #091120   /* logo text color, darkest shade */
+--sb-hover:    rgba(255,255,255,.06)
+--sb-active:   rgba(192,154,89,.16)   /* active nav item background */
+--sb-text:     rgba(245,243,240,.65) /* default nav item text */
+--sb-text-s:   #F5F3F0   /* strong/hover text, tool name */
+--sb-icon:     rgba(245,243,240,.4)  /* icons, sub-labels, footer text */
+--sb-border:   rgba(255,255,255,.08)
+--sb-gold:     #C09A59   /* logo background, active nav accent */
+--sb-gold-light: #D9BD8C /* active nav text/icon color */
+```
+
+**Structure:** `.app` (flex row) → `.sidebar` (fixed width, collapsible to 52px) +
+`.main` (flex column: `.topbar` breadcrumb → `.toolbar` filters/actions →
+scrollable content).
+
+**Sidebar contents, top to bottom:**
+1. `.ws-header` — logo (gold bg, `--sb-deep` text, 28×28px rounded square) + tool
+   identity (`ws-name` = "PHC CRM", `ws-sub` = this tool's name) + collapse toggle button
+2. `.sb-nav` — tool-specific nav items grouped under `.sb-section-label`s, each a
+   `.sb-item` with icon + label + optional count/badge
+3. "Other Tools" section — cross-links to the other CRM tools + "← Back to Hub",
+   using the same icon system
+4. `.sb-footer` — sync status dot + text
+
+**Icons:** stroke-based SVG only, never emoji/unicode glyphs. `viewBox="0 0 16 16"
+fill="none" stroke="currentColor" stroke-width="1.6"`, rendered at 14×14px. Reuse an
+existing icon from another tool for the same concept before drawing a new one
+(e.g. the people icon, the Lead Tracker grid icon, the home icon are all shared
+verbatim across tools already — grep the other `.html` files for `sb-icon` before
+inventing a new SVG path).
+
+**Collapse toggle — known gotcha:** when the sidebar collapses to 52px, the logo
+(28px) + header padding leaves no room for the toggle button, squeezing it off
+invisibly. Every tool's collapsed-state CSS must include:
+```css
+.sidebar.collapsed .ws-header{padding:14px 0;justify-content:center}
+.sidebar.collapsed .ws-logo{display:none}
+.sidebar.collapsed .collapse-btn{transform:rotate(180deg)}
+```
+(in addition to the existing rule hiding `.sb-label`/`.ws-info`/`.sb-section-label`/`.sb-count`).
+Verify by collapsing then re-expanding and checking the sidebar returns to its
+original width — this bug shipped identically in three tools before being caught.
+
+**Other component patterns:**
+- Primary btn (on light content area): navy bg, white text
 - Drawer: right panel, navy header
 - Toast: navy bg, gold left border, bottom-right, 3s auto-dismiss
 - Password gate: navy full-screen overlay, white card
@@ -300,12 +363,14 @@ Released:    #fee2e2 / #991b1b
 
 ## PROJECTS REFERENCE (18 properties)
 
-**Phnom Penh:**
-Time Square 7 · Time Square 8 · Time Square 9 · Time Square 10 · Time Square 11 · Kingston Royale · Le Conde BKK1 · GATO Tower · Odom Living · Odom Tower · UC88 Wyndham Garden · J Tower 3 · Diamond Bay Garden · Norea Square · Picasso Sky Gemme
+**Phnom Penh (14):**
+Time Square 7 (Toul Kork) · Time Square 8 · Time Square 9 (BKK1) · Time Square 11 (BKK3) · Kingston Royale · Le Conde BKK1 · GATO Tower (BKK1) · Odom Living (Tonle Bassac) · Odom Tower (Tonle Bassac, Commercial) · UC88 Wyndham Garden · J Tower 3 (Tonle Bassac) · Diamond Bay Garden (Tonle Bassac) · Norea Square (Tonle Bassac) · Picasso Sky Gemme (BKK1)
 
-**Siem Reap:** Angkor Grace · Rose Apple Square
+**Siem Reap (1):** Angkor Grace
+⚠️ Rose Apple Square no longer appears on the live website — may be removed. Confirm before referencing.
 
-**Sihanoukville:** LZ Sea View Premium
+**Sihanoukville / Coast (2):** LZ Sea View Premium (Sangkat Buon) · Time Square 10 (Otres Beach)
+⚠️ Time Square 10 is on the coast (Otres Beach), NOT in Phnom Penh.
 
 ---
 
@@ -351,6 +416,8 @@ Fetches Tasks + Leads + Clients in parallel. Shows: active leads, pipeline value
 | 8 | Password protection | ✅ Done — PHC2026 / Nick@PHC2026 |
 | 9 | Lead inquiry bridge | ✅ Done — Bridge Script syncs → PHC CRM |
 | 10 | Auto-mirror to NickCambodia | 🔲 Pending — manual sync for now |
+| 11 | Content Bot (@PHC_Content_Bot) | ✅ Done — polling, 6-tier format detection, EN/JP/RU/DE translation, Approve-All review. Claude API fallback tier built but inactive (payment pending). |
+| 12 | Payment Reminder Bot (@PHC_ClientCare_Bot) | ✅ Done — confirmed working live 2026-07-20. Daily scan, channel-split (Telegram vs. manual), personalized + translated reminders, Approve/Reject review. |
 
 ---
 
@@ -365,6 +432,9 @@ Fetches Tasks + Leads + Clients in parallel. Shows: active leads, pipeline value
 7. **Phone numbers in Sheets** — Numbers starting with `+` interpreted as formulas. Set phone columns to Plain Text: Leads col F, Clients col G.
 8. **Leads telegram column** — If Leads tab was created before telegram field, run `migrateLeadsSchema()` in Apps Script once.
 9. **Bridge script IDs** — Leads from inquiry sheet get `B-` prefix IDs to prevent duplicates on re-sync.
+10. **Two files named `PHC_AppsScript.gs`** — a stale duplicate lives at `~/Desktop/phc-website/PHC Website (Claude Code)/PHC_AppsScript.gs` (missing referral columns and the whole Payment Reminder Bot). Always edit the one in this repo. See `docs/PHC_Telegram_Bots_Reference.html`.
+11. **Telegram chat IDs from Sheets need `normalizeChatId()`** — Sheets converts a typed numeric chat/group ID into a JS `Number`; sent raw to Telegram's API this produces a silent `400 "chat not found"` even though the string form works. Always normalize any Sheets-sourced chat ID before calling `sendMessage`.
+12. **A bot can only poll OR use a webhook, never both** — if a webhook URL is ever set, `getUpdates` polling returns empty forever regardless of real activity. Check with `getWebhookInfo` when a bot seems to receive nothing.
 
 ---
 
@@ -389,3 +459,66 @@ rm .git/index.lock .git/HEAD.lock
 
 GitHub Pages auto-deploys ~30 seconds after push.  
 All tools live at: https://narithkgame2.github.io/phc-tools/
+
+---
+
+## ⛔ BUILD GUARDRAILS — PHC Tools
+
+These rules apply to every tool in this repo. Do not override without explicit instruction from Nick.
+
+### Hard rules (never break these):
+- **Single-file HTML only** — every tool is one `.html` file. No separate CSS, JS, or asset files.
+- **Vanilla JS only** — no React, Vue, jQuery, or any framework. No build step.
+- **Google Fonts CDN is the only external resource** — no other CDN, no external images, no external scripts.
+- **Password gate on every tool** — agent tools use `PHC2026`, director tools use `Nick@PHC2026`. Never remove or weaken the gate.
+- **Always use `localStorage` as cache/fallback** — tools must work offline with cached data if the API is unreachable.
+- **API writes: always `Content-Type: text/plain` + `mode: 'no-cors'`** — never break this pattern or POST responses will fail silently.
+- **Never call `.json()` on a POST response** — it will throw. POST responses are opaque.
+- **Always quote IDs in event handlers** — `'${t.id}'` not `${t.id}` (string IDs with prefixes break unquoted).
+
+### Approach rules (how to handle tasks):
+- **Make the smallest change that works** — don't refactor surrounding code unless the task requires it.
+- **Preserve existing features** — if fixing a bug, don't remove or restructure features nearby.
+- **Mobile responsive is non-negotiable** — test every new UI at 390px width before finishing.
+- **Don't change the Apps Script web app URL** — it's baked into every tool. If redeploying, update CLAUDE.md first.
+- **Don't change password values** — only Nick decides if passwords change.
+- **Don't add new tabs to PHC CRM sheet** — the 4-tab schema (Tasks, Leads, Clients, Deals) is fixed. New data types need discussion first.
+
+### Before starting any tool task, confirm:
+1. Which file are we editing? (Get the exact filename from the File Inventory above.)
+2. Is this a bug fix, a feature addition, or a new tool?
+3. If new tool: what data does it need, and is there already a Sheets tab for it?
+4. If touching Apps Script: does the web app need redeploying after?
+
+### Design system tokens (use these exactly — don't improvise):
+```css
+--navy:       #083467   /* topbar, headers, primary CTA */
+--gold:       #cc9d4d   /* accents, hover, badges */
+--gold-light: #e8c47a
+--gold-pale:  #fdf3e3
+--cream:      #fdf8f0
+--g1:         #f5f6f8   /* page background */
+--g2:         #e8ecf2   /* borders */
+--g3:         #c0c8d4
+--g4:         #7a8799   /* secondary text */
+--text:       #1a2535
+--red:        #d63031
+--green:      #00b894
+--orange:     #e17055
+```
+Fonts: **DM Sans** (UI) · **DM Serif Display** (hero only) · **DM Mono** (labels/numbers)
+
+---
+
+## DECISIONS LOG
+
+*Add key decisions here so future sessions don't re-litigate them.*
+
+| Date | Decision | Reason |
+|------|----------|--------|
+| Jun 2026 | Task Manager stays as HTML tool, not migrated to website | Single-file tools are faster to build and maintain for internal use |
+| Jun 2026 | Apps Script CORS pattern (text/plain + no-cors) is permanent | Avoids preflight; changing it breaks all writes |
+| Jun 2026 | No frameworks in phc-tools ever | Build step complexity not worth it for internal tools |
+| 2026-07-17 | Every tool uses the sidebar shell pattern (not topbar-only), colored with the live website's actual dark navy/gold theme, not the lighter `--navy`/`--gold` used in content areas | Unifies the whole suite visually; matches PHC's real brand instead of ad-hoc purple/grey placeholders that had crept into Lead Tracker/Client Manager over time. See DESIGN SYSTEM section above for the full spec. |
+| 2026-07-20 | Payment Reminder Bot is a separate bot (@PHC_ClientCare_Bot) from @PHC_Content_Bot, code added to `PHC_AppsScript.gs` rather than a new file | Nick's explicit request — this bot lives inside private client groups, kept distinct from the public listing-distribution bot. Reuses the CRM script's existing `Clients` tab rather than duplicating client data. |
+| 2026-07-20 | Non-Telegram clients are never auto-sent-to or silently skipped by the Payment Reminder Bot — they're flagged by name in a separate message | Prevents duplicate reminders across platforms (some clients use WhatsApp, not Telegram) while still guaranteeing nobody is missed. |

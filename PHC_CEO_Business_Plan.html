@@ -8,1329 +8,1094 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --sf: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", "Inter", sans-serif;
-  --sf-mono: "SF Mono", "SFMono-Regular", ui-monospace, "JetBrains Mono", "Courier New", monospace;
-  --navy: #06264f; --navy-d: #040f24; --navy-md: #0b3d7a; --navy-glass: rgba(6,38,79,0.85);
-  --gold: #c9993f; --gold-lt: #e0b86a; --gold-dim: #a07a2e;
-  --gold-soft: rgba(201,153,63,0.10); --gold-border: rgba(201,153,63,0.22);
-  --ok: #1a7a4a; --ok-soft: rgba(26,122,74,0.08); --ok-border: rgba(26,122,74,0.22);
-  --err: #b83030; --err-soft: rgba(184,48,48,0.08); --err-border: rgba(184,48,48,0.20);
-  --warn: #b06000; --warn-soft: rgba(176,96,0,0.08); --warn-border: rgba(176,96,0,0.22);
-  --ink: #0c1b2e; --ink-2: #374f66; --ink-3: #7490a8;
-  --line: rgba(6,38,79,0.09); --line-md: rgba(6,38,79,0.16);
-  --bg: #ffffff; --bg-2: #f6f8fb; --bg-3: #edf0f5;
-  --r: 10px; --r-lg: 16px;
-  --transition: .2s cubic-bezier(.4,0,.2,1);
-  --s1: #0B4F8A; --s1-s: rgba(11,79,138,.08);
-  --s2: #1A6B3A; --s2-s: rgba(26,107,58,.08);
-  --s3: #7B3F00; --s3-s: rgba(123,63,0,.08);
-  --s4: #5B2D8E; --s4-s: rgba(91,45,142,.08);
+  --navy:   #06264f;
+  --navy-d: #040f24;
+  --navy-m: #0b3d7a;
+  --gold:   #c9993f;
+  --gold-l: #e0b86a;
+  --gold-s: rgba(201,153,63,.10);
+  --gold-b: rgba(201,153,63,.22);
+  --ink:    #1a2535;
+  --ink-2:  #4a5e74;
+  --ink-3:  #8a9bb0;
+  --bg:     #f0f3f8;
+  --card:   #ffffff;
+  --line:   #e0e5ee;
+  --ok:     #1a7a4a;
+  --ok-s:   rgba(26,122,74,.08);
+  --ok-b:   rgba(26,122,74,.22);
+  --err:    #b83030;
+  --err-s:  rgba(184,48,48,.08);
+  --err-b:  rgba(184,48,48,.20);
+  --warn:   #b06000;
+  --warn-s: rgba(176,96,0,.08);
+  --warn-b: rgba(176,96,0,.22);
+  --s1: #0B4F8A; --s1-s: rgba(11,79,138,.07);
+  --s2: #1A6B3A; --s2-s: rgba(26,107,58,.07);
+  --s3: #7B3F00; --s3-s: rgba(123,63,0,.07);
+  --s4: #5B2D8E; --s4-s: rgba(91,45,142,.07);
+  --r:      12px;
+  --sf:     -apple-system,BlinkMacSystemFont,"Helvetica Neue","Inter",sans-serif;
+  --mono:   'JetBrains Mono',monospace;
+  --t:      .2s cubic-bezier(.4,0,.2,1);
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html{height:100%}
-body{font-family:var(--sf);-webkit-font-smoothing:antialiased;background:#e8ecf3;color:var(--ink);min-height:100%;display:flex;align-items:flex-start;justify-content:center;padding:16px}
-img{display:block;max-width:100%}
-button{font-family:inherit;cursor:pointer}
-a{color:inherit;text-decoration:none}
-
-/* ── APP SHELL ── */
-#app{width:100%;max-width:1120px;background:var(--bg);border-radius:20px;box-shadow:0 12px 60px rgba(6,38,79,0.18),0 2px 8px rgba(6,38,79,0.08);overflow:hidden;display:flex;flex-direction:column;min-height:calc(100vh - 32px);border:1px solid var(--line-md)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{min-height:100%;font-family:var(--sf);}
+body{background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
 
 /* ── TOPBAR ── */
-.topbar{background:var(--navy-d);height:56px;padding:0 20px;display:flex;align-items:center;gap:14px;flex-shrink:0;position:relative;border-bottom:1px solid rgba(255,255,255,0.05)}
-.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--gold) 0%,rgba(201,153,63,.3) 40%,transparent 70%)}
-.tb-mark{width:34px;height:34px;border-radius:8px;background:var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--navy-d);letter-spacing:-0.5px}
-.tb-wordmark{font-size:12px;font-weight:600;color:rgba(255,255,255,0.55);letter-spacing:0.01em;white-space:nowrap}
-.tb-sep{width:1px;height:18px;background:rgba(255,255,255,0.12);flex-shrink:0}
-.tb-ctx{font-size:13px;font-weight:500;color:rgba(255,255,255,0.82);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tb-badge{background:var(--gold-soft);border:1px solid var(--gold-border);border-radius:20px;padding:4px 12px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;color:var(--gold-lt);letter-spacing:0.05em;white-space:nowrap}
+.topbar{background:var(--navy-d);height:52px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(255,255,255,.05);}
+.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--gold) 0%,rgba(201,153,63,.3) 40%,transparent 70%);}
+.tb-name{font-family:'Playfair Display',serif;font-size:14px;color:#fff;letter-spacing:-.01em;}
+.tb-name span{color:var(--gold);}
+.tb-right{display:flex;align-items:center;gap:14px;}
+.tb-tag{font-family:var(--mono);font-size:9px;color:var(--gold);opacity:.55;letter-spacing:.15em;text-transform:uppercase;}
+.tb-link{font-size:11px;color:rgba(255,255,255,.35);text-decoration:none;padding:4px 10px;border:1px solid rgba(255,255,255,.08);border-radius:5px;transition:all var(--t);}
+.tb-link:hover{color:var(--gold);border-color:var(--gold-b);}
 
-/* ── LAYOUT ── */
-.layout{display:flex;flex:1;min-height:0;overflow:hidden}
+/* ── PAGE ── */
+.page{max-width:1280px;margin:0 auto;padding:32px 28px 80px;}
 
-/* ── SIDEBAR ── */
-.sidebar{width:236px;flex-shrink:0;background:var(--bg-2);border-right:1px solid var(--line);overflow-y:auto;padding:8px 0 32px;scrollbar-width:thin;scrollbar-color:var(--line-md) transparent}
-.sb-group{padding:16px 16px 3px;display:flex;align-items:center;gap:7px}
-.sb-pip{width:5px;height:5px;border-radius:50%}
-.sb-label{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-3)}
-.sb-row{display:flex;align-items:center;gap:10px;padding:8px 14px 8px 16px;cursor:pointer;border-left:2px solid transparent;transition:background var(--transition),border-color var(--transition);min-height:40px}
-.sb-row:hover{background:rgba(6,38,79,0.04)}
-.sb-row.active{background:var(--gold-soft);border-left-color:var(--gold)}
-.sb-badge{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9.5px;flex-shrink:0;border:1px solid var(--line-md);background:var(--bg-3);color:var(--ink-3);font-family:'JetBrains Mono',monospace;font-weight:500}
-.sb-row.active .sb-badge{background:var(--gold);border-color:var(--gold);color:#fff}
-.sb-text{font-size:13px;font-weight:500;color:var(--ink-2);line-height:1.3}
-.sb-row.active .sb-text{color:var(--ink);font-weight:600}
-.sb-sub{font-size:10.5px;color:var(--ink-3);font-weight:400;margin-top:1px}
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,var(--navy-d) 0%,var(--navy) 100%);border-radius:var(--r);padding:32px 36px;margin-bottom:28px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.06);}
+.hero::before{content:'';position:absolute;top:-80px;right:-80px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(201,153,63,.07) 0%,transparent 70%);}
+.hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1.5px;background:linear-gradient(90deg,var(--gold),transparent 60%);}
+.hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:24px;flex-wrap:wrap;}
+.hero-eyebrow{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);opacity:.7;margin-bottom:10px;}
+.hero-title{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:#fff;letter-spacing:-.03em;line-height:1.15;margin-bottom:8px;max-width:640px;}
+.hero-title span{color:var(--gold);}
+.hero-sub{font-size:13px;color:rgba(255,255,255,.45);line-height:1.7;max-width:520px;}
+.hero-stats{display:flex;gap:0;flex-shrink:0;}
+.hs{padding:14px 22px;text-align:center;border-left:1px solid rgba(255,255,255,.07);}
+.hs:first-child{border-left:none;}
+.hs-n{font-family:'Playfair Display',serif;font-size:22px;color:var(--gold);line-height:1;margin-bottom:4px;letter-spacing:-.03em;}
+.hs-l{font-family:var(--mono);font-size:8px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.08em;}
 
-/* ── MAIN PANEL ── */
-.main{flex:1;overflow-y:auto;padding:0;min-width:0}
-.panel{display:none;padding:28px 32px 48px}
-.panel.active{display:block;animation:rise .22s cubic-bezier(.4,0,.2,1)}
+/* ── SECTION LABEL ── */
+.section-label{display:flex;align-items:center;gap:10px;margin-bottom:14px;margin-top:28px;}
+.section-label:first-child{margin-top:0;}
+.sl-num{font-family:var(--mono);font-size:9px;color:var(--gold);opacity:.6;letter-spacing:.2em;}
+.sl-title{font-size:13px;font-weight:600;color:var(--ink);}
+.sl-line{flex:1;height:1px;background:var(--line);}
+
+/* ── FLOW DIAGRAM ── */
+.flow-wrap{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:28px 32px;margin-bottom:10px;}
+.flow{display:flex;flex-direction:column;align-items:stretch;gap:0;}
+.flow-layer{display:flex;flex-direction:column;}
+.flow-layer-hdr{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.flow-layer-num{font-family:var(--mono);font-size:8px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);opacity:.55;flex-shrink:0;}
+.flow-layer-label{font-size:11px;font-weight:600;color:var(--ink-2);text-transform:uppercase;letter-spacing:.06em;}
+.flow-layer-line{flex:1;height:1px;background:var(--line);}
+.flow-layer-nodes{display:flex;gap:10px;flex-wrap:wrap;}
+
+.flow-down{display:flex;align-items:center;gap:0;padding:8px 0;align-self:center;width:100%;}
+.flow-down-track{flex:1;height:1px;background:linear-gradient(to right,transparent,rgba(201,153,63,.25),transparent);}
+.flow-down-mid{display:flex;flex-direction:column;align-items:center;gap:0;flex-shrink:0;padding:0 16px;}
+.flow-down-line{width:1.5px;height:20px;background:linear-gradient(to bottom,rgba(201,153,63,.3),var(--gold));}
+.flow-down-lbl{font-family:var(--mono);font-size:8px;color:var(--gold);opacity:.5;letter-spacing:.1em;text-transform:uppercase;margin:4px 0;white-space:nowrap;}
+.flow-down-head{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:8px solid var(--gold);opacity:.6;}
+
+/* ── NODE ── */
+.node{flex:1;min-width:160px;background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:14px 16px;cursor:pointer;transition:all var(--t);text-align:center;position:relative;}
+.node:hover,.node.open{border-color:var(--gold);background:var(--gold-s);box-shadow:0 4px 18px rgba(201,153,63,.12);transform:translateY(-2px);}
+.node.open .node-caret{transform:rotate(180deg);}
+.node-icon{width:44px;height:44px;margin:0 auto 12px;background:rgba(201,153,63,.07);border:1px solid rgba(201,153,63,.18);border-radius:11px;display:flex;align-items:center;justify-content:center;color:var(--ink-3);transition:all var(--t);flex-shrink:0;}
+.node-icon svg{width:20px;height:20px;}
+.node:hover .node-icon,.node.open .node-icon{background:rgba(201,153,63,.14);border-color:rgba(201,153,63,.38);color:var(--gold);}
+.node-name{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:4px;}
+.node-sub{font-size:10px;color:var(--ink-3);line-height:1.55;}
+.node-caret{position:absolute;bottom:7px;right:9px;font-size:9px;color:var(--gold);opacity:.45;transition:transform var(--t);}
+.node-pill{display:inline-block;margin-top:8px;font-family:var(--mono);font-size:7px;letter-spacing:.06em;padding:2px 8px;border-radius:10px;}
+.np-fresh{background:rgba(107,201,80,.12);color:#3a9e1e;border:1px solid rgba(107,201,80,.3);}
+.np-draft{background:rgba(138,155,176,.12);color:var(--ink-3);border:1px solid rgba(138,155,176,.28);}
+
+/* ── DETAIL PANELS ── */
+.detail-panels{display:flex;flex-direction:column;gap:10px;margin-bottom:10px;}
+.detail{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:none;}
+.detail.open{display:block;animation:rise .22s ease;}
 @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.detail-head{background:var(--navy-d);padding:16px 22px;display:flex;align-items:center;gap:12px;border-bottom:2px solid var(--gold);flex-wrap:wrap;}
+.dh-icon{font-size:22px;}
+.dh-title{font-family:'Playfair Display',serif;font-size:17px;color:#fff;flex:1;min-width:200px;}
+.dh-tag{font-family:var(--mono);font-size:8px;letter-spacing:.08em;padding:3px 9px;border-radius:4px;text-transform:uppercase;}
+.dt-fresh{background:rgba(107,201,80,.2);color:#6BC950;}
+.dt-draft{background:rgba(255,255,255,.12);color:rgba(255,255,255,.6);}
+.detail-body{padding:24px;}
 
-/* ── TYPOGRAPHY ── */
-.eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:6px}
-.heading{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--ink);line-height:1.2;letter-spacing:-0.02em;margin-bottom:6px}
-.subhead{font-size:14px;color:var(--ink-2);line-height:1.6;margin-bottom:20px}
-.h2{font-size:17px;font-weight:700;color:var(--ink);letter-spacing:-0.02em;margin:24px 0 10px}
-.h3{font-size:14px;font-weight:600;color:var(--ink);margin:16px 0 8px}
-.body{font-size:13.5px;color:var(--ink-2);line-height:1.75;margin-bottom:14px}
-.body strong{color:var(--ink);font-weight:600}
+/* ── SHARED CONTENT PRIMITIVES (ported from the old business-plan doc) ── */
+.h2{font-size:15px;font-weight:700;color:var(--ink);letter-spacing:-.01em;margin:22px 0 10px;}
+.h2:first-child{margin-top:0;}
+.h3{font-size:12.5px;font-weight:600;color:var(--ink);margin:14px 0 6px;}
+.body-text{font-size:12.5px;color:var(--ink-2);line-height:1.75;margin-bottom:10px;}
+.body-text strong{color:var(--ink);font-weight:600;}
+.col-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.col-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+@media(max-width:760px){.col-2,.col-3{grid-template-columns:1fr;}}
 
-/* ── HERO CARD ── */
-.hero{background:var(--navy-d);border-radius:var(--r-lg);padding:28px 30px;margin-bottom:22px;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;top:-80px;right:-80px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(201,153,63,.09) 0%,transparent 70%)}
-.hero::after{content:'';position:absolute;bottom:-100px;left:10%;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(11,61,122,.4) 0%,transparent 70%)}
-.hero-top{position:relative;z-index:1}
-.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
-.hero-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:4px}
-.hero-sub{font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:20px}
-.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding-top:18px;border-top:1px solid rgba(255,255,255,0.07);position:relative;z-index:1}
-.hs-n{font-size:26px;font-weight:700;color:var(--gold);line-height:1;margin-bottom:3px;letter-spacing:-0.03em;font-family:'JetBrains Mono',monospace}
-.hs-l{font-size:10px;font-weight:500;color:rgba(255,255,255,0.38);text-transform:uppercase;letter-spacing:0.05em}
+.info-box{border-left:2px solid var(--gold);background:var(--gold-s);padding:13px 16px;border-radius:0 8px 8px 0;margin:12px 0;font-size:12.5px;color:var(--ink);line-height:1.72;}
+.warn-box{border-left:2px solid var(--err);background:var(--err-s);padding:13px 16px;border-radius:0 8px 8px 0;margin:12px 0;font-size:12.5px;color:#8b1e1e;line-height:1.72;}
+.ok-box{border-left:2px solid var(--ok);background:var(--ok-s);padding:13px 16px;border-radius:0 8px 8px 0;margin:12px 0;font-size:12.5px;color:#0d4a28;line-height:1.72;}
+.card-navy{background:var(--navy-d);border:1px solid rgba(255,255,255,.05);border-radius:var(--r);padding:18px 20px;margin-bottom:12px;position:relative;overflow:hidden;}
+.card-navy::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent 70%);}
+.card-gold{background:var(--gold-s);border:1px solid var(--gold-b);border-radius:var(--r);padding:16px 18px;margin-bottom:12px;}
+.card{background:var(--bg);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;}
 
-/* ── STAT TILES ── */
-.tile-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
-.tile{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-lg);padding:16px 18px}
-.tile-n{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:500;color:var(--ink);line-height:1;margin-bottom:4px}
-.tile-n.gold{color:var(--gold)}
-.tile-n.ok{color:var(--ok)}
-.tile-n.err{color:var(--err)}
-.tile-l{font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.07em;font-family:'JetBrains Mono',monospace}
-.tile-sub{font-size:11.5px;color:var(--ink-3);margin-top:5px}
+.rules{margin:10px 0;}
+.rule{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);}
+.rule:last-child{border-bottom:none;}
+.rule-n{width:24px;height:24px;border-radius:50%;background:var(--navy);color:var(--gold);font-family:var(--mono);font-size:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.rule-title{font-size:12.5px;font-weight:600;color:var(--ink);margin-bottom:2px;}
+.rule-detail{font-size:11.5px;color:var(--ink-2);line-height:1.6;}
 
-/* ── CARDS ── */
-.card{background:var(--bg);border:1px solid var(--line-md);border-radius:var(--r-lg);padding:20px 22px;margin-bottom:14px}
-.card-navy{background:var(--navy-d);border:1px solid rgba(255,255,255,0.05);border-radius:var(--r-lg);padding:20px 22px;margin-bottom:14px;position:relative;overflow:hidden}
-.card-navy::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,var(--gold),transparent 70%)}
-.card-gold{background:var(--gold-soft);border:1px solid var(--gold-border);border-radius:var(--r-lg);padding:18px 20px;margin-bottom:14px}
-.card-ok{background:var(--ok-soft);border:1px solid var(--ok-border);border-radius:var(--r-lg);padding:18px 20px;margin-bottom:14px}
-.card-err{background:var(--err-soft);border:1px solid var(--err-border);border-radius:var(--r-lg);padding:18px 20px;margin-bottom:14px}
-.card-warn{background:var(--warn-soft);border:1px solid var(--warn-border);border-radius:var(--r-lg);padding:18px 20px;margin-bottom:14px}
+.tbl-wrap{overflow-x:auto;margin:10px 0;border-radius:8px;border:1px solid var(--line);}
+table{width:100%;border-collapse:collapse;font-size:11.5px;min-width:480px;}
+thead tr{background:var(--navy);}
+th{padding:9px 12px;text-align:left;font-family:var(--mono);font-size:8px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.55);white-space:nowrap;}
+td{padding:9px 12px;border-bottom:1px solid var(--line);color:var(--ink);vertical-align:top;line-height:1.5;}
+tr:nth-child(even) td{background:var(--bg);}
+tr:last-child td{border-bottom:none;}
+.td-ok{color:var(--ok);font-weight:600;}
+.td-err{color:var(--err);font-weight:600;}
+.td-gold{color:var(--gold);font-weight:600;}
 
-/* ── INFO BOX ── */
-.info-box{border-left:2px solid var(--gold);background:var(--gold-soft);padding:13px 16px;border-radius:0 var(--r) var(--r) 0;margin:12px 0;font-size:13.5px;color:var(--ink);line-height:1.72}
-.warn-box{border-left:2px solid var(--err);background:var(--err-soft);padding:13px 16px;border-radius:0 var(--r) var(--r) 0;margin:12px 0;font-size:13.5px;color:#8b1e1e;line-height:1.72}
-.ok-box{border-left:2px solid var(--ok);background:var(--ok-soft);padding:13px 16px;border-radius:0 var(--r) var(--r) 0;margin:12px 0;font-size:13.5px;color:#0d4a28;line-height:1.72}
+.p-badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:8px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:4px;}
+.p1{background:rgba(184,48,48,.12);color:var(--err);}
+.p2{background:rgba(176,96,0,.12);color:var(--warn);}
+.p3{background:rgba(26,122,74,.10);color:var(--ok);}
 
-/* ── GRID LAYOUTS ── */
-.col-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.col-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
-.col-23{display:grid;grid-template-columns:2fr 1fr;gap:14px}
+/* segment cards */
+.seg-card{border-radius:var(--r);padding:16px 18px;border:1px solid;margin-bottom:10px;position:relative;}
+.seg-tag{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:8.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:20px;margin-bottom:8px;}
+.seg-name{font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:2px;}
+.seg-budget{font-family:var(--mono);font-size:10px;color:var(--ink-3);margin-bottom:8px;}
+.seg-row{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+.seg-pill{font-size:10.5px;padding:3px 9px;border-radius:20px;background:var(--card);color:var(--ink-2);border:1px solid var(--line);}
 
-/* ── RULES LIST ── */
-.rules{margin:12px 0}
-.rule{display:flex;gap:14px;padding:13px 0;border-bottom:1px solid var(--line)}
-.rule:last-child{border-bottom:none}
-.rule-n{width:28px;height:28px;border-radius:50%;background:var(--navy);color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-.rule-title{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:3px}
-.rule-detail{font-size:13px;color:var(--ink-2);line-height:1.65}
+/* project cards */
+.proj-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;}
+.proj-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+.proj-name{font-size:13.5px;font-weight:700;color:var(--ink);}
+.proj-dev{font-size:10px;color:var(--ink-3);margin-top:2px;}
+.proj-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;}
+.pf-lbl{font-family:var(--mono);font-size:8px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.09em;margin-bottom:2px;}
+.pf-val{font-size:11.5px;font-weight:600;color:var(--ink);}
 
-/* ── TABLE ── */
-.tbl-wrap{overflow-x:auto;margin:12px 0;border-radius:var(--r);border:1px solid var(--line)}
-table{width:100%;border-collapse:collapse;font-size:13px}
-thead tr{background:var(--navy)}
-th{padding:10px 14px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.55);white-space:nowrap}
-td{padding:10px 14px;border-bottom:1px solid var(--line);color:var(--ink);vertical-align:top;line-height:1.5}
-tr:nth-child(even) td{background:var(--bg-2)}
-tr:last-child td{border-bottom:none}
-.td-ok{color:var(--ok);font-weight:600}
-.td-err{color:var(--err);font-weight:600}
-.td-gold{color:var(--gold-dim);font-weight:600}
+/* tool status rows */
+.tool-row{display:flex;align-items:center;gap:12px;padding:10px 13px;border-radius:8px;border:1px solid var(--line);margin-bottom:7px;flex-wrap:wrap;background:var(--bg);}
+.tool-status{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.ts-built{background:var(--ok);}
+.ts-partial{background:var(--gold);}
+.ts-missing{background:var(--err);}
+.tool-name{font-size:12.5px;font-weight:600;color:var(--ink);flex:1;min-width:140px;}
+.tool-desc{font-size:11px;color:var(--ink-3);flex:2;min-width:180px;}
+.tool-tag{font-family:var(--mono);font-size:8px;padding:2px 7px;border-radius:4px;font-weight:500;white-space:nowrap;}
+.tt-built{background:var(--ok-s);color:var(--ok);}
+.tt-partial{background:var(--gold-s);color:var(--gold);}
+.tt-missing{background:var(--err-s);color:var(--err);}
 
-/* ── SEGMENT CARDS ── */
-.seg-card{border-radius:var(--r-lg);padding:18px 20px;border:1px solid;margin-bottom:12px;position:relative}
-.seg-tag{display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:3px 9px;border-radius:20px;margin-bottom:10px}
-.seg-name{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:3px}
-.seg-budget{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-3);margin-bottom:10px}
-.seg-row{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
-.seg-pill{font-size:11px;padding:3px 9px;border-radius:20px;background:var(--bg-3);color:var(--ink-2);border:1px solid var(--line)}
+/* sprint timeline */
+.sprint-track{position:relative;padding-left:30px;margin:14px 0;}
+.sprint-track::before{content:'';position:absolute;left:9px;top:8px;bottom:8px;width:2px;background:var(--line);}
+.sprint-item{position:relative;margin-bottom:18px;}
+.sprint-item:last-child{margin-bottom:0;}
+.sprint-dot{position:absolute;left:-24px;top:3px;width:13px;height:13px;border-radius:50%;background:var(--bg);border:2px solid var(--line);}
+.sprint-dot.gold{background:var(--gold);border-color:var(--gold);}
+.sprint-dot.ok{background:var(--ok);border-color:var(--ok);}
+.sprint-dot.navy{background:var(--navy);border-color:var(--navy);}
+.sprint-week{font-family:var(--mono);font-size:8.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:3px;}
+.sprint-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:5px;}
+.sprint-items{list-style:none;padding:0;}
+.sprint-items li{font-size:11.5px;color:var(--ink-2);padding:2px 0;display:flex;gap:7px;align-items:flex-start;line-height:1.55;}
+.sprint-items li::before{content:'→';color:var(--gold);flex-shrink:0;font-size:10px;margin-top:2px;}
+.sprint-items li a{color:var(--gold);text-decoration:underline;}
 
-/* ── PRIORITY BADGE ── */
-.p-badge{display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:3px 8px;border-radius:4px}
-.p1{background:rgba(184,48,48,0.12);color:var(--err)}
-.p2{background:rgba(176,96,0,0.12);color:var(--warn)}
-.p3{background:rgba(26,122,74,0.10);color:var(--ok)}
+/* risk cards */
+.risk-card{display:flex;gap:12px;padding:13px 15px;border-radius:8px;border:1px solid var(--line);margin-bottom:9px;align-items:flex-start;}
+.risk-sev{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;font-weight:700;flex-shrink:0;}
+.sev-h{background:rgba(184,48,48,.12);color:var(--err);}
+.sev-m{background:rgba(176,96,0,.12);color:var(--warn);}
+.sev-l{background:rgba(26,122,74,.10);color:var(--ok);}
+.risk-title{font-size:12.5px;font-weight:600;color:var(--ink);margin-bottom:3px;}
+.risk-detail{font-size:11.5px;color:var(--ink-2);line-height:1.6;}
+.risk-mit{font-size:11px;color:var(--ok);margin-top:5px;font-weight:500;}
 
-/* ── SPRINT TIMELINE ── */
-.sprint-track{position:relative;padding-left:32px;margin:16px 0}
-.sprint-track::before{content:'';position:absolute;left:10px;top:8px;bottom:8px;width:2px;background:var(--line-md)}
-.sprint-item{position:relative;margin-bottom:20px}
-.sprint-dot{position:absolute;left:-26px;top:3px;width:14px;height:14px;border-radius:50%;background:var(--bg-3);border:2px solid var(--line-md);display:flex;align-items:center;justify-content:center}
-.sprint-dot.gold{background:var(--gold);border-color:var(--gold)}
-.sprint-dot.ok{background:var(--ok);border-color:var(--ok)}
-.sprint-dot.navy{background:var(--navy);border-color:var(--navy)}
-.sprint-week{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:3px}
-.sprint-title{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:5px}
-.sprint-items{list-style:none;padding:0}
-.sprint-items li{font-size:13px;color:var(--ink-2);padding:3px 0;display:flex;gap:8px;align-items:flex-start;line-height:1.5}
-.sprint-items li::before{content:'→';color:var(--gold);flex-shrink:0;font-size:11px;margin-top:2px}
+/* revenue scenario */
+.rev-scenario{border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;position:relative;}
+.rev-scenario.active-s{border-color:var(--gold);background:var(--gold-s);}
+.rev-bar{height:6px;border-radius:3px;margin:10px 0;background:var(--bg);}
+.rev-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--navy),var(--gold));}
 
-/* ── RISK MATRIX ── */
-.risk-card{display:flex;gap:14px;padding:14px 16px;border-radius:var(--r);border:1px solid var(--line);margin-bottom:10px;align-items:flex-start}
-.risk-sev{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;flex-shrink:0}
-.sev-h{background:rgba(184,48,48,0.12);color:var(--err)}
-.sev-m{background:rgba(176,96,0,0.12);color:var(--warn)}
-.sev-l{background:rgba(26,122,74,0.10);color:var(--ok)}
-.risk-title{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:3px}
-.risk-detail{font-size:12.5px;color:var(--ink-2);line-height:1.6}
-.risk-mit{font-size:12px;color:var(--ok);margin-top:5px;font-weight:500}
+/* SWOT */
+.swot-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0;}
+@media(max-width:640px){.swot-grid{grid-template-columns:1fr;}}
+.swot-cell{border-radius:8px;padding:13px 15px;}
+.swot-s{background:var(--ok-s);border:1px solid var(--ok-b);}
+.swot-w{background:var(--err-s);border:1px solid var(--err-b);}
+.swot-o{background:var(--gold-s);border:1px solid var(--gold-b);}
+.swot-t{background:var(--s4-s);border:1px solid rgba(91,45,142,.18);}
+.swot-head{font-family:var(--mono);font-size:8.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px;}
+.swot-s .swot-head{color:var(--ok);}
+.swot-w .swot-head{color:var(--err);}
+.swot-o .swot-head{color:var(--gold);}
+.swot-t .swot-head{color:var(--s4);}
+.swot-li{font-size:11.5px;color:var(--ink-2);padding:2px 0;display:flex;gap:6px;line-height:1.5;}
+.swot-li::before{content:'·';flex-shrink:0;color:var(--ink-3);}
 
-/* ── REVENUE MODEL ── */
-.rev-scenario{border:1px solid var(--line-md);border-radius:var(--r-lg);padding:18px 20px;position:relative}
-.rev-scenario.active-s{border-color:var(--gold);background:var(--gold-soft)}
-.rev-bar{height:6px;border-radius:3px;margin:10px 0;background:var(--bg-3)}
-.rev-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--navy),var(--gold))}
+/* team + metric tiles */
+.team-list{display:flex;flex-direction:column;gap:8px;}
+.team-row{background:var(--bg);border-radius:9px;padding:12px 14px;border:1px solid var(--line);}
+.tr-role{font-family:var(--mono);font-size:8px;letter-spacing:.07em;color:var(--gold);text-transform:uppercase;margin-bottom:3px;}
+.tr-name{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:3px;}
+.tr-detail{font-size:11.5px;color:var(--ink-2);line-height:1.65;}
+.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+@media(max-width:640px){.metric-grid{grid-template-columns:1fr 1fr;}}
+.metric-tile{background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:14px 16px;}
+.metric-l{font-family:var(--mono);font-size:9px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;}
+.metric-n{font-family:'Playfair Display',serif;font-size:22px;color:var(--gold);}
+.metric-sub{font-size:10.5px;color:var(--ink-3);margin-top:4px;}
 
-/* ── PROJECT CARDS ── */
-.proj-card{background:var(--bg);border:1px solid var(--line-md);border-radius:var(--r-lg);padding:16px 18px;margin-bottom:10px}
-.proj-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
-.proj-name{font-size:15px;font-weight:700;color:var(--ink)}
-.proj-dev{font-size:11px;color:var(--ink-3);margin-top:2px}
-.proj-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
-.pf-lbl{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.09em;margin-bottom:2px}
-.pf-val{font-size:12.5px;font-weight:600;color:var(--ink)}
-
-/* ── TECH STACK ── */
-.tool-row{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:var(--r);border:1px solid var(--line);margin-bottom:8px}
-.tool-status{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.ts-built{background:var(--ok)}
-.ts-partial{background:var(--gold)}
-.ts-missing{background:var(--err)}
-.tool-name{font-size:13.5px;font-weight:600;color:var(--ink);flex:1}
-.tool-desc{font-size:12px;color:var(--ink-3)}
-.tool-tag{font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 7px;border-radius:4px;font-weight:500}
-.tt-built{background:var(--ok-soft);color:var(--ok)}
-.tt-partial{background:var(--gold-soft);color:var(--gold-dim)}
-.tt-missing{background:var(--err-soft);color:var(--err)}
-
-/* ── DIVIDER ── */
-.divider{height:1px;background:var(--line);margin:22px 0}
-
-/* ── SWOT ── */
-.swot-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
-.swot-cell{border-radius:var(--r);padding:14px 16px}
-.swot-s{background:var(--ok-soft);border:1px solid var(--ok-border)}
-.swot-w{background:var(--err-soft);border:1px solid var(--err-border)}
-.swot-o{background:var(--gold-soft);border:1px solid var(--gold-border)}
-.swot-t{background:rgba(91,45,142,0.07);border:1px solid rgba(91,45,142,0.18)}
-.swot-head{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px}
-.swot-s .swot-head{color:var(--ok)}
-.swot-w .swot-head{color:var(--err)}
-.swot-o .swot-head{color:var(--gold-dim)}
-.swot-t .swot-head{color:#5B2D8E}
-.swot-li{font-size:12.5px;color:var(--ink-2);padding:3px 0;display:flex;gap:7px;line-height:1.5}
-.swot-li::before{content:'·';flex-shrink:0;color:var(--ink-3)}
+.foot{text-align:center;padding:30px 0 0;font-family:var(--mono);font-size:9px;color:var(--ink-3);letter-spacing:.1em;}
 </style>
 </head>
 <body>
-<div id="phc-gate" style="display:none;position:fixed;inset:0;background:#083467;z-index:99999;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,sans-serif;"><div style="background:#fff;border-radius:16px;padding:40px 36px;width:320px;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.35);"><div style="font-family:Georgia,serif;font-size:22px;font-weight:700;color:#083467;margin-bottom:6px;">PHC Director</div><div style="font-size:13px;color:#7a8799;margin-bottom:8px;">Property Hub Cambodia</div><div style="width:40px;height:2px;background:#cc9d4d;margin:0 auto 24px;"></div><input id="phc-gate-pw" type="password" placeholder="Director password" autocomplete="current-password" style="width:100%;border:1.5px solid #e8ecf2;border-radius:9px;padding:11px 14px;font-size:14px;text-align:center;letter-spacing:.12em;outline:none;margin-bottom:12px;" onfocus="this.style.borderColor='#083467'" onblur="this.style.borderColor='#e8ecf2'" onkeydown="if(event.key==='Enter')phcCheck();"><button onclick="phcCheck()" style="width:100%;background:#083467;color:#fff;border:none;border-radius:9px;padding:12px;font-size:13px;font-weight:600;cursor:pointer;">Continue →</button><div id="phc-gate-err" style="display:none;color:#d63031;font-size:12px;margin-top:12px;">Incorrect password. Try again.</div></div></div>
-<script>(function(){var g=document.getElementById('phc-gate');if(sessionStorage.getItem('phc_ceo_auth')==='1'){g.style.display='none';}else{g.style.display='flex';setTimeout(function(){document.getElementById('phc-gate-pw').focus();},50);}window.phcCheck=function(){var v=document.getElementById('phc-gate-pw').value;if(v==='Nick@PHC2026'){sessionStorage.setItem('phc_ceo_auth','1');sessionStorage.setItem('phc_agent_auth','1');g.style.display='none';}else{document.getElementById('phc-gate-err').style.display='block';document.getElementById('phc-gate-pw').value='';document.getElementById('phc-gate-pw').focus();}};})();</script>
-<div id="app">
+
+<!-- PASSWORD GATE -->
+<div id="phc-gate" style="display:none;position:fixed;inset:0;background:#040f24;z-index:99999;align-items:center;justify-content:center;">
+  <div style="background:#06264f;border:1px solid rgba(201,153,63,.25);border-radius:16px;padding:44px 40px;width:340px;text-align:center;box-shadow:0 32px 80px rgba(0,0,0,.6);">
+    <div style="font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:4px;">PHC Director</div>
+    <div style="font-size:12px;color:rgba(255,255,255,.35);margin-bottom:28px;">CEO Business Plan — Internal Only</div>
+    <input id="phc-gate-pw" type="password" placeholder="Director password"
+      style="width:100%;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:12px 16px;font-size:14px;text-align:center;letter-spacing:.1em;color:#fff;outline:none;margin-bottom:12px;"
+      onfocus="this.style.borderColor='#c9993f'" onblur="this.style.borderColor='rgba(255,255,255,.1)'"
+      onkeydown="if(event.key==='Enter')phcCheck()">
+    <button onclick="phcCheck()" style="width:100%;background:#c9993f;color:#040f24;border:none;border-radius:9px;padding:13px;font-size:13px;font-weight:700;cursor:pointer;">Continue →</button>
+    <div id="phc-gate-err" style="display:none;color:#f87171;font-size:12px;margin-top:12px;">Incorrect password.</div>
+  </div>
+</div>
+<script>
+(function(){
+  var g=document.getElementById('phc-gate');
+  if(sessionStorage.getItem('phc_ceo_auth')==='1'){g.style.display='none';}
+  else{g.style.display='flex';setTimeout(function(){document.getElementById('phc-gate-pw').focus();},50);}
+  window.phcCheck=function(){
+    var v=document.getElementById('phc-gate-pw').value;
+    if(v==='Nick@PHC2026'){
+      sessionStorage.setItem('phc_ceo_auth','1');
+      sessionStorage.setItem('phc_agent_auth','1');
+      g.style.display='none';
+    } else {
+      document.getElementById('phc-gate-err').style.display='block';
+      document.getElementById('phc-gate-pw').value='';
+    }
+  };
+})();
+</script>
 
 <!-- TOPBAR -->
 <div class="topbar">
-  <div class="tb-mark">PHC</div>
-  <span class="tb-wordmark">Property Hub Cambodia</span>
-  <div class="tb-sep"></div>
-  <span class="tb-ctx" id="ctx-title">Mission Control</span>
-  <span class="tb-badge">CEO · INTERNAL · 2026</span>
-</div>
-
-<div class="layout">
-
-<!-- SIDEBAR -->
-<div class="sidebar">
-  <div class="sb-group"><div class="sb-pip" style="background:var(--gold)"></div><span class="sb-label">Overview</span></div>
-  <div class="sb-row active" onclick="nav('s01',this,'Mission Control')">
-    <div class="sb-badge">01</div>
-    <div><div class="sb-text">Mission Control</div><div class="sb-sub">Current state · targets</div></div>
-  </div>
-  <div class="sb-row" onclick="nav('s02',this,'Business Model')">
-    <div class="sb-badge">02</div>
-    <div><div class="sb-text">Business Model</div><div class="sb-sub">Revenue · commissions</div></div>
-  </div>
-  <div class="sb-row" onclick="nav('s03',this,'Market Position')">
-    <div class="sb-badge">03</div>
-    <div><div class="sb-text">Market Position</div><div class="sb-sub">SWOT · competitors</div></div>
-  </div>
-
-  <div class="sb-group"><div class="sb-pip" style="background:var(--s1)"></div><span class="sb-label">Clients & Products</span></div>
-  <div class="sb-row" onclick="nav('s04',this,'Client Segments')">
-    <div class="sb-badge">04</div>
-    <div><div class="sb-text">Client Segments</div><div class="sb-sub">5 profiles · protocols</div></div>
-  </div>
-  <div class="sb-row" onclick="nav('s05',this,'Product Portfolio')">
-    <div class="sb-badge">05</div>
-    <div><div class="sb-text">Product Portfolio</div><div class="sb-sub">Projects · services</div></div>
-  </div>
-
-  <div class="sb-group"><div class="sb-pip" style="background:var(--s2)"></div><span class="sb-label">Growth Engine</span></div>
-  <div class="sb-row" onclick="nav('s06',this,'Marketing Engine')">
-    <div class="sb-badge">06</div>
-    <div><div class="sb-text">Marketing Engine</div><div class="sb-sub">Lead gen · content</div></div>
-  </div>
-  <div class="sb-row" onclick="nav('s07',this,'Sales System')">
-    <div class="sb-badge">07</div>
-    <div><div class="sb-text">Sales System</div><div class="sb-sub">Pipeline · advisory flow</div></div>
-  </div>
-
-  <div class="sb-group"><div class="sb-pip" style="background:var(--s3)"></div><span class="sb-label">Operations</span></div>
-  <div class="sb-row" onclick="nav('s08',this,'Technology Stack')">
-    <div class="sb-badge">08</div>
-    <div><div class="sb-text">Technology Stack</div><div class="sb-sub">Built · missing · fixes</div></div>
-  </div>
-  <div class="sb-row" onclick="nav('s09',this,'Team Building')">
-    <div class="sb-badge">09</div>
-    <div><div class="sb-text">Team Building</div><div class="sb-sub">Hire triggers · training</div></div>
-  </div>
-
-  <div class="sb-group"><div class="sb-pip" style="background:var(--s4)"></div><span class="sb-label">Execution</span></div>
-  <div class="sb-row" onclick="nav('s10',this,'90-Day Sprint')">
-    <div class="sb-badge">10</div>
-    <div><div class="sb-text">90-Day Sprint</div><div class="sb-sub">Week-by-week plan</div></div>
-  </div>
-  <div class="sb-row" onclick="nav('s11',this,'Financial Model')">
-    <div class="sb-badge">11</div>
-    <div><div class="sb-text">Financial Model</div><div class="sb-sub">$250K path · scenarios</div></div>
-  </div>
-  <div class="sb-row" onclick="nav('s12',this,'Risk Register')">
-    <div class="sb-badge">12</div>
-    <div><div class="sb-text">Risk Register</div><div class="sb-sub">Threats · mitigation</div></div>
+  <div class="tb-name">Property Hub <span>Cambodia</span> &nbsp;·&nbsp; CEO Business Plan</div>
+  <div class="tb-right">
+    <div class="tb-tag">12-Section Strategy · 2026</div>
+    <a href="PHC_System_Map.html" class="tb-link">System Map</a>
+    <a href="PHC_Progress_Dashboard.html" class="tb-link">Progress %</a>
+    <a href="index.html" class="tb-link">← Hub</a>
   </div>
 </div>
 
-<!-- MAIN CONTENT -->
-<div class="main">
+<div class="page">
 
-<!-- ══════════════════════════════════════════════ -->
-<!-- S01 · MISSION CONTROL -->
-<!-- ══════════════════════════════════════════════ -->
-<div class="panel active" id="s01">
-  <div class="eyebrow">Section 01</div>
-  <div class="heading">Mission Control</div>
-  <div class="subhead">Honest snapshot of where PHC stands today and what must change to reach $250K in 12 months.</div>
-
+  <!-- HERO -->
   <div class="hero">
     <div class="hero-top">
-      <div class="hero-eyebrow">PROPERTY HUB CAMBODIA · CEO DASHBOARD · Q2 2026</div>
-      <div class="hero-title">12-Month Revenue Target: $250,000</div>
-      <div class="hero-sub">Fewer, higher-value deals · Team of agents · Premium multilingual advisory</div>
-    </div>
-    <div class="hero-stats">
-      <div><div class="hs-n">$0</div><div class="hs-l">Current Revenue</div></div>
-      <div><div class="hs-n">2</div><div class="hs-l">Leads (90 days)</div></div>
-      <div><div class="hs-n">33+</div><div class="hs-l">Deals Needed</div></div>
-      <div><div class="hs-n">3</div><div class="hs-l">Team Members</div></div>
-    </div>
-  </div>
-
-  <div class="tile-row">
-    <div class="tile">
-      <div class="tile-n err">0</div>
-      <div class="tile-l">Closed Deals</div>
-      <div class="tile-sub">Pre-revenue. Engine not running.</div>
-    </div>
-    <div class="tile">
-      <div class="tile-n gold">2</div>
-      <div class="tile-l">Active Leads</div>
-      <div class="tile-sub">Khmer + Chinese. Not target segments.</div>
-    </div>
-    <div class="tile">
-      <div class="tile-n err">100+</div>
-      <div class="tile-l">Posts Published</div>
-      <div class="tile-sub">2 leads generated. Formula is broken.</div>
-    </div>
-    <div class="tile">
-      <div class="tile-n gold">$0</div>
-      <div class="tile-l">Ad Spend</div>
-      <div class="tile-sub">Zero paid distribution running.</div>
-    </div>
-  </div>
-
-  <div class="col-2" style="margin-bottom:16px">
-    <div>
-      <div class="h2">What Is Working</div>
-      <div class="ok-box">
-        <strong>Developer relationships</strong> — Megakim and Tanichu provide reliable, up-to-date inventory. This is a genuine advantage most agencies lack.<br><br>
-        <strong>Internal systems</strong> — Agent training (20 lessons), message builder, investment explorer, market intel — infrastructure is ahead of most 3-person agencies.<br><br>
-        <strong>Brand clarity</strong> — PHC has a defined premium positioning, a real design identity, and a clear client philosophy. Most agencies have none of this.
-      </div>
-    </div>
-    <div>
-      <div class="h2">What Is Broken</div>
-      <div class="warn-box">
-        <strong>No external lead engine.</strong> Every tool built is internal. Nothing generates leads from strangers.<br><br>
-        <strong>Wrong platform strategy.</strong> Target clients (Japanese, German, overseas Cambodians) are not finding PHC through Telegram/FB/IG organic posts.<br><br>
-        <strong>No paid distribution.</strong> $0 spent on ads. Organic reach is ~2–5% of followers at best in 2026.
-      </div>
-    </div>
-  </div>
-
-  <div class="card-navy">
-    <div class="eyebrow" style="color:var(--gold)">CEO Non-Negotiables</div>
-    <div class="rules">
-      <div class="rule">
-        <div class="rule-n">1</div>
-        <div><div class="rule-title" style="color:rgba(255,255,255,0.9)">First deal before first agent hire</div><div class="rule-detail" style="color:rgba(255,255,255,0.55)">No agent joins a team with zero proof of concept. Close one deal first. Then recruit.</div></div>
-      </div>
-      <div class="rule" style="border-color:rgba(255,255,255,0.06)">
-        <div class="rule-n">2</div>
-        <div><div class="rule-title" style="color:rgba(255,255,255,0.9)">Stop building internal tools until there is revenue</div><div class="rule-detail" style="color:rgba(255,255,255,0.55)">The infrastructure is sufficient. Every hour now must go toward acquisition.</div></div>
-      </div>
-      <div class="rule" style="border-color:rgba(255,255,255,0.06)">
-        <div class="rule-n">3</div>
-        <div><div class="rule-title" style="color:rgba(255,255,255,0.9)">Trust over closing — always</div><div class="rule-detail" style="color:rgba(255,255,255,0.55)">PHC's only durable competitive advantage is a reputation for honest advisory. Never compromise it for a commission.</div></div>
-      </div>
-      <div class="rule" style="border-color:rgba(255,255,255,0.06)">
-        <div class="rule-n">4</div>
-        <div><div class="rule-title" style="color:rgba(255,255,255,0.9)">One focus segment at a time</div><div class="rule-detail" style="color:rgba(255,255,255,0.55)">Start with overseas Cambodians (fastest path to first deal). Then add Japanese. Then German. Do not dilute across all 5 segments simultaneously.</div></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════════ -->
-<!-- S02 · BUSINESS MODEL -->
-<!-- ══════════════════════════════════════════════ -->
-<div class="panel" id="s02">
-  <div class="eyebrow">Section 02</div>
-  <div class="heading">Business Model</div>
-  <div class="subhead">How PHC makes money, what deals cost, and the math behind a $250K year.</div>
-
-  <div class="h2">Revenue Streams</div>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>Revenue Stream</th><th>Commission / Fee</th><th>Avg Deal Size</th><th>Avg Earn / Deal</th><th>Priority</th></tr></thead>
-      <tbody>
-        <tr><td><strong>New development sales (off-plan)</strong></td><td>3–5% (paid by developer)</td><td>$150K–$500K</td><td>$6K–$20K</td><td class="td-ok">★ Primary</td></tr>
-        <tr><td>Resale / secondary market</td><td>2–3% (split buyer/seller)</td><td>$100K–$300K</td><td>$3K–$8K</td><td class="td-gold">Secondary</td></tr>
-        <tr><td>Rental placement</td><td>1 month rent fee</td><td>$800–$2,500/mo</td><td>$800–$2,500</td><td class="td-gold">Secondary</td></tr>
-        <tr><td>Property management</td><td>8–12% of rent/month</td><td>$1,000–$2,500/mo</td><td>$80–$300/mo</td><td class="td-err">Recurring (build later)</td></tr>
-        <tr><td>Referral / partner fee</td><td>0.5–1% introduced</td><td>Variable</td><td>$500–$3K</td><td class="td-err">Opportunistic</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="info-box"><strong>Key insight:</strong> New development off-plan is the highest-margin, lowest-friction revenue stream. Developer pays the commission — no negotiation with buyers. PHC should drive 80%+ of revenue from this stream in Year 1.</div>
-
-  <div class="h2">The $250K Math</div>
-  <div class="col-3" style="margin-bottom:16px">
-    <div class="rev-scenario">
-      <div class="eyebrow">Base Case</div>
-      <div style="font-size:20px;font-weight:700;color:var(--ink);font-family:'JetBrains Mono',monospace">$180K</div>
-      <div class="body" style="margin-bottom:8px">25 deals · avg $7,200 commission</div>
-      <div class="rev-bar"><div class="rev-fill" style="width:72%"></div></div>
-      <div style="font-size:11px;color:var(--ink-3)">72% of target</div>
-    </div>
-    <div class="rev-scenario active-s">
-      <div class="eyebrow">Target</div>
-      <div style="font-size:20px;font-weight:700;color:var(--gold);font-family:'JetBrains Mono',monospace">$252K</div>
-      <div class="body" style="margin-bottom:8px">33 deals · avg $7,600 commission</div>
-      <div class="rev-bar"><div class="rev-fill" style="width:100%"></div></div>
-      <div style="font-size:11px;color:var(--gold-dim);font-weight:600">ON TARGET</div>
-    </div>
-    <div class="rev-scenario">
-      <div class="eyebrow">Stretch</div>
-      <div style="font-size:20px;font-weight:700;color:var(--ok);font-family:'JetBrains Mono',monospace">$350K+</div>
-      <div class="body" style="margin-bottom:8px">40+ deals · avg $8,750 commission</div>
-      <div class="rev-bar"><div class="rev-fill" style="width:100%;background:linear-gradient(90deg,var(--ok),#4cd98a)"></div></div>
-      <div style="font-size:11px;color:var(--ok)">Requires 1–2 agent hires by Q2</div>
-    </div>
-  </div>
-
-  <div class="h2">Monthly Deal Target (to hit $250K)</div>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>Quarter</th><th>Months</th><th>Target Deals</th><th>Cumulative</th><th>Key Milestone</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Q1 — Build</strong></td><td>Apr – Jun</td><td>2–3 deals</td><td>3</td><td>First deal closed · Paid ads live</td></tr>
-        <tr><td><strong>Q2 — Acquire</strong></td><td>Jul – Sep</td><td>6–8 deals</td><td>11</td><td>First agent hired · Lead flow consistent</td></tr>
-        <tr><td><strong>Q3 — Scale</strong></td><td>Oct – Dec</td><td>9–11 deals</td><td>22</td><td>Second agent · Japanese segment active</td></tr>
-        <tr><td><strong>Q4 — Close</strong></td><td>Jan – Mar 27</td><td>11–13 deals</td><td>33+</td><td>$250K milestone</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="warn-box"><strong>Reality check:</strong> Going from 0 → 3 deals/month in 12 months is aggressive. It requires a functioning paid ad engine, consistent lead flow, and at least 1 agent hire by Q2. If lead generation is not fixed in 30 days, the Q1 target will be missed and the full-year target becomes very difficult.</div>
-
-  <div class="h2">Commission Rate — Fill In</div>
-  <div class="card-gold">
-    <div class="eyebrow">Action required — Nick</div>
-    <div class="body">The revenue model above uses <strong>3–5% commission</strong> as an estimate. You must confirm the actual rates paid by Megakim and Tanichu to PHC. The difference between 3% and 5% on a $300K deal is $6,000 vs $10,000 — a 67% gap per transaction. This changes the entire deal count target.<br><br>
-    Also confirm: Does PHC receive commission upfront at signing, or upon completion/handover? This affects cash flow planning significantly.</div>
-  </div>
-
-  <div class="h2">Auto-Reject Criteria</div>
-  <div class="rules">
-    <div class="rule"><div class="rule-n" style="background:var(--err);color:#fff">✕</div><div><div class="rule-title">Rental yields under $500/month net</div><div class="rule-detail">Not worth the management overhead. Refer out or decline.</div></div></div>
-    <div class="rule"><div class="rule-n" style="background:var(--err);color:#fff">✕</div><div><div class="rule-title">Renovated apartment deals</div><div class="rule-detail">High effort, low commission, brand dilution. Hard no.</div></div></div>
-    <div class="rule"><div class="rule-n" style="background:var(--err);color:#fff">✕</div><div><div class="rule-title">Brand-diluting partnerships</div><div class="rule-detail">Any partner who wants PHC to promote unverified projects or guarantee returns. Immediate disqualification.</div></div></div>
-    <div class="rule"><div class="rule-n" style="background:var(--err);color:#fff">✕</div><div><div class="rule-title">Low-margin, high-maintenance requests</div><div class="rule-detail">If a client requires 10+ hours of hand-holding for a $100K deal, it is not worth it at current team size.</div></div></div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════════ -->
-<!-- S03 · MARKET POSITION -->
-<!-- ══════════════════════════════════════════════ -->
-<div class="panel" id="s03">
-  <div class="eyebrow">Section 03</div>
-  <div class="heading">Market Position</div>
-  <div class="subhead">Where PHC sits in the Phnom Penh real estate market, what makes it defensible, and what threatens it.</div>
-
-  <div class="h2">Phnom Penh Market 2026 — Key Facts</div>
-  <div class="col-2" style="margin-bottom:16px">
-    <div class="card">
-      <div class="eyebrow">Supply & Demand</div>
-      <div class="rules">
-        <div class="rule"><div class="rule-n" style="font-size:9px">↑</div><div><div class="rule-title">~45,200 completed units</div><div class="rule-detail">Supply stabilizing. No major oversupply crisis like 2020–2022.</div></div></div>
-        <div class="rule"><div class="rule-n" style="font-size:9px">↑</div><div><div class="rule-title">Transaction volume up 25% in 2025</div><div class="rule-detail">Genuine recovery. Foreign demand returning.</div></div></div>
-        <div class="rule" style="border:none"><div class="rule-n" style="font-size:9px">→</div><div><div class="rule-title">Prices up 3–5% in BKK1</div><div class="rule-detail">Gradual appreciation. CGT shifting behavior toward long-hold.</div></div></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="eyebrow">Yield Benchmarks</div>
-      <div class="rules">
-        <div class="rule"><div class="rule-n" style="background:var(--gold);color:#fff;font-size:9px">BK1</div><div><div class="rule-title">BKK1: 7.8–8.7% net</div><div class="rule-detail">$2,650–$3,000/sqm. PHC's primary market.</div></div></div>
-        <div class="rule"><div class="rule-n" style="font-size:9px">CM</div><div><div class="rule-title">Chamkar Mon: 7.1–8.1%</div><div class="rule-detail">$1,800–$2,400/sqm. Mid-market. TS8 territory.</div></div></div>
-        <div class="rule" style="border:none"><div class="rule-n" style="font-size:9px">TK</div><div><div class="rule-title">Toul Kork: 6.8–7.5%</div><div class="rule-detail">$1,200–$1,600/sqm. Royal Platinum / TS11.</div></div></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="h2">PHC's Genuine Competitive Advantages</div>
-  <div class="rules">
-    <div class="rule">
-      <div class="rule-n">1</div>
       <div>
-        <div class="rule-title">Multilingual advisory (Khmer · English · Japanese · German)</div>
-        <div class="rule-detail">Very few agencies can communicate credibly in Japanese and German at a technical real estate level. This is a direct access advantage to the two highest-value foreign investor segments. It cannot be easily replicated.</div>
+        <div class="hero-eyebrow">12-Month Strategy · Click any block to expand</div>
+        <div class="hero-title">12-Month Revenue Target: <span>$250,000</span></div>
+        <div class="hero-sub">Fewer, higher-value deals · Team of agents · Premium multilingual advisory. Same click-to-expand layout as the System Map — nothing loads until you open it.</div>
       </div>
-    </div>
-    <div class="rule">
-      <div class="rule-n">2</div>
-      <div>
-        <div class="rule-title">Trust-first advisory model — no pressure selling</div>
-        <div class="rule-detail">The Japanese investor protocol, risk-first disclosure, and "this may not be right for you" positioning builds a category of one in a market full of aggressive sales tactics. Takes longer to close but produces referrals.</div>
-      </div>
-    </div>
-    <div class="rule">
-      <div class="rule-n">3</div>
-      <div>
-        <div class="rule-title">Deep developer relationships (Megakim + Tanichu)</div>
-        <div class="rule-detail">Direct access to the two most trusted developers for international buyers. Real-time pricing, quota availability, and pre-launch access — advantages that independent buyers cannot replicate.</div>
-      </div>
-    </div>
-    <div class="rule">
-      <div class="rule-n">4</div>
-      <div>
-        <div class="rule-title">PHC office in BKK1 Time Square 5</div>
-        <div class="rule-detail">Physical presence in the premium district signals credibility to Japanese and European clients who conduct due diligence on the agency itself before trusting them with capital.</div>
+      <div class="hero-stats">
+        <div class="hs"><div class="hs-n">?</div><div class="hs-l">Revenue — update me</div></div>
+        <div class="hs"><div class="hs-n">33+</div><div class="hs-l">Deals Needed</div></div>
+        <div class="hs"><div class="hs-n">5</div><div class="hs-l">Team Members</div></div>
+        <div class="hs"><div class="hs-n">2/12</div><div class="hs-l">Sections Refreshed</div></div>
       </div>
     </div>
   </div>
 
-  <div class="h2">SWOT Analysis</div>
-  <div class="swot-grid">
-    <div class="swot-cell swot-s">
-      <div class="swot-head">Strengths</div>
-      <div class="swot-li">Multilingual team (4 languages)</div>
-      <div class="swot-li">Megakim + Tanichu developer access</div>
-      <div class="swot-li">Trust-first brand positioning</div>
-      <div class="swot-li">20-lesson agent training system built</div>
-      <div class="swot-li">BKK1 premium office address</div>
-      <div class="swot-li">15+ years combined experience</div>
-    </div>
-    <div class="swot-cell swot-w">
-      <div class="swot-head">Weaknesses</div>
-      <div class="swot-li">Zero revenue / no closed deals yet</div>
-      <div class="swot-li">No paid marketing engine running</div>
-      <div class="swot-li">3 people — bandwidth risk</div>
-      <div class="swot-li">All tools internal — no client-facing lead capture</div>
-      <div class="swot-li">Brand design not yet unified across assets</div>
-      <div class="swot-li">No CRM or pipeline management system</div>
-    </div>
-    <div class="swot-cell swot-o">
-      <div class="swot-head">Opportunities</div>
-      <div class="swot-li">Japanese investor demand recovering strongly</div>
-      <div class="swot-li">German retiree market largely unserved in PP</div>
-      <div class="swot-li">CGT drives long-hold strategy → property management revenue</div>
-      <div class="swot-li">J Tower 3 (tallest condo in Cambodia) pre-launch buzz</div>
-      <div class="swot-li">TS10 Sihanoukville coastal — beach/holiday demand</div>
-      <div class="swot-li">Overseas Cambodian diaspora digital reachable via paid ads</div>
-    </div>
-    <div class="swot-cell swot-t">
-      <div class="swot-head">Threats</div>
-      <div class="swot-li">Developer dependency (what if Megakim/Tanichu stall?)</div>
-      <div class="swot-li">Competition from larger agencies with ad budgets</div>
-      <div class="swot-li">CGT uncertainty discouraging short-term buyers</div>
-      <div class="swot-li">Team burnout — 3 people covering 5 segments</div>
-      <div class="swot-li">Political / regulatory changes in Cambodia</div>
-    </div>
+  <div class="info-box" style="margin-bottom:24px;">
+    <strong>Two freshness tags on every card below:</strong> <span style="color:var(--ok);font-weight:600;">REFRESHED JUL 2026</span> means the content reflects where PHC actually is today (Mission Control, 90-Day Sprint). <span style="color:var(--ink-3);font-weight:600;">Q2 DRAFT</span> means it's unchanged since the original plan — still useful as reference/strategy, but numbers and status inside may be stale. Ask to refresh any Q2 section the same way Mission Control and the Sprint were.
   </div>
-</div>
 
-<!-- ══════════════════════════════════════════════ -->
-<!-- S04 · CLIENT SEGMENTS -->
-<!-- ══════════════════════════════════════════════ -->
-<div class="panel" id="s04">
-  <div class="eyebrow">Section 04</div>
-  <div class="heading">Client Segments</div>
-  <div class="subhead">Five segments. One to prioritize first. Each requires a different advisory approach.</div>
+  <!-- ── FLOW DIAGRAM ── -->
+  <div class="section-label">
+    <span class="sl-num">01</span>
+    <span class="sl-title">The Plan — click any block to expand</span>
+    <div class="sl-line"></div>
+  </div>
 
-  <div class="info-box"><strong>Current phase strategy:</strong> Do not try to serve all 5 simultaneously. Start with <strong>Overseas Cambodians</strong> (fastest first deal). Then activate <strong>Japanese investors</strong> via structured outreach. German segment follows once the first 5 deals are closed.</div>
+  <div class="flow-wrap">
+    <div class="flow">
 
-  <!-- Seg 1 -->
-  <div class="seg-card" style="background:rgba(11,79,138,0.05);border-color:rgba(11,79,138,0.2)">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start">
-      <div>
-        <div class="seg-tag" style="background:rgba(11,79,138,0.1);color:var(--s1)">🇰🇭 Priority 1 · Start Here</div>
-        <div class="seg-name">Overseas Cambodians</div>
-        <div class="seg-budget">Budget: $80K–$300K · Timeline: 1–6 months · Decision: Fast</div>
+      <!-- LAYER 1: OVERVIEW -->
+      <div class="flow-layer">
+        <div class="flow-layer-hdr">
+          <span class="flow-layer-num">01</span>
+          <span class="flow-layer-label">Overview</span>
+          <div class="flow-layer-line"></div>
+        </div>
+        <div class="flow-layer-nodes">
+          <div class="node" onclick="toggle('d-s01')" id="n-s01">
+            <div class="node-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="6"/></svg></div>
+            <div class="node-name">Mission Control</div>
+            <div class="node-sub">Current state · targets · non-negotiables</div>
+            <div class="node-pill np-fresh">REFRESHED JUL 2026</div>
+            <div class="node-caret">▼</div>
+          </div>
+          <div class="node" onclick="toggle('d-s02')" id="n-s02">
+            <div class="node-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+            <div class="node-name">Business Model</div>
+            <div class="node-sub">Revenue streams · $250K math · auto-reject list</div>
+            <div class="node-pill np-draft">Q2 DRAFT</div>
+            <div class="node-caret">▼</div>
+          </div>
+          <div class="node" onclick="toggle('d-s03')" id="n-s03">
+            <div class="node-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></div>
+            <div class="node-name">Market Position</div>
+            <div class="node-sub">Yield benchmarks · advantages · SWOT</div>
+            <div class="node-pill np-draft">Q2 DRAFT</div>
+            <div class="node-caret">▼</div>
+          </div>
+        </div>
       </div>
-      <span class="p-badge p1">ACTIVATE NOW</span>
-    </div>
-    <div class="body">Remote buyers with family ties in Cambodia. Often want to invest in hometown as status symbol or family security. Faster decision cycle than Japanese/German. Comfortable with Khmer communication and familiar developer names (Megakim). Responsive to WhatsApp.</div>
-    <div class="col-2">
-      <div><div class="h3">Best Projects</div><div class="seg-row"><span class="seg-pill">Time Square 8</span><span class="seg-pill">Time Square 11</span><span class="seg-pill">Royal Platinum</span></div></div>
-      <div><div class="h3">Key Concerns</div><div class="seg-row"><span class="seg-pill">Title security</span><span class="seg-pill">Developer track record</span><span class="seg-pill">Payment plan flexibility</span></div></div>
-    </div>
-    <div class="h3">How to Reach Them</div>
-    <div class="body">Facebook groups for Cambodian diaspora (USA, Australia, France). Paid Facebook ads targeting Cambodian ethnicity abroad. Khmer-language WhatsApp outreach. Referrals from existing Khmer clients.</div>
-  </div>
 
-  <!-- Seg 2 -->
-  <div class="seg-card" style="background:rgba(184,48,48,0.05);border-color:rgba(184,48,48,0.18)">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start">
-      <div>
-        <div class="seg-tag" style="background:rgba(184,48,48,0.1);color:var(--err)">🇯🇵 Priority 2 · High Value</div>
-        <div class="seg-name">Japanese Investors</div>
-        <div class="seg-budget">Budget: $100K–$500K+ · Timeline: 3–12 months · Decision: Slow, deliberate</div>
+      <div class="flow-down"><div class="flow-down-track"></div><div class="flow-down-mid"><div class="flow-down-line"></div><div class="flow-down-lbl">defines who we sell to</div><div class="flow-down-head"></div></div><div class="flow-down-track"></div></div>
+
+      <!-- LAYER 2: CLIENTS & PRODUCTS -->
+      <div class="flow-layer">
+        <div class="flow-layer-hdr">
+          <span class="flow-layer-num">02</span>
+          <span class="flow-layer-label">Clients & Products</span>
+          <div class="flow-layer-line"></div>
+        </div>
+        <div class="flow-layer-nodes">
+          <div class="node" onclick="toggle('d-s04')" id="n-s04">
+            <div class="node-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <div class="node-name">Client Segments</div>
+            <div class="node-sub">5 profiles · budgets · outreach channels</div>
+            <div class="node-pill np-draft">Q2 DRAFT</div>
+            <div class="node-caret">▼</div>
+          </div>
+          <div class="node" onclick="toggle('d-s05')" id="n-s05">
+            <div class="node-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9h.01M9 12h.01M9 15h.01M9 18h.01"/></svg></div>
+            <div class="node-name">Product Portfolio</div>
+            <div class="node-sub">Megakim · Tanichu · other active projects</div>
+            <div class="node-pill np-draft">Q2 DRAFT</div>
+            <div class="node-caret">▼</div>
+          </div>
+        </div>
       </div>
-      <span class="p-badge p2">BUILD NOW</span>
-    </div>
-    <div class="body">40+ year old, high income, low risk tolerance. Trust is the only currency. They will research PHC thoroughly before making contact. They read written summaries. They need to see risk disclosed before returns. Never push. Never rush. Silence is not rejection — it is thinking.</div>
-    <div class="col-2">
-      <div><div class="h3">Best Projects</div><div class="seg-row"><span class="seg-pill">J Tower 3</span><span class="seg-pill">J Tower 2 (resale)</span><span class="seg-pill">Time Square 9</span><span class="seg-pill">Le Condé</span></div></div>
-      <div><div class="h3">Key Concerns (always disclose first)</div><div class="seg-row"><span class="seg-pill">Exit liquidity</span><span class="seg-pill">Net yield vs gross</span><span class="seg-pill">Developer track record</span><span class="seg-pill">CGT impact</span></div></div>
-    </div>
-    <div class="h3">Opening Line (Non-Negotiable)</div>
-    <div class="info-box">"We are not here to sell. We are here to help you decide if this fits your goals."</div>
-    <div class="h3">How to Reach Them</div>
-    <div class="body">Japanese Chamber of Commerce Phnom Penh. LINE communities. Japanese expat Facebook groups. LinkedIn (in Japanese). Referrals from J Tower 2 existing owners. JICA / Japan-Cambodia business networks.</div>
-  </div>
 
-  <!-- Seg 3 -->
-  <div class="seg-card" style="background:rgba(26,107,58,0.05);border-color:rgba(26,107,58,0.18)">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start">
-      <div>
-        <div class="seg-tag" style="background:rgba(26,107,58,0.1);color:var(--s2)">🇩🇪 Priority 3 · Strategic</div>
-        <div class="seg-name">German & European Retirees</div>
-        <div class="seg-budget">Budget: $150K–$600K · Timeline: 3–12 months · Decision: Logic-driven</div>
+      <div class="flow-down"><div class="flow-down-track"></div><div class="flow-down-mid"><div class="flow-down-line"></div><div class="flow-down-lbl">goes to market via</div><div class="flow-down-head"></div></div><div class="flow-down-track"></div></div>
+
+      <!-- LAYER 3: GROWTH ENGINE -->
+      <div class="flow-layer">
+        <div class="flow-layer-hdr">
+          <span class="flow-layer-num">03</span>
+          <span class="flow-layer-label">Growth Engine</span>
+          <div class="flow-layer-line"></div>
+        </div>
+        <div class="flow-layer-nodes">
+          <div class="node" onclick="toggle('d-s06')" id="n-s06">
+            <div class="node-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11 12.5V21l-3-1"/></svg></div>
+            <div class="node-name">Marketing Engine</div>
+            <div class="node-sub">Why 100 posts → 2 leads, and the new formula</div>
+            <div class="node-pill np-draft">Q2 DRAFT</div>
+            <div class="node-caret">▼</div>
+          </div>
+          <div class="node" onclick="toggle('d-s07')" id="n-s07">
+            <div class="node-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+            <div class="node-name">Sales System</div>
+            <div class="node-sub">5-stage advisory flow · follow-up protocol</div>
+            <div class="node-pill np-draft">Q2 DRAFT</div>
+            <div class="node-caret">▼</div>
+          </div>
+        </div>
       </div>
-      <span class="p-badge p3">REZA'S LEAD</span>
-    </div>
-    <div class="body">Looking for stable, predictable rental income to supplement pension. Prioritize downside protection over upside. Want to understand worst-case scenario before best case. Appreciate precise data, legal clarity, and professional written documentation. Reza is the primary relationship builder here.</div>
-    <div class="col-2">
-      <div><div class="h3">Best Projects</div><div class="seg-row"><span class="seg-pill">Peninsula Private</span><span class="seg-pill">Le Condé</span><span class="seg-pill">Royal Platinum</span><span class="seg-pill">G.A.T.O Tower</span></div></div>
-      <div><div class="h3">Key Concerns</div><div class="seg-row"><span class="seg-pill">Net yield calculation</span><span class="seg-pill">Management quality</span><span class="seg-pill">Exit realism</span><span class="seg-pill">CGT planning</span></div></div>
-    </div>
-    <div class="h3">How to Reach Them</div>
-    <div class="body">European expat Facebook groups in Phnom Penh. LinkedIn outreach from Reza. German-language content on YouTube/LinkedIn. Referrals from German embassy connections.</div>
-  </div>
 
-  <!-- Seg 4 -->
-  <div class="seg-card" style="background:var(--bg-2);border-color:var(--line-md)">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start">
-      <div>
-        <div class="seg-tag" style="background:var(--bg-3);color:var(--ink-2)">🇰🇭 Local Khmer End-Users</div>
-        <div class="seg-name">Local Khmer End-Users</div>
-        <div class="seg-budget">Budget: $60K–$200K · Timeline: 1–3 months · Decision: Moderate</div>
+      <div class="flow-down"><div class="flow-down-track"></div><div class="flow-down-mid"><div class="flow-down-line"></div><div class="flow-down-lbl">runs on</div><div class="flow-down-head"></div></div><div class="flow-down-track"></div></div>
+
+      <!-- LAYER 4: OPERATIONS -->
+      <div class="flow-layer">
+        <div class="flow-layer-hdr">
+          <span class="flow-layer-num">04</span>
+          <span class="flow-layer-label">Operations</span>
+          <div class="flow-layer-line"></div>
+        </div>
+        <div class="flow-layer-nodes">
+          <div class="node" onclick="toggle('d-s08')" id="n-s08">
+            <div class="node-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+            <div class="node-name">Technology Stack</div>
+            <div class="node-sub">Built · missing · design-system fixes</div>
+            <div class="node-pill np-draft">Q2 DRAFT</div>
+            <div class="node-caret">▼</div>
+          </div>
+          <div class="node" onclick="toggle('d-s09')" id="n-s09">
+            <div class="node-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <div class="node-name">Team Building</div>
+            <div class="node-sub">Current team · hire trigger · commission split</div>
+            <div class="node-pill np-draft">Q2 DRAFT</div>
+            <div class="node-caret">▼</div>
+          </div>
+        </div>
       </div>
-      <span class="p-badge p3">ORGANIC ONLY</span>
-    </div>
-    <div class="body">Lifestyle upgrade buyers. Focused on community, school proximity, developer reputation, and flexible payment plans. Price-sensitive. Value relationship with local Khmer-speaking advisor. These are the clients showing up organically — serve them well but don't build a paid acquisition strategy for this segment yet.</div>
-    <div class="col-2">
-      <div><div class="h3">Best Projects</div><div class="seg-row"><span class="seg-pill">Time Square 11 BKK3</span><span class="seg-pill">Royal Platinum</span><span class="seg-pill">Time Square 8</span></div></div>
-      <div><div class="h3">Key Concerns</div><div class="seg-row"><span class="seg-pill">Payment plan</span><span class="seg-pill">Move-in timeline</span><span class="seg-pill">Facilities</span></div></div>
-    </div>
-  </div>
 
-  <!-- Seg 5 -->
-  <div class="seg-card" style="background:rgba(91,45,142,0.05);border-color:rgba(91,45,142,0.18)">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start">
-      <div>
-        <div class="seg-tag" style="background:rgba(91,45,142,0.1);color:#5B2D8E">🌏 Other Foreign Investors</div>
-        <div class="seg-name">Chinese, Russian, Other Foreign</div>
-        <div class="seg-budget">Budget: $100K–$400K · Timeline: 1–6 months · Decision: Fast if convinced</div>
+      <div class="flow-down"><div class="flow-down-track"></div><div class="flow-down-mid"><div class="flow-down-line"></div><div class="flow-down-lbl">executes as</div><div class="flow-down-head"></div></div><div class="flow-down-track"></div></div>
+
+      <!-- LAYER 5: EXECUTION -->
+      <div class="flow-layer">
+        <div class="flow-layer-hdr">
+          <span class="flow-layer-num">05</span>
+          <span class="flow-layer-label">Execution & Numbers</span>
+          <div class="flow-layer-line"></div>
+        </div>
+        <div class="flow-layer-nodes">
+          <div class="node" onclick="toggle('d-s10')" id="n-s10">
+            <div class="node-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+            <div class="node-name">90-Day Sprint</div>
+            <div class="node-sub">Send & Measure → Prove → Scale</div>
+            <div class="node-pill np-fresh">REFRESHED JUL 2026</div>
+            <div class="node-caret">▼</div>
+          </div>
+          <div class="node" onclick="toggle('d-s11')" id="n-s11">
+            <div class="node-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></div>
+            <div class="node-name">Financial Model</div>
+            <div class="node-sub">3 scenarios · monthly build · operating costs</div>
+            <div class="node-pill np-draft">Q2 DRAFT</div>
+            <div class="node-caret">▼</div>
+          </div>
+          <div class="node" onclick="toggle('d-s12')" id="n-s12">
+            <div class="node-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+            <div class="node-name">Risk Register</div>
+            <div class="node-sub">6 threats · severity · mitigation</div>
+            <div class="node-pill np-draft">Q2 DRAFT</div>
+            <div class="node-caret">▼</div>
+          </div>
+        </div>
       </div>
-      <span class="p-badge p3">REACTIVE ONLY</span>
-    </div>
-    <div class="body">Yield and hands-free management are primary motivators. Want clear ROI numbers, Hopetree Japan or equivalent management in place, and an exit plan. Respond to property management quality as a key differentiator. Serve when they come to PHC — don't build dedicated acquisition for this segment in Year 1.</div>
-    <div class="col-2">
-      <div><div class="h3">Best Projects</div><div class="seg-row"><span class="seg-pill">Le Condé (Hopetree)</span><span class="seg-pill">Peninsula</span><span class="seg-pill">TS10 Otres</span></div></div>
-      <div><div class="h3">Key Concerns</div><div class="seg-row"><span class="seg-pill">Net yield vs gross</span><span class="seg-pill">Management quality</span><span class="seg-pill">Exit liquidity</span></div></div>
-    </div>
-  </div>
-</div>
 
-<!-- ══════════════════════════════════════════════ -->
-<!-- S05 · PRODUCT PORTFOLIO -->
-<!-- ══════════════════════════════════════════════ -->
-<div class="panel" id="s05">
-  <div class="eyebrow">Section 05</div>
-  <div class="heading">Product Portfolio</div>
-  <div class="subhead">Active projects PHC can sell, their key data points, and which to prioritize in the current phase.</div>
+    </div><!-- /flow -->
+  </div><!-- /flow-wrap -->
 
-  <div class="h2" style="color:var(--gold-dim)">Megakim Projects</div>
+  <!-- ══════════════════════ DETAIL PANELS ══════════════════════ -->
+  <div class="detail-panels">
 
-  <div class="proj-card">
-    <div class="proj-header">
-      <div><div class="proj-name">Time Square 9 — The Gatsby Residence</div><div class="proj-dev">Developer: Megakim World Corp · BKK1, St. 278</div></div>
-      <span class="p-badge p1">FLAGSHIP · LEAD</span>
-    </div>
-    <div class="body">2-minute walk from Independence Monument. Freehold strata title. Best-value BKK1 entry point. Use this as the opening project for all Japanese and overseas Cambodian conversations.</div>
-    <div class="proj-facts">
-      <div><div class="pf-lbl">Price / sqm</div><div class="pf-val">~$1,700</div></div>
-      <div><div class="pf-lbl">BKK1 Average</div><div class="pf-val">$2,500+</div></div>
-      <div><div class="pf-lbl">Title</div><div class="pf-val td-ok">Freehold Strata</div></div>
-    </div>
-  </div>
+    <!-- S01 MISSION CONTROL -->
+    <div class="detail" id="d-s01">
+      <div class="detail-head"><div class="dh-icon">🎯</div><div class="dh-title">Mission Control</div><div class="dh-tag dt-fresh">REFRESHED JUL 2026</div></div>
+      <div class="detail-body">
+        <div class="body-text">Honest snapshot of where PHC stands today and what must change to reach $250K in 12 months.</div>
 
-  <div class="proj-card">
-    <div class="proj-header">
-      <div><div class="proj-name">Time Square 8 — Toul Tom Pong</div><div class="proj-dev">Developer: Megakim World Corp · 50 floors</div></div>
-      <span class="p-badge p2">VOLUME DRIVER</span>
-    </div>
-    <div class="body">Sold 85% in 6 months — proven demand signal. Good for overseas Cambodian and local Khmer buyers. Mid-range entry point.</div>
-    <div class="proj-facts">
-      <div><div class="pf-lbl">Price / sqm</div><div class="pf-val">~$1,452</div></div>
-      <div><div class="pf-lbl">Sold</div><div class="pf-val">85%</div></div>
-      <div><div class="pf-lbl">Title</div><div class="pf-val td-ok">Strata</div></div>
-    </div>
-  </div>
+        <div class="warn-box"><strong>⚠ Revenue, lead-count, and deal figures are placeholders</strong> — they were never updated from the original Q2 draft. Give the real current numbers and they'll be filled in properly instead of guessed.</div>
 
-  <div class="proj-card">
-    <div class="proj-header">
-      <div><div class="proj-name">Time Square 10 — Otres Beach, Sihanoukville</div><div class="proj-dev">Developer: Megakim World Corp · 3 towers · ~1,000 units</div></div>
-      <span class="p-badge p3">BEACH MARKET</span>
-    </div>
-    <div class="body">Beachfront resort-style. Strong holiday and rental demand from foreign investors. Entry price from ~$40K makes it accessible for first-time investors. Good for Chinese and Russian buyers seeking yield.</div>
-    <div class="proj-facts">
-      <div><div class="pf-lbl">Entry Price</div><div class="pf-val">From ~$40K</div></div>
-      <div><div class="pf-lbl">Market</div><div class="pf-val">Holiday / Rental</div></div>
-      <div><div class="pf-lbl">Title</div><div class="pf-val">Confirm</div></div>
-    </div>
-  </div>
+        <div class="col-2" style="margin:14px 0;">
+          <div>
+            <div class="h2">What Is Working</div>
+            <div class="ok-box">
+              <strong>Developer relationships</strong> — Megakim and Tanichu provide reliable, up-to-date inventory. Genuine advantage most agencies lack.<br><br>
+              <strong>The website is real now.</strong> propertyhubcambodia.com is live with all 18 properties, real photos, a working inquiry pipeline, and an instant Telegram lead alert.<br><br>
+              <strong>Two automation bots are live.</strong> @PHC_Content_Bot and @PHC_ClientCare_Bot both work end-to-end — see the Progress Dashboard for exact status and known rough edges.<br><br>
+              <strong>Referral program is fully scoped and ready.</strong> 15% of commission, past-client outreach messages drafted — just hasn't been sent yet.<br><br>
+              <strong>Brand clarity</strong> — a defined premium positioning, a real design identity, a clear client philosophy.
+            </div>
+          </div>
+          <div>
+            <div class="h2">What Is Broken</div>
+            <div class="warn-box">
+              <strong>Built, but not sent.</strong> The real gap now, not "no lead engine." Referral messages and 5 outbound community post templates are finished and sitting unused.<br><br>
+              <strong>No real audience yet on the new channels.</strong> The 4 pilot Telegram channels sit at ~0–4 subscribers each.<br><br>
+              <strong>70/30 content mix not applied.</strong> Distribution is still nearly all listing posts.<br><br>
+              <strong>Paid distribution deliberately deferred, not abandoned.</strong> Decided 2026-07-09: prove outbound + referral messaging first.
+            </div>
+          </div>
+        </div>
 
-  <div class="proj-card">
-    <div class="proj-header">
-      <div><div class="proj-name">Time Square 11 — BKK3</div><div class="proj-dev">Developer: Megakim World Corp · Launched Feb 2026</div></div>
-      <span class="p-badge p3">AFFORDABLE ENTRY</span>
-    </div>
-    <div class="body">Newest Megakim launch. Affordable entry into Phnom Penh market. Target: local Khmer end-users and overseas Cambodians seeking mid-range investment.</div>
-    <div class="proj-facts">
-      <div><div class="pf-lbl">Launched</div><div class="pf-val">Feb 2026</div></div>
-      <div><div class="pf-lbl">Market</div><div class="pf-val">Local + diaspora</div></div>
-      <div><div class="pf-lbl">Title</div><div class="pf-val">Confirm</div></div>
-    </div>
-  </div>
-
-  <div class="h2" style="color:var(--s1)">Tanichu Projects</div>
-
-  <div class="proj-card" style="border-color:rgba(11,79,138,0.25);background:rgba(11,79,138,0.03)">
-    <div class="proj-header">
-      <div><div class="proj-name">J Tower 3 — Upcoming</div><div class="proj-dev">Developer: Tanichu Assetment Co. Ltd · Japanese developer</div></div>
-      <span class="p-badge p1">TOP PRIORITY · JAPAN</span>
-    </div>
-    <div class="body">Positioned as tallest condominium in Cambodia. Luxury. High pre-sale interest. Strongest appeal to Japanese investors — developer nationality alignment creates automatic trust. This is PHC's most powerful sales tool for the Japanese segment. Build all Japanese marketing around this project.</div>
-    <div class="proj-facts">
-      <div><div class="pf-lbl">Status</div><div class="pf-val">Pre-launch</div></div>
-      <div><div class="pf-lbl">Segment</div><div class="pf-val">Japanese · International</div></div>
-      <div><div class="pf-lbl">Title</div><div class="pf-val td-ok">Freehold Strata</div></div>
-    </div>
-  </div>
-
-  <div class="proj-card">
-    <div class="proj-header">
-      <div><div class="proj-name">J Tower 2 — Completed</div><div class="proj-dev">Developer: Tanichu Assetment Co. Ltd</div></div>
-      <span class="p-badge p2">RESALE + PROOF</span>
-    </div>
-    <div class="body">Completed. Freehold strata title confirmed. Use as proof of delivery when pitching J Tower 3 — shows Tanichu delivers what they promise. Strong resale and rental demand.</div>
-    <div class="proj-facts">
-      <div><div class="pf-lbl">Status</div><div class="pf-val td-ok">Completed</div></div>
-      <div><div class="pf-lbl">Title</div><div class="pf-val td-ok">Freehold Strata ✓</div></div>
-      <div><div class="pf-lbl">Use Case</div><div class="pf-val">Proof of delivery</div></div>
-    </div>
-  </div>
-
-  <div class="h2">Other Key Projects</div>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>Project</th><th>Location</th><th>Entry Price</th><th>Yield</th><th>Segment</th><th>Status</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Le Condé BKK1</strong><br><span style="font-size:11px;color:var(--ink-3)">Wangfu International · Hopetree Japan mgmt</span></td><td>BKK1</td><td>From $150K</td><td>Est. 8%+</td><td>Japanese · Foreign investors</td><td class="td-ok">Completed May 2025</td></tr>
-        <tr><td><strong>Royal Platinum</strong><br><span style="font-size:11px;color:var(--ink-3)">30 floors · 851 units · Strata title</span></td><td>Toul Kork</td><td>From $120K</td><td>6.8–7.5%</td><td>German · Khmer · Overseas KH</td><td class="td-ok">Completed 2025</td></tr>
-        <tr><td><strong>Peninsula Private Residences</strong></td><td>Chroy Changvar</td><td>~$4,200/sqm</td><td>~8.2%</td><td>German · European</td><td>Premium tier</td></tr>
-        <tr><td><strong>G.A.T.O Tower</strong><br><span style="font-size:11px;color:var(--ink-3)">65 floors · Japanese-Cambodian (MIRAKU)</span></td><td>BKK1</td><td>TBC</td><td>TBC</td><td>Japanese · International</td><td class="td-gold">Upcoming</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="warn-box"><strong>Always verify before quoting:</strong> Strata title status · Foreign ownership quota remaining · Completion date · Developer payment track record. Never quote from memory for prices — always confirm with developer on the day.</div>
-</div>
-
-<!-- ══════════════════════════════════════════════ -->
-<!-- S06 · MARKETING ENGINE -->
-<!-- ══════════════════════════════════════════════ -->
-<div class="panel" id="s06">
-  <div class="eyebrow">Section 06</div>
-  <div class="heading">Marketing Engine</div>
-  <div class="subhead">Why 100 posts produced 2 leads — and the new formula that will actually work.</div>
-
-  <div class="warn-box"><strong>The broken formula:</strong> 100+ listing posts. 8 channels. $0 ad spend. 2 leads. 0 deals. More content will not fix this. The problem is targeting, distribution, and message type — not volume.</div>
-
-  <div class="h2">The New Formula</div>
-  <div class="col-3" style="margin-bottom:18px">
-    <div class="card-navy" style="margin:0">
-      <div class="eyebrow" style="color:var(--gold)">1. Paid Distribution</div>
-      <div style="color:rgba(255,255,255,0.85);font-size:14px;font-weight:600;margin-bottom:6px">$200–$500/month</div>
-      <div style="color:rgba(255,255,255,0.55);font-size:12.5px;line-height:1.6">Facebook + TikTok ads targeting overseas Cambodians and Japanese expats. Even $5/day outperforms 100 organic posts with no audience.</div>
-    </div>
-    <div class="card-navy" style="margin:0">
-      <div class="eyebrow" style="color:var(--gold)">2. Authority Content</div>
-      <div style="color:rgba(255,255,255,0.85);font-size:14px;font-weight:600;margin-bottom:6px">1 video/week</div>
-      <div style="color:rgba(255,255,255,0.55);font-size:12.5px;line-height:1.6">Educational, not promotional. "Can foreigners own property in Cambodia?" builds trust. Listing posts do not. YouTube first, then cut for TikTok/Instagram.</div>
-    </div>
-    <div class="card-navy" style="margin:0">
-      <div class="eyebrow" style="color:var(--gold)">3. Community Presence</div>
-      <div style="color:rgba(255,255,255,0.85);font-size:14px;font-weight:600;margin-bottom:6px">Direct outreach</div>
-      <div style="color:rgba(255,255,255,0.55);font-size:12.5px;line-height:1.6">Go where targets actually are: Japanese Chamber, European expat groups, Cambodian diaspora WhatsApp/Facebook. Answer questions. Don't sell. Build authority.</div>
-    </div>
-  </div>
-
-  <div class="h2">Platform Strategy by Segment</div>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>Segment</th><th>Primary Platform</th><th>Content Type</th><th>Budget</th><th>Expected</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Overseas Cambodians</strong></td><td>Facebook (paid)</td><td>Khmer-language property stories, developer trust content</td><td>$100–200/mo</td><td>5–15 leads/month</td></tr>
-        <tr><td><strong>Japanese Investors</strong></td><td>LINE + YouTube</td><td>Risk-first analysis, market reports in Japanese, J Tower 3 content</td><td>$50–100/mo</td><td>2–5 leads/month (slower, higher value)</td></tr>
-        <tr><td><strong>German / European</strong></td><td>LinkedIn + Facebook expat groups</td><td>Yield calculations, retirement income planning, legal explainers</td><td>Reza-led (organic first)</td><td>1–3 leads/month</td></tr>
-        <tr><td><strong>General / SEO</strong></td><td>YouTube + Website</td><td>Educational: "Buying property in Cambodia 2026 guide"</td><td>$0 (organic)</td><td>Long-term compound</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="h2">Lead Magnet — Build This First</div>
-  <div class="card-gold">
-    <div class="eyebrow">Priority Action</div>
-    <div class="h3" style="margin-top:4px">2026 Cambodia Property Investment Guide</div>
-    <div class="body">A 10–15 page PDF covering: foreign ownership rules, CGT explained simply, net yield calculation, top 5 projects with honest data, how to choose a trustworthy agency. Gate it behind WhatsApp number or email address.<br><br>
-    This is the single most valuable asset PHC can produce in the next 30 days. It works while you sleep. Every ad, every post, every community comment points to this one document. When someone downloads it, they have self-identified as a qualified prospect.</div>
-    <div class="col-2" style="margin-top:12px">
-      <div><div class="h3">Distribution channels</div><div class="seg-row"><span class="seg-pill">Facebook ads CTA</span><span class="seg-pill">WhatsApp bio link</span><span class="seg-pill">Instagram profile link</span><span class="seg-pill">Community responses</span></div></div>
-      <div><div class="h3">Time to build</div><div class="body" style="margin:0">2–3 days using existing PHC market data and PHC Market Intelligence Cheat Sheet as source material.</div></div>
-    </div>
-  </div>
-
-  <div class="h2">Content Calendar — Weekly Rhythm</div>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>Day</th><th>Content</th><th>Platform</th><th>Purpose</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Monday</strong></td><td>Educational video (3–5 min)</td><td>YouTube → TikTok → IG Reels</td><td>Authority building · SEO</td></tr>
-        <tr><td><strong>Wednesday</strong></td><td>Market insight post (data point + analysis)</td><td>LinkedIn + Facebook</td><td>Japanese / German credibility</td></tr>
-        <tr><td><strong>Friday</strong></td><td>Project spotlight (1 project, honest data)</td><td>Instagram + Facebook</td><td>Product awareness</td></tr>
-        <tr><td><strong>Daily</strong></td><td>Community engagement (answer questions in groups)</td><td>Facebook groups, LINE, WhatsApp</td><td>Trust + lead capture</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="info-box"><strong>Video content note:</strong> Higgfield AI or similar tools can accelerate production. Use AI to generate the script and visuals. But the strategic message, the data, and the hook must come from Nick's expertise. AI produces speed — PHC produces credibility. Never publish AI content without Nick's review.</div>
-</div>
-
-<!-- ══════════════════════════════════════════════ -->
-<!-- S07 · SALES SYSTEM -->
-<!-- ══════════════════════════════════════════════ -->
-<div class="panel" id="s07">
-  <div class="eyebrow">Section 07</div>
-  <div class="heading">Sales System</div>
-  <div class="subhead">The advisory flow from first contact to signed contract. Every step is documented and repeatable.</div>
-
-  <div class="h2">Lead Qualification Framework</div>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>Question</th><th>Green Signal</th><th>Red Flag</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Budget clarity</strong></td><td>Specific range given ($150K–$300K)</td><td>"Just browsing" / no range / below $80K</td></tr>
-        <tr><td><strong>Timeline</strong></td><td>3–12 months to decide</td><td>"Maybe one day" or "immediately" (panic buyer)</td></tr>
-        <tr><td><strong>Purpose</strong></td><td>Investment yield or end-use (clear)</td><td>Speculative flip post-CGT — manage expectations</td></tr>
-        <tr><td><strong>Decision maker</strong></td><td>They decide alone or with spouse (present)</td><td>Needs to consult 5 family members not in meeting</td></tr>
-        <tr><td><strong>Title requirement</strong></td><td>Understands strata title needed for foreign ownership</td><td>Asking about "softer" alternatives — red flag for compliance</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="h2">Advisory Flow — 5 Stages</div>
-  <div class="sprint-track">
-    <div class="sprint-item">
-      <div class="sprint-dot gold"></div>
-      <div class="sprint-week">Stage 1 · First Contact</div>
-      <div class="sprint-title">Qualify & Understand</div>
-      <ul class="sprint-items">
-        <li>Respond within 2 hours via preferred channel (WhatsApp, LINE, email)</li>
-        <li>Ask 3 qualifying questions: budget, timeline, purpose</li>
-        <li>Send lead magnet PDF immediately — shows value before asking for anything</li>
-        <li>Set clear next step: "I will send you 2–3 options that match your profile within 24 hours"</li>
-      </ul>
-    </div>
-    <div class="sprint-item">
-      <div class="sprint-dot gold"></div>
-      <div class="sprint-week">Stage 2 · Proposal</div>
-      <div class="sprint-title">Tailored Options (Max 3)</div>
-      <ul class="sprint-items">
-        <li>Never send more than 3 options — decision fatigue kills deals</li>
-        <li>Use PHC Proposal template (docx) — branded, professional, data-driven</li>
-        <li>Include net yield (not gross), title type, foreign ownership eligibility</li>
-        <li>Always state: "Option 2 is what I would recommend for your profile, and here is why"</li>
-      </ul>
-    </div>
-    <div class="sprint-item">
-      <div class="sprint-dot navy"></div>
-      <div class="sprint-week">Stage 3 · Site Visit</div>
-      <div class="sprint-title">Experience the Project</div>
-      <ul class="sprint-items">
-        <li>Arrange showroom or site visit within 1 week of proposal</li>
-        <li>Brief client before visit: what they will see, what questions to ask</li>
-        <li>Never pressure during visit — let the project speak</li>
-        <li>Send written debrief within 24 hours: what you saw, next steps, any questions answered</li>
-      </ul>
-    </div>
-    <div class="sprint-item">
-      <div class="sprint-dot navy"></div>
-      <div class="sprint-week">Stage 4 · Decision Support</div>
-      <div class="sprint-title">Remove Blockers</div>
-      <ul class="sprint-items">
-        <li>Ask: "What would need to be true for you to feel confident?" — surface real objections</li>
-        <li>Provide legal due diligence: title verification, SPA review summary</li>
-        <li>Connect with developer finance team for payment plan options</li>
-        <li>For Japanese: send full written risk summary. Never verbal only.</li>
-      </ul>
-    </div>
-    <div class="sprint-item">
-      <div class="sprint-dot ok"></div>
-      <div class="sprint-week">Stage 5 · Close & Onboard</div>
-      <div class="sprint-title">Sign & Stay Connected</div>
-      <ul class="sprint-items">
-        <li>Accompany client to signing — never send them alone</li>
-        <li>Send written summary of all commitments made (payment schedule, handover date)</li>
-        <li>30-day check-in after signing — builds referral relationship</li>
-        <li>Add to property management conversation if relevant</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="h2">Follow-Up Protocol</div>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>Day</th><th>Action</th><th>Channel</th><th>Purpose</th></tr></thead>
-      <tbody>
-        <tr><td>Day 0</td><td>Send lead magnet + intro message</td><td>WhatsApp / Email</td><td>First value delivery</td></tr>
-        <tr><td>Day 1</td><td>Send 2–3 tailored options</td><td>Email (PDF)</td><td>Proposal delivery</td></tr>
-        <tr><td>Day 3</td><td>Check-in: "Any questions on the proposal?"</td><td>WhatsApp</td><td>Remove blockers</td></tr>
-        <tr><td>Day 7</td><td>Arrange site visit or send video walkthrough</td><td>WhatsApp / YouTube link</td><td>Experience the project</td></tr>
-        <tr><td>Day 14</td><td>Re-qualify: "Has anything changed in your thinking?"</td><td>WhatsApp / Call</td><td>Detect momentum or stall</td></tr>
-        <tr><td>Day 21+</td><td>Monthly check-in with a market update</td><td>Email newsletter</td><td>Stay top of mind, non-pushy</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="warn-box"><strong>Over 1 week with no response and no clear next step = re-qualify.</strong> Ask: "I want to make sure I'm still helping you with the right thing. Has your situation changed?" If still no engagement after 2 attempts, archive and move on. Do not chase indefinitely.</div>
-</div>
-
-<!-- ══════════════════════════════════════════════ -->
-<!-- S08 · TECHNOLOGY STACK -->
-<!-- ══════════════════════════════════════════════ -->
-<div class="panel" id="s08">
-  <div class="eyebrow">Section 08</div>
-  <div class="heading">Technology Stack</div>
-  <div class="subhead">Honest inventory of what exists, what is broken, and what is missing. Stop building until revenue starts.</div>
-
-  <div class="info-box"><strong>Directive:</strong> The PHC tech stack is already over-built for a pre-revenue business. The priority is to deploy and connect existing tools — not build new ones. Every new tool built before Deal #1 is closed is a distraction.</div>
-
-  <div class="h2">Internal Apps — Current Status</div>
-  <div class="tool-row"><div class="tool-status ts-built"></div><div class="tool-name">PHC Agent Training App v3</div><div class="tool-desc">20 lessons, 4 weeks, quiz engine, certificate. Ready to use when first agent hired.</div><span class="tool-tag tt-built">READY</span></div>
-  <div class="tool-row"><div class="tool-status ts-built"></div><div class="tool-name">PHC Market Intelligence Cheat Sheet</div><div class="tool-desc">2026 market data, yield benchmarks, project comparisons. Use as client-facing PDF now.</div><span class="tool-tag tt-built">DEPLOY NOW</span></div>
-  <div class="tool-row"><div class="tool-status ts-built"></div><div class="tool-name">PHC Message Builder</div><div class="tool-desc">Segment-specific message templates. Valuable once lead volume justifies it.</div><span class="tool-tag tt-built">READY</span></div>
-  <div class="tool-row"><div class="tool-status ts-built"></div><div class="tool-name">PHC Investment Explorer</div><div class="tool-desc">Budget-tier project comparison with WhatsApp CTAs. Client-facing tool — share directly in meetings or on WhatsApp.</div><span class="tool-tag tt-built">READY</span></div>
-  <div class="tool-row"><div class="tool-status ts-built"></div><div class="tool-name">PHC Lead Tracker</div><div class="tool-desc">Full CRM with pipeline kanban, auto-scoring, CSV export. Tracks leads → proposals → viewings → closings.</div><span class="tool-tag tt-built">READY</span></div>
-  <div class="tool-row"><div class="tool-status ts-built"></div><div class="tool-name">PHC Agent Hub</div><div class="tool-desc">Central launcher dashboard linking all 8 tools. Share with every agent as the starting point.</div><span class="tool-tag tt-built">DEPLOY NOW</span></div>
-  <div class="tool-row"><div class="tool-status ts-built"></div><div class="tool-name">PHC Proposal Generator</div><div class="tool-desc">Client-facing PDF proposal builder. Selects from property library with anchoring effect. Print-ready output with PHC branding.</div><span class="tool-tag tt-built">USE NOW</span></div>
-  <div class="tool-row"><div class="tool-status ts-partial"></div><div class="tool-name">Property Hub Calculator (v7)</div><div class="tool-desc">8-tab sales tool. Resale tab is broken. Fix before using in client meetings.</div><span class="tool-tag tt-partial">FIX RESALE TAB</span></div>
-  <div class="tool-row"><div class="tool-status ts-built"></div><div class="tool-name">PHC Setup Tracker</div><div class="tool-desc">Business setup progress. Mostly complete. Archive when all items done.</div><span class="tool-tag tt-built">ARCHIVE SOON</span></div>
-
-  <div class="tool-row"><div class="tool-status ts-built"></div><div class="tool-name">PHC Investment Guide 2026 (Lead Magnet)</div><div class="tool-desc">8-page print-ready Cambodia property guide. Share with prospects before briefing calls. Budget strategy, districts, tax &amp; legal, buying process, WHY PHC, WhatsApp CTA.</div><span class="tool-tag tt-built">DEPLOY NOW</span></div>
-
-  <div class="h2">Missing — Critical Gaps</div>
-  <div class="tool-row"><div class="tool-status ts-missing"></div><div class="tool-name">WhatsApp Auto-Response (ManyChat)</div><div class="tool-desc">Staff guide exists. ManyChat is not connected. Every missed WhatsApp is a wasted lead.</div><span class="tool-tag tt-missing">CONNECT NOW</span></div>
-  <div class="tool-row"><div class="tool-status ts-missing"></div><div class="tool-name">Email Newsletter System (Mailchimp)</div><div class="tool-desc">Staff guide exists. Mailchimp is not running. Monthly market update would keep 20+ leads warm.</div><span class="tool-tag tt-missing">CONNECT NOW</span></div>
-  <div class="tool-row"><div class="tool-status ts-missing"></div><div class="tool-name">Paid Ad Campaigns (Meta)</div><div class="tool-desc">Staff guide exists. Zero campaigns running. $200/month would transform lead volume.</div><span class="tool-tag tt-missing">LAUNCH NOW</span></div>
-
-  <div class="h2">Design System — Unify Immediately</div>
-  <div class="warn-box">
-    PHC currently has 4+ different gold values across its apps: <code>#CC9D4D</code>, <code>#c9993f</code>, <code>#C9A84C</code>, <code>#C9993A</code>. And 3+ navy values. This is a brand integrity issue.<br><br>
-    <strong>Canonical tokens (use everywhere):</strong><br>
-    Gold: <code>#c9993f</code> (from Agent Training v3 — the gold standard app)<br>
-    Navy: <code>#06264f</code> (dark) / <code>#040f24</code> (hero)<br>
-    Fonts: Playfair Display (headers) · Inter / SF Pro (body) · JetBrains Mono (data)
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════════ -->
-<!-- S09 · TEAM BUILDING -->
-<!-- ══════════════════════════════════════════════ -->
-<div class="panel" id="s09">
-  <div class="eyebrow">Section 09</div>
-  <div class="heading">Team Building</div>
-  <div class="subhead">Current team structure, agent hiring triggers, and the training pipeline that already exists.</div>
-
-  <div class="h2">Current Team</div>
-  <div class="col-3" style="margin-bottom:16px">
-    <div class="card">
-      <div class="eyebrow">Co-Founder · CEO</div>
-      <div style="font-size:16px;font-weight:700;color:var(--ink);margin-bottom:4px">Nick</div>
-      <div class="body">Senior Real Estate Advisor. Multilingual (Khmer, Japanese, English). Runs Japanese investor protocol. Oversees all operations and AI systems. <strong>Primary focus: high-value Japanese and overseas Cambodian clients.</strong></div>
-    </div>
-    <div class="card">
-      <div class="eyebrow">CEO · Property Consultant</div>
-      <div style="font-size:16px;font-weight:700;color:var(--ink);margin-bottom:4px">Ms. Meas Monika</div>
-      <div class="body">Residential and investment focus. Khmer-speaking. Strong local market knowledge. <strong>Primary focus: local Khmer end-users and overseas Cambodian segment.</strong></div>
-    </div>
-    <div class="card">
-      <div class="eyebrow">Co-Founder · European Advisor</div>
-      <div style="font-size:16px;font-weight:700;color:var(--ink);margin-bottom:4px">Mr. Reza</div>
-      <div class="body">German/European investor specialist. Strategic, long-term focus. <strong>Primary focus: German and European retirement buyers. Leads Peninsula, Le Condé, Royal Platinum conversations.</strong></div>
-    </div>
-  </div>
-
-  <div class="h2">Hire Agent #1 — The Trigger</div>
-  <div class="info-box">
-    <strong>Do not hire an agent until ALL of the following are true:</strong><br>
-    ✓ At least 1 deal closed (proof of concept)<br>
-    ✓ Consistent 5+ inbound leads per month (something to give an agent)<br>
-    ✓ PHC training program ready to run (already built — ✓)<br>
-    ✓ Commission split structure decided (see below)<br>
-    ✓ Nick has 2–3 hours/week available to supervise
-  </div>
-
-  <div class="h2">Agent Profile — What to Look For</div>
-  <div class="rules">
-    <div class="rule">
-      <div class="rule-n">✓</div>
-      <div><div class="rule-title">Language match</div><div class="rule-detail">First agent should be Khmer + English bilingual (to serve the fastest-moving segment: overseas Cambodians and local Khmer). Second agent could be Japanese-speaking for the higher-value Japanese pipeline.</div></div>
-    </div>
-    <div class="rule">
-      <div class="rule-n">✓</div>
-      <div><div class="rule-title">Advisory mindset, not sales personality</div><div class="rule-detail">PHC's brand is trust-first. Hire someone who asks questions and listens — not someone who talks more than the client. Any agent who leads with "great investment opportunity" language fails the culture test.</div></div>
-    </div>
-    <div class="rule">
-      <div class="rule-n">✓</div>
-      <div><div class="rule-title">Commitment to training</div><div class="rule-detail">Must complete all 20 lessons of PHC Agent Training App before handling any client. Non-negotiable. This is not optional.</div></div>
-    </div>
-    <div class="rule">
-      <div class="rule-n">✓</div>
-      <div><div class="rule-title">Digital communication skills</div><div class="rule-detail">Comfortable with WhatsApp, Telegram, email. Able to write professional follow-up messages in their language. Responds within 2 hours during business hours.</div></div>
-    </div>
-  </div>
-
-  <div class="h2">Commission Split Structure (Suggested)</div>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>Scenario</th><th>PHC Share</th><th>Agent Share</th><th>Notes</th></tr></thead>
-      <tbody>
-        <tr><td>PHC-generated lead, agent closes</td><td>60%</td><td>40%</td><td>Standard split for leads PHC provides</td></tr>
-        <tr><td>Agent self-generated lead, agent closes</td><td>30%</td><td>70%</td><td>Reward self-sourced deals to incentivize independence</td></tr>
-        <tr><td>Nick-closed deal (no agent)</td><td>100%</td><td>—</td><td>All deals Nick closes personally</td></tr>
-        <tr><td>Referral introduced by agent</td><td>50%</td><td>50%</td><td>Referral where agent introduces but Nick closes</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="info-box"><strong>Note:</strong> These splits are suggested benchmarks. Research Phnom Penh market norms before committing. Splits that are too low will not attract good agents. Splits that are too high will destroy PHC's margin.</div>
-</div>
-
-<!-- ══════════════════════════════════════════════ -->
-<!-- S10 · 90-DAY SPRINT -->
-<!-- ══════════════════════════════════════════════ -->
-<div class="panel" id="s10">
-  <div class="eyebrow">Section 10</div>
-  <div class="heading">90-Day Sprint</div>
-  <div class="subhead">The specific actions that must happen in the next 90 days to generate first revenue and build the lead engine.</div>
-
-  <div class="hero" style="margin-bottom:20px">
-    <div class="hero-top">
-      <div class="hero-eyebrow">90-DAY OBJECTIVE</div>
-      <div class="hero-title">Close Deal #1. Build the Lead Machine.</div>
-      <div class="hero-sub">Everything else is secondary until these two things are done.</div>
-    </div>
-    <div class="hero-stats" style="grid-template-columns:repeat(3,1fr)">
-      <div><div class="hs-n">30</div><div class="hs-l">Days — Fix Foundations</div></div>
-      <div><div class="hs-n">60</div><div class="hs-l">Days — Launch Acquisition</div></div>
-      <div><div class="hs-n">90</div><div class="hs-l">Days — Close First Deal</div></div>
-    </div>
-  </div>
-
-  <div class="sprint-track">
-    <!-- Month 1 -->
-    <div class="sprint-item">
-      <div class="sprint-dot gold"></div>
-      <div class="sprint-week">Days 1–7 · Week 1</div>
-      <div class="sprint-title">Stop & Redirect</div>
-      <ul class="sprint-items">
-        <li>Pause volume listing posts. Replace with 3 well-designed posts per week max.</li>
-        <li>Identify the 2 current leads (Khmer, Chinese) — send them PHC proposal immediately. Close or qualify out.</li>
-        <li>Confirm commission rates with Megakim and Tanichu in writing.</li>
-        <li>Fix the Resale tab in Property Hub Calculator v7.</li>
-      </ul>
-    </div>
-    <div class="sprint-item">
-      <div class="sprint-dot gold"></div>
-      <div class="sprint-week">Days 8–14 · Week 2</div>
-      <div class="sprint-title">Build the Lead Magnet</div>
-      <ul class="sprint-items">
-        <li>Create "2026 Cambodia Property Investment Guide" PDF using existing market data.</li>
-        <li>Set up WhatsApp link or simple Linktree page to gate it.</li>
-        <li>Connect ManyChat WhatsApp auto-response (guide already written).</li>
-        <li>Decide on Facebook ad creative: 1 image ad, 1 video ad for overseas Cambodian segment.</li>
-      </ul>
-    </div>
-    <div class="sprint-item">
-      <div class="sprint-dot gold"></div>
-      <div class="sprint-week">Days 15–30 · Weeks 3–4</div>
-      <div class="sprint-title">Launch Paid Acquisition</div>
-      <ul class="sprint-items">
-        <li>Launch first Facebook ad campaign: $5–10/day, targeting overseas Cambodians in AU/US/FR.</li>
-        <li>Publish first YouTube educational video: "Can foreigners own property in Cambodia? 2026 rules."</li>
-        <li>Join 3 Facebook groups (Cambodian diaspora, Japanese expats PP, European expats PP) as PHC advisor.</li>
-        <li>Set up basic Mailchimp list. Add all existing contacts. Schedule first monthly market update.</li>
-        <li>Goal: 5+ inbound leads by end of Day 30.</li>
-      </ul>
+        <div class="h2">CEO Non-Negotiables</div>
+        <div class="card-navy">
+          <div class="rules">
+            <div class="rule"><div class="rule-n">1</div><div><div class="rule-title" style="color:rgba(255,255,255,.9)">First deal before first agent hire</div><div class="rule-detail" style="color:rgba(255,255,255,.55)">No agent joins a team with zero proof of concept. Close one deal first. Then recruit.</div></div></div>
+            <div class="rule" style="border-color:rgba(255,255,255,.06)"><div class="rule-n">2</div><div><div class="rule-title" style="color:rgba(255,255,255,.9)">Send what's already built before building more</div><div class="rule-detail" style="color:rgba(255,255,255,.55)">Revised from "stop building tools" — two bots got built after that rule was set, on the reasoning that they save ongoing time rather than compete with acquisition work. Worth deciding consciously whether that's the right line, or whether it's started to drift. Either way: referral outreach and outbound posts go out before anything new gets built.</div></div></div>
+            <div class="rule" style="border-color:rgba(255,255,255,.06)"><div class="rule-n">3</div><div><div class="rule-title" style="color:rgba(255,255,255,.9)">Trust over closing — always</div><div class="rule-detail" style="color:rgba(255,255,255,.55)">PHC's only durable competitive advantage is a reputation for honest advisory. Never compromise it for a commission.</div></div></div>
+            <div class="rule" style="border-color:rgba(255,255,255,.06)"><div class="rule-n">4</div><div><div class="rule-title" style="color:rgba(255,255,255,.9)">Outbound first, referral in parallel, paid ads last</div><div class="rule-detail" style="color:rgba(255,255,255,.55)">Decided 2026-07-09, supersedes the original segment-sequencing rule. Free/near-zero-cost channels prove which message and audience actually convert before a dollar is spent on ads.</div></div></div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Month 2 -->
-    <div class="sprint-item">
-      <div class="sprint-dot navy"></div>
-      <div class="sprint-week">Days 31–45 · Weeks 5–6</div>
-      <div class="sprint-title">Convert Leads</div>
-      <ul class="sprint-items">
-        <li>Send PHC proposals to all qualified leads from Month 1.</li>
-        <li>Run 3–5 site visits / showroom appointments.</li>
-        <li>Publish 4 more educational videos (1/week cadence).</li>
-        <li>Begin Japanese outreach: identify Japanese Chamber of Commerce events in Phnom Penh.</li>
-        <li>Goal: 2 proposals signed (reservations/bookings), 1 deal in close.</li>
-      </ul>
+    <!-- S02 BUSINESS MODEL -->
+    <div class="detail" id="d-s02">
+      <div class="detail-head"><div class="dh-icon">💰</div><div class="dh-title">Business Model</div><div class="dh-tag dt-draft">Q2 DRAFT</div></div>
+      <div class="detail-body">
+        <div class="body-text">How PHC makes money, what deals cost, and the math behind a $250K year.</div>
+
+        <div class="h2">Revenue Streams</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Stream</th><th>Commission / Fee</th><th>Avg Deal</th><th>Avg Earn</th><th>Priority</th></tr></thead>
+          <tbody>
+            <tr><td><strong>New development (off-plan)</strong></td><td>3–5% (developer-paid)</td><td>$150K–$500K</td><td>$6K–$20K</td><td class="td-ok">★ Primary</td></tr>
+            <tr><td>Resale / secondary</td><td>2–3% (split)</td><td>$100K–$300K</td><td>$3K–$8K</td><td class="td-gold">Secondary</td></tr>
+            <tr><td>Rental placement</td><td>1 month rent</td><td>$800–$2,500/mo</td><td>$800–$2,500</td><td class="td-gold">Secondary</td></tr>
+            <tr><td>Property management</td><td>8–12% of rent</td><td>$1,000–$2,500/mo</td><td>$80–$300/mo</td><td class="td-err">Recurring (later)</td></tr>
+            <tr><td>Referral / partner fee</td><td>0.5–1%</td><td>Variable</td><td>$500–$3K</td><td class="td-err">Opportunistic</td></tr>
+          </tbody>
+        </table></div>
+        <div class="info-box"><strong>Key insight:</strong> off-plan new development is the highest-margin, lowest-friction stream — developer pays the commission, no buyer negotiation. Target 80%+ of Year 1 revenue from here.</div>
+
+        <div class="h2">The $250K Math</div>
+        <div class="col-3">
+          <div class="rev-scenario">
+            <div class="tr-role">Base Case</div>
+            <div style="font-size:18px;font-weight:700;color:var(--ink);font-family:var(--mono)">$180K</div>
+            <div class="body-text" style="margin:6px 0">25 deals · avg $7,200</div>
+            <div class="rev-bar"><div class="rev-fill" style="width:72%"></div></div>
+            <div style="font-size:10.5px;color:var(--ink-3)">72% of target</div>
+          </div>
+          <div class="rev-scenario active-s">
+            <div class="tr-role">Target</div>
+            <div style="font-size:18px;font-weight:700;color:var(--gold);font-family:var(--mono)">$252K</div>
+            <div class="body-text" style="margin:6px 0">33 deals · avg $7,600</div>
+            <div class="rev-bar"><div class="rev-fill" style="width:100%"></div></div>
+            <div style="font-size:10.5px;color:var(--gold);font-weight:600">ON TARGET</div>
+          </div>
+          <div class="rev-scenario">
+            <div class="tr-role">Stretch</div>
+            <div style="font-size:18px;font-weight:700;color:var(--ok);font-family:var(--mono)">$350K+</div>
+            <div class="body-text" style="margin:6px 0">40+ deals · avg $8,750</div>
+            <div class="rev-bar"><div class="rev-fill" style="width:100%;background:linear-gradient(90deg,var(--ok),#4cd98a)"></div></div>
+            <div style="font-size:10.5px;color:var(--ok)">Needs 1–2 agent hires by Q2</div>
+          </div>
+        </div>
+
+        <div class="h2">Monthly Deal Target</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Quarter</th><th>Months</th><th>Target Deals</th><th>Cumulative</th><th>Key Milestone</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Q1 — Build</strong></td><td>Apr–Jun</td><td>2–3</td><td>3</td><td>First deal · Paid ads live</td></tr>
+            <tr><td><strong>Q2 — Acquire</strong></td><td>Jul–Sep</td><td>6–8</td><td>11</td><td>First agent hired</td></tr>
+            <tr><td><strong>Q3 — Scale</strong></td><td>Oct–Dec</td><td>9–11</td><td>22</td><td>2nd agent · JP segment active</td></tr>
+            <tr><td><strong>Q4 — Close</strong></td><td>Jan–Mar '27</td><td>11–13</td><td>33+</td><td>$250K milestone</td></tr>
+          </tbody>
+        </table></div>
+        <div class="warn-box"><strong>Reality check:</strong> 0 → 3 deals/month in 12 months is aggressive — requires a functioning paid ad engine, consistent lead flow, and ≥1 agent hire by Q2. Miss the 30-day fix on lead gen and the Q1 target slips.</div>
+
+        <div class="h2">Commission Rate — Fill In</div>
+        <div class="card-gold">
+          <div class="tr-role">Action required — Nick</div>
+          <div class="body-text">The model above uses <strong>3–5%</strong> as an estimate. Confirm actual rates from Megakim and Tanichu — the gap between 3% and 5% on a $300K deal is $6,000 vs $10,000. Also confirm: commission upfront at signing, or at completion/handover? Affects cash flow planning.</div>
+        </div>
+
+        <div class="h2">Auto-Reject Criteria</div>
+        <div class="rules">
+          <div class="rule"><div class="rule-n" style="background:var(--err);color:#fff">✕</div><div><div class="rule-title">Rental yields under $500/month net</div><div class="rule-detail">Not worth the management overhead.</div></div></div>
+          <div class="rule"><div class="rule-n" style="background:var(--err);color:#fff">✕</div><div><div class="rule-title">Renovated apartment deals</div><div class="rule-detail">High effort, low commission, brand dilution.</div></div></div>
+          <div class="rule"><div class="rule-n" style="background:var(--err);color:#fff">✕</div><div><div class="rule-title">Brand-diluting partnerships</div><div class="rule-detail">Unverified projects or guaranteed-return promises — immediate disqualification.</div></div></div>
+          <div class="rule"><div class="rule-n" style="background:var(--err);color:#fff">✕</div><div><div class="rule-title">Low-margin, high-maintenance requests</div><div class="rule-detail">10+ hours of hand-holding for a $100K deal isn't worth it at current team size.</div></div></div>
+        </div>
+      </div>
     </div>
-    <div class="sprint-item">
-      <div class="sprint-dot navy"></div>
-      <div class="sprint-week">Days 46–60 · Weeks 7–8</div>
-      <div class="sprint-title">Optimize & Expand</div>
-      <ul class="sprint-items">
-        <li>Review Facebook ad performance — double down on best-performing creative.</li>
-        <li>Launch second video targeting Japanese investors: "J Tower 3 — Cambodia's tallest condo."</li>
-        <li>Add Reza's European network outreach: LinkedIn posts in German, European expat group engagement.</li>
-        <li>Goal: 10+ active leads in pipeline. First commission payment received.</li>
-      </ul>
+
+    <!-- S03 MARKET POSITION -->
+    <div class="detail" id="d-s03">
+      <div class="detail-head"><div class="dh-icon">📍</div><div class="dh-title">Market Position</div><div class="dh-tag dt-draft">Q2 DRAFT</div></div>
+      <div class="detail-body">
+        <div class="body-text">Where PHC sits in the Phnom Penh market, what makes it defensible, and what threatens it.</div>
+
+        <div class="h2">Phnom Penh Market 2026 — Key Facts</div>
+        <div class="col-2">
+          <div class="card">
+            <div class="tr-role">Supply & Demand</div>
+            <div class="rules">
+              <div class="rule"><div class="rule-n" style="font-size:9px">↑</div><div><div class="rule-title">~45,200 completed units</div><div class="rule-detail">Supply stabilizing — no major oversupply crisis like 2020–2022.</div></div></div>
+              <div class="rule"><div class="rule-n" style="font-size:9px">↑</div><div><div class="rule-title">Transaction volume up 25% in 2025</div><div class="rule-detail">Genuine recovery. Foreign demand returning.</div></div></div>
+              <div class="rule" style="border:none"><div class="rule-n" style="font-size:9px">→</div><div><div class="rule-title">Prices up 3–5% in BKK1</div><div class="rule-detail">Gradual appreciation. CGT shifting behavior toward long-hold.</div></div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="tr-role">Yield Benchmarks</div>
+            <div class="rules">
+              <div class="rule"><div class="rule-n" style="background:var(--gold);color:#fff;font-size:9px">BK1</div><div><div class="rule-title">BKK1: 7.8–8.7% net</div><div class="rule-detail">$2,650–$3,000/sqm. PHC's primary market.</div></div></div>
+              <div class="rule"><div class="rule-n" style="font-size:9px">CM</div><div><div class="rule-title">Chamkar Mon: 7.1–8.1%</div><div class="rule-detail">$1,800–$2,400/sqm. Mid-market. TS8 territory.</div></div></div>
+              <div class="rule" style="border:none"><div class="rule-n" style="font-size:9px">TK</div><div><div class="rule-title">Toul Kork: 6.8–7.5%</div><div class="rule-detail">$1,200–$1,600/sqm. Royal Platinum / TS11.</div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="h2">PHC's Genuine Competitive Advantages</div>
+        <div class="rules">
+          <div class="rule"><div class="rule-n">1</div><div><div class="rule-title">Multilingual advisory (Khmer · English · Japanese · German)</div><div class="rule-detail">Very few agencies communicate credibly in Japanese and German at a technical level — direct access to the two highest-value foreign segments. Not easily replicated.</div></div></div>
+          <div class="rule"><div class="rule-n">2</div><div><div class="rule-title">Trust-first advisory — no pressure selling</div><div class="rule-detail">The Japanese investor protocol and "this may not be right for you" positioning builds a category of one. Takes longer to close, produces referrals.</div></div></div>
+          <div class="rule"><div class="rule-n">3</div><div><div class="rule-title">Deep developer relationships (Megakim + Tanichu)</div><div class="rule-detail">Real-time pricing, quota availability, pre-launch access — advantages independent buyers can't replicate.</div></div></div>
+          <div class="rule"><div class="rule-n">4</div><div><div class="rule-title">PHC office in BKK1 Time Square 5</div><div class="rule-detail">Physical presence in the premium district signals credibility to Japanese/European clients who do due diligence on the agency itself.</div></div></div>
+        </div>
+
+        <div class="h2">SWOT Analysis</div>
+        <div class="swot-grid">
+          <div class="swot-cell swot-s"><div class="swot-head">Strengths</div>
+            <div class="swot-li">Multilingual team (4 languages)</div><div class="swot-li">Megakim + Tanichu developer access</div><div class="swot-li">Trust-first brand positioning</div><div class="swot-li">20-lesson agent training system built</div><div class="swot-li">BKK1 premium office address</div><div class="swot-li">15+ years combined experience</div>
+          </div>
+          <div class="swot-cell swot-w"><div class="swot-head">Weaknesses</div>
+            <div class="swot-li">Zero revenue / no closed deals yet</div><div class="swot-li">No paid marketing engine running</div><div class="swot-li">3 people — bandwidth risk</div><div class="swot-li">All tools internal — no client-facing lead capture</div><div class="swot-li">Brand design not yet unified across assets</div><div class="swot-li">No CRM or pipeline management system</div>
+          </div>
+          <div class="swot-cell swot-o"><div class="swot-head">Opportunities</div>
+            <div class="swot-li">Japanese investor demand recovering strongly</div><div class="swot-li">German retiree market largely unserved in PP</div><div class="swot-li">CGT drives long-hold → property management revenue</div><div class="swot-li">J Tower 3 (tallest condo) pre-launch buzz</div><div class="swot-li">TS10 Sihanoukville coastal — beach demand</div><div class="swot-li">Overseas Cambodian diaspora reachable via paid ads</div>
+          </div>
+          <div class="swot-cell swot-t"><div class="swot-head">Threats</div>
+            <div class="swot-li">Developer dependency (Megakim/Tanichu stalling)</div><div class="swot-li">Competition from larger agencies with ad budgets</div><div class="swot-li">CGT uncertainty discouraging short-term buyers</div><div class="swot-li">Team burnout — 3 people covering 5 segments</div><div class="swot-li">Political / regulatory changes in Cambodia</div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Month 3 -->
-    <div class="sprint-item">
-      <div class="sprint-dot ok"></div>
-      <div class="sprint-week">Days 61–75 · Weeks 9–10</div>
-      <div class="sprint-title">Close First Deal</div>
-      <ul class="sprint-items">
-        <li>Accompany lead to contract signing — first PHC commission earned.</li>
-        <li>Document the full deal process: what worked, timeline, objections handled.</li>
-        <li>Request testimonial or case study (anonymous if client prefers).</li>
-        <li>Assess if agent hire trigger conditions are met.</li>
-      </ul>
+    <!-- S04 CLIENT SEGMENTS -->
+    <div class="detail" id="d-s04">
+      <div class="detail-head"><div class="dh-icon">🌏</div><div class="dh-title">Client Segments</div><div class="dh-tag dt-draft">Q2 DRAFT</div></div>
+      <div class="detail-body">
+        <div class="body-text">Five segments. One to prioritize first. Each requires a different advisory approach.</div>
+        <div class="info-box"><strong>Current phase strategy:</strong> don't serve all 5 simultaneously. Start with <strong>Overseas Cambodians</strong> (fastest first deal). Then <strong>Japanese investors</strong> via structured outreach. German follows once the first 5 deals close.</div>
+
+        <div class="seg-card" style="background:var(--s1-s);border-color:rgba(11,79,138,.2)">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
+            <div><div class="seg-tag" style="background:rgba(11,79,138,.1);color:var(--s1)">🇰🇭 Priority 1 · Start Here</div><div class="seg-name">Overseas Cambodians</div><div class="seg-budget">$80K–$300K · 1–6 months · Fast decision</div></div>
+            <span class="p-badge p1">ACTIVATE NOW</span>
+          </div>
+          <div class="body-text">Remote buyers with family ties in Cambodia. Often invest in hometown as status/family security. Faster decision cycle than JP/DE. Comfortable with Khmer, familiar developer names. Responsive to WhatsApp.</div>
+          <div class="col-2"><div><div class="h3">Best Projects</div><div class="seg-row"><span class="seg-pill">Time Square 8</span><span class="seg-pill">Time Square 11</span><span class="seg-pill">Royal Platinum</span></div></div><div><div class="h3">Key Concerns</div><div class="seg-row"><span class="seg-pill">Title security</span><span class="seg-pill">Developer track record</span><span class="seg-pill">Payment flexibility</span></div></div></div>
+          <div class="h3">How to Reach Them</div><div class="body-text">Facebook groups for Cambodian diaspora (US/AU/FR). Paid FB ads targeting Cambodian ethnicity abroad. Khmer-language WhatsApp outreach. Referrals from existing Khmer clients.</div>
+        </div>
+
+        <div class="seg-card" style="background:var(--err-s);border-color:rgba(184,48,48,.18)">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
+            <div><div class="seg-tag" style="background:rgba(184,48,48,.1);color:var(--err)">🇯🇵 Priority 2 · High Value</div><div class="seg-name">Japanese Investors</div><div class="seg-budget">$100K–$500K+ · 3–12 months · Slow, deliberate</div></div>
+            <span class="p-badge p2">BUILD NOW</span>
+          </div>
+          <div class="body-text">40+, high income, low risk tolerance. Trust is the only currency — they research PHC thoroughly first. Read written summaries. Need risk disclosed before returns. Never push, never rush — silence is thinking, not rejection.</div>
+          <div class="col-2"><div><div class="h3">Best Projects</div><div class="seg-row"><span class="seg-pill">J Tower 3</span><span class="seg-pill">J Tower 2 (resale)</span><span class="seg-pill">Time Square 9</span><span class="seg-pill">Le Condé</span></div></div><div><div class="h3">Key Concerns (disclose first)</div><div class="seg-row"><span class="seg-pill">Exit liquidity</span><span class="seg-pill">Net vs gross yield</span><span class="seg-pill">Developer track record</span><span class="seg-pill">CGT impact</span></div></div></div>
+          <div class="h3">Opening Line (Non-Negotiable)</div><div class="info-box">"We are not here to sell. We are here to help you decide if this fits your goals."</div>
+          <div class="h3">How to Reach Them</div><div class="body-text">Japanese Chamber of Commerce Phnom Penh. LINE communities. Japanese expat FB groups. LinkedIn (Japanese). Referrals from J Tower 2 owners. JICA / Japan-Cambodia business networks.</div>
+        </div>
+
+        <div class="seg-card" style="background:var(--s2-s);border-color:rgba(26,107,58,.18)">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
+            <div><div class="seg-tag" style="background:rgba(26,107,58,.1);color:var(--s2)">🇩🇪 Priority 3 · Strategic</div><div class="seg-name">German & European Retirees</div><div class="seg-budget">$150K–$600K · 3–12 months · Logic-driven</div></div>
+            <span class="p-badge p3">REZA'S LEAD</span>
+          </div>
+          <div class="body-text">Want stable, predictable rental income to supplement pension. Prioritize downside protection over upside. Want worst-case before best-case. Appreciate precise data and legal clarity. Reza is the primary relationship builder.</div>
+          <div class="col-2"><div><div class="h3">Best Projects</div><div class="seg-row"><span class="seg-pill">Peninsula Private</span><span class="seg-pill">Le Condé</span><span class="seg-pill">Royal Platinum</span><span class="seg-pill">G.A.T.O Tower</span></div></div><div><div class="h3">Key Concerns</div><div class="seg-row"><span class="seg-pill">Net yield calc</span><span class="seg-pill">Management quality</span><span class="seg-pill">Exit realism</span><span class="seg-pill">CGT planning</span></div></div></div>
+          <div class="h3">How to Reach Them</div><div class="body-text">European expat FB groups in Phnom Penh. LinkedIn outreach from Reza. German-language YouTube/LinkedIn content. Referrals from German embassy connections.</div>
+        </div>
+
+        <div class="seg-card" style="background:var(--bg);border-color:var(--line)">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
+            <div><div class="seg-tag" style="background:var(--card);color:var(--ink-2)">🇰🇭 Local Khmer End-Users</div><div class="seg-name">Local Khmer End-Users</div><div class="seg-budget">$60K–$200K · 1–3 months · Moderate</div></div>
+            <span class="p-badge p3">ORGANIC ONLY</span>
+          </div>
+          <div class="body-text">Lifestyle upgrade buyers — community, school proximity, developer reputation, flexible payment plans. Price-sensitive. Showing up organically — serve well, don't build a paid acquisition strategy for this segment yet.</div>
+          <div class="col-2"><div><div class="h3">Best Projects</div><div class="seg-row"><span class="seg-pill">Time Square 11 BKK3</span><span class="seg-pill">Royal Platinum</span><span class="seg-pill">Time Square 8</span></div></div><div><div class="h3">Key Concerns</div><div class="seg-row"><span class="seg-pill">Payment plan</span><span class="seg-pill">Move-in timeline</span><span class="seg-pill">Facilities</span></div></div></div>
+        </div>
+
+        <div class="seg-card" style="background:var(--s4-s);border-color:rgba(91,45,142,.18)">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
+            <div><div class="seg-tag" style="background:rgba(91,45,142,.1);color:var(--s4)">🌏 Other Foreign Investors</div><div class="seg-name">Chinese, Russian, Other Foreign</div><div class="seg-budget">$100K–$400K · 1–6 months · Fast if convinced</div></div>
+            <span class="p-badge p3">REACTIVE ONLY</span>
+          </div>
+          <div class="body-text">Yield and hands-free management are primary motivators. Want clear ROI numbers, management in place (e.g. Hopetree Japan), and an exit plan. Serve when they come to PHC — no dedicated acquisition for this segment in Year 1.</div>
+          <div class="col-2"><div><div class="h3">Best Projects</div><div class="seg-row"><span class="seg-pill">Le Condé (Hopetree)</span><span class="seg-pill">Peninsula</span><span class="seg-pill">TS10 Otres</span></div></div><div><div class="h3">Key Concerns</div><div class="seg-row"><span class="seg-pill">Net vs gross yield</span><span class="seg-pill">Management quality</span><span class="seg-pill">Exit liquidity</span></div></div></div>
+        </div>
+      </div>
     </div>
-    <div class="sprint-item">
-      <div class="sprint-dot ok"></div>
-      <div class="sprint-week">Days 76–90 · Weeks 11–12</div>
-      <div class="sprint-title">Build Q2 Pipeline</div>
-      <ul class="sprint-items">
-        <li>Review all 12 metrics: leads, proposals, viewings, closings, channel performance, ad spend ROI.</li>
-        <li>If agent trigger conditions met: begin recruitment. Post role. Screen against criteria.</li>
-        <li>Plan Q2 content calendar. Double the winning content format.</li>
-        <li>Goal: 15+ warm leads, 2+ deals closed or in final stage, agent hire in progress.</li>
-      </ul>
+
+    <!-- S05 PRODUCT PORTFOLIO -->
+    <div class="detail" id="d-s05">
+      <div class="detail-head"><div class="dh-icon">🏢</div><div class="dh-title">Product Portfolio</div><div class="dh-tag dt-draft">Q2 DRAFT</div></div>
+      <div class="detail-body">
+        <div class="body-text">Active projects PHC can sell, their key data points, and which to prioritize in the current phase.</div>
+
+        <div class="h2" style="color:var(--gold)">Megakim Projects</div>
+        <div class="proj-card">
+          <div class="proj-header"><div><div class="proj-name">Time Square 9 — The Gatsby Residence</div><div class="proj-dev">Megakim World Corp · BKK1, St. 278</div></div><span class="p-badge p1">FLAGSHIP · LEAD</span></div>
+          <div class="body-text">2-minute walk from Independence Monument. Freehold strata title. Best-value BKK1 entry point. Opening project for JP and overseas Cambodian conversations.</div>
+          <div class="proj-facts"><div><div class="pf-lbl">Price/sqm</div><div class="pf-val">~$1,700</div></div><div><div class="pf-lbl">BKK1 Avg</div><div class="pf-val">$2,500+</div></div><div><div class="pf-lbl">Title</div><div class="pf-val td-ok">Freehold Strata</div></div></div>
+        </div>
+        <div class="proj-card">
+          <div class="proj-header"><div><div class="proj-name">Time Square 8 — Toul Tom Pong</div><div class="proj-dev">Megakim World Corp · 50 floors</div></div><span class="p-badge p2">VOLUME DRIVER</span></div>
+          <div class="body-text">Sold 85% in 6 months — proven demand signal. Good for overseas Cambodian and local Khmer buyers. Mid-range entry.</div>
+          <div class="proj-facts"><div><div class="pf-lbl">Price/sqm</div><div class="pf-val">~$1,452</div></div><div><div class="pf-lbl">Sold</div><div class="pf-val">85%</div></div><div><div class="pf-lbl">Title</div><div class="pf-val td-ok">Strata</div></div></div>
+        </div>
+        <div class="proj-card">
+          <div class="proj-header"><div><div class="proj-name">Time Square 10 — Otres Beach, Sihanoukville</div><div class="proj-dev">Megakim World Corp · 3 towers, ~1,000 units</div></div><span class="p-badge p3">BEACH MARKET</span></div>
+          <div class="body-text">Beachfront resort-style. Strong holiday/rental demand. Entry from ~$40K — accessible for first-time investors. Good for Chinese/Russian buyers seeking yield.</div>
+          <div class="proj-facts"><div><div class="pf-lbl">Entry</div><div class="pf-val">From ~$40K</div></div><div><div class="pf-lbl">Market</div><div class="pf-val">Holiday/Rental</div></div><div><div class="pf-lbl">Title</div><div class="pf-val">Confirm</div></div></div>
+        </div>
+        <div class="proj-card">
+          <div class="proj-header"><div><div class="proj-name">Time Square 11 — BKK3</div><div class="proj-dev">Megakim World Corp · Launched Feb 2026</div></div><span class="p-badge p3">AFFORDABLE ENTRY</span></div>
+          <div class="body-text">Newest Megakim launch. Affordable PP entry. Target: local Khmer + overseas Cambodians seeking mid-range investment.</div>
+          <div class="proj-facts"><div><div class="pf-lbl">Launched</div><div class="pf-val">Feb 2026</div></div><div><div class="pf-lbl">Market</div><div class="pf-val">Local + diaspora</div></div><div><div class="pf-lbl">Title</div><div class="pf-val">Confirm</div></div></div>
+        </div>
+
+        <div class="h2" style="color:var(--s1)">Tanichu Projects</div>
+        <div class="proj-card" style="border-color:rgba(11,79,138,.25);background:var(--s1-s)">
+          <div class="proj-header"><div><div class="proj-name">J Tower 3 — Upcoming</div><div class="proj-dev">Tanichu Assetment Co. Ltd · Japanese developer</div></div><span class="p-badge p1">TOP PRIORITY · JAPAN</span></div>
+          <div class="body-text">Positioned as tallest condominium in Cambodia. Luxury, high pre-sale interest. Strongest appeal to Japanese investors — developer nationality alignment creates automatic trust. Build all JP marketing around this.</div>
+          <div class="proj-facts"><div><div class="pf-lbl">Status</div><div class="pf-val">Pre-launch</div></div><div><div class="pf-lbl">Segment</div><div class="pf-val">JP · International</div></div><div><div class="pf-lbl">Title</div><div class="pf-val td-ok">Freehold Strata</div></div></div>
+        </div>
+        <div class="proj-card">
+          <div class="proj-header"><div><div class="proj-name">J Tower 2 — Completed</div><div class="proj-dev">Tanichu Assetment Co. Ltd</div></div><span class="p-badge p2">RESALE + PROOF</span></div>
+          <div class="body-text">Completed, freehold strata confirmed. Use as proof of delivery when pitching J Tower 3. Strong resale and rental demand.</div>
+          <div class="proj-facts"><div><div class="pf-lbl">Status</div><div class="pf-val td-ok">Completed</div></div><div><div class="pf-lbl">Title</div><div class="pf-val td-ok">Freehold ✓</div></div><div><div class="pf-lbl">Use Case</div><div class="pf-val">Proof of delivery</div></div></div>
+        </div>
+
+        <div class="h2">Other Key Projects</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Project</th><th>Location</th><th>Entry</th><th>Yield</th><th>Segment</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Le Condé BKK1</strong><br><span style="font-size:10px;color:var(--ink-3)">Wangfu Intl · Hopetree Japan mgmt</span></td><td>BKK1</td><td>From $150K</td><td>Est. 8%+</td><td>JP · Foreign</td><td class="td-ok">Completed May 2025</td></tr>
+            <tr><td><strong>Royal Platinum</strong><br><span style="font-size:10px;color:var(--ink-3)">30 floors · 851 units</span></td><td>Toul Kork</td><td>From $120K</td><td>6.8–7.5%</td><td>DE · KH · Overseas KH</td><td class="td-ok">Completed 2025</td></tr>
+            <tr><td><strong>Peninsula Private Residences</strong></td><td>Chroy Changvar</td><td>~$4,200/sqm</td><td>~8.2%</td><td>DE · European</td><td>Premium tier</td></tr>
+            <tr><td><strong>G.A.T.O Tower</strong><br><span style="font-size:10px;color:var(--ink-3)">65 floors · Japanese-Cambodian (MIRAKU)</span></td><td>BKK1</td><td>TBC</td><td>TBC</td><td>JP · International</td><td class="td-gold">Upcoming</td></tr>
+          </tbody>
+        </table></div>
+        <div class="warn-box"><strong>Always verify before quoting:</strong> strata title status · foreign ownership quota remaining · completion date · developer payment track record. Never quote prices from memory — confirm with developer same-day.</div>
+      </div>
     </div>
-  </div>
-</div>
 
-<!-- ══════════════════════════════════════════════ -->
-<!-- S11 · FINANCIAL MODEL -->
-<!-- ══════════════════════════════════════════════ -->
-<div class="panel" id="s11">
-  <div class="eyebrow">Section 11</div>
-  <div class="heading">Financial Model</div>
-  <div class="subhead">The path to $250K. Three scenarios. Monthly deal cadence. Cost structure.</div>
+    <!-- S06 MARKETING ENGINE -->
+    <div class="detail" id="d-s06">
+      <div class="detail-head"><div class="dh-icon">📣</div><div class="dh-title">Marketing Engine</div><div class="dh-tag dt-draft">Q2 DRAFT</div></div>
+      <div class="detail-body">
+        <div class="body-text">Why 100 posts produced 2 leads — and the new formula.</div>
+        <div class="warn-box"><strong>The broken formula:</strong> 100+ listing posts, 8 channels, $0 ad spend → 2 leads, 0 deals. More content won't fix this — it's targeting, distribution, and message type, not volume.</div>
 
-  <div class="warn-box">The commission rates below (3–5%) are estimates based on Phnom Penh market norms for new development. Nick must confirm actual rates from Megakim and Tanichu before using these projections for planning.</div>
+        <div class="h2">The New Formula</div>
+        <div class="col-3">
+          <div class="card-navy"><div class="tr-role">1. Paid Distribution</div><div style="color:rgba(255,255,255,.85);font-size:13px;font-weight:600;margin:4px 0">$200–$500/month</div><div style="color:rgba(255,255,255,.55);font-size:11.5px;line-height:1.6">FB + TikTok ads targeting overseas Cambodians and Japanese expats. Even $5/day outperforms 100 organic posts with no audience.</div></div>
+          <div class="card-navy"><div class="tr-role">2. Authority Content</div><div style="color:rgba(255,255,255,.85);font-size:13px;font-weight:600;margin:4px 0">1 video/week</div><div style="color:rgba(255,255,255,.55);font-size:11.5px;line-height:1.6">Educational, not promotional. "Can foreigners own property in Cambodia?" builds trust — listing posts don't.</div></div>
+          <div class="card-navy"><div class="tr-role">3. Community Presence</div><div style="color:rgba(255,255,255,.85);font-size:13px;font-weight:600;margin:4px 0">Direct outreach</div><div style="color:rgba(255,255,255,.55);font-size:11.5px;line-height:1.6">Go where targets actually are: Japanese Chamber, European expat groups, Cambodian diaspora WhatsApp/Facebook. Answer, don't sell.</div></div>
+        </div>
 
-  <div class="h2">Revenue Path — Three Scenarios</div>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>Scenario</th><th>Total Deals</th><th>Avg Commission</th><th>Annual Revenue</th><th>Deals / Month (avg)</th><th>Likelihood</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Base</strong></td><td>25</td><td>$7,200</td><td class="td-gold">$180,000</td><td>2.1</td><td>High — achievable without agent hire</td></tr>
-        <tr><td><strong>Target ★</strong></td><td>33</td><td>$7,600</td><td class="td-ok">$250,800</td><td>2.8</td><td>Medium — requires consistent lead flow + 1 agent by Q2</td></tr>
-        <tr><td><strong>Stretch</strong></td><td>42</td><td>$8,750</td><td class="td-ok">$367,500</td><td>3.5</td><td>Low — needs 2 agents, proven funnel, Japanese segment active</td></tr>
-      </tbody>
-    </table>
-  </div>
+        <div class="h2">Platform Strategy by Segment</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Segment</th><th>Platform</th><th>Content</th><th>Budget</th><th>Expected</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Overseas Cambodians</strong></td><td>Facebook (paid)</td><td>Khmer property stories, developer trust</td><td>$100–200/mo</td><td>5–15 leads/mo</td></tr>
+            <tr><td><strong>Japanese Investors</strong></td><td>LINE + YouTube</td><td>Risk-first analysis, JP market reports, J Tower 3</td><td>$50–100/mo</td><td>2–5 leads/mo (slower, higher value)</td></tr>
+            <tr><td><strong>German/European</strong></td><td>LinkedIn + FB expat groups</td><td>Yield calc, retirement planning, legal explainers</td><td>Reza-led (organic)</td><td>1–3 leads/mo</td></tr>
+            <tr><td><strong>General/SEO</strong></td><td>YouTube + Website</td><td>"Buying property in Cambodia 2026 guide"</td><td>$0 organic</td><td>Long-term compound</td></tr>
+          </tbody>
+        </table></div>
 
-  <div class="h2">Monthly Revenue Build — Target Scenario</div>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>Month</th><th>Deals</th><th>Revenue</th><th>Cumulative</th><th>Key Event</th></tr></thead>
-      <tbody>
-        <tr><td>April 2026</td><td>0</td><td>$0</td><td>$0</td><td>Lead magnet built · Ads launched</td></tr>
-        <tr><td>May 2026</td><td>1</td><td>$7,500</td><td>$7,500</td><td>First deal closed ★</td></tr>
-        <tr><td>June 2026</td><td>1–2</td><td>$10,000</td><td>$17,500</td><td>Lead flow consistent (10+/mo)</td></tr>
-        <tr><td>July 2026</td><td>2–3</td><td>$18,000</td><td>$35,500</td><td>Agent #1 hired</td></tr>
-        <tr><td>August 2026</td><td>3</td><td>$22,500</td><td>$58,000</td><td>Japanese outreach producing leads</td></tr>
-        <tr><td>September 2026</td><td>3–4</td><td>$26,000</td><td>$84,000</td><td>Reza European pipeline active</td></tr>
-        <tr><td>October 2026</td><td>3–4</td><td>$28,000</td><td>$112,000</td><td>Agent #1 closing independently</td></tr>
-        <tr><td>November 2026</td><td>4</td><td>$30,000</td><td>$142,000</td><td>J Tower 3 launch buzz drives leads</td></tr>
-        <tr><td>December 2026</td><td>3–4</td><td>$28,000</td><td>$170,000</td><td>Year-end investor decisions</td></tr>
-        <tr><td>January 2027</td><td>4</td><td>$30,000</td><td>$200,000</td><td>Agent #2 in training</td></tr>
-        <tr><td>February 2027</td><td>4</td><td>$28,000</td><td>$228,000</td><td>German pipeline closes</td></tr>
-        <tr><td>March 2027</td><td>3–4</td><td>$28,000</td><td class="td-ok"><strong>$256,000</strong></td><td>$250K milestone hit ★</td></tr>
-      </tbody>
-    </table>
-  </div>
+        <div class="h2">Lead Magnet — Build This First</div>
+        <div class="card-gold">
+          <div class="tr-role">Priority Action</div>
+          <div class="h3" style="margin-top:2px">2026 Cambodia Property Investment Guide</div>
+          <div class="body-text">10–15 page PDF: foreign ownership rules, CGT explained, net yield calc, top 5 projects honest data, how to choose a trustworthy agency. Gate behind WhatsApp/email. Every ad, post, and community comment points here.</div>
+        </div>
 
-  <div class="h2">Estimated Operating Costs</div>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>Cost Item</th><th>Monthly</th><th>Annual</th><th>Notes</th></tr></thead>
-      <tbody>
-        <tr><td>Office rent (BKK1 Time Square 5)</td><td>~$800–1,200</td><td>~$12,000</td><td>Confirm exact figure</td></tr>
-        <tr><td>Facebook / TikTok ads</td><td>$200–500</td><td>$3,600</td><td>Start $200, scale with ROI</td></tr>
-        <tr><td>Software (ManyChat, Mailchimp, Canva, etc.)</td><td>$80–120</td><td>$1,200</td><td>Estimate</td></tr>
-        <tr><td>Agent commission payouts (from Q2)</td><td>Variable</td><td>Est. $30,000</td><td>40% of agent-closed deals</td></tr>
-        <tr><td>Video production (equipment / editing)</td><td>$100–200</td><td>$1,800</td><td>AI tools reduce cost significantly</td></tr>
-        <tr><td>Business development / events</td><td>$200</td><td>$2,400</td><td>Japanese Chamber, expat events</td></tr>
-        <tr><td><strong>Total Estimated Costs</strong></td><td><strong>~$2,500–3,500</strong></td><td><strong>~$51,000</strong></td><td>Rough estimate — update monthly</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="ok-box"><strong>Net profit estimate (Target scenario):</strong> $256,000 revenue − $51,000 costs = <strong>~$205,000 net</strong> for a 3-person team in Year 1. Strong if achieved. The model is viable — the question is whether the lead engine can be built fast enough.</div>
-
-  <div class="h2">Weekly CEO Metrics — Track Every Monday</div>
-  <div class="col-3">
-    <div class="card"><div class="tile-l">Leads This Week</div><div class="tile-n gold" style="font-size:28px">—</div><div class="tile-sub">Target: 5+/week by Month 2</div></div>
-    <div class="card"><div class="tile-l">Active Proposals</div><div class="tile-n" style="font-size:28px">—</div><div class="tile-sub">Target: 3+ open at any time</div></div>
-    <div class="card"><div class="tile-l">Site Visits This Week</div><div class="tile-n" style="font-size:28px">—</div><div class="tile-sub">Target: 2+/week</div></div>
-    <div class="card"><div class="tile-l">Deals Closed (MTD)</div><div class="tile-n ok" style="font-size:28px">—</div><div class="tile-sub">Target: per monthly table above</div></div>
-    <div class="card"><div class="tile-l">Pipeline Value</div><div class="tile-n gold" style="font-size:28px">—</div><div class="tile-sub">All active proposals × commission</div></div>
-    <div class="card"><div class="tile-l">Ad Spend ROI</div><div class="tile-n" style="font-size:28px">—</div><div class="tile-sub">Cost per lead · Cost per deal</div></div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════════ -->
-<!-- S12 · RISK REGISTER -->
-<!-- ══════════════════════════════════════════════ -->
-<div class="panel" id="s12">
-  <div class="eyebrow">Section 12</div>
-  <div class="heading">Risk Register</div>
-  <div class="subhead">The threats most likely to derail PHC's $250K target — and the mitigation for each.</div>
-
-  <div class="h2">Risk Severity Matrix</div>
-
-  <div class="risk-card">
-    <div class="risk-sev sev-h">HIGH</div>
-    <div>
-      <div class="risk-title">Lead engine fails to generate consistent flow</div>
-      <div class="risk-detail">If 30 days of paid ads produce fewer than 5 qualified leads, the quarterly deal target cannot be met. This is the highest probability risk given 90 days at 0 producing only 2 leads.</div>
-      <div class="risk-mit">Mitigation: Run ads for 2 weeks then review CPL (cost per lead). If above $50/lead, test new creative or targeting. Have 3 alternative channels ready (community outreach, YouTube, Reza's LinkedIn).</div>
+        <div class="h2">Content Calendar — Weekly Rhythm</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Day</th><th>Content</th><th>Platform</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Monday</strong></td><td>Educational video (3–5 min)</td><td>YouTube → TikTok → Reels</td><td>Authority · SEO</td></tr>
+            <tr><td><strong>Wednesday</strong></td><td>Market insight (data + analysis)</td><td>LinkedIn + Facebook</td><td>JP/DE credibility</td></tr>
+            <tr><td><strong>Friday</strong></td><td>Project spotlight (honest data)</td><td>Instagram + Facebook</td><td>Product awareness</td></tr>
+            <tr><td><strong>Daily</strong></td><td>Community engagement</td><td>FB groups, LINE, WhatsApp</td><td>Trust + lead capture</td></tr>
+          </tbody>
+        </table></div>
+        <div class="info-box"><strong>Video content note:</strong> AI tools can accelerate production, but strategic message, data, and hook must come from Nick's expertise. AI = speed, PHC = credibility. Never publish AI content without Nick's review.</div>
+      </div>
     </div>
-  </div>
 
-  <div class="risk-card">
-    <div class="risk-sev sev-h">HIGH</div>
-    <div>
-      <div class="risk-title">Team bandwidth collapse (3 people, 5 segments)</div>
-      <div class="risk-detail">Nick, Monika, and Reza are covering development sales, rental management, client advisory, content creation, system building, and business development simultaneously. This is not sustainable at scale.</div>
-      <div class="risk-mit">Mitigation: Assign one primary segment per person. Nick = Japanese + Japanese outreach. Monika = Khmer + Overseas Cambodian. Reza = German + European. No cross-segment handling without consultation.</div>
+    <!-- S07 SALES SYSTEM -->
+    <div class="detail" id="d-s07">
+      <div class="detail-head"><div class="dh-icon">🤝</div><div class="dh-title">Sales System</div><div class="dh-tag dt-draft">Q2 DRAFT</div></div>
+      <div class="detail-body">
+        <div class="body-text">The advisory flow from first contact to signed contract — every step documented and repeatable.</div>
+
+        <div class="h2">Lead Qualification Framework</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Question</th><th>Green Signal</th><th>Red Flag</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Budget clarity</strong></td><td>Specific range given</td><td>"Just browsing" / below $80K</td></tr>
+            <tr><td><strong>Timeline</strong></td><td>3–12 months to decide</td><td>"Maybe one day" or "immediately" (panic buyer)</td></tr>
+            <tr><td><strong>Purpose</strong></td><td>Clear yield/end-use goal</td><td>Speculative flip post-CGT</td></tr>
+            <tr><td><strong>Decision maker</strong></td><td>Decides alone or with present spouse</td><td>Needs 5 absent family members to consult</td></tr>
+            <tr><td><strong>Title requirement</strong></td><td>Understands strata title need</td><td>Asking about "softer" alternatives</td></tr>
+          </tbody>
+        </table></div>
+
+        <div class="h2">Advisory Flow — 5 Stages</div>
+        <div class="sprint-track">
+          <div class="sprint-item"><div class="sprint-dot gold"></div><div class="sprint-week">Stage 1 · First Contact</div><div class="sprint-title">Qualify & Understand</div><ul class="sprint-items">
+            <li>Respond within 2 hours via preferred channel</li><li>Ask 3 qualifying questions: budget, timeline, purpose</li><li>Send lead magnet PDF immediately</li><li>Set clear next step: "2–3 matching options within 24 hours"</li>
+          </ul></div>
+          <div class="sprint-item"><div class="sprint-dot gold"></div><div class="sprint-week">Stage 2 · Proposal</div><div class="sprint-title">Tailored Options (Max 3)</div><ul class="sprint-items">
+            <li>Never send more than 3 — decision fatigue kills deals</li><li>Use PHC Proposal template — branded, data-driven</li><li>Include net yield, title type, foreign ownership eligibility</li><li>Always state a recommendation and why</li>
+          </ul></div>
+          <div class="sprint-item"><div class="sprint-dot navy"></div><div class="sprint-week">Stage 3 · Site Visit</div><div class="sprint-title">Experience the Project</div><ul class="sprint-items">
+            <li>Arrange within 1 week of proposal</li><li>Brief client before: what they'll see, what to ask</li><li>Never pressure during visit</li><li>Written debrief within 24 hours</li>
+          </ul></div>
+          <div class="sprint-item"><div class="sprint-dot navy"></div><div class="sprint-week">Stage 4 · Decision Support</div><div class="sprint-title">Remove Blockers</div><ul class="sprint-items">
+            <li>Ask what would need to be true to feel confident</li><li>Provide legal due diligence: title verification, SPA review</li><li>Connect with developer finance team for payment options</li><li>Japanese: full written risk summary, never verbal-only</li>
+          </ul></div>
+          <div class="sprint-item"><div class="sprint-dot ok"></div><div class="sprint-week">Stage 5 · Close & Onboard</div><div class="sprint-title">Sign & Stay Connected</div><ul class="sprint-items">
+            <li>Accompany client to signing — never send alone</li><li>Written summary of all commitments made</li><li>30-day check-in after signing — builds referral relationship</li><li>Bring into property management conversation if relevant</li>
+          </ul></div>
+        </div>
+
+        <div class="h2">Follow-Up Protocol</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Day</th><th>Action</th><th>Channel</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td>Day 0</td><td>Send lead magnet + intro</td><td>WhatsApp / Email</td><td>First value delivery</td></tr>
+            <tr><td>Day 1</td><td>Send 2–3 tailored options</td><td>Email (PDF)</td><td>Proposal delivery</td></tr>
+            <tr><td>Day 3</td><td>Check-in on questions</td><td>WhatsApp</td><td>Remove blockers</td></tr>
+            <tr><td>Day 7</td><td>Site visit or video walkthrough</td><td>WhatsApp / YouTube</td><td>Experience the project</td></tr>
+            <tr><td>Day 14</td><td>Re-qualify: "anything changed?"</td><td>WhatsApp / Call</td><td>Detect momentum or stall</td></tr>
+            <tr><td>Day 21+</td><td>Monthly check-in with market update</td><td>Email newsletter</td><td>Stay top of mind</td></tr>
+          </tbody>
+        </table></div>
+        <div class="warn-box"><strong>Over 1 week with no response and no next step = re-qualify.</strong> If still no engagement after 2 attempts, archive and move on. Do not chase indefinitely.</div>
+      </div>
     </div>
-  </div>
 
-  <div class="risk-card">
-    <div class="risk-sev sev-m">MED</div>
-    <div>
-      <div class="risk-title">Developer concentration risk (Megakim + Tanichu)</div>
-      <div class="risk-detail">If either developer delays a project, halts sales, or reduces commission rates, PHC's inventory position weakens significantly. Two developers is not enough diversification for a $250K revenue target.</div>
-      <div class="risk-mit">Mitigation: Begin relationship with 1–2 additional developers by Q2. Le Condé (Wangfu), Peninsula (separate developer), and G.A.T.O Tower (MIRAKU) are natural candidates. Do not resell without proper due diligence.</div>
+    <!-- S08 TECHNOLOGY STACK -->
+    <div class="detail" id="d-s08">
+      <div class="detail-head"><div class="dh-icon">🛠️</div><div class="dh-title">Technology Stack</div><div class="dh-tag dt-draft">Q2 DRAFT</div></div>
+      <div class="detail-body">
+        <div class="body-text">Honest inventory of what exists, what's broken, what's missing.</div>
+        <div class="info-box"><strong>Directive (Q2):</strong> the stack was over-built for a pre-revenue business — priority was to deploy and connect existing tools, not build new ones. Note: this directive predates the two Telegram bots built since — see Mission Control's Non-Negotiable #2 for the current take on that tension.</div>
+
+        <div class="h2">Internal Apps — Status (as of Q2 draft)</div>
+        <div class="tool-row"><div class="tool-status ts-built"></div><div class="tool-name">PHC Agent Training App v3</div><div class="tool-desc">20 lessons, quiz engine, certificate.</div><span class="tool-tag tt-built">READY</span></div>
+        <div class="tool-row"><div class="tool-status ts-built"></div><div class="tool-name">PHC Market Intelligence Cheat Sheet</div><div class="tool-desc">2026 market data, yield benchmarks.</div><span class="tool-tag tt-built">DEPLOY NOW</span></div>
+        <div class="tool-row"><div class="tool-status ts-built"></div><div class="tool-name">PHC Message Builder</div><div class="tool-desc">Segment-specific message templates.</div><span class="tool-tag tt-built">READY</span></div>
+        <div class="tool-row"><div class="tool-status ts-built"></div><div class="tool-name">PHC Investment Explorer</div><div class="tool-desc">Budget-tier comparison with WhatsApp CTAs.</div><span class="tool-tag tt-built">READY</span></div>
+        <div class="tool-row"><div class="tool-status ts-built"></div><div class="tool-name">PHC Lead Tracker</div><div class="tool-desc">Full CRM, pipeline kanban, auto-scoring.</div><span class="tool-tag tt-built">READY</span></div>
+        <div class="tool-row"><div class="tool-status ts-built"></div><div class="tool-name">PHC Agent Hub</div><div class="tool-desc">Central launcher linking all tools.</div><span class="tool-tag tt-built">DEPLOY NOW</span></div>
+        <div class="tool-row"><div class="tool-status ts-built"></div><div class="tool-name">PHC Proposal Generator</div><div class="tool-desc">Client-facing PDF proposal builder.</div><span class="tool-tag tt-built">USE NOW</span></div>
+        <div class="tool-row"><div class="tool-status ts-partial"></div><div class="tool-name">Property Hub Calculator (v7)</div><div class="tool-desc">8-tab sales tool. Resale tab broken.</div><span class="tool-tag tt-partial">FIX RESALE TAB</span></div>
+        <div class="tool-row"><div class="tool-status ts-built"></div><div class="tool-name">PHC Setup Tracker</div><div class="tool-desc">Business setup progress, mostly complete.</div><span class="tool-tag tt-built">ARCHIVE SOON</span></div>
+        <div class="tool-row"><div class="tool-status ts-built"></div><div class="tool-name">PHC Investment Guide 2026</div><div class="tool-desc">8-page print-ready lead magnet.</div><span class="tool-tag tt-built">DEPLOY NOW</span></div>
+
+        <div class="h2">Missing — Critical Gaps (as of Q2 draft)</div>
+        <div class="tool-row"><div class="tool-status ts-missing"></div><div class="tool-name">WhatsApp Auto-Response (ManyChat)</div><div class="tool-desc">Staff guide exists, not connected.</div><span class="tool-tag tt-missing">CONNECT NOW</span></div>
+        <div class="tool-row"><div class="tool-status ts-missing"></div><div class="tool-name">Email Newsletter (Mailchimp)</div><div class="tool-desc">Staff guide exists, not running.</div><span class="tool-tag tt-missing">CONNECT NOW</span></div>
+        <div class="tool-row"><div class="tool-status ts-missing"></div><div class="tool-name">Paid Ad Campaigns (Meta)</div><div class="tool-desc">Staff guide exists, zero campaigns running.</div><span class="tool-tag tt-missing">LAUNCH NOW</span></div>
+
+        <div class="h2">Design System — Unify Immediately</div>
+        <div class="warn-box">
+          4+ different gold values across apps: <code>#CC9D4D</code>, <code>#c9993f</code>, <code>#C9A84C</code>, <code>#C9993A</code>. 3+ navy values. Brand integrity issue.<br><br>
+          <strong>Canonical tokens:</strong> Gold <code>#c9993f</code> · Navy <code>#06264f</code> (dark) / <code>#040f24</code> (hero) · Fonts: Playfair Display (headers) · Inter/SF Pro (body) · JetBrains Mono (data).
+        </div>
+      </div>
     </div>
-  </div>
 
-  <div class="risk-card">
-    <div class="risk-sev sev-m">MED</div>
-    <div>
-      <div class="risk-title">CGT uncertainty slows buyer decisions</div>
-      <div class="risk-detail">Capital Gains Tax effective January 2026 has shifted buyer psychology away from short-term flips. Some buyers are waiting to see how enforcement plays out before committing.</div>
-      <div class="risk-mit">Mitigation: Lead all investor conversations with a long-hold framing. PHC's advisory stance (hold 5+ years, net yield focus, rental strategy) is already CGT-appropriate. Make CGT clarity a PHC differentiator.</div>
+    <!-- S09 TEAM BUILDING -->
+    <div class="detail" id="d-s09">
+      <div class="detail-head"><div class="dh-icon">👥</div><div class="dh-title">Team Building</div><div class="dh-tag dt-draft">Q2 DRAFT</div></div>
+      <div class="detail-body">
+        <div class="body-text">Current team structure, agent hiring triggers, and the training pipeline that already exists.</div>
+
+        <div class="h2">Current Team</div>
+        <div class="team-list">
+          <div class="team-row"><div class="tr-role">Co-Founder · CEO</div><div class="tr-name">Nick</div><div class="tr-detail">Senior Real Estate Advisor. Multilingual (Khmer, Japanese, English). Runs Japanese investor protocol. Oversees all operations and AI systems. <strong>Primary focus: high-value Japanese and overseas Cambodian clients.</strong></div></div>
+          <div class="team-row"><div class="tr-role">CEO · Property Consultant</div><div class="tr-name">Ms. Meas Monika</div><div class="tr-detail">Residential and investment focus. Khmer-speaking, strong local market knowledge. <strong>Primary focus: local Khmer end-users and overseas Cambodian segment.</strong></div></div>
+          <div class="team-row"><div class="tr-role">Co-Founder · European Advisor</div><div class="tr-name">Mr. Reza</div><div class="tr-detail">German/European investor specialist, strategic long-term focus. <strong>Primary focus: German/European retirement buyers. Leads Peninsula, Le Condé, Royal Platinum conversations.</strong></div></div>
+        </div>
+
+        <div class="h2">Hire Agent #1 — The Trigger</div>
+        <div class="info-box"><strong>Do not hire until ALL of the following are true:</strong><br>
+          ✓ At least 1 deal closed (proof of concept)<br>✓ Consistent 5+ inbound leads/month<br>✓ PHC training program ready (already built — ✓)<br>✓ Commission split structure decided<br>✓ Nick has 2–3 hrs/week to supervise
+        </div>
+
+        <div class="h2">Agent Profile — What to Look For</div>
+        <div class="rules">
+          <div class="rule"><div class="rule-n">✓</div><div><div class="rule-title">Language match</div><div class="rule-detail">First agent: Khmer + English (fastest-moving segments). Second could be Japanese-speaking for the higher-value pipeline.</div></div></div>
+          <div class="rule"><div class="rule-n">✓</div><div><div class="rule-title">Advisory mindset, not sales personality</div><div class="rule-detail">Someone who asks questions and listens. Anyone leading with "great investment opportunity" fails the culture test.</div></div></div>
+          <div class="rule"><div class="rule-n">✓</div><div><div class="rule-title">Commitment to training</div><div class="rule-detail">Must complete all 20 lessons before handling any client. Non-negotiable.</div></div></div>
+          <div class="rule"><div class="rule-n">✓</div><div><div class="rule-title">Digital communication skills</div><div class="rule-detail">Comfortable with WhatsApp, Telegram, email. Responds within 2 hours during business hours.</div></div></div>
+        </div>
+
+        <div class="h2">Commission Split Structure (Suggested)</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Scenario</th><th>PHC</th><th>Agent</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>PHC-generated lead, agent closes</td><td>60%</td><td>40%</td><td>Standard split for PHC-provided leads</td></tr>
+            <tr><td>Agent self-generated lead, agent closes</td><td>30%</td><td>70%</td><td>Rewards self-sourced deals</td></tr>
+            <tr><td>Nick-closed deal (no agent)</td><td>100%</td><td>—</td><td>All deals Nick closes personally</td></tr>
+            <tr><td>Referral introduced by agent</td><td>50%</td><td>50%</td><td>Agent introduces, Nick closes</td></tr>
+          </tbody>
+        </table></div>
+        <div class="info-box"><strong>Note:</strong> suggested benchmarks — research Phnom Penh market norms before committing.</div>
+      </div>
     </div>
-  </div>
 
-  <div class="risk-card">
-    <div class="risk-sev sev-m">MED</div>
-    <div>
-      <div class="risk-title">Brand credibility gap — unverifiable track record claims</div>
-      <div class="risk-detail">"500+ clients, 1,200+ transactions, 98% satisfaction" are stated without evidence. A sophisticated Japanese or German investor will ask for proof. If PHC cannot provide case studies, testimonials, or transaction data, these claims become a liability.</div>
-      <div class="risk-mit">Mitigation: Remove these claims from all materials until they can be evidenced. Replace with specific, verifiable data points: "3 completed Megakim projects · Freehold strata title expertise · 15 years combined experience."</div>
+    <!-- S10 90-DAY SPRINT -->
+    <div class="detail" id="d-s10">
+      <div class="detail-head"><div class="dh-icon">📅</div><div class="dh-title">90-Day Sprint</div><div class="dh-tag dt-fresh">REFRESHED JUL 2026</div></div>
+      <div class="detail-body">
+        <div class="body-text">Superseded the original Q2 sprint, which assumed a pre-website, pre-bot, zero-ad-spend starting point. This version starts from where PHC actually is: infrastructure built, outreach drafted, nothing sent yet.</div>
+
+        <div class="card-navy">
+          <div class="tr-role">90-Day Objective</div>
+          <div style="font-family:'Playfair Display',serif;font-size:18px;color:#fff;margin:4px 0">Send what's built. Prove the message. Then scale it.</div>
+          <div style="color:rgba(255,255,255,.55);font-size:12px;line-height:1.6">The bottleneck isn't infrastructure anymore — it's execution. Nothing new gets built until the referral and outbound work already sitting finished has gone out.</div>
+        </div>
+
+        <div class="sprint-track" style="margin-top:18px">
+          <div class="sprint-item"><div class="sprint-dot gold"></div><div class="sprint-week">Days 1–7 · Week 1</div><div class="sprint-title">Send the Referral Outreach</div><ul class="sprint-items">
+            <li>Send the already-drafted referral message to past clients (15% of commission, finalized weeks ago)</li>
+            <li>Log every "how did you hear about us" response in the Referred By column — the only tracking mechanism, keep it disciplined from day 1</li>
+            <li>Post 1–2 of the 5 drafted outbound community templates to gauge response before posting the rest</li>
+          </ul></div>
+          <div class="sprint-item"><div class="sprint-dot gold"></div><div class="sprint-week">Days 8–14 · Week 2</div><div class="sprint-title">Fix the Content Mix</div><ul class="sprint-items">
+            <li>Shift the 4 pilot Telegram channels toward the 70/30 educational-first mix — still nearly all listings right now</li>
+            <li>Post remaining outbound templates (JP/DE-market, forum variants) — JP copy needs real translation/localization first</li>
+            <li>Load real client data into the Payment Reminder Bot (channel + groupChatId) — tested but not doing real work yet</li>
+          </ul></div>
+          <div class="sprint-item"><div class="sprint-dot gold"></div><div class="sprint-week">Days 15–30 · Weeks 3–4</div><div class="sprint-title">Read the Response</div><ul class="sprint-items">
+            <li>Track referral response rate and outbound engagement — this is the signal that decides Month 2, not a guess</li>
+            <li>Grow pilot channel subscribers past the current ~0–4 each — no distribution advantage without an audience</li>
+            <li>Goal: enough response data to know which message/segment is working, before spending a dollar on ads</li>
+          </ul></div>
+          <div class="sprint-item"><div class="sprint-dot navy"></div><div class="sprint-week">Days 31–45 · Weeks 5–6</div><div class="sprint-title">Double Down on What Responded</div><ul class="sprint-items">
+            <li>Whichever channel/segment produced real replies — put more into that, not evenly across all</li>
+            <li>Add LinkedIn presence — still the missing platform for the DE/European segment</li>
+            <li>Keep the referral loop running: every closed deal triggers the next referral ask</li>
+          </ul></div>
+          <div class="sprint-item"><div class="sprint-dot navy"></div><div class="sprint-week">Days 46–60 · Weeks 7–8</div><div class="sprint-title">Decide on Paid Ads</div><ul class="sprint-items">
+            <li>Only now — with real message/audience data — decide whether paid ads are worth testing, and on which message</li>
+            <li>If outbound + referral alone produce enough pipeline, paid ads may stay deferred longer. That's a legitimate outcome.</li>
+          </ul></div>
+          <div class="sprint-item"><div class="sprint-dot ok"></div><div class="sprint-week">Days 61–90 · Weeks 9–12</div><div class="sprint-title">Reassess the Whole Roadmap</div><ul class="sprint-items">
+            <li>Revisit <a href="PHC_Progress_Dashboard.html">Progress Dashboard</a> — how much moved from "planned" to "live"</li>
+            <li>Re-run the Mission Control snapshot with real current revenue/lead numbers instead of placeholders</li>
+            <li>Decide whether agent-hire trigger conditions are met based on actual deal flow</li>
+          </ul></div>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <div class="risk-card">
-    <div class="risk-sev sev-l">LOW</div>
-    <div>
-      <div class="risk-title">Cambodia political / regulatory risk</div>
-      <div class="risk-detail">Foreign ownership laws, strata title regulations, or repatriation rules could change. Unlikely in the short term but always present in a developing market.</div>
-      <div class="risk-mit">Mitigation: Stay current with REAKH legal updates. Include "regulations subject to change" in all proposals. Never guarantee legal outcomes — recommend clients consult a local lawyer.</div>
+    <!-- S11 FINANCIAL MODEL -->
+    <div class="detail" id="d-s11">
+      <div class="detail-head"><div class="dh-icon">📊</div><div class="dh-title">Financial Model</div><div class="dh-tag dt-draft">Q2 DRAFT</div></div>
+      <div class="detail-body">
+        <div class="body-text">The path to $250K. Three scenarios. Monthly deal cadence. Cost structure.</div>
+        <div class="warn-box">Commission rates below (3–5%) are estimates based on Phnom Penh market norms. Confirm actual rates from Megakim and Tanichu before using these projections for planning.</div>
+
+        <div class="h2">Revenue Path — Three Scenarios</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Scenario</th><th>Deals</th><th>Avg Commission</th><th>Annual Revenue</th><th>Deals/Mo</th><th>Likelihood</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Base</strong></td><td>25</td><td>$7,200</td><td class="td-gold">$180,000</td><td>2.1</td><td>High — no agent hire needed</td></tr>
+            <tr><td><strong>Target ★</strong></td><td>33</td><td>$7,600</td><td class="td-ok">$250,800</td><td>2.8</td><td>Medium — consistent lead flow + 1 agent by Q2</td></tr>
+            <tr><td><strong>Stretch</strong></td><td>42</td><td>$8,750</td><td class="td-ok">$367,500</td><td>3.5</td><td>Low — 2 agents, proven funnel, JP segment active</td></tr>
+          </tbody>
+        </table></div>
+
+        <div class="h2">Monthly Revenue Build — Target Scenario</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Month</th><th>Deals</th><th>Revenue</th><th>Cumulative</th><th>Key Event</th></tr></thead>
+          <tbody>
+            <tr><td>Apr 2026</td><td>0</td><td>$0</td><td>$0</td><td>Lead magnet built · Ads launched</td></tr>
+            <tr><td>May 2026</td><td>1</td><td>$7,500</td><td>$7,500</td><td>First deal closed ★</td></tr>
+            <tr><td>Jun 2026</td><td>1–2</td><td>$10,000</td><td>$17,500</td><td>Lead flow consistent</td></tr>
+            <tr><td>Jul 2026</td><td>2–3</td><td>$18,000</td><td>$35,500</td><td>Agent #1 hired</td></tr>
+            <tr><td>Aug 2026</td><td>3</td><td>$22,500</td><td>$58,000</td><td>Japanese outreach producing leads</td></tr>
+            <tr><td>Sep 2026</td><td>3–4</td><td>$26,000</td><td>$84,000</td><td>Reza European pipeline active</td></tr>
+            <tr><td>Oct 2026</td><td>3–4</td><td>$28,000</td><td>$112,000</td><td>Agent #1 closing independently</td></tr>
+            <tr><td>Nov 2026</td><td>4</td><td>$30,000</td><td>$142,000</td><td>J Tower 3 launch buzz</td></tr>
+            <tr><td>Dec 2026</td><td>3–4</td><td>$28,000</td><td>$170,000</td><td>Year-end investor decisions</td></tr>
+            <tr><td>Jan 2027</td><td>4</td><td>$30,000</td><td>$200,000</td><td>Agent #2 in training</td></tr>
+            <tr><td>Feb 2027</td><td>4</td><td>$28,000</td><td>$228,000</td><td>German pipeline closes</td></tr>
+            <tr><td>Mar 2027</td><td>3–4</td><td>$28,000</td><td class="td-ok"><strong>$256,000</strong></td><td>$250K milestone hit ★</td></tr>
+          </tbody>
+        </table></div>
+
+        <div class="h2">Estimated Operating Costs</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Cost</th><th>Monthly</th><th>Annual</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Office rent (BKK1 Time Square 5)</td><td>~$800–1,200</td><td>~$12,000</td><td>Confirm exact figure</td></tr>
+            <tr><td>Facebook / TikTok ads</td><td>$200–500</td><td>$3,600</td><td>Start $200, scale with ROI</td></tr>
+            <tr><td>Software (ManyChat, Mailchimp, Canva)</td><td>$80–120</td><td>$1,200</td><td>Estimate</td></tr>
+            <tr><td>Agent commission payouts</td><td>Variable</td><td>Est. $30,000</td><td>40% of agent-closed deals</td></tr>
+            <tr><td>Video production</td><td>$100–200</td><td>$1,800</td><td>AI tools reduce cost</td></tr>
+            <tr><td>Business development / events</td><td>$200</td><td>$2,400</td><td>Japanese Chamber, expat events</td></tr>
+            <tr><td><strong>Total Estimated</strong></td><td><strong>~$2,500–3,500</strong></td><td><strong>~$51,000</strong></td><td>Rough estimate — update monthly</td></tr>
+          </tbody>
+        </table></div>
+        <div class="ok-box"><strong>Net profit estimate (Target):</strong> $256,000 − $51,000 = <strong>~$205,000 net</strong> for a 3-person team in Year 1. Viable model — the question is whether the lead engine can be built fast enough.</div>
+
+        <div class="h2">Weekly CEO Metrics — Track Every Monday</div>
+        <div class="metric-grid">
+          <div class="metric-tile"><div class="metric-l">Leads This Week</div><div class="metric-n">—</div><div class="metric-sub">Target: 5+/week by Month 2</div></div>
+          <div class="metric-tile"><div class="metric-l">Active Proposals</div><div class="metric-n">—</div><div class="metric-sub">Target: 3+ open at any time</div></div>
+          <div class="metric-tile"><div class="metric-l">Site Visits This Week</div><div class="metric-n">—</div><div class="metric-sub">Target: 2+/week</div></div>
+          <div class="metric-tile"><div class="metric-l">Deals Closed (MTD)</div><div class="metric-n">—</div><div class="metric-sub">Target: per monthly table above</div></div>
+          <div class="metric-tile"><div class="metric-l">Pipeline Value</div><div class="metric-n">—</div><div class="metric-sub">All active proposals × commission</div></div>
+          <div class="metric-tile"><div class="metric-l">Ad Spend ROI</div><div class="metric-n">—</div><div class="metric-sub">Cost per lead · cost per deal</div></div>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <div class="h2">Early Warning Signals — Review Monthly</div>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>Signal</th><th>Threshold</th><th>Action</th></tr></thead>
-      <tbody>
-        <tr><td>Leads per month</td><td class="td-err">Below 5/month</td><td>Review ad spend, creative, targeting. Add community outreach channel.</td></tr>
-        <tr><td>Lead → proposal conversion</td><td class="td-err">Below 30%</td><td>Re-qualify criteria too loose. Tighten budget and timeline requirements.</td></tr>
-        <tr><td>Proposal → viewing rate</td><td class="td-err">Below 40%</td><td>Proposal quality or project fit issue. Review what projects are being pitched.</td></tr>
-        <tr><td>Viewing → close rate</td><td class="td-err">Below 20%</td><td>Objection handling or pricing issue. Run scenario through Advisory Flow review.</td></tr>
-        <tr><td>Monthly revenue</td><td class="td-err">2 months below target</td><td>Trigger full strategy review. Do not wait for Q-end to act.</td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+    <!-- S12 RISK REGISTER -->
+    <div class="detail" id="d-s12">
+      <div class="detail-head"><div class="dh-icon">⚠️</div><div class="dh-title">Risk Register</div><div class="dh-tag dt-draft">Q2 DRAFT</div></div>
+      <div class="detail-body">
+        <div class="body-text">The threats most likely to derail PHC's $250K target — and the mitigation for each.</div>
 
-</div><!-- /main -->
-</div><!-- /layout -->
-</div><!-- /app -->
+        <div class="h2">Risk Severity Matrix</div>
+        <div class="risk-card"><div class="risk-sev sev-h">HIGH</div><div><div class="risk-title">Lead engine fails to generate consistent flow</div><div class="risk-detail">If 30 days of paid ads produce fewer than 5 qualified leads, the quarterly deal target can't be met.</div><div class="risk-mit">Mitigation: run ads 2 weeks, review CPL. Above $50/lead → test new creative/targeting. Keep 3 alternative channels ready.</div></div></div>
+        <div class="risk-card"><div class="risk-sev sev-h">HIGH</div><div><div class="risk-title">Team bandwidth collapse (3 people, 5 segments)</div><div class="risk-detail">Nick, Monika, and Reza covering sales, rental management, advisory, content, systems, and BD simultaneously — not sustainable at scale.</div><div class="risk-mit">Mitigation: one primary segment per person. Nick=JP+outreach, Monika=Khmer+Overseas KH, Reza=DE+European. No cross-segment handling without consultation.</div></div></div>
+        <div class="risk-card"><div class="risk-sev sev-m">MED</div><div><div class="risk-title">Developer concentration risk (Megakim + Tanichu)</div><div class="risk-detail">If either developer delays, halts sales, or cuts commission, PHC's inventory position weakens — 2 developers isn't enough diversification for $250K.</div><div class="risk-mit">Mitigation: begin relationship with 1–2 additional developers by Q2 (Le Condé/Wangfu, Peninsula, G.A.T.O/MIRAKU are candidates).</div></div></div>
+        <div class="risk-card"><div class="risk-sev sev-m">MED</div><div><div class="risk-title">CGT uncertainty slows buyer decisions</div><div class="risk-detail">Capital Gains Tax (effective Jan 2026) has shifted buyer psychology away from short-term flips.</div><div class="risk-mit">Mitigation: lead all investor conversations with long-hold framing — PHC's advisory stance is already CGT-appropriate. Make it a differentiator.</div></div></div>
+        <div class="risk-card"><div class="risk-sev sev-m">MED</div><div><div class="risk-title">Brand credibility gap — unverifiable track record claims</div><div class="risk-detail">"500+ clients, 1,200+ transactions, 98% satisfaction" stated without evidence. A sophisticated JP/DE investor will ask for proof.</div><div class="risk-mit">Mitigation: remove until evidenced. Replace with verifiable specifics: "3 completed Megakim projects · freehold strata expertise · 15 years combined experience."</div></div></div>
+        <div class="risk-card"><div class="risk-sev sev-l">LOW</div><div><div class="risk-title">Cambodia political / regulatory risk</div><div class="risk-detail">Foreign ownership laws, strata regulations, or repatriation rules could change. Unlikely short-term but always present in a developing market.</div><div class="risk-mit">Mitigation: stay current with REAKH legal updates. State "regulations subject to change" in proposals. Never guarantee legal outcomes.</div></div></div>
+
+        <div class="h2">Early Warning Signals — Review Monthly</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Signal</th><th>Threshold</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td>Leads per month</td><td class="td-err">Below 5/month</td><td>Review ad spend, creative, targeting. Add community outreach.</td></tr>
+            <tr><td>Lead → proposal conversion</td><td class="td-err">Below 30%</td><td>Re-qualify criteria too loose. Tighten budget/timeline requirements.</td></tr>
+            <tr><td>Proposal → viewing rate</td><td class="td-err">Below 40%</td><td>Proposal quality or project fit issue. Review what's being pitched.</td></tr>
+            <tr><td>Viewing → close rate</td><td class="td-err">Below 20%</td><td>Objection handling or pricing issue. Review against Advisory Flow.</td></tr>
+            <tr><td>Monthly revenue</td><td class="td-err">2 months below target</td><td>Trigger full strategy review — don't wait for Q-end.</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+
+  </div><!-- /detail-panels -->
+
+  <div class="foot">PROPERTY HUB CAMBODIA · CEO BUSINESS PLAN · UPDATED JULY 2026 · DIRECTOR ONLY</div>
+
+</div><!-- /page -->
 
 <script>
-function nav(id, el, title) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.sb-row').forEach(r => r.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  el.classList.add('active');
-  document.getElementById('ctx-title').textContent = title;
-  document.querySelector('.main').scrollTo({top:0, behavior:'smooth'});
+function toggle(id) {
+  var detail = document.getElementById(id);
+  var node = document.getElementById('n' + id.slice(1));
+  if (detail.classList.contains('open')) {
+    detail.classList.remove('open');
+    detail.style.display = 'none';
+    if (node) node.classList.remove('open');
+  } else {
+    detail.classList.add('open');
+    detail.style.display = 'block';
+    if (node) node.classList.add('open');
+    setTimeout(function() {
+      detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 50);
+  }
 }
 </script>
 </body>
