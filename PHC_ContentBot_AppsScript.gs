@@ -726,13 +726,8 @@ function handleCallback(cb) {
       }
       const contactKeyboard = getContactKeyboard();
       let posted;
-      if (photoIds.length > 1) {
-        // Telegram albums (sendMediaGroup) can't carry inline buttons at all —
-        // send the album, then a short follow-up message with the contact button.
-        posted = sendTelegramMediaGroup(channelId, photoIds, rowObj.content);
-        sendTelegramMessage(channelId, '👇 Get in touch:', contactKeyboard); // CONFIRMED 2026-07-21: the invisible Braille-blank placeholder (U+2800) reliably fails now — buttons silently vanish, tested twice live. This visible-text version is the only one confirmed to actually deliver the buttons — don't swap it for an untested placeholder character without testing first.
-      } else if (photoIds.length === 1) {
-        posted = sendTelegramPhoto(channelId, photoIds[0], rowObj.content, contactKeyboard);
+      if (photoIds.length > 0) {
+        posted = postGalleryWithButtons(channelId, photoIds, rowObj.content, contactKeyboard);
       } else {
         posted = sendTelegramMessage(channelId, rowObj.content, contactKeyboard);
       }
@@ -795,11 +790,8 @@ function handleGroupCallback(cb, action, sourceId) {
       if (!channelId) { Logger.log('handleGroupCallback: no channel for ' + language); return; }
 
       let posted;
-      if (photoIds.length > 1) {
-        posted = sendTelegramMediaGroup(channelId, photoIds, content, entities);
-        sendTelegramMessage(channelId, '👇 Get in touch:', contactKeyboard); // see confirmed-failure note in the single-approve handler above
-      } else if (photoIds.length === 1) {
-        posted = sendTelegramPhoto(channelId, photoIds[0], content, contactKeyboard, entities);
+      if (photoIds.length > 0) {
+        posted = postGalleryWithButtons(channelId, photoIds, content, contactKeyboard, entities);
       } else {
         posted = sendTelegramMessage(channelId, content, contactKeyboard, entities);
       }
@@ -982,6 +974,28 @@ function sendTelegramMediaGroup(chatId, fileIds, caption, entities) {
   const data = JSON.parse(resp.getContentText());
   if (!data.ok) Logger.log('sendMediaGroup failed: ' + resp.getContentText());
   return data.result; // array of Message objects, one per photo
+}
+
+// Posts a gallery of photos with the caption + Contact Us/More Property
+// buttons attached directly to a real photo message — no placeholder text
+// needed, since Telegram allows an empty caption on a single photo (unlike
+// sendMessage, which requires non-empty text). The last photo carries the
+// caption and buttons; everything before it goes out as a caption-less album.
+// Falls back to plain single-photo messages for the "rest" when there
+// wouldn't be enough left to form a valid album (Telegram requires 2+ items
+// per sendMediaGroup) — e.g. when there are only 2 photos total.
+function postGalleryWithButtons(channelId, photoIds, caption, contactKeyboard, entities) {
+  if (photoIds.length === 1) {
+    return sendTelegramPhoto(channelId, photoIds[0], caption, contactKeyboard, entities);
+  }
+  const last = photoIds[photoIds.length - 1];
+  const rest = photoIds.slice(0, -1);
+  if (rest.length >= 2) {
+    sendTelegramMediaGroup(channelId, rest); // no caption — it goes on the final photo below
+  } else {
+    rest.forEach(id => sendTelegramPhoto(channelId, id, ''));
+  }
+  return sendTelegramPhoto(channelId, last, caption, contactKeyboard, entities);
 }
 
 function getLargestPhotoId(message) {
