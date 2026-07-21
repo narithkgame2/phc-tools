@@ -730,7 +730,7 @@ function handleCallback(cb) {
         // Telegram albums (sendMediaGroup) can't carry inline buttons at all —
         // send the album, then a short follow-up message with the contact button.
         posted = sendTelegramMediaGroup(channelId, photoIds, rowObj.content);
-        sendTelegramMessage(channelId, '⠀', contactKeyboard); // invisible placeholder (U+2800 Braille blank) — Telegram requires non-empty text but Nick wants no visible line above the buttons. KNOWN RISK: this exact character silently failed once before (2026-07) — buttons vanished with no visible error. If buttons go missing on multi-photo posts again, check Executions for "sendMessage failed" on this line first; a visible-text fallback was tested 2026-07-21 and confirmed reliable if this recurs.
+        sendTelegramMessage(channelId, '👇 Get in touch:', contactKeyboard); // CONFIRMED 2026-07-21: the invisible Braille-blank placeholder (U+2800) reliably fails now — buttons silently vanish, tested twice live. This visible-text version is the only one confirmed to actually deliver the buttons — don't swap it for an untested placeholder character without testing first.
       } else if (photoIds.length === 1) {
         posted = sendTelegramPhoto(channelId, photoIds[0], rowObj.content, contactKeyboard);
       } else {
@@ -797,7 +797,7 @@ function handleGroupCallback(cb, action, sourceId) {
       let posted;
       if (photoIds.length > 1) {
         posted = sendTelegramMediaGroup(channelId, photoIds, content, entities);
-        sendTelegramMessage(channelId, '⠀', contactKeyboard); // invisible placeholder — see risk note in the single-approve handler above
+        sendTelegramMessage(channelId, '👇 Get in touch:', contactKeyboard); // see confirmed-failure note in the single-approve handler above
       } else if (photoIds.length === 1) {
         posted = sendTelegramPhoto(channelId, photoIds[0], content, contactKeyboard, entities);
       } else {
