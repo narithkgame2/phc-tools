@@ -51,13 +51,12 @@ const LANGUAGE_CHANNELS = {
 // link(s) become tappable buttons instead — see getContactKeyboard().
 const CONTACT_STANDARD = '📞 011 666 952';
 
-// Same 2 buttons for every listing type — "Contact Us" opens a DM with Nick,
-// "More Property" points to the main PHC channel (the bot posts into
-// separate per-language channels, so this isn't circular navigation).
+// Same 2 buttons for every listing type — "Contact Us" opens a WhatsApp
+// chat on PHC's main line, "More Property" links to the website.
 function getContactKeyboard() {
   return { inline_keyboard: [[
-    { text: '📱 Contact Us', url: 'https://t.me/Nick_REAKH' },
-    { text: '🏠 More Property', url: 'https://t.me/PropertyHubCambodia' },
+    { text: '📱 Contact Us', url: 'https://wa.me/85511666952' },
+    { text: '🌐 More Property', url: 'https://propertyhubcambodia.com' },
   ]] };
 }
 
@@ -731,7 +730,7 @@ function handleCallback(cb) {
         // Telegram albums (sendMediaGroup) can't carry inline buttons at all —
         // send the album, then a short follow-up message with the contact button.
         posted = sendTelegramMediaGroup(channelId, photoIds, rowObj.content);
-        sendTelegramMessage(channelId, '⠀', contactKeyboard); // invisible placeholder — Telegram requires non-empty text, but we only want the buttons visible
+        sendTelegramMessage(channelId, '👇 Get in touch:', contactKeyboard); // was an invisible placeholder character — Telegram appears to now reject that as empty text server-side, silently dropping the buttons with it. Real visible text is more reliable than relying on an invisible character.
       } else if (photoIds.length === 1) {
         posted = sendTelegramPhoto(channelId, photoIds[0], rowObj.content, contactKeyboard);
       } else {
@@ -798,7 +797,7 @@ function handleGroupCallback(cb, action, sourceId) {
       let posted;
       if (photoIds.length > 1) {
         posted = sendTelegramMediaGroup(channelId, photoIds, content, entities);
-        sendTelegramMessage(channelId, '⠀', contactKeyboard); // invisible placeholder — buttons only
+        sendTelegramMessage(channelId, '👇 Get in touch:', contactKeyboard); // was an invisible placeholder character — see note in the single-approve handler above
       } else if (photoIds.length === 1) {
         posted = sendTelegramPhoto(channelId, photoIds[0], content, contactKeyboard, entities);
       } else {
