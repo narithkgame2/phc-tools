@@ -457,21 +457,42 @@ function parseBracketListing(text) {
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
   let forSale = '', forRent = '', title = '', isRent = false;
   const bullets = [];
-  const bulletChars = ['●', '•', '◦', '‣'];
+  // Bullet markers seen in the wild across different agents' own formats —
+  // not just the plain dots (●•◦‣) PHC originally expected, but the emoji
+  // checkmarks/money-bag markers other agents commonly use too.
+  const bulletChars = ['●', '•', '◦', '‣', '✅', '✓', '☑️', '☑', '💰', '🏷️', '🏷', '👉', '▪️', '▪', '■', '★'];
+
+  // The [FOR SALE]/[FOR RENT] tag isn't always the first line — some posts
+  // lead with a headline before it (e.g. "Stunning 1-Bedroom Condo ✨" then
+  // "[For Rent] 1Bedroom at Vue Aston" on the next line). Find the tag
+  // wherever it actually is instead of assuming line 0.
+  let tagLineIdx = -1, tagMatch = null;
+  for (let i = 0; i < lines.length; i++) {
+    const m = lines[i].match(/\[\s*for\s+(sale|rent)\s*\]/i);
+    if (m) { tagLineIdx = i; tagMatch = m; break; }
+  }
+
+  if (tagLineIdx > -1) {
+    isRent = /rent/i.test(tagMatch[1]);
+    const headline = lines.slice(0, tagLineIdx).join(' — ').trim();
+    const afterTag = lines[tagLineIdx].replace(tagMatch[0], '').trim();
+    title = [headline, afterTag].filter(Boolean).join(' — ');
+  } else {
+    // No tag found at all — fall back to the old assumption (line 0 is the
+    // title) rather than losing everything.
+    title = lines[0] || '';
+  }
 
   lines.forEach((line, idx) => {
-    if (idx === 0) {
-      const m = line.match(/\[\s*for\s+(sale|rent)\s*\]/i);
-      if (m) { isRent = /rent/i.test(m[1]); title = line.replace(m[0], '').trim(); }
-      else { title = line; }
-      return;
-    }
+    if (idx <= tagLineIdx) return; // already consumed as headline/tag above
 
     const bulletChar = bulletChars.find(c => line.startsWith(c));
     if (!bulletChar) return; // contact block / anything else — discard
 
     const content = line.slice(bulletChar.length).trim();
-    if (/^price\s*:?/i.test(content)) {
+    // Price lines: either explicitly labelled ("Price: ...") or marked with
+    // a money-bag bullet, or phrased as "Only $X ...".
+    if (/^price\s*:?/i.test(content) || bulletChar.indexOf('💰') === 0 || /^only\s/i.test(content)) {
       const amt = content.match(/[\d,]+/);
       if (amt) {
         const period = /month|\bmo\b/i.test(content) ? '/month' : '';
