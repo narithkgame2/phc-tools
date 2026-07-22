@@ -98,7 +98,10 @@ function checkForUpdates() {
       Logger.log('channel_post: chat.id=' + cp.chat.id + ' title="' + cp.chat.title + '" username="' + (cp.chat.username || '') + '" text="' + (cp.text || cp.caption || '') + '"');
     } else if (update.message) {
       const m = update.message;
-      if (m.media_group_id) {
+      if (m.poll) {
+        try { handleIncomingPoll(m.chat.id, m.poll); }
+        catch (err) { Logger.log('handleIncomingPoll error: ' + err); }
+      } else if (m.media_group_id) {
         const gid = m.media_group_id;
         if (!mediaGroups[gid]) mediaGroups[gid] = { chatId: m.chat.id, captionText: '', captionEntities: null, photoIds: [], isForwarded: false, sourceUsername: null };
         const photoId = getLargestPhotoId(m);
@@ -718,6 +721,10 @@ function handleCallback(cb) {
     handleGroupCallback(cb, action, id);
     return;
   }
+  if (action === 'pollApproveAll' || action === 'pollRejectAll') {
+    handlePollGroupCallback(cb, action, id);
+    return;
+  }
 
   const sheet = getQueueSheet();
   const rows = sheet.getDataRange().getValues();
@@ -827,6 +834,114 @@ function handleGroupCallback(cb, action, sourceId) {
   } else {
     matchingRows.forEach(rowNum => sheet.getRange(rowNum, statusIdx + 1).setValue('Rejected'));
     finishReviewMessage(cb.message.chat.id, cb.message.message_id, originalText + '\n\n❌ REJECTED', hasPhoto);
+    answerCallback(cb.id, 'Rejected.');
+  }
+}
+
+// ── Polls — Nick sends a native Telegram poll to the bot, it gets
+//    translated to EN/JP/RU/DE and posted as real polls in each channel,
+//    same review/approve pattern as listings. ──────────────────────
+
+function handleIncomingPoll(chatId, poll) {
+  if (String(chatId) !== REVIEWER_CHAT_ID) return; // only from you, in your private chat with the bot
+
+  const question = poll.question;
+  const optionTexts = poll.options.map(o => o.text);
+
+  sendTelegramMessage(REVIEWER_CHAT_ID, '📊 Poll detected — generating EN/JP/RU/DE versions for your review...');
+
+  const sourceId = 'P' + Date.now();
+  const sheet = getQueueSheet();
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+
+  ['EN', 'JP', 'RU', 'DE'].forEach(lang => {
+    const translatedQuestion = translateField(question, 'en', lang);
+    const translatedOptions = optionTexts.map(t => translateField(t, 'en', lang));
+    const content = JSON.stringify({
+      question: translatedQuestion,
+      options: translatedOptions,
+      isAnonymous: poll.is_anonymous !== false,
+      allowsMultiple: !!poll.allows_multiple_answers,
+    });
+
+    const rowNum = sheet.getLastRow() + 1;
+    const row = headers.map(h => {
+      if (h === 'id') return sourceId + '-' + lang;
+      if (h === 'createdAt') return new Date().toISOString();
+      if (h === 'language') return lang;
+      if (h === 'content') return content;
+      if (h === 'status') return 'Pending Review';
+      if (h === 'listingType') return 'poll';
+      return '';
+    });
+    sheet.getRange(rowNum, 1, 1, row.length).setValues([row]);
+  });
+
+  sendPollReviewMessage(sheet, headers, sourceId, question, optionTexts);
+}
+
+function sendPollReviewMessage(sheet, headers, sourceId, question, options) {
+  const reviewText = '📊 New poll ready — approving posts to EN + JP + RU + DE\n\n' +
+    toBoldSansSerif(question) + '\n\n' +
+    options.map((o, i) => (i + 1) + '. ' + o).join('\n');
+
+  const keyboard = { inline_keyboard: [[
+    { text: '✅ Approve All', callback_data: 'pollApproveAll_' + sourceId },
+    { text: '❌ Reject All', callback_data: 'pollRejectAll_' + sourceId },
+  ]] };
+
+  const msg = sendTelegramMessage(REVIEWER_CHAT_ID, reviewText, keyboard);
+  if (!msg || !msg.message_id) return;
+
+  const rows = sheet.getDataRange().getValues();
+  const idIdx = headers.indexOf('id');
+  const reviewIdx = headers.indexOf('reviewMsgId');
+  for (let i = 1; i < rows.length; i++) {
+    if (String(rows[i][idIdx]).indexOf(sourceId + '-') === 0) {
+      sheet.getRange(i + 1, reviewIdx + 1).setValue(msg.message_id);
+    }
+  }
+}
+
+// Handles "pollApproveAll_<sourceId>" / "pollRejectAll_<sourceId>" — mirrors
+// handleGroupCallback's pattern but posts real Telegram polls instead of text.
+function handlePollGroupCallback(cb, action, sourceId) {
+  const sheet = getQueueSheet();
+  const rows = sheet.getDataRange().getValues();
+  const headers = rows[0];
+  const idIdx = headers.indexOf('id');
+  const langIdx = headers.indexOf('language');
+  const contentIdx = headers.indexOf('content');
+  const statusIdx = headers.indexOf('status');
+
+  const matchingRows = [];
+  for (let i = 1; i < rows.length; i++) {
+    if (String(rows[i][idIdx]).indexOf(sourceId + '-') === 0) matchingRows.push(i + 1);
+  }
+  if (!matchingRows.length) { answerCallback(cb.id, 'Poll not found.'); return; }
+  if (sheet.getRange(matchingRows[0], statusIdx + 1).getValue() !== 'Pending Review') {
+    answerCallback(cb.id, 'Already handled.');
+    return;
+  }
+
+  if (action === 'pollApproveAll') {
+    matchingRows.forEach(rowNum => {
+      const language = sheet.getRange(rowNum, langIdx + 1).getValue();
+      const contentJson = sheet.getRange(rowNum, contentIdx + 1).getValue();
+      let pollData;
+      try { pollData = JSON.parse(contentJson); } catch (e) { Logger.log('poll content parse failed: ' + e); return; }
+      const channelId = LANGUAGE_CHANNELS[language];
+      if (!channelId) { Logger.log('handlePollGroupCallback: no channel for ' + language); return; }
+      const posted = sendTelegramPoll(channelId, pollData.question, pollData.options, pollData.isAnonymous, pollData.allowsMultiple);
+      sheet.getRange(rowNum, statusIdx + 1).setValue('Posted');
+      sheet.getRange(rowNum, headers.indexOf('postedMsgId') + 1).setValue((posted && posted.message_id) || '');
+      sheet.getRange(rowNum, headers.indexOf('postedAt') + 1).setValue(new Date().toISOString());
+    });
+    finishReviewMessage(cb.message.chat.id, cb.message.message_id, cb.message.text + '\n\n✅ POSTED to EN + JP + RU + DE', false);
+    answerCallback(cb.id, 'Poll posted to EN/JP/RU/DE!');
+  } else {
+    matchingRows.forEach(rowNum => sheet.getRange(rowNum, statusIdx + 1).setValue('Rejected'));
+    finishReviewMessage(cb.message.chat.id, cb.message.message_id, cb.message.text + '\n\n❌ REJECTED', false);
     answerCallback(cb.id, 'Rejected.');
   }
 }
@@ -971,6 +1086,31 @@ function sendTelegramPhoto(chatId, fileId, caption, replyMarkup, entities) {
   const data = JSON.parse(resp.getContentText());
   if (!data.ok) Logger.log('sendPhoto failed: ' + resp.getContentText());
   else if (entities) Logger.log('sendTelegramPhoto: response entities=' + JSON.stringify(data.result && data.result.caption_entities)); // TEMP diagnostic — confirms what Telegram actually stored
+  return data.result;
+}
+
+// Posts a real native Telegram poll (not a text message describing one).
+// options is a plain array of strings — Telegram polls don't support any
+// rich text formatting in the question or options, so there's no bold/
+// entity handling to worry about here, unlike listing captions.
+function sendTelegramPoll(chatId, question, options, isAnonymous, allowsMultiple) {
+  const token = PropertiesService.getScriptProperties().getProperty('BOT_TOKEN');
+  const payload = {
+    chat_id: chatId,
+    question: question,
+    options: JSON.stringify(options),
+    is_anonymous: isAnonymous !== false,
+  };
+  if (allowsMultiple) payload.allows_multiple_answers = true;
+
+  const resp = UrlFetchApp.fetch('https://api.telegram.org/bot' + token + '/sendPoll', {
+    method: 'post',
+    contentType: 'application/x-www-form-urlencoded',
+    payload: payload,
+    muteHttpExceptions: true,
+  });
+  const data = JSON.parse(resp.getContentText());
+  if (!data.ok) Logger.log('sendPoll failed: ' + resp.getContentText());
   return data.result;
 }
 
