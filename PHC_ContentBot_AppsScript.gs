@@ -46,10 +46,11 @@ const LANGUAGE_CHANNELS = {
 };
 
 // Contact block appended to every listing, per PHC's ChatGPT listing prompt.
-// Never carry over a source agent's own contact info. The phone number stays
-// as plain text (Telegram buttons can't dial a number); the Telegram
-// link(s) become tappable buttons instead — see getContactKeyboard().
-const CONTACT_STANDARD = '📞 011 666 952';
+// Never carry over a source agent's own contact info. Includes the main
+// channel link as plain text since getContactKeyboard()'s "More Property"
+// button now points to the website, not the Telegram channel — this is the
+// only place the channel link still shows up.
+const CONTACT_STANDARD = '📞 011 666 952\n📱 t.me/PropertyHubCambodia';
 
 // Same 2 buttons for every listing type — "Contact Us" opens a WhatsApp
 // chat on PHC's main line, "More Property" links to the website.
