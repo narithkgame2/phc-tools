@@ -980,23 +980,23 @@ function sendTelegramMediaGroup(chatId, fileIds, caption, entities) {
 // buttons. Single photo: caption and buttons attach directly to that one
 // message — clean, no placeholder, always worked.
 //
-// Multiple photos: tried splitting the last photo out to attach buttons
-// directly to it (keeping the rest as a caption-less album) — technically
-// avoided the placeholder-text problem, but visually broke the gallery: one
-// oversized photo landing after a tidy grid looked like two unrelated posts
-// stacked together. Rejected 2026-07-21 after a live test. Back to keeping
-// the full album together with its caption, and a short follow-up message
-// for the buttons. That follow-up needs REAL, non-empty text — a fully
-// invisible/whitespace placeholder was tried and confirmed to silently fail
-// (tested twice, live, 2026-07-21). Do not swap this back to an invisible
-// character without testing live first.
+// Multiple photos: the album carries no caption at all (keeps the grid
+// visually intact — no oversized last photo, no split). The full caption
+// then goes out as its own plain text message right after, with the
+// buttons attached directly to it. Because the caption is always real,
+// substantial listing text, it's never empty — so there's nothing here for
+// Telegram to silently reject the way it did with earlier attempts:
+//   - splitting the last photo out to attach buttons to it directly worked,
+//     but visually broke the gallery (rejected 2026-07-21 after live test)
+//   - an invisible/whitespace-only placeholder for a buttons-only message
+//     was silently dropped by Telegram (confirmed twice, live, 2026-07-21)
+// This version needs neither trick — Nick's idea, 2026-07-22.
 function postGalleryWithButtons(channelId, photoIds, caption, contactKeyboard, entities) {
   if (photoIds.length === 1) {
     return sendTelegramPhoto(channelId, photoIds[0], caption, contactKeyboard, entities);
   }
-  const posted = sendTelegramMediaGroup(channelId, photoIds, caption, entities);
-  sendTelegramMessage(channelId, '👇 Get in touch:', contactKeyboard);
-  return posted;
+  sendTelegramMediaGroup(channelId, photoIds); // no caption — it goes in its own message below
+  return sendTelegramMessage(channelId, caption, contactKeyboard, entities);
 }
 
 function getLargestPhotoId(message) {
