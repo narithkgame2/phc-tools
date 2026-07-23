@@ -54,11 +54,22 @@ const CONTACT_STANDARD = '📞 011 666 952\n📱 t.me/PropertyHubCambodia';
 
 // Same 2 buttons for every listing type — "Contact Us" opens a WhatsApp
 // chat on PHC's main line, "More Property" links to the website.
-function getContactKeyboard() {
-  return { inline_keyboard: [[
+// channelTag (e.g. 'EN'/'JP'/'RU'/'DE') is optional — when given, adds a 3rd
+// button whose deep link is tagged so a lead's first bot message can be
+// traced back to exactly which channel they clicked from (see
+// handleLeadStart). Contact Us and More Property are unchanged either way —
+// this only adds a new tracked path, it doesn't touch the existing ones.
+function getContactKeyboard(channelTag) {
+  const keyboard = { inline_keyboard: [[
     { text: '📱 Contact Us', url: 'https://wa.me/85511666952' },
     { text: '🌐 More Property', url: 'https://propertyhubcambodia.com' },
   ]] };
+  if (channelTag) {
+    keyboard.inline_keyboard.push([
+      { text: '✈️ Message us on Telegram', url: 'https://t.me/' + BOT_USERNAME + '?start=lead_' + channelTag },
+    ]);
+  }
+  return keyboard;
 }
 
 const SHEET_NAME = 'Queue';
@@ -71,8 +82,13 @@ function checkForUpdates() {
   const props = PropertiesService.getScriptProperties();
   const lastOffset = Number(props.getProperty('LAST_UPDATE_OFFSET') || '0');
 
+  // allowed_updates must be listed explicitly to receive message_reaction_count —
+  // Telegram omits reaction updates by default unless a bot opts in. Specifying
+  // this list REPLACES the default set, so every update type the bot relies on
+  // elsewhere (message, callback_query, channel_post) has to be included too.
+  const allowedUpdates = encodeURIComponent(JSON.stringify(['message', 'callback_query', 'channel_post', 'message_reaction_count']));
   const resp = UrlFetchApp.fetch(
-    'https://api.telegram.org/bot' + token + '/getUpdates?offset=' + (lastOffset + 1) + '&timeout=0',
+    'https://api.telegram.org/bot' + token + '/getUpdates?offset=' + (lastOffset + 1) + '&timeout=0&allowed_updates=' + allowedUpdates,
     { muteHttpExceptions: true }
   );
   const data = JSON.parse(resp.getContentText());
@@ -96,9 +112,23 @@ function checkForUpdates() {
       // once the bot is added as admin and any message is posted there.
       const cp = update.channel_post;
       Logger.log('channel_post: chat.id=' + cp.chat.id + ' title="' + cp.chat.title + '" username="' + (cp.chat.username || '') + '" text="' + (cp.text || cp.caption || '') + '"');
+    } else if (update.message_reaction_count) {
+      try { handleReactionUpdate(update.message_reaction_count); }
+      catch (err) { Logger.log('handleReactionUpdate error: ' + err); }
     } else if (update.message) {
       const m = update.message;
-      if (m.poll) {
+      if (String(m.chat.id) !== REVIEWER_CHAT_ID && m.text && m.text.indexOf('/start') === 0) {
+        // A lead clicked a tagged "Message us on Telegram" button — capture
+        // which channel it came from, alert Nick, and hand them off to WhatsApp
+        // rather than trying to hold a conversation in this bot.
+        try { handleLeadStart(m); }
+        catch (err) { Logger.log('handleLeadStart error: ' + err); }
+      } else if (m.reply_to_message && String(m.chat.id) === REVIEWER_CHAT_ID && looksLikeStatusKeyword(m.text)) {
+        // Nick replying "SOLD" / "RENTED" / etc. directly to a listing's review
+        // message — update the already-posted channel messages in place.
+        try { handleStatusReply(m.chat.id, m.text, m.reply_to_message.message_id); }
+        catch (err) { Logger.log('handleStatusReply error: ' + err); }
+      } else if (m.poll) {
         try { handleIncomingPoll(m.chat.id, m.poll); }
         catch (err) { Logger.log('handleIncomingPoll error: ' + err); }
       } else if (m.media_group_id) {
@@ -149,6 +179,12 @@ function getForwardSourceUsername(m) {
 // Nick's own channel where he posts already-final listings — forwards from
 // here skip reformatting entirely and only get translated.
 const OWN_CHANNEL_USERNAME = 'NickREAKH';
+
+// This bot's own username, used to build the tagged "Message us on Telegram"
+// deep link (t.me/<BOT_USERNAME>?start=lead_<channel>) attached to every
+// posted listing — lets a lead's first message be traced back to exactly
+// which channel/language it came from.
+const BOT_USERNAME = 'PHC_Content_Bot';
 
 // ── Claude API fallback — for listing formats none of the 3 hardcoded
 //    parsers recognize (arbitrary layouts from other agents' channels).
@@ -717,7 +753,7 @@ function handleCallback(cb) {
   const id = sepIdx === -1 ? '' : data.slice(sepIdx + 1);
   Logger.log('handleCallback: raw data="' + data + '" action="' + action + '" id="' + id + '"');
 
-  if (action === 'approveAll' || action === 'rejectAll') {
+  if (action === 'approveAll' || action === 'rejectAll' || action === 'approveAllPin') {
     handleGroupCallback(cb, action, id);
     return;
   }
@@ -753,7 +789,7 @@ function handleCallback(cb) {
         answerCallback(cb.id, 'No channel configured for language: ' + rowObj.language);
         return;
       }
-      const contactKeyboard = getContactKeyboard();
+      const contactKeyboard = getContactKeyboard(rowObj.language);
       let posted;
       if (photoIds.length > 0) {
         posted = postGalleryWithButtons(channelId, photoIds, rowObj.content, contactKeyboard);
@@ -805,8 +841,8 @@ function handleGroupCallback(cb, action, sourceId) {
   const hasPhoto = !!(cb.message.photo && cb.message.photo.length);
   const originalText = hasPhoto ? cb.message.caption : cb.message.text;
 
-  if (action === 'approveAll') {
-    const contactKeyboard = getContactKeyboard();
+  if (action === 'approveAll' || action === 'approveAllPin') {
+    const shouldPin = action === 'approveAllPin';
     matchingRows.forEach(rowNum => {
       const language = sheet.getRange(rowNum, langIdx + 1).getValue();
       const content = sheet.getRange(rowNum, contentIdx + 1).getValue();
@@ -814,9 +850,9 @@ function handleGroupCallback(cb, action, sourceId) {
       const entitiesCell = entitiesIdx > -1 ? sheet.getRange(rowNum, entitiesIdx + 1).getValue() : '';
       let entities = null;
       if (entitiesCell) { try { entities = JSON.parse(entitiesCell); } catch (e) { entities = null; } }
-      Logger.log('handleGroupCallback: lang=' + language + ' entitiesIdx=' + entitiesIdx + ' entitiesCell="' + entitiesCell + '" parsedEntities=' + JSON.stringify(entities) + ' photoIds.length=' + photoIds.length); // TEMP diagnostic
       const channelId = LANGUAGE_CHANNELS[language];
       if (!channelId) { Logger.log('handleGroupCallback: no channel for ' + language); return; }
+      const contactKeyboard = getContactKeyboard(language);
 
       let posted;
       if (photoIds.length > 0) {
@@ -828,9 +864,11 @@ function handleGroupCallback(cb, action, sourceId) {
       sheet.getRange(rowNum, statusIdx + 1).setValue('Posted');
       sheet.getRange(rowNum, headers.indexOf('postedMsgId') + 1).setValue(postedMsgId || '');
       sheet.getRange(rowNum, headers.indexOf('postedAt') + 1).setValue(new Date().toISOString());
+
+      if (shouldPin && postedMsgId) pinNewestListing(channelId, language, postedMsgId);
     });
-    finishReviewMessage(cb.message.chat.id, cb.message.message_id, originalText + '\n\n✅ POSTED to EN + JP + RU + DE', hasPhoto);
-    answerCallback(cb.id, 'Posted to EN/JP/RU/DE!');
+    finishReviewMessage(cb.message.chat.id, cb.message.message_id, originalText + '\n\n✅ POSTED to EN + JP + RU + DE' + (shouldPin ? ' · 📌 PINNED' : ''), hasPhoto);
+    answerCallback(cb.id, shouldPin ? 'Posted and pinned!' : 'Posted to EN/JP/RU/DE!');
   } else {
     matchingRows.forEach(rowNum => sheet.getRange(rowNum, statusIdx + 1).setValue('Rejected'));
     finishReviewMessage(cb.message.chat.id, cb.message.message_id, originalText + '\n\n❌ REJECTED', hasPhoto);
@@ -946,6 +984,233 @@ function handlePollGroupCallback(cb, action, sourceId) {
   }
 }
 
+// ── Listing status updates — Nick replies "SOLD" / "RENTED" / "RESERVED" /
+//    "REDUCED $X" directly to a listing's review message. The reply is
+//    matched back to that listing via reply_to_message.message_id against
+//    the reviewMsgId already saved for every row, then the already-POSTED
+//    channel messages get edited in place (not reposted) via
+//    editMessageText/editMessageCaption. ──────────────────────
+
+const STATUS_LABELS = {
+  SOLD: '🔴 SOLD — no longer available',
+  RENTED: '🔑 RENTED — no longer available',
+  RESERVED: '🟡 RESERVED / Under Offer',
+};
+
+function looksLikeStatusKeyword(text) {
+  if (!text) return false;
+  const upper = text.trim().toUpperCase();
+  return !!STATUS_LABELS[upper] || /^REDUCED\b/.test(upper);
+}
+
+function handleStatusReply(chatId, text, replyToMessageId) {
+  const upper = text.trim().toUpperCase();
+  let banner;
+  if (STATUS_LABELS[upper]) {
+    banner = STATUS_LABELS[upper];
+  } else {
+    const extra = text.trim().slice('REDUCED'.length).trim();
+    banner = '🟢 PRICE REDUCED' + (extra ? ' — ' + extra : '');
+  }
+
+  const sheet = getQueueSheet();
+  const rows = sheet.getDataRange().getValues();
+  const headers = rows[0];
+  const reviewIdx = headers.indexOf('reviewMsgId');
+  const langIdx = headers.indexOf('language');
+  const postedMsgIdx = headers.indexOf('postedMsgId');
+  const photoIdx = headers.indexOf('photoFileId');
+  const contentIdx = headers.indexOf('content');
+
+  const matchingRows = [];
+  for (let i = 1; i < rows.length; i++) {
+    if (String(rows[i][reviewIdx]) === String(replyToMessageId)) matchingRows.push(i + 1);
+  }
+  if (!matchingRows.length) {
+    sendTelegramMessage(REVIEWER_CHAT_ID, "🤔 Couldn't find which listing that's replying to — make sure you're replying directly to the original review message (the one with Approve/Reject).");
+    return;
+  }
+
+  let updatedCount = 0;
+  matchingRows.forEach(rowNum => {
+    const language = sheet.getRange(rowNum, langIdx + 1).getValue();
+    const postedMsgId = sheet.getRange(rowNum, postedMsgIdx + 1).getValue();
+    if (!postedMsgId) return; // this language version was rejected, never posted — nothing to edit
+    const channelId = LANGUAGE_CHANNELS[language];
+    if (!channelId) return;
+    const content = sheet.getRange(rowNum, contentIdx + 1).getValue();
+    const photoIds = parsePhotoIds(photoIdx > -1 ? sheet.getRange(rowNum, photoIdx + 1).getValue() : '');
+
+    // postGalleryWithButtons puts the caption on the PHOTO message only when
+    // there's exactly one photo — everything else (0 photos, or a multi-photo
+    // album) carries the caption on a separate plain text message. Editing
+    // must match whichever it actually is, or Telegram rejects the call.
+    const captionIsOnAPhoto = photoIds.length === 1;
+    editPostedMessage(channelId, postedMsgId, banner + '\n\n' + content, captionIsOnAPhoto);
+    updatedCount++;
+  });
+
+  sendTelegramMessage(REVIEWER_CHAT_ID, updatedCount
+    ? '✅ Updated ' + updatedCount + ' posted version(s) to: ' + banner.replace(/^[^\s]+\s/, '')
+    : "🤔 Found that listing, but nothing was actually posted for it (all versions were rejected?).");
+}
+
+function editPostedMessage(chatId, messageId, newText, hasPhoto) {
+  const token = PropertiesService.getScriptProperties().getProperty('BOT_TOKEN');
+  const url = 'https://api.telegram.org/bot' + token + '/' + (hasPhoto ? 'editMessageCaption' : 'editMessageText');
+  const payload = { chat_id: chatId, message_id: messageId };
+  payload[hasPhoto ? 'caption' : 'text'] = newText;
+  // reply_markup intentionally omitted — Telegram leaves existing buttons
+  // (Contact Us / More Property / the tracked Telegram link) untouched when
+  // it's not included, which is exactly what a status update should do.
+  const resp = UrlFetchApp.fetch(url, {
+    method: 'post', contentType: 'application/x-www-form-urlencoded', payload: payload, muteHttpExceptions: true,
+  });
+  const data = JSON.parse(resp.getContentText());
+  if (!data.ok) Logger.log('editPostedMessage failed: ' + resp.getContentText());
+  return data.result;
+}
+
+// ── Reaction tracking — requires allowed_updates to include
+//    message_reaction_count (see checkForUpdates) and the bot to be an
+//    admin in each channel. Logs engagement per listing to a "Reactions"
+//    sheet — a free, lightweight stand-in for Buffer's paid analytics. ──
+
+function handleReactionUpdate(mrc) {
+  const sheet = getQueueSheet();
+  const rows = sheet.getDataRange().getValues();
+  const headers = rows[0];
+  const postedMsgIdx = headers.indexOf('postedMsgId');
+  const contentIdx = headers.indexOf('content');
+  const langIdx = headers.indexOf('language');
+  const totalReactions = (mrc.reactions || []).reduce((sum, r) => sum + (r.total_count || 0), 0);
+
+  for (let i = 1; i < rows.length; i++) {
+    if (String(rows[i][postedMsgIdx]) === String(mrc.message_id)) {
+      logReactionCount(rows[i][langIdx], rows[i][contentIdx], mrc.message_id, totalReactions, mrc.reactions);
+      return;
+    }
+  }
+  Logger.log('handleReactionUpdate: no matching listing for message_id=' + mrc.message_id);
+}
+
+function logReactionCount(language, content, messageId, totalReactions, reactions) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName('Reactions');
+  if (!sheet) {
+    sheet = ss.insertSheet('Reactions');
+    const reactionHeaders = ['timestamp', 'language', 'messageId', 'totalReactions', 'breakdown', 'listingSnippet'];
+    sheet.getRange(1, 1, 1, reactionHeaders.length).setValues([reactionHeaders]);
+    sheet.getRange(1, 1, 1, reactionHeaders.length)
+      .setBackground('#0F192E').setFontColor('#ffffff').setFontWeight('bold').setFontSize(10);
+    sheet.setFrozenRows(1);
+  }
+  const breakdown = (reactions || [])
+    .map(r => (r.type && (r.type.emoji || r.type.custom_emoji_id || r.type.type)) + ':' + r.total_count)
+    .join(', ');
+  const snippet = String(content || '').split('\n').filter(Boolean).slice(0, 2).join(' ').slice(0, 70);
+  sheet.appendRow([new Date().toISOString(), language, messageId, totalReactions, breakdown, snippet]);
+}
+
+// ── Lead-source deep links — a lead taps "✈️ Message us on Telegram" on a
+//    posted listing, which opens t.me/<BOT_USERNAME>?start=lead_<channel>.
+//    That's this bot's own private chat, opened by a stranger for the first
+//    time, carrying the channel tag. Logs the source, alerts Nick, and
+//    hands the lead off to WhatsApp rather than trying to chat with them
+//    here (this bot isn't built for ongoing conversations). ──
+
+function handleLeadStart(m) {
+  const payload = m.text.replace('/start', '').trim(); // "lead_EN", "lead_JP", etc., or empty if opened with no tag
+  const channelTag = payload.indexOf('lead_') === 0 ? payload.slice('lead_'.length) : '(untagged)';
+  const from = m.from || {};
+  const who = (from.first_name || '') + (from.last_name ? ' ' + from.last_name : '') +
+    (from.username ? ' (@' + from.username + ')' : '') || 'Unknown';
+
+  logLeadSource(channelTag, from.id, who);
+
+  sendTelegramMessage(REVIEWER_CHAT_ID,
+    '📥 New lead from Telegram — channel: ' + channelTag + '\n👤 ' + who + '\n\nThey tapped "Message us on Telegram" on a listing. Handed off to WhatsApp automatically.');
+
+  sendTelegramMessage(m.chat.id,
+    "👋 Thanks for reaching out to Property Hub Cambodia! For the fastest response, please message us directly on WhatsApp:\nhttps://wa.me/85511666952");
+}
+
+function logLeadSource(channelTag, telegramUserId, who) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName('LeadSources');
+  if (!sheet) {
+    sheet = ss.insertSheet('LeadSources');
+    const leadHeaders = ['timestamp', 'channelTag', 'telegramUserId', 'name'];
+    sheet.getRange(1, 1, 1, leadHeaders.length).setValues([leadHeaders]);
+    sheet.getRange(1, 1, 1, leadHeaders.length)
+      .setBackground('#0F192E').setFontColor('#ffffff').setFontWeight('bold').setFontSize(10);
+    sheet.setFrozenRows(1);
+  }
+  sheet.appendRow([new Date().toISOString(), channelTag, telegramUserId || '', who]);
+}
+
+// ── Auto-pin — "📌 Approve & Pin" on the review message pins that listing
+//    in each channel it posts to, unpinning whatever was pinned there
+//    before. Only one listing stays pinned per channel at a time; regular
+//    "Approve All" never pins anything, so this is opt-in per listing. ──
+
+function pinChatMessage(chatId, messageId) {
+  const token = PropertiesService.getScriptProperties().getProperty('BOT_TOKEN');
+  const resp = UrlFetchApp.fetch('https://api.telegram.org/bot' + token + '/pinChatMessage', {
+    method: 'post', contentType: 'application/x-www-form-urlencoded',
+    payload: { chat_id: chatId, message_id: messageId, disable_notification: true },
+    muteHttpExceptions: true,
+  });
+  const data = JSON.parse(resp.getContentText());
+  if (!data.ok) Logger.log('pinChatMessage failed: ' + resp.getContentText());
+  return data.ok;
+}
+
+function unpinChatMessage(chatId, messageId) {
+  const token = PropertiesService.getScriptProperties().getProperty('BOT_TOKEN');
+  const resp = UrlFetchApp.fetch('https://api.telegram.org/bot' + token + '/unpinChatMessage', {
+    method: 'post', contentType: 'application/x-www-form-urlencoded',
+    payload: { chat_id: chatId, message_id: messageId },
+    muteHttpExceptions: true,
+  });
+  const data = JSON.parse(resp.getContentText());
+  if (!data.ok) Logger.log('unpinChatMessage failed (non-fatal, may already be unpinned): ' + resp.getContentText());
+}
+
+function pinNewestListing(channelId, language, messageId) {
+  const props = PropertiesService.getScriptProperties();
+  const key = 'PINNED_' + language;
+  const prevPinned = props.getProperty(key);
+  if (prevPinned) unpinChatMessage(channelId, prevPinned);
+  const ok = pinChatMessage(channelId, messageId);
+  if (ok) props.setProperty(key, String(messageId));
+}
+
+// ── Location pins — CAPABILITY ONLY, not wired into posting yet.
+//    sendTelegramLocation() works and is ready to use, but PROJECT_COORDINATES
+//    below has no real GPS data in it — filling in fake coordinates would
+//    risk sending someone to the wrong building, so it's deliberately left
+//    empty rather than guessed. Fill in real lat/long per project (Google
+//    Maps → right-click a location → the numbers at the top of the menu),
+//    then a listing's title can be matched against this table to attach a
+//    real map pin alongside the photos. ──
+
+const PROJECT_COORDINATES = {
+  // 'Time Square 9': { lat: 0, lng: 0 }, // TODO: fill in real coordinates before use
+};
+
+function sendTelegramLocation(chatId, latitude, longitude) {
+  const token = PropertiesService.getScriptProperties().getProperty('BOT_TOKEN');
+  const resp = UrlFetchApp.fetch('https://api.telegram.org/bot' + token + '/sendLocation', {
+    method: 'post', contentType: 'application/x-www-form-urlencoded',
+    payload: { chat_id: chatId, latitude: latitude, longitude: longitude },
+    muteHttpExceptions: true,
+  });
+  const data = JSON.parse(resp.getContentText());
+  if (!data.ok) Logger.log('sendTelegramLocation failed: ' + resp.getContentText());
+  return data.result;
+}
+
 // ── Send for review ──────────────────────────────────────────────
 
 // One review message for all 3 language rows sharing a sourceId — shows the
@@ -980,10 +1245,15 @@ function sendCombinedReviewMessage(sheet, headers, sourceId, photoFileIds) {
   const reviewText = prefix + enContent;
   const shiftedEntities = enEntities ? enEntities.map(e => Object.assign({}, e, { offset: e.offset + prefix.length })) : null;
   const keyboard = {
-    inline_keyboard: [[
-      { text: '✅ Approve All', callback_data: 'approveAll_' + sourceId },
-      { text: '❌ Reject All', callback_data: 'rejectAll_' + sourceId },
-    ]],
+    inline_keyboard: [
+      [
+        { text: '✅ Approve All', callback_data: 'approveAll_' + sourceId },
+        { text: '❌ Reject All', callback_data: 'rejectAll_' + sourceId },
+      ],
+      [
+        { text: '📌 Approve & Pin', callback_data: 'approveAllPin_' + sourceId },
+      ],
+    ],
   };
 
   const msg = photoFileIds && photoFileIds.length
