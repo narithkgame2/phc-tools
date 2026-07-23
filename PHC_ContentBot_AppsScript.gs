@@ -52,24 +52,26 @@ const LANGUAGE_CHANNELS = {
 // only place the channel link still shows up.
 const CONTACT_STANDARD = '📞 011 666 952\n📱 t.me/PropertyHubCambodia';
 
-// Same 2 buttons for every listing type — "Contact Us" opens a WhatsApp
-// chat on PHC's main line, "More Property" links to the website.
-// channelTag (e.g. 'EN'/'JP'/'RU'/'DE') is optional — when given, adds a 3rd
-// button whose deep link is tagged so a lead's first bot message can be
-// traced back to exactly which channel they clicked from (see
-// handleLeadStart). Contact Us and More Property are unchanged either way —
-// this only adds a new tracked path, it doesn't touch the existing ones.
+// Each channel's "Contact Us" opens a direct Telegram chat with the person
+// in charge of that audience — not a shared WhatsApp line — so replies come
+// from the right staff member with no extra bot hop for the client.
+const CHANNEL_CONTACT_PERSON = {
+  EN: 'Monika_PHC',
+  JP: 'Nick_REAKH',
+  RU: 'Monika_PHC',
+  DE: 'RAZ_360',
+};
+
+// 2 buttons for every listing — "Contact Us" routes to the channel's owner
+// on Telegram, "More Property" links to the website. channelTag (e.g.
+// 'EN'/'JP'/'RU'/'DE') selects who "Contact Us" points to; falls back to
+// Monika if an unrecognized/missing tag is passed.
 function getContactKeyboard(channelTag) {
-  const keyboard = { inline_keyboard: [[
-    { text: '📱 Contact Us', url: 'https://wa.me/85511666952' },
+  const contactUsername = CHANNEL_CONTACT_PERSON[channelTag] || CHANNEL_CONTACT_PERSON.EN;
+  return { inline_keyboard: [[
+    { text: '📱 Contact Us', url: 'https://t.me/' + contactUsername },
     { text: '🌐 More Property', url: 'https://propertyhubcambodia.com' },
   ]] };
-  if (channelTag) {
-    keyboard.inline_keyboard.push([
-      { text: '💬 Message us on Telegram', url: 'https://t.me/' + BOT_USERNAME + '?start=lead_' + channelTag },
-    ]);
-  }
-  return keyboard;
 }
 
 const SHEET_NAME = 'Queue';
@@ -117,13 +119,7 @@ function checkForUpdates() {
       catch (err) { Logger.log('handleReactionUpdate error: ' + err); }
     } else if (update.message) {
       const m = update.message;
-      if (String(m.chat.id) !== REVIEWER_CHAT_ID && m.text && m.text.indexOf('/start') === 0) {
-        // A lead clicked a tagged "Message us on Telegram" button — capture
-        // which channel it came from, alert Nick, and hand them off to WhatsApp
-        // rather than trying to hold a conversation in this bot.
-        try { handleLeadStart(m); }
-        catch (err) { Logger.log('handleLeadStart error: ' + err); }
-      } else if (m.reply_to_message && String(m.chat.id) === REVIEWER_CHAT_ID && looksLikeStatusKeyword(m.text)) {
+      if (m.reply_to_message && String(m.chat.id) === REVIEWER_CHAT_ID && looksLikeStatusKeyword(m.text)) {
         // Nick replying "SOLD" / "RENTED" / etc. directly to a listing's review
         // message — update the already-posted channel messages in place.
         try { handleStatusReply(m.chat.id, m.text, m.reply_to_message.message_id); }
@@ -179,12 +175,6 @@ function getForwardSourceUsername(m) {
 // Nick's own channel where he posts already-final listings — forwards from
 // here skip reformatting entirely and only get translated.
 const OWN_CHANNEL_USERNAME = 'NickREAKH';
-
-// This bot's own username, used to build the tagged "Message us on Telegram"
-// deep link (t.me/<BOT_USERNAME>?start=lead_<channel>) attached to every
-// posted listing — lets a lead's first message be traced back to exactly
-// which channel/language it came from.
-const BOT_USERNAME = 'PHC_Content_Bot';
 
 // ── Claude API fallback — for listing formats none of the 3 hardcoded
 //    parsers recognize (arbitrary layouts from other agents' channels).
@@ -1107,43 +1097,6 @@ function logReactionCount(language, content, messageId, totalReactions, reaction
     .join(', ');
   const snippet = String(content || '').split('\n').filter(Boolean).slice(0, 2).join(' ').slice(0, 70);
   sheet.appendRow([new Date().toISOString(), language, messageId, totalReactions, breakdown, snippet]);
-}
-
-// ── Lead-source deep links — a lead taps "💬 Message us on Telegram" on a
-//    posted listing, which opens t.me/<BOT_USERNAME>?start=lead_<channel>.
-//    That's this bot's own private chat, opened by a stranger for the first
-//    time, carrying the channel tag. Logs the source, alerts Nick, and
-//    hands the lead off to WhatsApp rather than trying to chat with them
-//    here (this bot isn't built for ongoing conversations). ──
-
-function handleLeadStart(m) {
-  const payload = m.text.replace('/start', '').trim(); // "lead_EN", "lead_JP", etc., or empty if opened with no tag
-  const channelTag = payload.indexOf('lead_') === 0 ? payload.slice('lead_'.length) : '(untagged)';
-  const from = m.from || {};
-  const who = (from.first_name || '') + (from.last_name ? ' ' + from.last_name : '') +
-    (from.username ? ' (@' + from.username + ')' : '') || 'Unknown';
-
-  logLeadSource(channelTag, from.id, who);
-
-  sendTelegramMessage(REVIEWER_CHAT_ID,
-    '📥 New lead from Telegram — channel: ' + channelTag + '\n👤 ' + who + '\n\nThey tapped "Message us on Telegram" on a listing. Handed off to WhatsApp automatically.');
-
-  sendTelegramMessage(m.chat.id,
-    "👋 Thanks for reaching out to Property Hub Cambodia! For the fastest response, please message us directly on WhatsApp:\nhttps://wa.me/85511666952");
-}
-
-function logLeadSource(channelTag, telegramUserId, who) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = ss.getSheetByName('LeadSources');
-  if (!sheet) {
-    sheet = ss.insertSheet('LeadSources');
-    const leadHeaders = ['timestamp', 'channelTag', 'telegramUserId', 'name'];
-    sheet.getRange(1, 1, 1, leadHeaders.length).setValues([leadHeaders]);
-    sheet.getRange(1, 1, 1, leadHeaders.length)
-      .setBackground('#0F192E').setFontColor('#ffffff').setFontWeight('bold').setFontSize(10);
-    sheet.setFrozenRows(1);
-  }
-  sheet.appendRow([new Date().toISOString(), channelTag, telegramUserId || '', who]);
 }
 
 // ── Location pins — CAPABILITY ONLY, not wired into posting yet.
