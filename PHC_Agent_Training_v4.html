@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>PHC · Agent Training</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sb:#0F192E;--sb-deep:#091120;--sb-hover:rgba(255,255,255,.06);--sb-active:rgba(192,154,89,.16);
+  --sb-text:rgba(245,243,240,.65);--sb-text-s:#F5F3F0;--sb-icon:rgba(245,243,240,.4);--sb-border:rgba(255,255,255,.08);
+  --sb-gold:#C09A59;--sb-gold-light:#D9BD8C;
+  --navy:#083467;--gold:#cc9d4d;--gold-pale:#fdf3e3;
+  --bg:#f5f6f8;--card:#ffffff;--white:#ffffff;
+  --border:#e3e5ea;--border-h:#c0c4d0;
+  --text:#1a1d23;--text-s:#5a5f72;--text-m:#9498aa;
+  --green:#00b894;--green-pale:#e9fbf6;--red:#d63031;--red-pale:#fdecec;--orange:#e17055;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+html,body{height:100%}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit}
+
+/* ═══ APP SHELL ═══ */
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* ═══ SIDEBAR ═══ */
+.sidebar{width:260px;flex-shrink:0;background:var(--sb);display:flex;flex-direction:column;border-right:1px solid var(--sb-border);overflow:hidden;transition:width .2s ease}
+.sidebar.collapsed{width:52px}
+.sidebar.collapsed .sb-label,.sidebar.collapsed .ws-info,.sidebar.collapsed .sb-section-label,.sidebar.collapsed .sb-count,.sidebar.collapsed .sb-badge{display:none}
+.sidebar.collapsed .ws-header{padding:14px 0;justify-content:center}
+.sidebar.collapsed .ws-logo{display:none}
+.sidebar.collapsed .collapse-btn{transform:rotate(180deg)}
+
+.ws-header{display:flex;align-items:center;gap:9px;padding:14px 12px 12px;border-bottom:1px solid var(--sb-border);flex-shrink:0}
+.ws-logo{width:28px;height:28px;border-radius:7px;background:var(--sb-gold);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--sb-deep);flex-shrink:0}
+.ws-info{flex:1;min-width:0}
+.ws-name{font-size:13px;font-weight:700;color:var(--sb-text-s);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ws-sub{font-size:10px;color:var(--sb-icon);margin-top:1px}
+.collapse-btn{background:none;border:none;color:var(--sb-icon);cursor:pointer;font-size:13px;padding:4px;border-radius:4px;flex-shrink:0;line-height:1}
+.collapse-btn:hover{background:var(--sb-hover);color:var(--sb-text-s)}
+
+.sb-nav{flex:1;overflow-y:auto;padding:8px 0;scrollbar-width:none}
+.sb-nav::-webkit-scrollbar{display:none}
+.sb-section-label{display:flex;align-items:center;justify-content:space-between;font-size:9px;font-weight:600;color:var(--sb-icon);text-transform:uppercase;letter-spacing:.1em;padding:12px 14px 4px}
+.sb-item{display:flex;align-items:center;gap:8px;padding:6px 10px;margin:1px 6px;border-radius:6px;color:var(--sb-text);font-size:12px;font-weight:400;transition:all .15s;cursor:pointer;user-select:none}
+.sb-item:hover{background:var(--sb-hover);color:var(--sb-text-s)}
+.sb-item.active{background:var(--sb-active);color:var(--sb-gold-light);font-weight:600}
+.sb-item.disabled{opacity:.38;cursor:default}
+.sb-item.disabled:hover{background:none;color:var(--sb-text)}
+.sb-icon{width:18px;height:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--sb-icon)}
+.sb-item.active .sb-icon{color:var(--sb-gold-light)}
+.sb-icon.done{color:var(--green)}
+.sb-label{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-count{font-size:9px;color:var(--sb-icon);margin-left:auto;font-weight:500;flex-shrink:0}
+.sb-soon{font-size:8.5px;color:var(--sb-icon);margin-left:auto;flex-shrink:0;letter-spacing:.03em;text-transform:uppercase}
+
+.sb-footer{border-top:1px solid var(--sb-border);padding:10px 14px}
+.sb-progress-track{height:4px;border-radius:2px;background:rgba(255,255,255,.08);overflow:hidden;margin-bottom:6px}
+.sb-progress-fill{height:100%;background:var(--sb-gold);border-radius:2px;transition:width .3s}
+.sb-progress-label{font-size:10px;color:var(--sb-icon)}
+
+/* ═══ MAIN ═══ */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topnav{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0;background:var(--white)}
+.tn-title{font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tn-spacer{flex:1}
+.lang-toggle{display:flex;gap:2px;background:var(--bg);border-radius:7px;padding:2px}
+.lang-btn{border:none;background:none;padding:5px 11px;border-radius:5px;font-size:11px;font-weight:600;color:var(--text-m);cursor:pointer;font-family:'DM Sans',sans-serif}
+.lang-btn.active{background:var(--white);color:var(--navy);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.tn-progress{display:flex;align-items:center;gap:8px}
+.tn-progress-track{width:120px;height:6px;border-radius:3px;background:var(--border);overflow:hidden}
+.tn-progress-fill{height:100%;background:var(--gold);border-radius:3px;transition:width .3s}
+.tn-progress-label{font-size:11px;color:var(--text-m);font-family:'DM Mono',monospace;white-space:nowrap}
+
+.content-area{flex:1;overflow-y:auto;background:var(--bg)}
+.content-inner{max-width:760px;margin:0 auto;padding:40px 24px 80px}
+
+/* ═══ LANDING ═══ */
+.hero{text-align:center;padding:24px 0 36px}
+.hero-h{font-family:'DM Serif Display',serif;font-size:34px;color:var(--navy);margin-bottom:8px;line-height:1.15}
+.hero-sub{font-size:13.5px;color:var(--text-s);max-width:480px;margin:0 auto}
+.week-grid{display:grid;grid-template-columns:1fr;gap:10px;margin-top:28px}
+.wk-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px 18px;cursor:pointer;transition:.15s}
+.wk-card:hover{border-color:var(--border-h);box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.wk-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.wk-title{font-size:13.5px;font-weight:700;color:var(--text)}
+.wk-count{font-size:11px;color:var(--text-m);font-family:'DM Mono',monospace}
+.wk-desc{font-size:12px;color:var(--text-s)}
+.wk-bar-track{height:3px;border-radius:2px;background:var(--border);margin-top:10px;overflow:hidden}
+.wk-bar-fill{height:100%;background:var(--gold);border-radius:2px}
+
+/* ═══ LESSON HEADER ═══ */
+.lesson-eyebrow{font-size:10.5px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.lesson-h{font-family:'DM Serif Display',serif;font-size:27px;color:var(--navy);line-height:1.2;margin-bottom:14px}
+.obj-box{background:var(--gold-pale);border:1px solid rgba(204,157,77,.25);border-radius:10px;padding:14px 16px;margin-bottom:24px}
+.obj-title{font-size:10.5px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.obj-item{display:flex;gap:8px;font-size:12.5px;color:var(--text-s);line-height:1.55;margin-bottom:5px}
+.obj-item:last-child{margin-bottom:0}
+.obj-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);margin-top:7px;flex-shrink:0}
+
+/* ═══ SECTION ═══ */
+.section-block{margin-bottom:30px}
+.section-label{font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.section-heading{font-size:18px;font-weight:700;color:var(--text);margin-bottom:10px;line-height:1.35}
+.section-body{font-size:13.5px;line-height:1.7;color:var(--text-s);margin-bottom:14px}
+.section-body strong{color:var(--text);font-weight:600}
+
+/* ═══ BEFORE / NOW COMPARISON ═══ */
+.bn-box{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px}
+.bn-col{background:var(--white);padding:14px 16px}
+.bn-col.wrong{background:var(--red-pale)}
+.bn-col.right{background:var(--green-pale)}
+.bn-label{display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.bn-col.wrong .bn-label{color:var(--red)}
+.bn-col.right .bn-label{color:var(--green)}
+.bn-icon{width:14px;height:14px;flex-shrink:0}
+.bn-text{font-size:13px;line-height:1.55;color:var(--text)}
+@media(max-width:600px){.bn-box{grid-template-columns:1fr}}
+
+/* ═══ RULE CARD ═══ */
+.rule{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:10px}
+.rule-title{font-size:13.5px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.rule-detail{font-size:13px;line-height:1.65;color:var(--text-s);margin-bottom:10px}
+.rule-action{display:flex;gap:8px;background:var(--bg);border-radius:7px;padding:9px 11px;font-size:12px;color:var(--text)}
+.rule-action .ra-icon{color:var(--gold);flex-shrink:0;width:14px;height:14px;margin-top:1px}
+.rule-action b{font-weight:700;color:var(--navy)}
+
+/* ═══ WARNING / DATA BOX ═══ */
+.warn-box{display:flex;gap:10px;background:#fff8ed;border:1px solid rgba(225,112,85,.3);border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:13px;color:#7a3e1a;line-height:1.6}
+.warn-icon{width:16px;height:16px;flex-shrink:0;color:var(--orange);margin-top:1px}
+.data-box{background:var(--navy);color:#fff;border-radius:10px;padding:16px 18px;margin-bottom:16px}
+.data-title{font-size:10.5px;font-weight:700;color:var(--sb-gold-light);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.data-line{font-size:12.5px;line-height:1.7;color:rgba(255,255,255,.85);padding-left:14px;position:relative;margin-bottom:4px}
+.data-line::before{content:'';position:absolute;left:0;top:8px;width:5px;height:5px;border-radius:50%;background:var(--sb-gold-light)}
+
+/* ═══ QUIZ ═══ */
+.quiz-block{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px}
+.quiz-q{margin-bottom:22px}
+.quiz-q:last-child{margin-bottom:0}
+.quiz-qtext{font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:10px;line-height:1.5}
+.quiz-opt{display:flex;align-items:flex-start;gap:9px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;cursor:pointer;font-size:12.5px;color:var(--text-s);line-height:1.5;transition:.12s}
+.quiz-opt:hover{border-color:var(--border-h);background:var(--bg)}
+.quiz-opt.selected{border-color:var(--navy);background:var(--gold-pale)}
+.quiz-opt.correct{border-color:var(--green);background:var(--green-pale);color:var(--text)}
+.quiz-opt.incorrect{border-color:var(--red);background:var(--red-pale);color:var(--text)}
+.quiz-radio{width:15px;height:15px;border-radius:50%;border:1.5px solid var(--border-h);flex-shrink:0;margin-top:1px}
+.quiz-opt.selected .quiz-radio{border-color:var(--navy);background:var(--navy)}
+.quiz-opt.correct .quiz-radio{border-color:var(--green);background:var(--green)}
+.quiz-opt.incorrect .quiz-radio{border-color:var(--red);background:var(--red)}
+.quiz-explain{font-size:12px;color:var(--text-s);background:var(--bg);border-radius:7px;padding:10px 12px;margin-top:8px;line-height:1.6;display:none}
+.quiz-explain.show{display:block}
+.quiz-submit-row{margin-top:8px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;border:none;font-size:12.5px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.12s}
+.btn.primary{background:var(--navy);color:#fff}
+.btn.primary:hover{background:#0a4080}
+.btn.primary:disabled{opacity:.4;cursor:not-allowed}
+.btn.ghost{background:none;color:var(--text-s);border:1px solid var(--border)}
+.btn.ghost:hover{background:var(--bg)}
+.btn.gold{background:var(--gold);color:#fff}
+
+/* ═══ ROLEPLAY ═══ */
+.rp-box{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:16px}
+.rp-scenario{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.rp-instructions{font-size:12px;color:var(--text-m);margin-bottom:16px;font-style:italic}
+.rp-line{display:flex;gap:10px;margin-bottom:12px}
+.rp-avatar{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
+.rp-avatar.client{background:var(--text-m)}
+.rp-avatar.agent{background:var(--navy)}
+.rp-avatar.note{background:var(--gold)}
+.rp-bubble{flex:1;font-size:12.5px;line-height:1.6;color:var(--text)}
+.rp-role-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-m);margin-bottom:2px}
+.rp-line.note .rp-bubble{font-style:italic;color:var(--text-s)}
+.rp-debrief{background:var(--gold-pale);border-radius:8px;padding:12px 14px;font-size:12.5px;color:var(--text);line-height:1.6;margin-top:14px}
+
+/* ═══ NAV BAR ═══ */
+.lesson-nav{display:flex;justify-content:space-between;align-items:center;margin-top:32px;padding-top:20px;border-top:1px solid var(--border)}
+
+/* ═══ STUB (not yet rewritten) ═══ */
+.stub-box{text-align:center;padding:60px 20px;color:var(--text-m)}
+.stub-icon{width:40px;height:40px;margin:0 auto 14px;color:var(--border-h)}
+.stub-title{font-size:15px;font-weight:700;color:var(--text-s);margin-bottom:6px}
+.stub-sub{font-size:12.5px;line-height:1.6;max-width:340px;margin:0 auto}
+
+/* ═══ PASSWORD GATE ═══ */
+#phc-gate{position:fixed;inset:0;background:var(--sb);z-index:9999;display:none;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif}
+.gate-card{background:#fff;border-radius:14px;padding:36px 32px;width:300px;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.35)}
+.gate-logo{font-family:'DM Serif Display',serif;font-size:20px;font-weight:400;color:var(--navy);margin-bottom:4px}
+.gate-sub{font-size:12px;color:var(--text-m);margin-bottom:20px}
+.gate-input{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;font-size:13px;text-align:center;letter-spacing:.08em;outline:none;margin-bottom:10px;font-family:'DM Sans',sans-serif}
+.gate-input:focus{border-color:var(--navy)}
+.gate-btn{width:100%;background:var(--navy);color:#fff;border:none;border-radius:8px;padding:10px;font-size:12.5px;font-weight:600;cursor:pointer}
+.gate-err{display:none;color:var(--red);font-size:11px;margin-top:10px}
+
+@media(max-width:760px){
+  .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:500;transform:translateX(-100%);transition:transform .2s}
+  .sidebar.mobile-open{transform:translateX(0)}
+  .content-inner{padding:24px 16px 60px}
+}
+</style>
+</head>
+<body>
+
+<div id="phc-gate">
+  <div class="gate-card">
+    <div class="gate-logo">PHC</div>
+    <div class="gate-sub">Property Hub Cambodia · Agent Training</div>
+    <input id="gate-pw" class="gate-input" type="password" placeholder="Password" autocomplete="current-password">
+    <button class="gate-btn" onclick="phcCheck()">Continue →</button>
+    <div id="gate-err" class="gate-err">Incorrect password. Try again.</div>
+  </div>
+</div>
+<script>(function(){
+  var g=document.getElementById('phc-gate');
+  if(sessionStorage.getItem('phc_agent_auth')==='1'||sessionStorage.getItem('phc_ceo_auth')==='1'){g.style.display='none';}
+  else{g.style.display='flex';setTimeout(function(){document.getElementById('gate-pw').focus();},50);}
+  window.phcCheck=function(){
+    var v=document.getElementById('gate-pw').value;
+    if(v==='PHC2026'){sessionStorage.setItem('phc_agent_auth','1');g.style.display='none';}
+    else if(v==='Nick@PHC2026'){sessionStorage.setItem('phc_ceo_auth','1');sessionStorage.setItem('phc_agent_auth','1');g.style.display='none';}
+    else{document.getElementById('gate-err').style.display='block';document.getElementById('gate-pw').value='';document.getElementById('gate-pw').focus();}
+  };
+  document.getElementById('gate-pw').addEventListener('keydown',function(e){if(e.key==='Enter')phcCheck();});
+})();</script>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="ws-header">
+      <div class="ws-logo">A</div>
+      <div class="ws-info">
+        <div class="ws-name">PHC Tools</div>
+        <div class="ws-sub">Agent Training</div>
+      </div>
+      <button class="collapse-btn" onclick="toggleSidebar()" title="Toggle sidebar">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="10,3 5,8 10,13"/></svg>
+      </button>
+    </div>
+    <div class="sb-nav" id="sbNav"></div>
+    <div class="sb-footer">
+      <div class="sb-progress-track"><div class="sb-progress-fill" id="sbProgFill" style="width:0%"></div></div>
+      <div class="sb-progress-label" id="sbProgLabel">0 / 21 lessons</div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topnav">
+      <button class="collapse-btn" style="display:none" id="mobToggle" onclick="toggleSidebar()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+      </button>
+      <div class="tn-title" id="tnTitle">Agent Training</div>
+      <div class="tn-spacer"></div>
+      <div class="lang-toggle">
+        <button class="lang-btn active" id="langEnBtn" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" id="langKmBtn" onclick="setLang('km')">ខ្មែរ</button>
+      </div>
+      <div class="tn-progress">
+        <div class="tn-progress-track"><div class="tn-progress-fill" id="tnProgFill" style="width:0%"></div></div>
+        <div class="tn-progress-label" id="tnProgLabel">0/21</div>
+      </div>
+    </div>
+    <div class="content-area"><div class="content-inner" id="main"></div></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// DATA — full curriculum: Lessons 1 and 3 fully rewritten in plain,
+// ESL-friendly language with Before/Now boxes and one-line actions.
+// Remaining lessons are STUBS (title/short only) pending the same pass —
+// see STUB_LESSONS below. Nothing here invents facts beyond what's
+// verified in content-os/docs/PHC_Brand_Rules.md and
+// PHC_Market_Intelligence_Cheat_Sheet.html.
+// ═══════════════════════════════════════════════════════════════════
+const LESSONS=[
+{id:1,week:1,title:"Welcome to Property Hub Cambodia",short:"Welcome to PHC",
+objectives:[
+  "Know what PHC is and what makes it different from a normal real estate agency",
+  "Understand your job title: Investment Advisor. Know how it is different from 'salesperson'",
+  "Know the 3 rules every PHC agent follows, with no exceptions"
+],
+sections:[
+{label:"Company Identity",heading:"The company you represent",
+body:"Property Hub Cambodia (PHC) helps foreign investors buy property in Cambodia. We are based in BKK1, a district in Phnom Penh. We speak Khmer, English, Japanese, and German.<br><br>Here is the most important idea in this lesson: <strong>PHC is not a real estate agency. PHC is an advisory firm.</strong> A real estate agency's job is to sell property. PHC's job is to give honest advice — even when that advice is \"don't buy this one.\"",
+dataTitle:"Company facts",
+data:["Name: Property Hub Cambodia (PHC)","Office: BKK1, Phnom Penh","Languages: Khmer, English, Japanese, German","Years in business: 15+","Clients served: 500+"]
+},
+{label:"Your Job Title",heading:"You are an Investment Advisor, not a salesperson",
+body:"These two jobs sound similar. They are not the same job. Read the difference below before you meet your first client.",
+before:{label:"A salesperson's job",text:"Make the sale happen. If the client is unsure, convince them. Every conversation moves toward \"yes.\""},
+now:{label:"A PHC advisor's job",text:"Find out if this property is right for the client. If it is not right, say so — even if that means no sale today."},
+rules:[
+{title:"You will lose some sales. That is correct.",detail:"When a client's goals do not match a property, tell them clearly. A client who trusts you today will come back later, or send you a friend.",action:"If a property does not fit the client's stated goal (income, family home, etc.), say so out loud before showing them anything else."}
+]},
+{label:"The 3 Rules",heading:"3 rules every PHC agent follows, always",
+body:"These 3 rules apply in every conversation, with every client, every time. There are no exceptions.",
+rules:[
+{title:"Rule 1: Be clear, not persuasive",detail:"If you cannot explain something in a simple, honest sentence, do not say it at all. Go find the correct answer first.",action:"If you don't know an answer, say \"let me confirm that for you\" — never guess."},
+{title:"Rule 2: Trust is the real product",detail:"PHC's most valuable asset is not any single property listing. It is PHC's reputation. One client who feels pressured will tell other people not to trust PHC.",action:"If you feel tempted to rush a client toward a decision, stop and slow down instead."},
+{title:"Rule 3: Follow the system, every time",detail:"PHC has a process for a reason. Skipping steps because you are in a hurry causes mistakes.",action:"Before you close a conversation, check: did I follow every step for today's stage?"}
+]}
+],
+reflection:"What do you think is the hardest part about being an advisor instead of a salesperson? Write 2-3 sentences.",
+roleplay:{scenario:"A client tests you in the first minute",instructions:"One person plays AGENT. One person plays CLIENT. Try it once, then switch roles.",
+lines:[
+{role:"client",text:"\"So you're a real estate agent — you're here to sell me a property, right?\""},
+{role:"agent",text:"\"Not exactly. My job is to advise you, not to sell to you.\""},
+{role:"client",text:"\"What's the difference?\""},
+{role:"agent",text:"\"A salesperson wants the sale to happen. My job is to make sure the sale is right for you — even if that means telling you not to buy.\""},
+{role:"client",text:"\"What if you tell me not to buy?\""},
+{role:"agent",text:"\"Then I will. If this investment is wrong for your situation, I will say so — even if it costs me the sale. That is the only way you can trust what I tell you.\""},
+{role:"note",text:"Debrief: Did the agent sound confident, or like they were reading a script? Did the client feel like the difference was real?"}
+],
+debrief:"The goal is not to memorize these exact words. The goal is to mean them. If the client does not feel the difference, practice again."},
+quiz:[
+{q:"What is your official job title at PHC?",opts:["Property Salesperson","Real Estate Agent","Investment Advisor","Property Consultant"],correct:2,explain:"Investment Advisor. This title changes how you talk to every client. You are there to advise — not to sell."},
+{q:"What are PHC's 3 rules?",opts:["Speed, Volume, Commission","Be clear not persuasive · Trust is the product · Follow the system","Price, Location, Yield","Marketing, Sales, Closing"],correct:1,explain:"Be clear, not persuasive. Trust is the product. Follow the system, every time. These 3 rules control every conversation a PHC agent has."},
+{q:"A client asks you to guarantee a specific return on their investment. What do you do?",opts:["Give a careful estimate to make them feel good","Explain that no advisor can honestly guarantee a return — and explain why","Check with the developer and repeat their number","Quote the highest gross yield you have heard"],correct:1,explain:"Never use the word \"guarantee\" for investment returns. Explaining why builds trust. Guessing destroys it."},
+{q:"What does PHC compete on, according to this lesson?",opts:["The lowest commission in Phnom Penh","Trust, clarity, and advisory depth","The most property listings","The fastest closing time"],correct:1,explain:"PHC is not a high-volume agency. PHC competes on trust, clarity, and depth of advice. That is what makes PHC different."}
+]},
+
+{id:2,week:1,title:"The Phnom Penh Property Market",short:"Phnom Penh Market",stub:true},
+{id:3,week:1,title:"How Real Estate Works in Cambodia",short:"Real Estate Law",
+objectives:[
+  "Know the difference between 2 kinds of property title, and why the difference matters",
+  "Explain the 3 rules of foreign ownership to any client, in simple words",
+  "Know the 4 steps of the buying process, in order"
+],
+sections:[
+{label:"Title Types",heading:"The single most important word in this lesson: title",
+body:"\"Title\" is the legal document that proves who owns a property. Different title types give different rights. If a client buys the wrong title type, they may not legally own anything. This is the single biggest mistake to avoid in your entire job.",
+before:{label:"Wrong way to think about it",text:"\"A title is just paperwork. Any title should be fine as long as the price is good.\""},
+now:{label:"Right way to think about it",text:"\"A title is the only thing that proves ownership. The wrong title type means no legal ownership — no matter how good the price was.\""},
+dataTitle:"The 2 title types you need to know",
+data:["Strata Title — permanent ownership. Registered with the government (Ministry of Land Management). The only title type foreigners can legally use. Every PHC property has this.","Soft Title — registered only with a local authority, not the national government. Not legally valid nationwide. Only for Cambodian citizens. Never recommend this to a PHC client."],
+warning:"If a developer cannot prove strata title for a condo, stop the conversation. Tell Nick before you say anything else to the client."
+},
+{label:"Foreign Ownership Rules",heading:"3 rules for foreign buyers — know these by heart",
+body:"Cambodia does allow foreigners to own property, but only under 3 specific rules. A client will ask about this in almost every conversation. A wrong answer here breaks trust immediately.",
+rules:[
+{title:"Rule 1: Ground floor is never allowed",detail:"Foreigners can only own units starting from the 1st floor and up. A ground-floor unit cannot legally belong to a foreigner — no matter what title type it has.",action:"If a foreign client likes a ground-floor unit, tell them immediately it is not possible, then show them a unit one floor up instead."},
+{title:"Rule 2: Max 70% foreign ownership per building",detail:"No more than 70% of the units in one building can be owned by foreigners. This is called the \"foreign quota.\" Always check how much quota is left before you recommend a project.",action:"Before recommending any project, ask: how much foreign quota is left in this building? If it's under 5%, say so clearly before showing anything."},
+{title:"Rule 3: Strata title is required, no exceptions",detail:"Every unit sold to a foreign client must have strata title. This was covered in the section above — it matters enough to repeat here.",action:"Check the title type for every unit, every time, before you mention it to a foreign client."}
+]},
+{label:"The Buying Process",heading:"4 steps, in order — memorize this order",
+body:"Every client will ask \"what happens next?\" at some point. Know this order without having to look it up.",
+rules:[
+{title:"Step 1: Reservation",detail:"The client pays a small deposit, usually $1,000–$3,000. This holds the unit while paperwork is prepared. Ask the developer about their specific refund policy before the client pays.",action:"Confirm the refund policy in writing before the client pays the reservation deposit."},
+{title:"Step 2: Sale & Purchase Agreement (SPA)",detail:"This is the main legal contract between the buyer and the developer. Always recommend the client hire their own independent lawyer to review it before signing.",action:"Say this exact sentence to every client: \"I recommend having your own lawyer review the SPA before you sign.\""},
+{title:"Step 3: Payment Schedule",detail:"Payments are usually made in stages during construction, or as one larger payment if the unit is already built. Know the payment schedule for every project you present.",action:"Before showing a project, check its payment schedule so you can answer questions without pausing."},
+{title:"Step 4: Handover & Title Registration",detail:"The developer hands over the finished unit. The client makes the final payment. Then the strata title is registered in the client's name at the Ministry of Land Management. PHC helps coordinate this step.",action:"Tell the client this step exists early on, so the ending of the process is not a surprise."}
+]}
+],
+reflection:"In your own simple words, explain the foreign ownership rules to a first-time buyer from Japan who has never bought property outside Japan before.",
+roleplay:{scenario:"Explaining the foreign ownership rules",instructions:"Practice sounding calm and direct — not like you are reciting a rulebook. The client needs clarity, not a lecture.",
+lines:[
+{role:"client",text:"\"I like unit 01 on the ground floor — can I buy it?\""},
+{role:"agent",text:"\"I need to tell you clearly: as a foreigner, you cannot legally own a ground-floor unit in Cambodia.\""},
+{role:"client",text:"\"Why not?\""},
+{role:"agent",text:"\"Cambodian law only allows foreign ownership starting from the 1st floor and up. This rule applies no matter what type of title the unit has.\""},
+{role:"client",text:"\"But the developer told me it has strata title.\""},
+{role:"agent",text:"\"The title type is correct — but the floor rule still applies. Unit 02, one floor up, has the same layout and is fully available to you. Would you like to see it?\""},
+{role:"note",text:"Debrief: Did the agent sound direct without sounding harsh? Did the client feel redirected, not rejected?"}
+],
+debrief:"The floor rule is a hard rule. Do not soften it or suggest a workaround. Redirect confidently to a real option instead."},
+quiz:[
+{q:"A foreign buyer wants to buy a ground-floor unit in a new BKK1 condo. What do you do?",opts:["Continue — ground floor is fine if the building has strata title","Explain clearly that foreigners cannot legally own ground-floor units, and offer an alternative unit","Ask the developer if they can make an exception","Suggest they use a Cambodian friend's name instead"],correct:1,explain:"Foreigners can only own units from the 1st floor and up. This rule has no exceptions. Redirect to a real, legal option right away."},
+{q:"A building already has 68% foreign ownership. A Japanese investor wants to buy a unit there. What do you do?",opts:["Continue — 68% is under the 70% limit, so there's no problem","Point out that only 2% of the foreign quota remains — this is very close to the legal limit","Tell them foreigners cannot buy there because it's over 65%","It doesn't matter — strata title protects them regardless of quota"],correct:1,explain:"Only 2% of the foreign quota is left. This must be said clearly. The building could hit its limit before handover, which would block title registration."},
+{q:"What is an SPA?",opts:["A property valuation report","Sale & Purchase Agreement — the main legal contract between buyer and developer","A standard payment schedule","A government land tax form"],correct:1,explain:"SPA = Sale & Purchase Agreement. It is a binding legal contract. Always recommend the client's own independent lawyer review it before signing."},
+{q:"What is the first step a buyer takes to hold a specific unit?",opts:["Sign the SPA immediately","Apply for a visa","Pay a reservation deposit","Pay the full purchase price"],correct:2,explain:"The reservation deposit comes first — usually $1,000–$3,000. It holds the unit while paperwork is prepared. Always confirm the refund policy before the client pays."},
+{q:"Soft Title is:",opts:["Acceptable for foreign buyers if the condo is already built","A national-level permanent title, equal to strata title","Registered only with a local authority, not recognized nationwide — for Cambodian citizens only","The same as strata title, but for commercial property"],correct:2,explain:"Soft Title is not recognized at the national level. It is only for Cambodian citizens. Never recommend it to any PHC client, regardless of nationality."}
+]},
+
+{id:4,week:1,title:"The PHC Project Portfolio",short:"Project Portfolio",stub:true},
+{id:5,week:1,title:"Who Our Clients Are",short:"Client Segments",stub:true},
+{id:6,week:2,title:"The PHC Advisor Mindset",short:"Advisor Mindset",stub:true},
+{id:7,week:2,title:"Qualifying Clients Correctly",short:"Client Qualification",stub:true},
+{id:8,week:2,title:"The Advisory Conversation Flow",short:"Advisory Flow",stub:true},
+{id:9,week:2,title:"Language & Communication Standards",short:"Language Standards",stub:true},
+{id:10,week:2,title:"Reading Client Signals",short:"Reading Signals",stub:true},
+{id:11,week:3,title:"Yield, ROI & Cost of Ownership",short:"Yield & ROI",stub:true},
+{id:12,week:3,title:"The Japanese Investor Protocol",short:"Japanese Protocol",stub:true},
+{id:13,week:3,title:"The European & German Investor Protocol",short:"European Protocol",stub:true},
+{id:14,week:3,title:"Serving Khmer & Overseas Cambodian Clients",short:"Khmer Clients",stub:true},
+{id:15,week:3,title:"Handling Objections",short:"Objections",stub:true},
+{id:16,week:4,title:"Site Visits & Property Presentations",short:"Site Visits",stub:true},
+{id:17,week:4,title:"Writing Proposals & Follow-Ups",short:"Proposals & Follow-Ups",stub:true},
+{id:18,week:4,title:"Pipeline & Deal Management",short:"Pipeline Management",stub:true},
+{id:19,week:4,title:"Performance Standards & Self-Evaluation",short:"Performance Standards",stub:true},
+{id:20,week:4,title:"Graduation — The PHC Standard Review",short:"Graduation",stub:true},
+{id:21,week:5,title:"Leads, Content & Distribution — How PHC's Channels Work",short:"Leads & Distribution",stub:true}
+];
+
+const WEEK_NAMES={1:'Foundation',2:'Client & Advisory Skills',3:'Advanced Advisory',4:'Performance',5:'Operations & Tools'};
+
+// ═══════════════════════════════════════════════════════════════════
+// ICONS (stroke-based SVG only, no emoji)
+// ═══════════════════════════════════════════════════════════════════
+const ICON={
+  check:'<svg class="bn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8 6.5 11.5 13 4"/></svg>',
+  x:'<svg class="bn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/></svg>',
+  action:'<svg class="ra-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1l2 5 5 .5-4 3.5 1 5-4-2.5-4 2.5 1-5-4-3.5 5-.5z"/></svg>',
+  warn:'<svg class="warn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1L1 14h14z"/><line x1="8" y1="6" x2="8" y2="9.5"/><circle cx="8" cy="11.5" r=".6" fill="currentColor" stroke="none"/></svg>',
+  lock:'<svg class="stub-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>',
+  book:'<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 3h4a2 2 0 0 1 2 2v9a1.5 1.5 0 0 0-1.5-1.5H2z"/><path d="M14 3h-4a2 2 0 0 0-2 2v9a1.5 1.5 0 0 1 1.5-1.5H14z"/></svg>',
+  home:'<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9L8 4l5 5"/><path d="M5 14V9h6v5"/></svg>',
+  check16:'<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8.5l3 3 7-7"/></svg>',
+  circle:'<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="5"/></svg>'
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════════
+var S = loadS();
+function loadS(){
+  try{var s=JSON.parse(localStorage.getItem('phc_agent_training_v4')||'null');if(s)return s;}catch(e){}
+  return {view:'landing',lessonId:null,done:[],qa:{},lang:'en'};
+}
+function saveS(){try{localStorage.setItem('phc_agent_training_v4',JSON.stringify(S));}catch(e){}}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function getLesson(id){return LESSONS.find(function(l){return l.id===id})}
+
+function setLang(v){
+  S.lang=v; saveS();
+  document.getElementById('langEnBtn').classList.toggle('active',v==='en');
+  document.getElementById('langKmBtn').classList.toggle('active',v==='km');
+  render();
+}
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('collapsed');
+  document.getElementById('sidebar').classList.toggle('mobile-open');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// SIDEBAR
+// ═══════════════════════════════════════════════════════════════════
+function buildSidebar(){
+  var h='';
+  [1,2,3,4,5].forEach(function(w){
+    var wls=LESSONS.filter(function(l){return l.week===w});
+    if(!wls.length)return;
+    h+='<div class="sb-section-label">Week '+w+' &middot; '+esc(WEEK_NAMES[w])+'</div>';
+    wls.forEach(function(l){
+      var done=S.done.indexOf(l.id)>=0;
+      var active=S.view==='lesson'&&S.lessonId===l.id;
+      if(l.stub){
+        h+='<div class="sb-item disabled" title="Not yet rewritten">'
+          +'<div class="sb-icon">'+ICON.circle+'</div>'
+          +'<span class="sb-label">'+esc(l.short)+'</span>'
+          +'<span class="sb-soon">Soon</span>'
+          +'</div>';
+      } else {
+        h+='<div class="sb-item'+(active?' active':'')+'" onclick="openLesson('+l.id+')">'
+          +'<div class="sb-icon'+(done?' done':'')+'">'+(done?ICON.check16:ICON.circle)+'</div>'
+          +'<span class="sb-label">'+esc(l.short)+'</span>'
+          +'</div>';
+      }
+    });
+  });
+  document.getElementById('sbNav').innerHTML=h;
+  var total=LESSONS.length, done=S.done.length;
+  document.getElementById('sbProgFill').style.width=(done/total*100)+'%';
+  document.getElementById('sbProgLabel').textContent=done+' / '+total+' lessons';
+  document.getElementById('tnProgFill').style.width=(done/total*100)+'%';
+  document.getElementById('tnProgLabel').textContent=done+'/'+total;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// LANDING
+// ═══════════════════════════════════════════════════════════════════
+function renderLanding(){
+  S.view='landing'; saveS();
+  document.getElementById('tnTitle').textContent='Agent Training';
+  var doneCount=LESSONS.filter(function(l){return !l.stub}).length;
+  var wCards='';
+  [1,2,3,4,5].forEach(function(w){
+    var wls=LESSONS.filter(function(l){return l.week===w});
+    var wdone=wls.filter(function(l){return S.done.indexOf(l.id)>=0}).length;
+    wCards+='<div class="wk-card" onclick="'+(wls.some(function(l){return !l.stub})?'openLesson('+wls.find(function(l){return !l.stub}).id+')':'')+'">'
+      +'<div class="wk-head"><div class="wk-title">Week '+w+' &middot; '+esc(WEEK_NAMES[w])+'</div><div class="wk-count">'+wdone+'/'+wls.length+'</div></div>'
+      +'<div class="wk-desc">'+wls.map(function(l){return l.short}).join(' &middot; ')+'</div>'
+      +'<div class="wk-bar-track"><div class="wk-bar-fill" style="width:'+(wdone/wls.length*100)+'%"></div></div>'
+      +'</div>';
+  });
+  document.getElementById('main').innerHTML=
+    '<div class="hero">'
+    +'<div class="hero-h">Agent Training</div>'
+    +'<div class="hero-sub">21 lessons across 5 weeks. Written so anyone can follow it &mdash; no assumed real estate background, no assumed native English. '+doneCount+' of '+LESSONS.length+' lessons rewritten in this new format so far; the rest are marked &ldquo;Soon&rdquo; in the sidebar.</div>'
+    +'</div>'
+    +'<div class="week-grid">'+wCards+'</div>';
+  buildSidebar();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// LESSON RENDER
+// ═══════════════════════════════════════════════════════════════════
+function openLesson(id){
+  var l=getLesson(id);
+  if(!l||l.stub)return;
+  S.view='lesson'; S.lessonId=id;
+  if(!S.qa[id])S.qa[id]=l.quiz.map(function(){return -1});
+  saveS();
+  render();
+  window.scrollTo(0,0);
+}
+
+function renderBeforeNow(bn_before,bn_now){
+  return '<div class="bn-box">'
+    +'<div class="bn-col wrong"><div class="bn-label">'+ICON.x+esc(bn_before.label)+'</div><div class="bn-text">'+esc(bn_before.text)+'</div></div>'
+    +'<div class="bn-col right"><div class="bn-label">'+ICON.check+esc(bn_now.label)+'</div><div class="bn-text">'+esc(bn_now.text)+'</div></div>'
+    +'</div>';
+}
+
+function renderSection(s){
+  var h='<div class="section-block">';
+  h+='<div class="section-label">'+esc(s.label)+'</div>';
+  h+='<div class="section-heading">'+esc(s.heading)+'</div>';
+  h+='<div class="section-body">'+s.body+'</div>';
+  if(s.before&&s.now) h+=renderBeforeNow(s.before,s.now);
+  if(s.data){
+    h+='<div class="data-box"><div class="data-title">'+esc(s.dataTitle||'Key facts')+'</div>';
+    s.data.forEach(function(d){h+='<div class="data-line">'+esc(d)+'</div>';});
+    h+='</div>';
+  }
+  if(s.warning) h+='<div class="warn-box">'+ICON.warn+'<div>'+esc(s.warning)+'</div></div>';
+  if(s.rules){
+    s.rules.forEach(function(r){
+      h+='<div class="rule"><div class="rule-title">'+esc(r.title)+'</div><div class="rule-detail">'+esc(r.detail)+'</div>';
+      if(r.action) h+='<div class="rule-action">'+ICON.action+'<div><b>How you\'d do this:</b> '+esc(r.action)+'</div></div>';
+      h+='</div>';
+    });
+  }
+  h+='</div>';
+  return h;
+}
+
+function renderRoleplay(rp){
+  var h='<div class="section-block"><div class="section-label">Practice</div><div class="section-heading">Roleplay</div>';
+  h+='<div class="rp-box"><div class="rp-scenario">'+esc(rp.scenario)+'</div><div class="rp-instructions">'+esc(rp.instructions)+'</div>';
+  rp.lines.forEach(function(ln){
+    var av=ln.role==='client'?'C':ln.role==='agent'?'A':'i';
+    h+='<div class="rp-line '+ln.role+'"><div class="rp-avatar '+ln.role+'">'+av+'</div><div><div class="rp-role-label">'+esc(ln.role)+'</div><div class="rp-bubble">'+esc(ln.text)+'</div></div></div>';
+  });
+  h+='<div class="rp-debrief"><strong>Debrief:</strong> '+esc(rp.debrief)+'</div>';
+  h+='</div></div>';
+  return h;
+}
+
+function renderQuiz(l){
+  var qa=S.qa[l.id];
+  var h='<div class="section-block"><div class="section-label">Check your understanding</div><div class="section-heading">Quiz</div>';
+  h+='<div class="quiz-block">';
+  l.quiz.forEach(function(q,qi){
+    h+='<div class="quiz-q"><div class="quiz-qtext">'+(qi+1)+'. '+esc(q.q)+'</div>';
+    q.opts.forEach(function(opt,oi){
+      var chosen=qa[qi];
+      var cls='quiz-opt';
+      if(chosen>=0){
+        if(oi===q.correct) cls+=' correct';
+        else if(oi===chosen) cls+=' incorrect';
+      }
+      h+='<div class="'+cls+'" onclick="answerQuiz('+l.id+','+qi+','+oi+')"><div class="quiz-radio"></div><div>'+esc(opt)+'</div></div>';
+    });
+    h+='<div class="quiz-explain'+(qa[qi]>=0?' show':'')+'">'+esc(q.explain)+'</div>';
+    h+='</div>';
+  });
+  h+='</div></div>';
+  return h;
+}
+
+function answerQuiz(lessonId,qi,oi){
+  S.qa[lessonId][qi]=oi; saveS();
+  render();
+}
+
+function allQuizAnswered(l){
+  return S.qa[l.id].every(function(a){return a>=0});
+}
+
+function markDone(id){
+  if(S.done.indexOf(id)<0){S.done.push(id);saveS();}
+  var idx=LESSONS.findIndex(function(l){return l.id===id});
+  var next=LESSONS.slice(idx+1).find(function(l){return !l.stub});
+  if(next) openLesson(next.id);
+  else renderLanding();
+}
+
+function renderLesson(){
+  var l=getLesson(S.lessonId);
+  document.getElementById('tnTitle').textContent='L'+l.id+' &middot; '+l.short;
+  var h='<div class="lesson-eyebrow">Week '+l.week+' &middot; '+esc(WEEK_NAMES[l.week])+' &middot; Lesson '+l.id+' of '+LESSONS.length+'</div>';
+  h+='<div class="lesson-h">'+esc(l.title)+'</div>';
+  h+='<div class="obj-box"><div class="obj-title">By the end of this lesson, you will:</div>';
+  l.objectives.forEach(function(o){h+='<div class="obj-item"><div class="obj-dot"></div>'+esc(o)+'</div>';});
+  h+='</div>';
+  l.sections.forEach(function(s){h+=renderSection(s);});
+  if(l.roleplay) h+=renderRoleplay(l.roleplay);
+  h+=renderQuiz(l);
+  var canFinish=allQuizAnswered(l);
+  h+='<div class="lesson-nav">'
+    +'<button class="btn ghost" onclick="renderLanding()">&larr; Overview</button>'
+    +'<button class="btn primary" '+(canFinish?'':'disabled')+' onclick="markDone('+l.id+')">Mark lesson complete &rarr;</button>'
+    +'</div>';
+  document.getElementById('main').innerHTML=h;
+  buildSidebar();
+}
+
+function render(){
+  if(S.view==='lesson'&&S.lessonId) renderLesson();
+  else renderLanding();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════════
+document.getElementById('langEnBtn').classList.toggle('active',S.lang==='en');
+document.getElementById('langKmBtn').classList.toggle('active',S.lang==='km');
+render();
+</script>
+</body>
+</html>
