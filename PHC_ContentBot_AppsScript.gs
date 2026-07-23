@@ -52,6 +52,30 @@ const LANGUAGE_CHANNELS = {
 // only place the channel link still shows up.
 const CONTACT_STANDARD = '📞 011 666 952\n📱 t.me/PropertyHubCambodia';
 
+// Removes a trailing contact block (phone / t.me links / separator line)
+// from the END of otherwise-arbitrary text, e.g. Nick's own channel posts,
+// which always end with their own "📞 ...\n🏠 t.me/...\n📱 t.me/..." block.
+// Used so CONTACT_STANDARD can fully replace it rather than being appended
+// alongside it. Walks backward from the last line, trimming as long as each
+// line is blank, a dash/em-dash separator, or a contact line (starts with a
+// contact emoji, or contains a t.me/ link) — stops at the first real content
+// line so listing details are never touched.
+function stripTrailingContactBlock(text) {
+  const lines = text.split('\n');
+  const sepRe = /^[―—_\-⎯]{3,}$/;
+  const contactStartRe = /^[📞📱☎✆🏠📧✉]/u; // 'u' flag required — without it, astral-plane emoji classes match on raw surrogate halves and false-positive on unrelated emoji sharing the same high surrogate
+  let end = lines.length;
+  while (end > 0) {
+    const line = lines[end - 1].trim();
+    if (line === '' || sepRe.test(line) || contactStartRe.test(line) || line.indexOf('t.me/') !== -1) {
+      end--;
+    } else {
+      break;
+    }
+  }
+  return lines.slice(0, end).join('\n').replace(/\s+$/, '');
+}
+
 // Each channel's "Contact Us" opens a direct Telegram chat with the person
 // in charge of that audience — not a shared WhatsApp line — so replies come
 // from the right staff member with no extra bot hop for the client.
@@ -325,21 +349,31 @@ function handleIncomingMessage(chatId, text, photoFileIds, isForwarded, sourceUs
 
   sendTelegramMessage(REVIEWER_CHAT_ID, '📥 Listing detected (' + photoCount + ' photo' + (photoCount === 1 ? '' : 's') + ') — generating EN/JP/RU/DE versions for your review...');
 
+  // Own-channel forwards carry their own contact info (Nick's personal
+  // phone/Telegram) — strip it so CONTACT_STANDARD (PHC's own number/channel)
+  // is what every post shows, same as every other source path. Text is
+  // therefore always rebuilt now, never sent byte-for-byte untouched.
+  const ownChannelBody = isFromOwnChannel ? stripTrailingContactBlock(text) + '\n\n――――――――――\n' + CONTACT_STANDARD : '';
+
   ['EN', 'JP', 'RU', 'DE'].forEach(lang => {
     let content;
     if (isFromOwnChannel) {
-      // EN: send the ORIGINAL text byte-for-byte (no reconstruction) so any
-      // Premium custom-emoji entities stay valid. JP/DE: whole-block translate —
-      // this content isn't guaranteed to match the single-listing bullet schema,
-      // so there's nothing to structurally parse; translating the full text as
-      // one unit is the only approach that works for arbitrary layouts.
-      content = lang === 'EN' ? text : translateWholeText(text, lang);
+      // JP/RU/DE: whole-block translate — this content isn't guaranteed to
+      // match the single-listing bullet schema, so there's nothing to
+      // structurally parse; translate the full text as one unit. CONTACT_STANDARD
+      // itself is never translated (same as assembleListing does elsewhere).
+      const strippedText = stripTrailingContactBlock(text);
+      content = lang === 'EN' ? ownChannelBody : translateWholeText(strippedText, lang) + '\n\n――――――――――\n' + CONTACT_STANDARD;
     } else {
       content = assembleFn(fields, lang);
     }
-    // Entities only carry over for the EN row when text is untouched — any
-    // reconstruction (translation included) shifts character positions.
-    const rowEntities = (isFromOwnChannel && lang === 'EN' && originalEntities) ? JSON.stringify(originalEntities) : '';
+    // Entities are only valid against the exact original text — now that
+    // contact info is always stripped/replaced, text is never sent untouched,
+    // so entities never reliably line up anymore. (Premium custom-emoji
+    // entities were already silently stripped by Telegram for a non-Premium
+    // bot account regardless — see known limitation in memory — so this
+    // preserves nothing that was actually working.)
+    const rowEntities = '';
 
     const rowNum = sheet.getLastRow() + 1;
     const row = headers.map(h => {
