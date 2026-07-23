@@ -107,6 +107,31 @@ button{font-family:inherit}
 .section-body{font-size:13.5px;line-height:1.7;color:var(--text-s);margin-bottom:14px}
 .section-body strong{color:var(--text);font-weight:600}
 
+/* ═══ ANALOGY ═══ */
+.analogy-box{display:flex;gap:11px;background:#eef2fb;border:1px solid rgba(8,52,103,.14);border-radius:10px;padding:14px 16px;margin-bottom:16px}
+.analogy-icon{width:18px;height:18px;color:var(--navy);flex-shrink:0;margin-top:1px}
+.analogy-label{font-size:10.5px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.analogy-text{font-size:13px;line-height:1.6;color:var(--text)}
+
+/* ═══ DIAGRAM ═══ */
+.diagram-box{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:20px 18px;margin-bottom:16px}
+.diagram-title{font-size:10.5px;font-weight:700;color:var(--text-m);text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px;text-align:center}
+.building-diagram{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap}
+.building-legend{display:flex;flex-direction:column;gap:12px}
+.legend-row{display:flex;align-items:center;gap:9px}
+.legend-swatch{width:26px;height:20px;border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff}
+.legend-swatch.blocked{background:var(--red)}
+.legend-swatch.ok{background:var(--green)}
+.legend-text b{display:block;font-size:12.5px;font-weight:700;color:var(--text)}
+.legend-text span{font-size:11.5px;color:var(--text-s)}
+
+.quota-wrap{margin-top:4px}
+.quota-bar{display:flex;height:36px;border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+.quota-seg{display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;color:#fff;line-height:1.3;text-align:center;padding:2px}
+.quota-seg.foreign{background:var(--gold);width:70%}
+.quota-seg.local{background:var(--text-m);width:30%}
+.quota-caption{display:flex;justify-content:space-between;font-size:11px;color:var(--text-s);margin-top:8px}
+
 /* ═══ BEFORE / NOW COMPARISON ═══ */
 .bn-box{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px}
 .bn-col{background:var(--white);padding:14px 16px}
@@ -329,14 +354,14 @@ objectives:[
 sections:[
 {label:"Title Types",heading:"The single most important word in this lesson: title",
 body:"\"Title\" is the legal document that proves who owns a property. Different title types give different rights. If a client buys the wrong title type, they may not legally own anything. This is the single biggest mistake to avoid in your entire job.",
-before:{label:"Wrong way to think about it",text:"\"A title is just paperwork. Any title should be fine as long as the price is good.\""},
-now:{label:"Right way to think about it",text:"\"A title is the only thing that proves ownership. The wrong title type means no legal ownership — no matter how good the price was.\""},
+analogy:"A strata title works like a car registration from the national government. It proves that exact car belongs to you, anywhere in the country, and any police officer can check it. A soft title is more like a note from your neighborhood chief. It might be true, but nobody outside that neighborhood has to accept it, and there is no national record of it at all.",
 dataTitle:"The 2 title types you need to know",
-data:["Strata Title — permanent ownership. Registered with the government (Ministry of Land Management). The only title type foreigners can legally use. Every PHC property has this.","Soft Title — registered only with a local authority, not the national government. Not legally valid nationwide. Only for Cambodian citizens. Never recommend this to a PHC client."],
+data:["Strata Title — permanent ownership. Registered with the national government (Ministry of Land Management). The only title type foreigners can legally use. Every PHC property has this.","Soft Title — registered only with a local authority, not the national government. Not legally valid nationwide. Only for Cambodian citizens. Never recommend this to a PHC client."],
 warning:"If a developer cannot prove strata title for a condo, stop the conversation. Tell Nick before you say anything else to the client."
 },
 {label:"Foreign Ownership Rules",heading:"3 rules for foreign buyers — know these by heart",
-body:"Cambodia does allow foreigners to own property, but only under 3 specific rules. A client will ask about this in almost every conversation. A wrong answer here breaks trust immediately.",
+body:"Cambodia does allow foreigners to own property, but only under 3 specific rules. A client will ask about this in almost every conversation. A wrong answer here breaks trust immediately. The two diagrams below show the two rules that are easiest to get wrong — look at the picture, then read the rule.",
+diagrams:["floors","quota"],
 rules:[
 {title:"Rule 1: Ground floor is never allowed",detail:"Foreigners can only own units starting from the 1st floor and up. A ground-floor unit cannot legally belong to a foreigner — no matter what title type it has.",action:"If a foreign client likes a ground-floor unit, tell them immediately it is not possible, then show them a unit one floor up instead."},
 {title:"Rule 2: Max 70% foreign ownership per building",detail:"No more than 70% of the units in one building can be owned by foreigners. This is called the \"foreign quota.\" Always check how much quota is left before you recommend a project.",action:"Before recommending any project, ask: how much foreign quota is left in this building? If it's under 5%, say so clearly before showing anything."},
@@ -401,6 +426,9 @@ const ICON={
   x:'<svg class="bn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/></svg>',
   action:'<svg class="ra-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1l2 5 5 .5-4 3.5 1 5-4-2.5-4 2.5 1-5-4-3.5 5-.5z"/></svg>',
   warn:'<svg class="warn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1L1 14h14z"/><line x1="8" y1="6" x2="8" y2="9.5"/><circle cx="8" cy="11.5" r=".6" fill="currentColor" stroke="none"/></svg>',
+  analogy:'<svg class="analogy-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 14h4M6.5 11.5h3M8 1a4.5 4.5 0 0 0-2.5 8.2c.4.3.5.7.5 1.1v.2h4v-.2c0-.4.1-.8.5-1.1A4.5 4.5 0 0 0 8 1z"/></svg>',
+  checkSm:'<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8.5 6.5 12 13 4.5"/></svg>',
+  xSm:'<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/></svg>',
   lock:'<svg class="stub-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>',
   book:'<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 3h4a2 2 0 0 1 2 2v9a1.5 1.5 0 0 0-1.5-1.5H2z"/><path d="M14 3h-4a2 2 0 0 0-2 2v9a1.5 1.5 0 0 1 1.5-1.5H14z"/></svg>',
   home:'<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9L8 4l5 5"/><path d="M5 14V9h6v5"/></svg>',
@@ -505,6 +533,51 @@ function openLesson(id){
   window.scrollTo(0,0);
 }
 
+function renderAnalogy(text){
+  return '<div class="analogy-box">'+ICON.analogy+'<div><div class="analogy-label">Think of it like this</div><div class="analogy-text">'+esc(text)+'</div></div></div>';
+}
+
+// A real spot-illustration for the "which floors can foreigners own" rule —
+// not a text comparison box. Ground floor is drawn separately, in red, with
+// an X; floors above are drawn in green with a check, matching the actual
+// rule (1st floor and up = allowed, ground floor = never allowed).
+function renderBuildingDiagram(){
+  var floors = [
+    {y:10, cls:'ok', label:'4'},
+    {y:40, cls:'ok', label:'3'},
+    {y:70, cls:'ok', label:'2'}
+  ];
+  var svgFloors = floors.map(function(f){
+    return '<rect x="10" y="'+f.y+'" width="70" height="28" rx="3" fill="var(--green)" opacity=".85"/>'
+      +'<text x="45" y="'+(f.y+18)+'" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" font-family="DM Sans">'+f.label+'</text>';
+  }).join('');
+  var svg = '<svg class="building-svg" width="90" height="150" viewBox="0 0 90 150">'
+    + svgFloors
+    + '<rect x="10" y="100" width="70" height="28" rx="3" fill="var(--red)" opacity=".9"/>'
+    + '<text x="45" y="118" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" font-family="DM Sans">Ground</text>'
+    + '<rect x="35" y="128" width="20" height="14" fill="var(--navy)"/>'
+    + '</svg>';
+  var legend = '<div class="building-legend">'
+    + '<div class="legend-row"><div class="legend-swatch blocked">'+ICON.xSm+'</div><div class="legend-text"><b>Ground floor</b><span>Foreigners cannot own this, ever</span></div></div>'
+    + '<div class="legend-row"><div class="legend-swatch ok">'+ICON.checkSm+'</div><div class="legend-text"><b>1st floor and up</b><span>Foreigners can legally own these</span></div></div>'
+    + '</div>';
+  return '<div class="diagram-box"><div class="diagram-title">Which floors can a foreigner own?</div>'
+    + '<div class="building-diagram">'+svg+legend+'</div></div>';
+}
+
+// A real proportional bar, not just a stated percentage — shows the 70/30
+// split as something you can see at a glance, matching the actual rule
+// (foreigners can own UP TO 70% of a building's units, never more).
+function renderQuotaBar(){
+  return '<div class="diagram-box"><div class="diagram-title">How much of one building can foreigners own?</div>'
+    + '<div class="quota-wrap"><div class="quota-bar">'
+    + '<div class="quota-seg foreign">Up to 70%</div>'
+    + '<div class="quota-seg local">At least 30%</div>'
+    + '</div>'
+    + '<div class="quota-caption"><span>Can be foreign-owned</span><span>Must stay Cambodian-owned</span></div>'
+    + '</div></div>';
+}
+
 function renderBeforeNow(bn_before,bn_now){
   return '<div class="bn-box">'
     +'<div class="bn-col wrong"><div class="bn-label">'+ICON.x+esc(bn_before.label)+'</div><div class="bn-text">'+esc(bn_before.text)+'</div></div>'
@@ -517,6 +590,13 @@ function renderSection(s){
   h+='<div class="section-label">'+esc(s.label)+'</div>';
   h+='<div class="section-heading">'+esc(s.heading)+'</div>';
   h+='<div class="section-body">'+s.body+'</div>';
+  if(s.analogy) h+=renderAnalogy(s.analogy);
+  if(s.diagrams){
+    s.diagrams.forEach(function(d){
+      if(d==='floors') h+=renderBuildingDiagram();
+      if(d==='quota') h+=renderQuotaBar();
+    });
+  }
   if(s.before&&s.now) h+=renderBeforeNow(s.before,s.now);
   if(s.data){
     h+='<div class="data-box"><div class="data-title">'+esc(s.dataTitle||'Key facts')+'</div>';
