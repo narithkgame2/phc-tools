@@ -66,7 +66,7 @@ function getContactKeyboard(channelTag) {
   ]] };
   if (channelTag) {
     keyboard.inline_keyboard.push([
-      { text: '✈️ Message us on Telegram', url: 'https://t.me/' + BOT_USERNAME + '?start=lead_' + channelTag },
+      { text: '💬 Message us on Telegram', url: 'https://t.me/' + BOT_USERNAME + '?start=lead_' + channelTag },
     ]);
   }
   return keyboard;
@@ -753,7 +753,7 @@ function handleCallback(cb) {
   const id = sepIdx === -1 ? '' : data.slice(sepIdx + 1);
   Logger.log('handleCallback: raw data="' + data + '" action="' + action + '" id="' + id + '"');
 
-  if (action === 'approveAll' || action === 'rejectAll' || action === 'approveAllPin') {
+  if (action === 'approveAll' || action === 'rejectAll') {
     handleGroupCallback(cb, action, id);
     return;
   }
@@ -841,8 +841,7 @@ function handleGroupCallback(cb, action, sourceId) {
   const hasPhoto = !!(cb.message.photo && cb.message.photo.length);
   const originalText = hasPhoto ? cb.message.caption : cb.message.text;
 
-  if (action === 'approveAll' || action === 'approveAllPin') {
-    const shouldPin = action === 'approveAllPin';
+  if (action === 'approveAll') {
     matchingRows.forEach(rowNum => {
       const language = sheet.getRange(rowNum, langIdx + 1).getValue();
       const content = sheet.getRange(rowNum, contentIdx + 1).getValue();
@@ -864,11 +863,9 @@ function handleGroupCallback(cb, action, sourceId) {
       sheet.getRange(rowNum, statusIdx + 1).setValue('Posted');
       sheet.getRange(rowNum, headers.indexOf('postedMsgId') + 1).setValue(postedMsgId || '');
       sheet.getRange(rowNum, headers.indexOf('postedAt') + 1).setValue(new Date().toISOString());
-
-      if (shouldPin && postedMsgId) pinNewestListing(channelId, language, postedMsgId);
     });
-    finishReviewMessage(cb.message.chat.id, cb.message.message_id, originalText + '\n\n✅ POSTED to EN + JP + RU + DE' + (shouldPin ? ' · 📌 PINNED' : ''), hasPhoto);
-    answerCallback(cb.id, shouldPin ? 'Posted and pinned!' : 'Posted to EN/JP/RU/DE!');
+    finishReviewMessage(cb.message.chat.id, cb.message.message_id, originalText + '\n\n✅ POSTED to EN + JP + RU + DE', hasPhoto);
+    answerCallback(cb.id, 'Posted to EN/JP/RU/DE!');
   } else {
     matchingRows.forEach(rowNum => sheet.getRange(rowNum, statusIdx + 1).setValue('Rejected'));
     finishReviewMessage(cb.message.chat.id, cb.message.message_id, originalText + '\n\n❌ REJECTED', hasPhoto);
@@ -1112,7 +1109,7 @@ function logReactionCount(language, content, messageId, totalReactions, reaction
   sheet.appendRow([new Date().toISOString(), language, messageId, totalReactions, breakdown, snippet]);
 }
 
-// ── Lead-source deep links — a lead taps "✈️ Message us on Telegram" on a
+// ── Lead-source deep links — a lead taps "💬 Message us on Telegram" on a
 //    posted listing, which opens t.me/<BOT_USERNAME>?start=lead_<channel>.
 //    That's this bot's own private chat, opened by a stranger for the first
 //    time, carrying the channel tag. Logs the source, alerts Nick, and
@@ -1147,43 +1144,6 @@ function logLeadSource(channelTag, telegramUserId, who) {
     sheet.setFrozenRows(1);
   }
   sheet.appendRow([new Date().toISOString(), channelTag, telegramUserId || '', who]);
-}
-
-// ── Auto-pin — "📌 Approve & Pin" on the review message pins that listing
-//    in each channel it posts to, unpinning whatever was pinned there
-//    before. Only one listing stays pinned per channel at a time; regular
-//    "Approve All" never pins anything, so this is opt-in per listing. ──
-
-function pinChatMessage(chatId, messageId) {
-  const token = PropertiesService.getScriptProperties().getProperty('BOT_TOKEN');
-  const resp = UrlFetchApp.fetch('https://api.telegram.org/bot' + token + '/pinChatMessage', {
-    method: 'post', contentType: 'application/x-www-form-urlencoded',
-    payload: { chat_id: chatId, message_id: messageId, disable_notification: true },
-    muteHttpExceptions: true,
-  });
-  const data = JSON.parse(resp.getContentText());
-  if (!data.ok) Logger.log('pinChatMessage failed: ' + resp.getContentText());
-  return data.ok;
-}
-
-function unpinChatMessage(chatId, messageId) {
-  const token = PropertiesService.getScriptProperties().getProperty('BOT_TOKEN');
-  const resp = UrlFetchApp.fetch('https://api.telegram.org/bot' + token + '/unpinChatMessage', {
-    method: 'post', contentType: 'application/x-www-form-urlencoded',
-    payload: { chat_id: chatId, message_id: messageId },
-    muteHttpExceptions: true,
-  });
-  const data = JSON.parse(resp.getContentText());
-  if (!data.ok) Logger.log('unpinChatMessage failed (non-fatal, may already be unpinned): ' + resp.getContentText());
-}
-
-function pinNewestListing(channelId, language, messageId) {
-  const props = PropertiesService.getScriptProperties();
-  const key = 'PINNED_' + language;
-  const prevPinned = props.getProperty(key);
-  if (prevPinned) unpinChatMessage(channelId, prevPinned);
-  const ok = pinChatMessage(channelId, messageId);
-  if (ok) props.setProperty(key, String(messageId));
 }
 
 // ── Location pins — CAPABILITY ONLY, not wired into posting yet.
@@ -1245,15 +1205,10 @@ function sendCombinedReviewMessage(sheet, headers, sourceId, photoFileIds) {
   const reviewText = prefix + enContent;
   const shiftedEntities = enEntities ? enEntities.map(e => Object.assign({}, e, { offset: e.offset + prefix.length })) : null;
   const keyboard = {
-    inline_keyboard: [
-      [
-        { text: '✅ Approve All', callback_data: 'approveAll_' + sourceId },
-        { text: '❌ Reject All', callback_data: 'rejectAll_' + sourceId },
-      ],
-      [
-        { text: '📌 Approve & Pin', callback_data: 'approveAllPin_' + sourceId },
-      ],
-    ],
+    inline_keyboard: [[
+      { text: '✅ Approve All', callback_data: 'approveAll_' + sourceId },
+      { text: '❌ Reject All', callback_data: 'rejectAll_' + sourceId },
+    ]],
   };
 
   const msg = photoFileIds && photoFileIds.length
