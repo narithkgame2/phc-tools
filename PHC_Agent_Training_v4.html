@@ -132,6 +132,20 @@ button{font-family:inherit}
 .quota-seg.local{background:var(--text-m);width:30%}
 .quota-caption{display:flex;justify-content:space-between;font-size:11px;color:var(--text-s);margin-top:8px}
 
+/* ═══ SIMPLE TABLE ═══ */
+.table-wrap{overflow-x:auto;margin-bottom:16px;border:1px solid var(--border);border-radius:10px}
+.simple-table{width:100%;border-collapse:collapse;font-size:12px}
+.simple-table th{background:var(--bg);color:var(--text-m);font-weight:700;text-align:left;padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap}
+.simple-table td{padding:8px 10px;border-top:1px solid var(--border);color:var(--text-s);font-family:'DM Mono',monospace;white-space:nowrap}
+.simple-table td:first-child{font-family:'DM Sans',sans-serif;color:var(--text);font-weight:500}
+
+/* ═══ WORKED-EXAMPLE CALCULATION ═══ */
+.calc-box{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:16px}
+.calc-title{font-size:10.5px;font-weight:700;color:var(--text-m);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
+.calc-row{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;color:var(--text-s);padding:6px 0;border-bottom:1px dashed var(--border)}
+.calc-row span:last-child{font-family:'DM Mono',monospace;flex-shrink:0}
+.calc-row.total{border-bottom:none;border-top:2px solid var(--navy);margin-top:2px;padding-top:9px;font-weight:700;color:var(--navy);font-size:13.5px}
+
 /* ═══ BEFORE / NOW COMPARISON ═══ */
 .bn-box{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px}
 .bn-col{background:var(--white);padding:14px 16px}
@@ -199,8 +213,19 @@ button{font-family:inherit}
 .rp-line.note .rp-bubble{font-style:italic;color:var(--text-s)}
 .rp-debrief{background:var(--gold-pale);border-radius:8px;padding:12px 14px;font-size:12.5px;color:var(--text);line-height:1.6;margin-top:14px}
 
+/* ═══ STEP PROGRESS (one screen at a time, matching v3's flow) ═══ */
+.pips{display:flex;gap:4px;margin-bottom:22px}
+.pip{flex:1;height:3px;border-radius:2px;background:var(--border);transition:background .15s}
+.pip.active{background:var(--gold)}
+.pip.done{background:var(--navy)}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.rise{animation:rise .22s cubic-bezier(.4,0,.2,1)}
+.step-counter{font-size:11px;color:var(--text-m);font-family:'DM Mono',monospace}
+
 /* ═══ NAV BAR ═══ */
-.lesson-nav{display:flex;justify-content:space-between;align-items:center;margin-top:32px;padding-top:20px;border-top:1px solid var(--border)}
+.lesson-footer{display:flex;justify-content:space-between;align-items:center;margin-top:32px;padding-top:20px;border-top:1px solid var(--border)}
+.complete-box{text-align:center;padding:30px 10px}
+.complete-icon{width:52px;height:52px;border-radius:50%;background:var(--green-pale);color:var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
 
 /* ═══ STUB (not yet rewritten) ═══ */
 .stub-box{text-align:center;padding:60px 20px;color:var(--text-m)}
@@ -344,7 +369,61 @@ quiz:[
 {q:"What does PHC compete on, according to this lesson?",opts:["The lowest commission in Phnom Penh","Trust, clarity, and advisory depth","The most property listings","The fastest closing time"],correct:1,explain:"PHC is not a high-volume agency. PHC competes on trust, clarity, and depth of advice. That is what makes PHC different."}
 ]},
 
-{id:2,week:1,title:"The Phnom Penh Property Market",short:"Phnom Penh Market",stub:true},
+{id:2,week:1,title:"The Phnom Penh Property Market",short:"Phnom Penh Market",
+objectives:[
+  "Know the current state of the Phnom Penh condo market using REAKH data",
+  "Know average prices and rents for the main districts",
+  "Calculate a simple Capital Gains Tax (CGT) example correctly"
+],
+sections:[
+{label:"Where These Numbers Come From",heading:"REAKH — our data partner, not just a name to remember",
+body:"Every number in this lesson comes from Realestate.com.kh (REAKH), our official listing partner and the leading property platform in Cambodia. When you say a number to a client, you can say where it came from. That is what makes the number trustworthy instead of a guess.",
+dataTitle:"Cambodia condo market — 2025/2026 snapshot",
+data:["Average price across Phnom Penh: $1,800/sqm (gross floor area)","Average price in BKK1: $2,000/sqm gross","Transaction volume grew 25% in 2025 — the market is recovering, not booming","Total condo supply in Phnom Penh: about 60,000+ units by end of 2024"]
+},
+{label:"Prices and Rent by District",heading:"Learn these numbers — clients will test you",
+body:"Buy prices are gross floor area, per square meter. Rents are for a condo with normal shared facilities (pool, gym, lobby) — the standard for the newer buildings PHC recommends.",
+table:{headers:["District","Buy $/sqm","1BR rent","2BR rent","3BR rent"],rows:[
+["BKK1","$2,000","$800","$1,450","$2,550"],
+["Tonle Bassac","$2,500","$600","$1,000","$1,550"],
+["Daun Penh","$2,000","$500","$900","$1,500"],
+["Chroy Changvar","$1,700","$450","$900","$1,800"],
+["Toul Kork","$1,450","$500","$900","$1,500"],
+["Toul Tompoung","$1,200","$450","$800","$1,300"],
+["BKK3","$1,600","$550","$900","$1,200"],
+["Sen Sok","$1,100","$400","$650","$950"]
+]}
+},
+{label:"Capital Gains Tax (CGT)",heading:"The tax a client pays when they sell — worked example",
+body:"CGT is a tax on profit, not on the full sale price. Many clients confuse the two — this mistake makes them think the tax is much bigger than it really is. Clear this up early, with real numbers.",
+analogy:"Think of CGT like paying tax on your salary, not on the whole company's revenue. You are only taxed on what you actually gained — the sale price, minus what you originally paid and your documented costs.",
+calc:{title:"Example: bought for $100,000, sold for $200,000, $40,000 in documented costs",rows:[
+{label:"Sale price",value:"$200,000"},
+{label:"Minus: original purchase price",value:"−$100,000"},
+{label:"Minus: documented costs",value:"−$40,000"},
+{label:"Taxable gain",value:"$60,000"},
+{label:"CGT owed (20% of taxable gain)",value:"$12,000",total:true}
+]},
+rules:[
+{title:"Always show the taxable gain, not the full sale price",detail:"A client who thinks CGT applies to the full $200,000 will panic. Once they see it only applies to the $60,000 gain, the number feels manageable.",action:"Walk through the calculation out loud with the client's own numbers, every time CGT comes up."}
+]}
+],
+reflection:"Explain the difference between gross yield and net yield to a client who has never invested in property before. Then explain how CGT changes their profit when they sell.",
+roleplay:{scenario:"Explaining CGT to a first-time investor",instructions:"Practice being calm and specific with numbers — not vague reassurance.",
+lines:[
+{role:"client",text:"\"I heard there's a new tax on property in Cambodia. Is that true?\""},
+{role:"agent",text:"\"Yes — Capital Gains Tax started in January 2026. It applies to the profit you make when you sell, not the full sale price. The rate is 20% of that profit.\""},
+{role:"client",text:"\"So buying now is a bad idea?\""},
+{role:"agent",text:"\"Not at all — it just means the strategy shifts. For example: buy at $100K, sell later at $200K, with $40K in documented costs. Your taxable gain is $60K, so the tax is $12,000. Your final profit is still $48,000. Short-term flipping is what CGT really discourages — not long-term holding for rental income.\""},
+{role:"note",text:"Debrief: Did the agent use real numbers instead of vague reassurance? Did they distinguish long-term holding from quick flipping?"}
+],
+debrief:"Never say \"don't worry about CGT.\" Always say \"here's the calculation.\" Numbers build trust; reassurance without numbers does not."},
+quiz:[
+{q:"According to REAKH data, what is the average price per sqm in BKK1?",opts:["$1,200","$1,800 — Phnom Penh's citywide average","$2,000","$2,800"],correct:2,explain:"BKK1 averages $2,000/sqm gross — this is REAKH's tracked figure across all project tiers in the district."},
+{q:"How much did transaction volume grow in 2025?",opts:["Fell 10%","Grew 5%","Grew 25%","Stayed flat"],correct:2,explain:"Transaction volume grew 25% in 2025. This is the single most useful market-momentum number to know."},
+{q:"CGT is a tax on:",opts:["The full sale price","The seller's total profit (gain), after subtracting the purchase price and documented costs","A flat $10,000 fee","Only foreign sellers"],correct:1,explain:"CGT taxes the gain only — sale price minus original price minus documented costs. Never let a client think it applies to the full sale amount."},
+{q:"A unit was bought for $100K and sold for $200K with $40K in documented costs. What is the CGT owed?",opts:["$40,000","$20,000","$12,000","$8,000"],correct:2,explain:"Taxable gain = $200K − $100K − $40K = $60K. CGT = 20% of $60K = $12,000."}
+]},
 {id:3,week:1,title:"How Real Estate Works in Cambodia",short:"Real Estate Law",
 objectives:[
   "Know the difference between 2 kinds of property title, and why the difference matters",
@@ -396,7 +475,74 @@ quiz:[
 {q:"Soft Title is:",opts:["Acceptable for foreign buyers if the condo is already built","A national-level permanent title, equal to strata title","Registered only with a local authority, not recognized nationwide — for Cambodian citizens only","The same as strata title, but for commercial property"],correct:2,explain:"Soft Title is not recognized at the national level. It is only for Cambodian citizens. Never recommend it to any PHC client, regardless of nationality."}
 ]},
 
-{id:4,week:1,title:"The PHC Project Portfolio",short:"Project Portfolio",stub:true},
+{id:4,week:1,title:"The PHC Project Portfolio",short:"Project Portfolio",
+objectives:[
+  "Know every active PHC project: developer, location, status, price, title type",
+  "Match the right project to the right client",
+  "Explain one real, verified investment result using real numbers"
+],
+sections:[
+{label:"The Two Developers You'll Mention Most",heading:"Know these two developers as well as you know the projects",
+body:"PHC works with several developers. Two of them come up constantly with international buyers — learn their story, not just their name.",
+table:{headers:["Developer","Track record","Best for"],rows:[
+["Megakim World Corp","7 completed projects, strong delivery history, modern design","International + local buyers, competitive pricing"],
+["Tanichu Assetment","Japanese developer, precise build quality, confirmed freehold strata","Japanese investors — highest cultural trust"]
+]}
+},
+{label:"Active Projects",heading:"Know status, price, and best-fit client for each",
+body:"These are the projects you will discuss in almost every client conversation.",
+table:{headers:["Project","District","From","Status","Best for"],rows:[
+["Time Square 8","Toul Tompoung","~$1,452/sqm","Completed","Overseas Khmer, budget investors"],
+["Time Square 9","BKK1","~$1,700/sqm","Under construction","JP investors, EU buyers, upscale Khmer"],
+["Time Square 10","Otres Beach","~$40K","Under construction","Coastal/holiday, low-budget entry"],
+["Time Square 11","BKK3","TBC","Launching Feb 2026","Local Khmer, first-home buyers"],
+["J Tower 2","BKK1 area","Market rate","Completed","Japanese investors — Tier 1"],
+["J Tower 3","BKK1 area","TBC","Pre-sale","Japanese investors — Tier 1"],
+["Le Condé","BKK1","From $150K","Completed May '25","Japan-managed, hands-off Europeans"],
+["Royal Platinum","Toul Kork","From $120K","Completed 2025","European retirees, Khmer families"],
+["Peninsula","Chroy Changvar","~$4,200/sqm","On sale","Yield-focused Europeans, $300K+"],
+["G.A.T.O Tower","BKK1","TBC","Near launch","Luxury Japanese, $400K+ Europeans"]
+]}
+},
+{label:"Quick Match Guide",heading:"Filter by client type before you present anything",
+body:"Use this list before your first recommendation to any client.",
+rules:[
+{title:"Japanese investor, safety-focused",detail:"J Tower 2 or J Tower 3 — a Japanese developer (Tanichu) is the strongest trust signal for this client.",action:"Lead with the developer's name before the unit details."},
+{title:"European, wants hands-off rental",detail:"Le Condé — managed by Hopetree Japan from day one, no landlord duties.",action:"Say the words \"fully managed\" in your first sentence about this project."},
+{title:"Khmer family, first home",detail:"Time Square 11 (BKK3) or Royal Platinum (Toul Kork).",action:"Ask about school proximity before showing any unit."},
+{title:"Low-budget investor",detail:"Time Square 10, Otres Beach, from about $40K.",action:"Confirm their budget ceiling before mentioning this — it can feel like a downgrade if introduced wrong."},
+{title:"Luxury, long-term hold",detail:"J Tower 3 or G.A.T.O Tower — landmark locations.",action:"These are the only projects to open with price first, not story first — this client expects it."}
+]},
+{label:"A Real, Verified Result",heading:"J Tower 2 — a real transaction, not a projection",
+body:"This is documented in REAKH's own 2025 market report. Use it as evidence in conversation — never as a promise of what will happen to a new buyer.",
+calc:{title:"J Tower 2 — 2BR unit, bought 2019, sold 2024",rows:[
+{label:"Purchase price + furniture (2019)",value:"$147,755"},
+{label:"Rental income, 5 years (net of fees)",value:"$23,392"},
+{label:"Resale price (2024)",value:"$175,000"},
+{label:"Capital gain",value:"$27,245"},
+{label:"Total 5-year return",value:"$50,637 (34.3%, ~6.85%/yr)",total:true}
+]},
+warning:"This is one real, past result on one specific unit. Past results do not guarantee future ones. Always say \"this is what happened\" — never \"this is what will happen.\""
+}
+],
+reflection:"Without looking at any notes, how many PHC projects can you name from memory — with their district and status?",
+roleplay:{scenario:"Matching the right project to a client's stated goal",instructions:"Practice explaining your reasoning, not just naming a project.",
+lines:[
+{role:"client",text:"\"I have $180,000. I want stable rental income and I don't want to manage anything myself.\""},
+{role:"agent",text:"\"Based on that, I'd focus on two options — both completed, both professionally managed.\""},
+{role:"client",text:"\"What are they?\""},
+{role:"agent",text:"\"Le Condé in BKK1, managed by Hopetree Japan, from $150K. And J Tower 2, completed, managed, strong rental demand from Japanese developer trust.\""},
+{role:"client",text:"\"Why these two and not something else?\""},
+{role:"agent",text:"\"Because you said hands-off and stable — a completed, professionally managed building removes construction risk and the guesswork of a new building's vacancy rate. These two are the closest to a ready-made outcome that Cambodia currently offers.\""},
+{role:"note",text:"Debrief: Did the agent explain *why*, not just name projects? Did the client feel understood, not sold to?"}
+],
+debrief:"Always explain your reasoning for the 2-3 options you show. \"These fit your goals\" is not enough — explain how."},
+quiz:[
+{q:"Which developer is Japanese, and is the strongest trust signal for Japanese buyers?",opts:["Megakim World Corp","Tanichu Assetment","Hopetree Japan","Royal Platinum Group"],correct:1,explain:"Tanichu Assetment. A Japanese developer name is the single strongest cultural trust signal for a Japanese client."},
+{q:"A European client wants a completed, professionally managed rental unit under $200K. Best first recommendation?",opts:["Time Square 10, Otres Beach","G.A.T.O Tower","Le Condé, BKK1 — completed, managed by Hopetree Japan, from $150K","J Tower 3, pre-sale"],correct:2,explain:"Le Condé matches every stated need: completed, managed, BKK1, under $200K. This is a Tier-1 match, not a compromise."},
+{q:"In the J Tower 2 case study, what is the correct way to present the 6.85%/year result to a new client?",opts:["\"You will earn 6.85% per year\"","\"This unit is guaranteed to perform this well\"","\"This is a real, past result on one unit — not a promise for a new purchase\"","Don't mention it, it might set the wrong expectation"],correct:2,explain:"Always frame past results as data, never as a promise. \"This happened\" is honest. \"This will happen to you\" is not."},
+{q:"Which project is the correct first suggestion for a Khmer family buying their first home?",opts:["Peninsula, Chroy Changvar","Time Square 11 (BKK3) or Royal Platinum (Toul Kork)","G.A.T.O Tower","J Tower 3"],correct:1,explain:"Time Square 11 and Royal Platinum are priced and located for first-home Khmer buyers — family-oriented districts, accessible pricing."}
+]},
 {id:5,week:1,title:"Who Our Clients Are",short:"Client Segments",stub:true},
 {id:6,week:2,title:"The PHC Advisor Mindset",short:"Advisor Mindset",stub:true},
 {id:7,week:2,title:"Qualifying Clients Correctly",short:"Client Qualification",stub:true},
@@ -526,11 +672,40 @@ function renderLanding(){
 function openLesson(id){
   var l=getLesson(id);
   if(!l||l.stub)return;
-  S.view='lesson'; S.lessonId=id;
+  S.view='lesson'; S.lessonId=id; S.step=0;
   if(!S.qa[id])S.qa[id]=l.quiz.map(function(){return -1});
   saveS();
   render();
   window.scrollTo(0,0);
+}
+
+// One step per screen, matching v3's proven flow: objectives → each
+// section, one at a time → roleplay → quiz → complete. Not one long
+// scrolling page — a non-native-English reader shouldn't have to hold
+// the whole lesson in view to find where they are.
+function buildStepList(l){
+  var steps=[{type:'obj'}];
+  l.sections.forEach(function(s){steps.push({type:'section',data:s});});
+  if(l.roleplay) steps.push({type:'roleplay',data:l.roleplay});
+  steps.push({type:'quiz'});
+  steps.push({type:'complete'});
+  return steps;
+}
+
+function renderTable(t){
+  var h='<div class="table-wrap"><table class="simple-table"><thead><tr>';
+  t.headers.forEach(function(hd){h+='<th>'+esc(hd)+'</th>';});
+  h+='</tr></thead><tbody>';
+  t.rows.forEach(function(r){h+='<tr>'+r.map(function(c){return '<td>'+esc(c)+'</td>';}).join('')+'</tr>';});
+  h+='</tbody></table></div>';
+  return h;
+}
+
+function renderCalc(c){
+  var h='<div class="calc-box"><div class="calc-title">'+esc(c.title)+'</div>';
+  c.rows.forEach(function(r){h+='<div class="calc-row'+(r.total?' total':'')+'"><span>'+esc(r.label)+'</span><span>'+esc(r.value)+'</span></div>';});
+  h+='</div>';
+  return h;
 }
 
 function renderAnalogy(text){
@@ -591,6 +766,8 @@ function renderSection(s){
   h+='<div class="section-heading">'+esc(s.heading)+'</div>';
   h+='<div class="section-body">'+s.body+'</div>';
   if(s.analogy) h+=renderAnalogy(s.analogy);
+  if(s.table) h+=renderTable(s.table);
+  if(s.calc) h+=renderCalc(s.calc);
   if(s.diagrams){
     s.diagrams.forEach(function(d){
       if(d==='floors') h+=renderBuildingDiagram();
@@ -658,7 +835,7 @@ function allQuizAnswered(l){
   return S.qa[l.id].every(function(a){return a>=0});
 }
 
-function markDone(id){
+function finishLesson(id){
   if(S.done.indexOf(id)<0){S.done.push(id);saveS();}
   var idx=LESSONS.findIndex(function(l){return l.id===id});
   var next=LESSONS.slice(idx+1).find(function(l){return !l.stub});
@@ -666,28 +843,74 @@ function markDone(id){
   else renderLanding();
 }
 
-function renderLesson(){
+function lessonNext(){
   var l=getLesson(S.lessonId);
-  document.getElementById('tnTitle').textContent='L'+l.id+' &middot; '+l.short;
-  var h='<div class="lesson-eyebrow">Week '+l.week+' &middot; '+esc(WEEK_NAMES[l.week])+' &middot; Lesson '+l.id+' of '+LESSONS.length+'</div>';
-  h+='<div class="lesson-h">'+esc(l.title)+'</div>';
-  h+='<div class="obj-box"><div class="obj-title">By the end of this lesson, you will:</div>';
-  l.objectives.forEach(function(o){h+='<div class="obj-item"><div class="obj-dot"></div>'+esc(o)+'</div>';});
-  h+='</div>';
-  l.sections.forEach(function(s){h+=renderSection(s);});
-  if(l.roleplay) h+=renderRoleplay(l.roleplay);
-  h+=renderQuiz(l);
-  var canFinish=allQuizAnswered(l);
-  h+='<div class="lesson-nav">'
-    +'<button class="btn ghost" onclick="renderLanding()">&larr; Overview</button>'
-    +'<button class="btn primary" '+(canFinish?'':'disabled')+' onclick="markDone('+l.id+')">Mark lesson complete &rarr;</button>'
+  var tot=buildStepList(l).length;
+  if(S.step<tot-1){S.step++; saveS(); renderLessonStep(); window.scrollTo(0,0);}
+}
+function lessonBack(){
+  if(S.step>0){S.step--; saveS(); renderLessonStep(); window.scrollTo(0,0);}
+}
+
+function renderCompleteStep(l){
+  return '<div class="complete-box">'
+    +'<div class="complete-icon">'+ICON.check16.replace('width="12" height="12"','width="22" height="22"')+'</div>'
+    +'<div class="lesson-h" style="margin-bottom:8px">Lesson complete</div>'
+    +'<div class="section-body">You finished &ldquo;'+esc(l.title)+'.&rdquo; Click below to continue.</div>'
     +'</div>';
-  document.getElementById('main').innerHTML=h;
+}
+
+function renderLessonStep(){
+  var l=getLesson(S.lessonId);
+  var stepList=buildStepList(l);
+  var tot=stepList.length;
+  if(S.step==null||S.step<0||S.step>=tot) S.step=0;
+  var st=S.step;
+  var cur=stepList[st];
+
+  document.getElementById('tnTitle').textContent='L'+l.id+' &middot; '+l.short;
+
+  var pips='';
+  for(var i=0;i<tot;i++){ pips+='<div class="pip'+(i<st?' done':i===st?' active':'')+'"></div>'; }
+
+  var body='';
+  if(cur.type==='obj'){
+    body='<div class="lesson-h">'+esc(l.title)+'</div>'
+      +'<div class="obj-box"><div class="obj-title">By the end of this lesson, you will:</div>';
+    l.objectives.forEach(function(o){body+='<div class="obj-item"><div class="obj-dot"></div>'+esc(o)+'</div>';});
+    body+='</div>';
+  } else if(cur.type==='section'){
+    body=renderSection(cur.data);
+  } else if(cur.type==='roleplay'){
+    body=renderRoleplay(cur.data);
+  } else if(cur.type==='quiz'){
+    body=renderQuiz(l);
+  } else {
+    body=renderCompleteStep(l);
+  }
+
+  var isQuizStep=cur.type==='quiz';
+  var canContinue=isQuizStep?allQuizAnswered(l):true;
+  var isLastStep=st===tot-1;
+
+  var footer='<div class="lesson-footer">'
+    +'<button class="btn ghost" onclick="'+(st===0?'renderLanding()':'lessonBack()')+'">&larr; '+(st===0?'Overview':'Back')+'</button>'
+    +'<div class="step-counter">'+(st+1)+' / '+tot+'</div>'
+    +(isLastStep
+      ? '<button class="btn gold" onclick="finishLesson('+l.id+')">Finish lesson &rarr;</button>'
+      : '<button class="btn primary" '+(canContinue?'':'disabled')+' onclick="lessonNext()">Continue &rarr;</button>')
+    +'</div>';
+
+  document.getElementById('main').innerHTML=
+    '<div class="lesson-eyebrow">Week '+l.week+' &middot; '+esc(WEEK_NAMES[l.week])+' &middot; Lesson '+l.id+' of '+LESSONS.length+'</div>'
+    +'<div class="pips">'+pips+'</div>'
+    +'<div class="rise">'+body+'</div>'
+    +footer;
   buildSidebar();
 }
 
 function render(){
-  if(S.view==='lesson'&&S.lessonId) renderLesson();
+  if(S.view==='lesson'&&S.lessonId) renderLessonStep();
   else renderLanding();
 }
 
