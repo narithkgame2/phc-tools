@@ -2352,7 +2352,7 @@ function updateMobNav(){
     var nSec=l.sections.length;
     var isComplete=st===tot-1;
     var isQuiz=st===nSec+2;
-    var isLast=S.li===LESSONS.length-1;
+    var isLast=l.id===20;
     if(isComplete){
       cont.textContent=!isLast?'Next Lesson →':'Certificate 🎓';
       cont.className='mob-nav-continue'+(isLast?' cta-gold':'');
@@ -2386,7 +2386,7 @@ function mobContinue(){
     else viewCertificate();
     return;
   }
-  var l=cur(),tot=steps(l),st=S.step,nSec=l.sections.length,isComplete=st===tot-1,isLast=S.li===LESSONS.length-1;
+  var l=cur(),tot=steps(l),st=S.step,nSec=l.sections.length,isComplete=st===tot-1,isLast=l.id===20;
   if(isComplete){
     if(!isLast) openLesson(S.li+1);
     else viewCertificate();
@@ -2734,7 +2734,7 @@ function buildComplete(l){
   qa.forEach(function(a,i){if(a&&a.chosen===l.quiz[i].correct)sc++;});
   var tot=l.quiz.length;
   var pc=sc===tot?'good':sc>=Math.ceil(tot*.6)?'ok':'mid';
-  var isLast=S.li===LESSONS.length-1;
+  var isLast=l.id===20;
 
   // ── Program complete screen (L20) ──────────────────────────────
   if(isLast){
@@ -2744,8 +2744,8 @@ function buildComplete(l){
       +'<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>'
       +'</div>'
       +'<div class="complete-h" style="font-size:30px">Program Complete</div>'
-      +'<div class="complete-sub">You have completed all '+LESSONS.length+' lessons of the PHC Agent Training Program. Enter your name below to generate your certificate.</div>'
-      +'<div class="score-pills"><div class="s-pill good">All 20 lessons passed</div><div class="s-pill '+pc+'">L20 quiz: '+sc+'/'+tot+'</div></div>'
+      +'<div class="complete-sub">You have completed all '+l.id+' lessons of the PHC Agent Training Program. Enter your name below to generate your certificate.</div>'
+      +'<div class="score-pills"><div class="s-pill good">All '+l.id+' lessons passed</div><div class="s-pill '+pc+'">L'+l.id+' quiz: '+sc+'/'+tot+'</div></div>'
       +'<div class="name-prompt" style="width:100%;max-width:480px">'
       +'<div class="name-prompt-label">Certificate name</div>'
       +'<div class="name-prompt-sub">Enter your full name exactly as you want it to appear on the certificate.</div>'
@@ -2763,10 +2763,15 @@ function buildComplete(l){
 
   // ── Standard lesson complete screen ───────────────────────────
   var nextIdx=S.li+1;
-  var nextCard='<div class="next-card" onclick="openLesson('+nextIdx+')">'
-    +'<div class="next-card-eyebrow">Up next — Lesson '+LESSONS[nextIdx].id+'</div>'
-    +'<div class="next-card-title">'+esc(LESSONS[nextIdx].title)+'</div>'
-    +'</div>';
+  var nextCard=nextIdx<LESSONS.length
+    ? '<div class="next-card" onclick="openLesson('+nextIdx+')">'
+      +'<div class="next-card-eyebrow">Up next — Lesson '+LESSONS[nextIdx].id+'</div>'
+      +'<div class="next-card-title">'+esc(LESSONS[nextIdx].title)+'</div>'
+      +'</div>'
+    : '<div class="next-card" onclick="renderLanding()">'
+      +'<div class="next-card-eyebrow">All lessons complete</div>'
+      +'<div class="next-card-title">Back to overview</div>'
+      +'</div>';
   return '<div class="complete">'
     +'<div class="complete-checkmark"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>'
     +'<div class="complete-h">Lesson '+l.id+' Complete</div>'
@@ -2779,7 +2784,7 @@ function buildComplete(l){
 
 function buildFooter(l,st,tot){
   var nSec=l.sections.length;
-  var isComplete=st===tot-1, isQuiz=st===nSec+2, isLast=S.li===LESSONS.length-1;
+  var isComplete=st===tot-1, isQuiz=st===nSec+2, isLast=l.id===20;
   var next='',hint='';
   if(isComplete){
     if(!isLast){
