@@ -14,6 +14,8 @@ Persistent context for Nick's Cowork sessions is stored in `claude-memory/`. At 
 **Team (website/public):** Monika (CEO, EN/KH) · Nick (Co-Founder, JP/EN) · Reza (Co-Founder, DE/EU)
 *Note: Different team structures are intentional — do not "correct" the website to match internal roles.*  
 **Main line:** 011 666 952 · t.me/PropertyHubCambodia
+**Email:** invest@propertyhubcambodia.com
+**Office:** Time Square 5, St. 306, BKK1, Phnom Penh, Cambodia
 
 **7 buyer segments:** English/Western · Japanese · German/European · Russian · Cambodian Local · Cambodian Overseas · VIP ($500K+)
 
