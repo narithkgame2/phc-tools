@@ -419,7 +419,7 @@ Fetches Tasks + Leads + Clients in parallel. Shows: active leads, pipeline value
 | 9 | Lead inquiry bridge | ✅ Done — Bridge Script syncs → PHC CRM |
 | 10 | Auto-mirror to NickCambodia | 🔲 Pending — manual sync for now |
 | 11 | Content Bot (@PHC_Content_Bot) | ✅ Done — polling, 6-tier format detection, EN/JP/RU/DE translation, Approve-All review. Claude API fallback tier built but inactive (payment pending). |
-| 12 | Payment Reminder Bot (@PHC_ClientCare_Bot) | ✅ Done — confirmed working live 2026-07-20. Daily scan, channel-split (Telegram vs. manual), personalized + translated reminders, Approve/Reject review. |
+| 12 | Payment Reminder Bot (@PHC_ClientCare_Bot) | ⚠️ Code working, not final — confirmed in one test run only (2026-07-20). No real clients loaded into it yet, so it isn't reaching anyone day-to-day. Expect adjustments once real client data is in. Daily scan, channel-split (Telegram vs. manual), personalized + translated reminders, Approve/Reject review. |
 
 ---
 
