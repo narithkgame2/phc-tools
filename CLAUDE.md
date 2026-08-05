@@ -11,7 +11,7 @@ Persistent context for Nick's Cowork sessions is stored in `claude-memory/`. At 
 **Company:** Property Hub Cambodia (PHC) — premium multilingual real estate advisory, BKK1 Phnom Penh  
 **Website:** https://propertyhubcambodia.com  
 **Team (internal):** Nick (CEO) · Monika (Co-Founder, Japanese/Russian/EN market) · Reza (Co-Founder, European/German market)
-**Team (website/public):** Monika (CEO, EN/KH) · Nick (Co-Founder, JP/EN) · Reza (Co-Founder, DE/EU)
+**Team (website/public):** Monika (CEO, EN/KH) · Reza (Co-Founder, DE/EU) · Leif (Partner, Marketing & Content, EN) · Nick (Advisor, JP/EN — temporary, while employed at Realestate.com.kh; see phc-website/CLAUDE.md Key Decisions Log)
 *Note: Different team structures are intentional — do not "correct" the website to match internal roles.*  
 **Main line:** 011 666 952 · t.me/PropertyHubCambodia
 **Email:** invest@propertyhubcambodia.com
