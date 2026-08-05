@@ -11,21 +11,56 @@
       --bg: #0a0f1e; --bg-card: #111827; --bg-card2: #0d1526;
       --border: rgba(201,153,63,0.15); --text: #e8e4d4; --muted: rgba(232,228,212,0.45);
       --green: #2d9e6b; --r: 10px;
+      /* sidebar shell tokens - live site's dark theme, matches Lead Tracker/Client Manager */
+      --sb:#0F192E;--sb-deep:#091120;--sb-hover:rgba(255,255,255,.06);--sb-active:rgba(192,154,89,.16);
+      --sb-text:rgba(245,243,240,.65);--sb-text-s:#F5F3F0;--sb-icon:rgba(245,243,240,.4);--sb-border:rgba(255,255,255,.08);
+      --sb-gold:#C09A59;--sb-gold-light:#D9BD8C;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; }
+    a { text-decoration: none; }
 
-    /* ── TOP BAR ── */
-    .topbar { background: var(--navy-dark); border-bottom: 1px solid var(--border); padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; }
+    /* ── APP SHELL ── */
+    .app { display: flex; height: 100vh; overflow: hidden; }
+
+    /* ── SIDEBAR ── */
+    .sidebar { width: 220px; flex-shrink: 0; background: var(--sb); display: flex; flex-direction: column; border-right: 1px solid var(--sb-border); transition: width .2s ease; overflow: hidden; }
+    .sidebar.collapsed { width: 52px; }
+    .sidebar.collapsed .sb-label, .sidebar.collapsed .ws-info, .sidebar.collapsed .sb-section-label { display: none; }
+    .sidebar.collapsed .ws-header { padding: 14px 0; justify-content: center; }
+    .sidebar.collapsed .ws-logo { display: none; }
+    .sidebar.collapsed .collapse-btn { transform: rotate(180deg); }
+    .ws-header { display: flex; align-items: center; gap: 9px; padding: 14px 12px 12px; border-bottom: 1px solid var(--sb-border); flex-shrink: 0; }
+    .ws-logo { width: 28px; height: 28px; border-radius: 7px; background: var(--sb-gold); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--sb-deep); flex-shrink: 0; }
+    .ws-info { flex: 1; min-width: 0; }
+    .ws-name { font-size: 12px; font-weight: 600; color: var(--sb-text-s); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ws-sub { font-size: 10px; color: var(--sb-icon); margin-top: 1px; }
+    .collapse-btn { background: none; border: none; color: var(--sb-icon); cursor: pointer; font-size: 13px; padding: 4px; border-radius: 4px; flex-shrink: 0; line-height: 1; }
+    .collapse-btn:hover { background: var(--sb-hover); color: var(--sb-text); }
+    .sb-nav { flex: 1; overflow-y: auto; padding: 8px 0; scrollbar-width: none; }
+    .sb-nav::-webkit-scrollbar { display: none; }
+    .sb-section-label { font-size: 9px; font-weight: 600; color: var(--sb-icon); text-transform: uppercase; letter-spacing: .1em; padding: 14px 14px 4px; }
+    .sb-item { display: flex; align-items: center; gap: 8px; padding: 6px 10px; margin: 1px 6px; border-radius: 6px; color: var(--sb-text); font-size: 12px; transition: all .15s; cursor: pointer; }
+    .sb-item:hover { background: var(--sb-hover); color: var(--sb-text-s); }
+    .sb-item.active { background: var(--sb-active); color: var(--sb-gold-light); }
+    .sb-icon { width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--sb-icon); }
+    .sb-item.active .sb-icon { color: var(--sb-gold-light); }
+    .sb-item:hover .sb-icon { color: var(--sb-text-s); }
+    .sb-label { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sb-footer { border-top: 1px solid var(--sb-border); padding: 10px 14px; font-size: 10px; color: var(--sb-icon); }
+
+    /* ── MAIN (with sidebar) ── */
+    .mainpane { flex: 1; min-width: 0; display: flex; flex-direction: column; overflow: hidden; }
+    .topbar { background: var(--navy-dark); border-bottom: 1px solid var(--border); padding: 12px 28px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
     .tb-left { display: flex; align-items: center; gap: 12px; }
-    .tb-logo { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--gold); font-weight: 600; }
+    .tb-logo { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--gold); font-weight: 600; }
     .tb-sep { color: rgba(255,255,255,0.15); }
     .tb-title { font-size: 0.78rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.05em; }
     .tb-badge { background: rgba(201,153,63,0.12); border: 1px solid rgba(201,153,63,0.28); border-radius: 20px; padding: 4px 12px; font-size: 0.68rem; color: var(--gold); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.07em; }
+    .content-scroll { flex: 1; overflow-y: auto; }
 
     /* ── LAYOUT ── */
     .main { max-width: 1200px; margin: 0 auto; padding: 28px 24px 120px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    @media (max-width: 900px) { .main { grid-template-columns: 1fr; } }
     .col { display: flex; flex-direction: column; gap: 18px; }
 
     /* ── SECTION CARD ── */
@@ -90,26 +125,81 @@
     .auto-btn:hover { background: rgba(201,153,63,0.1); }
 
     /* ── GENERATE BAR ── */
-    .gen-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--navy-dark); border-top: 1px solid var(--border); padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; gap: 20px; z-index: 100; }
+    .gen-bar { position: sticky; bottom: 0; background: var(--navy-dark); border-top: 1px solid var(--border); padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; gap: 20px; z-index: 100; }
     .gen-info { font-size: 0.8rem; color: var(--muted); }
     .gen-info strong { color: var(--text); }
     .gen-btn { background: linear-gradient(135deg, var(--gold), #9a6c28); color: #fff; border: none; border-radius: 8px; padding: 12px 40px; font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 600; cursor: pointer; letter-spacing: 0.03em; transition: opacity 0.2s, transform 0.1s; box-shadow: 0 4px 18px rgba(201,153,63,0.28); white-space: nowrap; }
     .gen-btn:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
     .gen-btn:disabled { opacity: 0.35; cursor: default; transform: none; }
+
+    /* ── RESPONSIVE (kept last so it wins the cascade) ── */
+    @media (max-width: 900px) {
+      .main { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .sidebar { width: 52px; }
+      .sidebar .sb-label, .sidebar .ws-info, .sidebar .sb-section-label, .sidebar .sb-footer { display: none; }
+      .sidebar .ws-header { padding: 14px 0; justify-content: center; }
+      .sidebar .ws-logo { display: none; }
+      .sidebar .collapse-btn { display: none; }
+    }
+    @media (max-width: 600px) {
+      .topbar { padding: 10px 14px; flex-wrap: wrap; gap: 6px; }
+      .tb-title { display: none; }
+      .gen-bar { padding: 12px 16px; flex-wrap: wrap; }
+      .gen-btn { padding: 10px 22px; font-size: 0.85rem; }
+    }
   </style>
 </head>
 <body>
 <div id="phc-gate" style="display:none;position:fixed;inset:0;background:#083467;z-index:99999;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,sans-serif;"><div style="background:#fff;border-radius:16px;padding:40px 36px;width:320px;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.35);"><div style="font-family:Georgia,serif;font-size:22px;font-weight:700;color:#083467;margin-bottom:6px;">PHC Tools</div><div style="font-size:13px;color:#7a8799;margin-bottom:8px;">Property Hub Cambodia</div><div style="width:40px;height:2px;background:#cc9d4d;margin:0 auto 24px;"></div><input id="phc-gate-pw" type="password" placeholder="Enter password" autocomplete="current-password" style="width:100%;border:1.5px solid #e8ecf2;border-radius:9px;padding:11px 14px;font-size:14px;text-align:center;letter-spacing:.12em;outline:none;margin-bottom:12px;" onfocus="this.style.borderColor='#083467'" onblur="this.style.borderColor='#e8ecf2'" onkeydown="if(event.key==='Enter')phcCheck();"><button onclick="phcCheck()" style="width:100%;background:#083467;color:#fff;border:none;border-radius:9px;padding:12px;font-size:13px;font-weight:600;cursor:pointer;">Continue →</button><div id="phc-gate-err" style="display:none;color:#d63031;font-size:12px;margin-top:12px;">Incorrect password. Try again.</div></div></div>
 <script>(function(){var g=document.getElementById('phc-gate');if(sessionStorage.getItem('phc_agent_auth')==='1'||sessionStorage.getItem('phc_ceo_auth')==='1'){g.style.display='none';}else{g.style.display='flex';setTimeout(function(){document.getElementById('phc-gate-pw').focus();},50);}window.phcCheck=function(){var v=document.getElementById('phc-gate-pw').value;if(v==='PHC2026'){sessionStorage.setItem('phc_agent_auth','1');g.style.display='none';}else if(v==='Nick@PHC2026'){sessionStorage.setItem('phc_ceo_auth','1');sessionStorage.setItem('phc_agent_auth','1');g.style.display='none';}else{document.getElementById('phc-gate-err').style.display='block';document.getElementById('phc-gate-pw').value='';document.getElementById('phc-gate-pw').focus();}};})();</script>
 
-<div class="topbar">
-  <div class="tb-left">
-    <span class="tb-logo">Property Hub Cambodia</span>
-    <span class="tb-sep">|</span>
-    <span class="tb-title">Proposal Generator</span>
+<div class="app">
+  <div class="sidebar" id="sidebar">
+    <div class="ws-header">
+      <div class="ws-logo">P</div>
+      <div class="ws-info">
+        <div class="ws-name">PHC Tools</div>
+        <div class="ws-sub">Proposal Generator</div>
+      </div>
+      <button class="collapse-btn" onclick="toggleSidebar()" title="Toggle sidebar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg></button>
+    </div>
+    <nav class="sb-nav">
+      <a class="sb-item active">
+        <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="2" width="18" height="20" rx="1.5"/><path d="M7 7h10M7 11h10M7 15h6"/></svg></span>
+        <span class="sb-label">Proposal Generator</span>
+      </a>
+      <div class="sb-section-label">Other Tools</div>
+      <a class="sb-item" href="PHC_Sales_Desk.html">
+        <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M8 12l3 3 6-6"/></svg></span>
+        <span class="sb-label">Sales Desk</span>
+      </a>
+      <a class="sb-item" href="PHC_Lead_Tracker.html">
+        <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M6 9h12M6 6h12M6 12h8"/></svg></span>
+        <span class="sb-label">Lead Tracker</span>
+      </a>
+      <a class="sb-item" href="PHC_Message_Builder.html">
+        <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="16" rx="2"/><path d="M6 9h12M6 13h8"/></svg></span>
+        <span class="sb-label">Message Builder</span>
+      </a>
+      <a class="sb-item" href="index.html">
+        <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+        <span class="sb-label">&larr; Back to Hub</span>
+      </a>
+    </nav>
+    <div class="sb-footer">Property Hub Cambodia</div>
   </div>
-  <span class="tb-badge">INTERNAL TOOL</span>
-</div>
+
+  <div class="mainpane">
+    <div class="topbar">
+      <div class="tb-left">
+        <span class="tb-logo">Property Hub Cambodia</span>
+        <span class="tb-sep">|</span>
+        <span class="tb-title">Proposal Generator</span>
+      </div>
+      <span class="tb-badge">INTERNAL TOOL</span>
+    </div>
+    <div class="content-scroll">
 
 <div class="main">
 
@@ -157,7 +247,7 @@
   <div class="col">
 
     <div class="sec">
-      <div class="sec-title">🏢 Property Library <span id="libBadge" class="badge">3 properties</span></div>
+      <div class="sec-title">🏢 Property Library <span id="libBadge" class="badge"></span></div>
       <div class="lib-grid" id="libGrid"></div>
       <div style="margin-top:10px;font-size:0.68rem;color:var(--muted);font-family:'JetBrains Mono',monospace;">
         + More properties can be added to the library at any time
@@ -182,70 +272,140 @@
   <button class="gen-btn" id="genBtn" onclick="generateProposal()" disabled>Generate Proposal →</button>
 </div>
 
+    </div><!-- /content-scroll -->
+  </div><!-- /mainpane -->
+</div><!-- /app -->
+
+<script>
+function toggleSidebar(){
+  var sb = document.getElementById('sidebar');
+  sb.classList.toggle('collapsed');
+}
+</script>
 <script>
 // ─────────────────────────────────────────────────────────
 // LIBRARY
 // ─────────────────────────────────────────────────────────
 const LIBRARY = [
   {
-    id: 'lattrais',
-    name: "L'attrait",
-    unit: 'Studio',
-    location: 'BKK1, Phnom Penh',
-    price: 70000,
-    priceLabel: '$70,000',
-    size: '38–42 sqm',
-    floor: 'Mid to high floors available',
-    yieldEst: '7–8% gross estimated',
-    handover: 'Q4 2026',
-    developer: "L'attrait Development",
-    tenure: 'Strata title (LMAP)',
-    highlights: [
-      "Steps from Wat Phnom — prime BKK1 address",
-      "Boutique French-influenced design, low-density building",
-      "Strong short-term rental demand, fully managed option available"
-    ],
-    tag: 'ENTRY PREMIUM · BKK1', tagColor: '#C9993F', tagBg: 'rgba(201,153,63,0.14)'
-  },
-  {
-    id: 'ts5-1br',
-    name: 'Time Square 5',
-    unit: '1-Bedroom',
-    location: 'BKK1, Phnom Penh',
-    price: 78000,
-    priceLabel: '$78,000',
-    size: '52–58 sqm',
-    floor: 'Multiple floors available',
-    yieldEst: '7–8% gross',
-    handover: 'Ready to move in',
-    developer: 'Time Square Real Estate',
-    tenure: 'Strata title (LMAP)',
-    highlights: [
-      "Established brand — 5 buildings, proven rental history across BKK1",
-      "Walking distance to embassies, international schools, and restaurants",
-      "Full facilities: pool, gym, co-working — ideal for expat long-stay tenants"
-    ],
-    tag: 'MID-RANGE · BKK1', tagColor: '#1877f2', tagBg: 'rgba(24,119,242,0.14)'
-  },
-  {
-    id: 'agile-sky',
-    name: 'Agile Sky',
-    unit: '2-Bedroom',
+    id: 'ts11',
+    name: 'Time Square 11',
+    unit: '1–2 Bedroom',
     location: 'BKK3, Phnom Penh',
-    price: 125000,
-    priceLabel: '$125,000',
-    size: '78–85 sqm',
-    floor: 'High floors, panoramic city views',
-    yieldEst: '6.5–7.5% gross estimated',
-    handover: 'Q2 2027',
-    developer: 'Agile Group (regional developer)',
-    tenure: 'Strata title (LMAP)',
+    price: 49168,
+    priceLabel: '$49,168',
+    size: '38–75 sqm',
+    floor: 'Confirm with developer',
+    yieldEst: '6–8% gross (market-wide estimate)',
+    handover: 'Confirm with developer',
+    developer: 'Megakim World Corporation',
+    tenure: 'Strata title (foreign-eligible)',
     highlights: [
-      "Largest living space in this price range — ideal for families or dual-income tenants",
-      "BKK3 emerging district: strong capital appreciation upside",
-      "Developer track record: Agile Group, 50+ projects across Southeast Asia"
+      "Lowest entry price in PHC's current BKK3 portfolio",
+      "Megakim World — developer of the Time Square series across Phnom Penh",
+      "BKK3: transitional district bordering BKK1, growing international interest"
     ],
-    tag: 'UPPER MID · BKK3', tagColor: '#2d9e6b', tagBg: 'rgba(45,158,107,0.14)'
+    tag: 'ENTRY · BKK3', tagColor: '#C9993F', tagBg: 'rgba(201,153,63,0.14)'
+  },
+  {
+    id: 'ts7',
+    name: 'Time Square 7',
+    unit: '1BR – Duplex 4BR',
+    location: 'Toul Kork, Phnom Penh',
+    price: 90000,
+    priceLabel: '$90,000',
+    size: '40–160 sqm',
+    floor: 'Confirm with developer',
+    yieldEst: '6–8% gross (market-wide estimate)',
+    handover: 'Confirm with developer',
+    developer: 'Megakim World Corporation',
+    tenure: 'Strata title (foreign-eligible)',
+    highlights: [
+      "Toul Kork — BKK1 alternative at a lower entry price point",
+      "Wide unit range from 1-bedroom to duplex 4-bedroom",
+      "Part of Megakim's established Time Square track record"
+    ],
+    tag: 'MID-RANGE · TOUL KORK', tagColor: '#1877f2', tagBg: 'rgba(24,119,242,0.14)'
+  },
+  {
+    id: 'gato',
+    name: 'GATO Tower',
+    unit: 'Studio – Penthouse',
+    location: 'BKK1, Phnom Penh',
+    price: 98115,
+    priceLabel: '$98,115',
+    size: '31–443 sqm',
+    floor: 'Confirm with developer',
+    yieldEst: '6–8% gross (market-wide estimate)',
+    handover: 'Confirm with developer',
+    developer: 'Confirm with developer',
+    tenure: 'Strata title (foreign-eligible)',
+    highlights: [
+      "BKK1 address — Phnom Penh's most established foreign-investor district",
+      "Widest unit-size range in PHC's BKK1 portfolio, studio through penthouse",
+      "Close to embassies, international dining, and Aeon Mall"
+    ],
+    tag: 'BKK1 ENTRY', tagColor: '#1877f2', tagBg: 'rgba(24,119,242,0.14)'
+  },
+  {
+    id: 'ts9',
+    name: 'Time Square 9',
+    unit: '1–4 Bedroom',
+    location: 'BKK1, Phnom Penh',
+    price: 102000,
+    priceLabel: '$102,000',
+    size: '60–190 sqm',
+    floor: 'Confirm with developer',
+    yieldEst: '6–8% gross (market-wide estimate)',
+    handover: 'Confirm with developer',
+    developer: 'Megakim World Corporation',
+    tenure: 'Strata title (foreign-eligible)',
+    highlights: [
+      "BKK1 address at a lower price point than most BKK1 competitors",
+      "Two-minute walk to Independence Monument",
+      "Megakim's flagship BKK1 development"
+    ],
+    tag: 'BKK1 · MID-RANGE', tagColor: '#1877f2', tagBg: 'rgba(24,119,242,0.14)'
+  },
+  {
+    id: 'diamond-bay',
+    name: 'Diamond Bay Garden',
+    unit: 'Studio – 3 Bedroom',
+    location: 'Tonle Bassac, Phnom Penh',
+    price: 126165,
+    priceLabel: '$126,165',
+    size: '44–170 sqm',
+    floor: 'Confirm with developer',
+    yieldEst: '6–8% gross (market-wide estimate)',
+    handover: 'Confirm with developer',
+    developer: 'Confirm with developer',
+    tenure: 'Strata title (foreign-eligible)',
+    highlights: [
+      "Tonle Bassac — Phnom Penh's rising business district, embassy and school corridor",
+      "Wide unit range for both single professionals and families",
+      "Larger 2–3BR sizes suited to longer-term corporate tenants"
+    ],
+    tag: 'UPPER MID · TONLE BASSAC', tagColor: '#2d9e6b', tagBg: 'rgba(45,158,107,0.14)'
+  },
+  {
+    id: 'picasso',
+    name: 'Picasso Sky Gemme',
+    unit: '1BR – Penthouse',
+    location: 'BKK1, Phnom Penh',
+    price: 221430,
+    priceLabel: '$221,430',
+    size: '61–203 sqm',
+    floor: 'Confirm with developer',
+    yieldEst: '6–8% gross (market-wide estimate)',
+    handover: 'Confirm with developer',
+    developer: 'Confirm with developer',
+    tenure: 'Strata title (foreign-eligible)',
+    highlights: [
+      "Premium BKK1 positioning, largest price point in PHC's core BKK1 lineup",
+      "1-bedroom through penthouse — suits both investors and end-users",
+      "Central BKK1 location within walking distance of key amenities"
+    ],
+    tag: 'PREMIUM · BKK1', tagColor: '#C9993F', tagBg: 'rgba(201,153,63,0.14)'
   }
 ];
 
@@ -258,6 +418,7 @@ let selected = []; // [{ lib, role: null|'anchor'|'recommended', imageUrl }]
 // RENDER LIBRARY
 // ─────────────────────────────────────────────────────────
 function renderLibrary() {
+  document.getElementById('libBadge').textContent = `${LIBRARY.length} propert${LIBRARY.length === 1 ? 'y' : 'ies'}`;
   document.getElementById('libGrid').innerHTML = LIBRARY.map(p => {
     const added = selected.some(s => s.lib.id === p.id);
     return `
@@ -668,6 +829,7 @@ ${propPages}
     <p style="margin-bottom:11px;">This proposal has been prepared by Property Hub Cambodia solely for the use of ${esc(sal)} ${esc(name)} and is strictly confidential. It may not be reproduced, distributed, or disclosed to any third party without prior written consent.</p>
     <p style="margin-bottom:11px;">All price figures are indicative and subject to change without notice. Final pricing is confirmed by the developer at the time of reservation. Property Hub Cambodia acts as an independent real estate advisory and does not guarantee the accuracy of developer-provided data.</p>
     <p style="margin-bottom:11px;">Yield projections are estimates based on current market rental rates and are not guaranteed. Actual yields depend on occupancy, management fees, maintenance costs, and prevailing market conditions. Past performance is not indicative of future results.</p>
+    <p style="margin-bottom:11px;">If any option in this proposal includes a Guaranteed Rental Return (GRR) or Guaranteed Buy-Back (GBB) structure, this is a contractual commitment from the developer or management company — not a Property Hub Cambodia guarantee. It is only as reliable as the party standing behind it. Before proceeding with any GRR/GBB-backed option, we recommend confirming: (1) the guarantee is written into the Sales and Purchase Agreement, (2) the management company's track record, and (3) what happens once the guarantee period ends. PHC can provide full documentation for any project we recommend with this structure.</p>
     <p style="margin-bottom:11px;">Property Hub Cambodia may receive a commission from the developer upon successful completion of a sale. This commission is paid by the developer and does not affect the price paid by the buyer.</p>
     <p style="margin-bottom:11px;">We strongly recommend all buyers conduct independent legal and financial due diligence before committing to any purchase. Property Hub Cambodia can refer trusted legal partners upon request.</p>
     <p>Cambodia real estate is governed by the Law on Immovable Property (2001). Foreign nationals may hold property under strata title in buildings where foreign ownership does not exceed 70% of total units. Property Hub Cambodia provides general advisory guidance and does not provide legal advice.</p>
