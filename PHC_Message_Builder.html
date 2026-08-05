@@ -820,6 +820,9 @@ body {
       <kbd>⌘K</kbd>
     </div>
     <button class="tb-btn" onclick="toggleTheme()" id="theme-btn" title="Toggle theme">🌙</button>
+    <a class="tb-btn" href="index.html" title="Back to Hub" style="text-decoration:none;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+    </a>
   </div>
 </div>
 
@@ -943,7 +946,7 @@ const SCENARIOS = [
       ],
       de: [
         { lang:'🇩🇪 German / EU', tag:'S1-D', color:'#2d9e6b', label:'European investor — first follow-up',
-          fields:[{key:'LAST_NAME',label:'[LAST NAME]',ph:'e.g. Schmidt'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Le Condé BKK1'}],
+          fields:[{key:'LAST_NAME',label:'[LAST NAME]',ph:'e.g. Schmidt'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Time Square 9'}],
           lines:['Dear [LAST_NAME],','','I am following up on the investment overview I sent for [PROJECT].','','The document covers net yield after all costs, the full acquisition cost breakdown, the legal ownership structure for foreign nationals, and the relevant CGT implications.','','If you have any questions about the figures — or would like me to model a more conservative scenario — please let me know.','','Best regards,\nProperty Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
           vaNote:'Use formal surname address for German/European buyers. Lead with data, not warmth.',
         },
@@ -994,7 +997,7 @@ const SCENARIOS = [
       ],
       ru: [
         { lang:'🇷🇺 Russian / CN', tag:'S3-B', color:'#c0392b', label:'Yield-focused — direct re-qualification',
-          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Alexei'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Le Condé'}],
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Alexei'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Picasso Sky Gemme'}],
           lines:['Hi [FIRST_NAME],','','Quick question on [PROJECT] — is it the yield numbers that need more clarity, or is it another factor?','','I can prepare a direct comparison: projected net yield, management fee, occupancy assumption, and realistic exit timeline.','','If the numbers work for you, we can move quickly. If they don\'t, I\'d rather tell you now.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
           vaNote:'Russian/Chinese investors are direct. Skip pleasantries. Offer a clear, data-based comparison.',
         },
@@ -1125,7 +1128,7 @@ const SCENARIOS = [
     segments: {
       en: [
         { lang:'🇬🇧 English', tag:'S9-A', color:'#1877f2', label:'Goal-based comparison — not spec-based',
-          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. David'},{key:'GOAL',label:'[THEIR GOAL]',ph:'e.g. stable rental income'},{key:'PROJECT_A',label:'[PROJECT A]',ph:'e.g. Time Square 9'},{key:'FIT_A',label:'[WHY A FITS]',ph:'e.g. BKK1, completed, strata title'},{key:'PROJECT_B',label:'[PROJECT B]',ph:'e.g. Le Condé'},{key:'FIT_B',label:'[WHY B FITS]',ph:'e.g. Hopetree Japan management'}],
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. David'},{key:'GOAL',label:'[THEIR GOAL]',ph:'e.g. stable rental income'},{key:'PROJECT_A',label:'[PROJECT A]',ph:'e.g. Time Square 9'},{key:'FIT_A',label:'[WHY A FITS]',ph:'e.g. BKK1, completed, strata title'},{key:'PROJECT_B',label:'[PROJECT B]',ph:'e.g. GATO Tower'},{key:'FIT_B',label:'[WHY B FITS]',ph:'e.g. widest unit-size range, studio to penthouse'}],
           lines:['Hi [FIRST_NAME],','','Happy to help you compare. Based on your goal of [GOAL], here is how I see it:','','[PROJECT_A]\nBest for: [FIT_A]\nMain consideration: [honest limitation — fill before sending]','','[PROJECT_B]\nBest for: [FIT_B]\nMain consideration: [honest limitation — fill before sending]','','My honest recommendation based on what you have told me: [PROJECT A or B — state which] — because [one clear reason tied to their goal].','','Would you like a written comparison I can send you?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
           vaNote:'⚠️ Fill in ALL placeholders before sending. Always include one honest limitation per project. Never say both are great without a clear recommendation.',
         },
@@ -1144,7 +1147,7 @@ const SCENARIOS = [
       ],
       de: [
         { lang:'🇩🇪 German / EU', tag:'S10-B', color:'#2d9e6b', label:'European — offer conservative scenario remodel',
-          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Thomas'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Le Condé'}],
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Thomas'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Diamond Bay Garden'}],
           lines:['Hi [FIRST_NAME],','','Following up on the [PROJECT] proposal.','','I wanted to offer something concrete: if any of the assumptions in the report — rental income, occupancy rate, or exit timeline — do not match your expectations, I can rerun the numbers with your own figures.','','A more conservative scenario may give you a clearer picture of the downside — which I think is more useful than a best-case projection.','','Would that be helpful?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
           vaNote:'European investors respond to downside scenarios — this builds more trust than repeating the upside.',
         },
@@ -1808,6 +1811,27 @@ const SCENARIOS = [
           vaNote:'RU/CN buyers: skip the warm-up. Qualify immediately with budget and timeline. Never send project details before qualifying.',
         }
       ]
+    }
+  },
+  {
+    id:'s36', part:'p3', title:'"It\'s Too Expensive" — Vague Pushback', when:'Lead says it\'s too expensive with no specifics — different from S28, which is a direct discount ask. Here the real objection is usually hidden.',
+    segments: {
+      en: [
+        {
+          lang:'🇬🇧 English', tag:'S36-A', color:'#1877f2', label:'Find the real objection — don\'t discount on a guess',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Sokha'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Time Square 9'}],
+          lines:['Hi [FIRST_NAME],','','Totally fair to weigh that up — can I ask what you\'re comparing [PROJECT] to? That helps me understand what would actually make this feel like the right fit.','','Sometimes it\'s the price itself, and sometimes it\'s really about timing, or how the payment schedule lines up with your cash flow. Those need different answers, so I\'d rather ask than guess.','','No pressure at all — happy to take this at whatever pace works for you.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Goal is to find the real objection, not to discount blind. Do not offer a lower price here — this message asks a question, it doesn\'t answer one. If they reveal a specific discount ask, switch to S28.',
+        },
+      ],
+      de: [
+        {
+          lang:'🇩🇪 German / EU', tag:'S36-B', color:'#2d9e6b', label:'European — structured, ask before assuming',
+          fields:[{key:'LAST_NAME',label:'[LAST NAME]',ph:'e.g. Schmidt'},{key:'PROJECT',label:'[PROJECT]',ph:'e.g. Time Square 9'}],
+          lines:['Dear [LAST_NAME],','','Understandable — before I respond, may I ask what you\'re comparing [PROJECT]\'s pricing against? Another project, another market, or the payment structure itself?','','The right answer depends on which of those it is, so I\'d rather ask directly than assume.','','Happy to model a different payment schedule or a more conservative return scenario if that would help you evaluate it.','','Best regards,\nProperty Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'European clients respond well to being asked a structured question rather than receiving an immediate concession. Do not discount here.',
+        },
+      ],
     }
   }
 ];
