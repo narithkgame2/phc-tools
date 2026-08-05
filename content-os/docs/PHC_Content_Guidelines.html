@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHC · Content Guidelines</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sf: -apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue","Inter",sans-serif;
+  --sf-mono: "SF Mono","SFMono-Regular",ui-monospace,"JetBrains Mono","Courier New",monospace;
+  --navy: #06264f; --navy-d: #040f24; --navy-md: #0b3d7a;
+  --gold: #c9993f; --gold-lt: #e0b86a; --gold-dim: #a07a2e;
+  --gold-soft: rgba(201,153,63,.10); --gold-border: rgba(201,153,63,.22);
+  --ok: #1a7a4a; --ok-soft: rgba(26,122,74,.08); --ok-border: rgba(26,122,74,.22);
+  --err: #b83030; --err-soft: rgba(184,48,48,.08); --err-border: rgba(184,48,48,.20);
+  --ink: #0c1b2e; --ink-2: #374f66; --ink-3: #7490a8;
+  --line: rgba(6,38,79,.09); --line-md: rgba(6,38,79,.16);
+  --bg: #ffffff; --bg-2: #f6f8fb; --bg-3: #edf0f5;
+  --r: 10px; --r-lg: 16px;
+  --transition: .2s cubic-bezier(.4,0,.2,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{min-height:100%;font-family:var(--sf);}
+body{background:#e8ecf3;-webkit-font-smoothing:antialiased;min-height:100%;display:flex;align-items:flex-start;justify-content:center;padding:16px;}
+
+/* ── GATE ── */
+#phc-gate{display:none;position:fixed;inset:0;background:var(--navy-d);z-index:99999;align-items:center;justify-content:center;}
+#phc-gate .card{background:var(--navy);border:1px solid rgba(201,153,63,.25);border-radius:16px;padding:44px 40px;width:340px;text-align:center;box-shadow:0 32px 80px rgba(0,0,0,.6);}
+#phc-gate .t1{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:4px;}
+#phc-gate .t2{font-size:12px;color:rgba(255,255,255,.35);margin-bottom:28px;}
+#phc-gate input{width:100%;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:12px 16px;font-size:14px;text-align:center;letter-spacing:.1em;color:#fff;outline:none;margin-bottom:12px;}
+#phc-gate input:focus{border-color:var(--gold);}
+#phc-gate button{width:100%;background:var(--gold);color:var(--navy-d);border:none;border-radius:9px;padding:13px;font-size:13px;font-weight:700;cursor:pointer;}
+#phc-gate .err{display:none;color:#f87171;font-size:12px;margin-top:12px;}
+
+/* ── APP SHELL ── */
+#app{width:100%;max-width:1180px;background:var(--bg);border-radius:20px;box-shadow:0 12px 60px rgba(6,38,79,.18),0 2px 8px rgba(6,38,79,.08);overflow:hidden;display:flex;flex-direction:column;min-height:calc(100vh - 32px);border:1px solid var(--line-md);}
+.layout{display:flex;flex:1;min-height:0;}
+
+.topbar{background:var(--navy-d);height:56px;padding:0 20px;display:flex;align-items:center;gap:12px;flex-shrink:0;position:relative;border-bottom:1px solid rgba(255,255,255,.05);}
+.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--gold) 0%,rgba(201,153,63,.3) 40%,transparent 70%);}
+.tb-mark{width:32px;height:32px;border-radius:8px;background:var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Playfair Display',serif;font-weight:700;color:var(--navy-d);font-size:15px;}
+.tb-wordmark{font-size:13px;font-weight:600;color:#fff;letter-spacing:-.01em;white-space:nowrap;}
+.tb-wordmark span{color:var(--gold);}
+.tb-sep{width:1px;height:18px;background:rgba(255,255,255,.12);flex-shrink:0;}
+.tb-ctx{font-family:var(--sf-mono);font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.1em;text-transform:uppercase;flex:1;}
+.tb-home{font-size:11px;color:rgba(255,255,255,.4);text-decoration:none;padding:5px 11px;border:1px solid rgba(255,255,255,.1);border-radius:6px;white-space:nowrap;}
+.tb-home:hover{color:var(--gold);border-color:var(--gold-border);}
+
+/* ── SIDEBAR (anchor nav) ── */
+.sidebar{width:220px;flex-shrink:0;background:var(--bg-2);border-right:1px solid var(--line);overflow-y:auto;padding:14px 0 24px;}
+.sb-group{padding:14px 16px 4px;display:flex;align-items:center;gap:7px;}
+.sb-group-txt{font-family:var(--sf-mono);font-size:9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);}
+.sb-row{display:flex;align-items:center;gap:10px;padding:9px 14px 9px 16px;cursor:pointer;border-left:2px solid transparent;transition:background var(--transition),border-color var(--transition);min-height:40px;text-decoration:none;}
+.sb-row:hover{background:rgba(6,38,79,.04);border-left-color:var(--gold-border);}
+.sb-badge{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--line-md);background:var(--bg-3);color:var(--ink-3);}
+.sb-badge svg{width:14px;height:14px;}
+.sb-label{font-size:12.5px;font-weight:500;color:var(--ink-2);}
+
+/* ── MAIN ── */
+.main{flex:1;min-width:0;overflow-y:auto;background:var(--bg);}
+.scroll{padding:36px 44px 60px;max-width:720px;}
+
+.eyebrow{font-family:var(--sf-mono);font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:8px;}
+.heading{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--ink);line-height:1.2;letter-spacing:-.02em;margin-bottom:6px;}
+.subhead{font-size:14px;color:var(--ink-2);line-height:1.65;margin-bottom:22px;max-width:600px;}
+
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:22px 0 30px;}
+.hs{background:var(--bg-2);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center;}
+.hs-n{font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);font-weight:700;line-height:1;margin-bottom:3px;}
+.hs-l{font-family:var(--sf-mono);font-size:8.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;}
+
+.section-block{margin:44px 0 0;padding-top:8px;border-top:1px solid var(--line);}
+.section-block:first-of-type{border-top:none;margin-top:0;}
+.section-eyebrow{font-family:var(--sf-mono);font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:6px;}
+.section-h{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--ink);margin-bottom:10px;}
+.section-p{font-size:13.5px;color:var(--ink-2);line-height:1.7;margin-bottom:16px;}
+
+.obj-card{background:var(--navy-d);border-radius:var(--r-lg);padding:20px 22px;margin-bottom:20px;position:relative;overflow:hidden;}
+.obj-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent 70%);}
+.obj-row{display:flex;align-items:flex-start;gap:10px;padding:6px 0;font-size:13px;color:rgba(255,255,255,.82);line-height:1.6;border-bottom:1px solid rgba(255,255,255,.05);}
+.obj-row:last-child{border-bottom:none;}
+.obj-arrow{color:var(--gold);flex-shrink:0;margin-top:1px;font-size:11px;}
+.obj-row b{color:#fff;}
+
+.rules{margin:0 0 20px;}
+.rule{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);}
+.rule:last-child{border-bottom:none;}
+.rule-n{width:26px;height:26px;border-radius:50%;background:var(--navy);color:var(--gold);font-family:var(--sf-mono);font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.rule-title{font-size:13.5px;font-weight:600;color:var(--ink);margin-bottom:3px;}
+.rule-detail{font-size:12.5px;color:var(--ink-2);line-height:1.6;}
+
+.info-box{border-left:2px solid var(--gold);background:var(--gold-soft);padding:14px 18px;border-radius:0 var(--r) var(--r) 0;margin:0 0 16px;font-size:13px;color:var(--ink);line-height:1.68;}
+.info-box .ib-label{font-family:var(--sf-mono);font-size:9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:6px;}
+.warn-box{border-left:2px solid var(--err);background:var(--err-soft);padding:14px 18px;border-radius:0 var(--r) var(--r) 0;margin:0 0 16px;font-size:13px;color:#8b1e1e;line-height:1.68;}
+.warn-box .ib-label{font-family:var(--sf-mono);font-size:9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--err);margin-bottom:6px;}
+
+.tag-list{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;}
+.tag{font-size:11px;padding:4px 11px;border-radius:12px;background:var(--bg-2);border:1px solid var(--line);color:var(--ink-2);font-weight:500;}
+.tag.owner{background:var(--gold-soft);border-color:var(--gold-border);color:var(--gold-dim);}
+
+/* preview frame for example posts */
+.frame{border-radius:var(--r-lg);border:1px solid var(--line-md);overflow:hidden;margin-bottom:20px;box-shadow:0 8px 28px rgba(6,38,79,.08);}
+.frame-bar{background:var(--bg-2);border-bottom:1px solid var(--line);padding:9px 14px;display:flex;align-items:center;gap:6px;}
+.frame-dot{width:8px;height:8px;border-radius:50%;background:var(--line-md);}
+.frame-url{margin-left:8px;font-family:var(--sf-mono);font-size:9.5px;color:var(--ink-3);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:3px 10px;}
+.frame-body{background:#fff;padding:16px 18px;font-size:12px;line-height:1.7;color:var(--ink);white-space:pre-wrap;font-family:var(--sf);}
+.frame-body.mono{font-family:var(--sf-mono);font-size:11.5px;line-height:1.75;}
+
+/* simple comparison table */
+.ptable{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:12.5px;}
+.ptable th{text-align:left;font-family:var(--sf-mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);padding:8px 12px;border-bottom:1px solid var(--line-md);}
+.ptable td{padding:9px 12px;border-bottom:1px solid var(--line);color:var(--ink-2);vertical-align:top;}
+.ptable tr:last-child td{border-bottom:none;}
+.ptable td b{color:var(--ink);}
+.chk{color:var(--ok);font-weight:700;}
+.cross{color:var(--err);font-weight:700;}
+
+.btnrow{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;}
+.btn{padding:10px 20px;border-radius:9px;font-size:13px;font-weight:600;border:1px solid var(--line-md);background:var(--bg);color:var(--ink-2);transition:all var(--transition);white-space:nowrap;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+.btn:hover{background:var(--bg-2);color:var(--ink);}
+.btn.primary{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+@media(max-width:860px){
+  body{padding:0;}
+  #app{border-radius:0;min-height:100dvh;border:none;box-shadow:none;}
+  .layout{flex-direction:column;}
+  .sidebar{width:100%;border-right:none;border-bottom:1px solid var(--line);display:flex;overflow-x:auto;padding:8px;gap:4px;white-space:nowrap;}
+  .sb-group{display:none;}
+  .sb-row{border-left:none;border-bottom:2px solid transparent;flex-shrink:0;padding:8px 12px;}
+  .scroll{padding:24px 18px 50px;}
+  .hero-stats{grid-template-columns:repeat(2,1fr);}
+  .tb-wordmark{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- PASSWORD GATE -->
+<div id="phc-gate">
+  <div class="card">
+    <div class="t1">PHC Content Guidelines</div>
+    <div class="t2">Property Hub Cambodia — Internal Only</div>
+    <input id="phc-gate-pw" type="password" placeholder="Team password" onkeydown="if(event.key==='Enter')phcCheck()">
+    <button onclick="phcCheck()">Continue →</button>
+    <div id="phc-gate-err" class="err">Incorrect password.</div>
+  </div>
+</div>
+<script>
+(function(){
+  var g=document.getElementById('phc-gate');
+  if(sessionStorage.getItem('phc_agent_auth')==='1'||sessionStorage.getItem('phc_ceo_auth')==='1'){g.style.display='none';}
+  else{g.style.display='flex';setTimeout(function(){document.getElementById('phc-gate-pw').focus();},50);}
+  window.phcCheck=function(){
+    var v=document.getElementById('phc-gate-pw').value;
+    if(v==='PHC2026'||v==='Nick@PHC2026'){
+      sessionStorage.setItem('phc_agent_auth','1');
+      if(v==='Nick@PHC2026')sessionStorage.setItem('phc_ceo_auth','1');
+      g.style.display='none';
+    } else {
+      document.getElementById('phc-gate-err').style.display='block';
+      document.getElementById('phc-gate-pw').value='';
+    }
+  };
+})();
+</script>
+
+<div id="app">
+  <div class="topbar">
+    <div class="tb-mark">P</div>
+    <div class="tb-wordmark">Property Hub <span>Cambodia</span></div>
+    <div class="tb-sep"></div>
+    <div class="tb-ctx">Content Guidelines</div>
+    <a href="index.html" class="tb-home">← Hub</a>
+  </div>
+  <div class="layout">
+    <div class="sidebar">
+      <a class="sb-row" href="#overview">
+        <div class="sb-badge"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 2.5h7a2 2 0 0 1 2 2v9H5.5a2 2 0 0 0-2 2v-13Z"/><path d="M3 12.5h9"/></svg></div>
+        <div class="sb-label">Start Here</div>
+      </a>
+      <div class="sb-group"><span class="sb-group-txt">The rules</span></div>
+      <a class="sb-row" href="#golden">
+        <div class="sb-badge"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.7 8.5l2.8 2.8 7-6.6"/></svg></div>
+        <div class="sb-label">Golden Rules</div>
+      </a>
+      <div class="sb-group"><span class="sb-group-txt">Content types</span></div>
+      <a class="sb-row" href="#edu">
+        <div class="sb-badge"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9.8 3.2l3 3-6.4 6.4-3.6.6.6-3.6z"/></svg></div>
+        <div class="sb-label">Educational Posts</div>
+      </a>
+      <a class="sb-row" href="#listings">
+        <div class="sb-badge"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M2.5 8.2 8 3l5.5 5.2"/><path d="M4 7v6h8V7"/></svg></div>
+        <div class="sb-label">Property Listings</div>
+      </a>
+      <a class="sb-row" href="#video">
+        <div class="sb-badge"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="2" y="3.5" width="9" height="9" rx="1.5"/><path d="M11 6.5l3-2v7l-3-2"/></svg></div>
+        <div class="sb-label">Video Scripts</div>
+      </a>
+      <div class="sb-group"><span class="sb-group-txt">Reference</span></div>
+      <a class="sb-row" href="#contact">
+        <div class="sb-badge"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="3" width="12" height="9" rx="2"/><path d="M4.5 6.5h7M4.5 9h4.5"/></svg></div>
+        <div class="sb-label">Contact Blocks</div>
+      </a>
+      <a class="sb-row" href="#checklist">
+        <div class="sb-badge"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M4.5 5.5h7M4.5 8h7M4.5 10.5h4.5"/></svg></div>
+        <div class="sb-label">Before You Publish</div>
+      </a>
+    </div>
+
+    <div class="main">
+      <div class="scroll">
+
+        <!-- OVERVIEW -->
+        <div class="section-block" id="overview" style="border-top:none;margin-top:0;">
+          <div class="eyebrow">Welcome</div>
+          <div class="heading">Content Guidelines</div>
+          <div class="subhead">This is the plain-language version of how PHC writes content. The full technical rule files live in <code>content-os/docs/</code> and the <code>phc-listing</code> skill — this page is the part you actually need day to day.</div>
+
+          <div class="hero-stats">
+            <div class="hs"><div class="hs-n">70%</div><div class="hs-l">Educational</div></div>
+            <div class="hs"><div class="hs-n">30%</div><div class="hs-l">Listings</div></div>
+            <div class="hs"><div class="hs-n">5</div><div class="hs-l">Posts / week</div></div>
+            <div class="hs"><div class="hs-n">6</div><div class="hs-l">Topic pillars</div></div>
+          </div>
+
+          <div class="section-h">Why the mix changed</div>
+          <p class="section-p">PHC's channels were close to 100% listing posts. That volume of listings produced roughly 2 leads across 100+ posts — not because the listings were bad, but because a listing only works on someone who's already close to ready to buy. Educational content is what builds trust with everyone else, before they're ready. That's why every two weeks now runs 7 educational posts to 3 listing posts — not the other way around.</p>
+
+          <div class="section-h">The weekly rhythm</div>
+          <table class="ptable">
+            <tr><th></th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th></tr>
+            <tr><td><b>Week A</b></td><td>Edu</td><td>Edu</td><td>Edu</td><td>Edu</td><td>Listing</td></tr>
+            <tr><td><b>Week B</b></td><td>Edu</td><td>Edu</td><td>Edu</td><td>Listing</td><td>Listing</td></tr>
+          </table>
+          <p class="section-p" style="margin-top:-8px;">Alternate Week A and Week B. Over any two-week stretch that's exactly 7 educational : 3 listing.</p>
+        </div>
+
+        <!-- GOLDEN RULES -->
+        <div class="section-block" id="golden">
+          <div class="section-eyebrow">Non-negotiable</div>
+          <div class="section-h">Golden Rules</div>
+          <p class="section-p">These apply to every piece of content PHC publishes — educational posts, listings, and video scripts alike. They don't bend for a good story or a slow week.</p>
+
+          <div class="rules">
+            <div class="rule">
+              <div class="rule-n">1</div>
+              <div><div class="rule-title">No guaranteed returns, no project-specific net yield</div><div class="rule-detail">Only a market-wide gross range (6–8%) as context — never a promise, never net yield for one specific project.</div></div>
+            </div>
+            <div class="rule">
+              <div class="rule-n">2</div>
+              <div><div class="rule-title">Never say "delayed" or "behind schedule"</div><div class="rule-detail">About any project, ours or a competitor's.</div></div>
+            </div>
+            <div class="rule">
+              <div class="rule-n">3</div>
+              <div><div class="rule-title">Never give out a developer's contact details</div><div class="rule-detail">Every post ends with PHC's own contact block — never the developer's phone, Telegram, or sales office.</div></div>
+            </div>
+            <div class="rule">
+              <div class="rule-n">4</div>
+              <div><div class="rule-title">Never invent or fabricate details</div><div class="rule-detail">Use only what's actually provided or verified. If a spec is missing, leave it out — don't estimate it.</div></div>
+            </div>
+            <div class="rule">
+              <div class="rule-n">5</div>
+              <div><div class="rule-title">Never create false urgency</div><div class="rule-detail">No "only 2 units left" style lines unless it is genuinely, verifiably true right now.</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- EDUCATIONAL POSTS -->
+        <div class="section-block" id="edu">
+          <div class="section-eyebrow">70% of the mix</div>
+          <div class="section-h">Educational Posts</div>
+
+          <div class="obj-card">
+            <div class="obj-row"><span class="obj-arrow">→</span><span><b>Who writes it:</b> Marina, drafted through the "PHC Content Machine" Claude Project (Monika's account).</span></div>
+            <div class="obj-row"><span class="obj-arrow">→</span><span><b>How to ask for one:</b> give it a pillar + market, e.g. "Educational post — foreign ownership &amp; strata title, English."</span></div>
+            <div class="obj-row"><span class="obj-arrow">→</span><span><b>Where finished posts live:</b> <code>content-os/production/</code> — also useful as reference for the next post on that pillar.</span></div>
+          </div>
+
+          <div class="section-h" style="font-size:15px;">The 6 topics — rotate, never repeat back-to-back</div>
+          <div class="tag-list">
+            <span class="tag">1. Foreign ownership &amp; strata-title law</span>
+            <span class="tag">2. Buying process &amp; payment plans</span>
+            <span class="tag">3. Market data</span>
+            <span class="tag">4. Myth-busting / FAQ</span>
+            <span class="tag">5. Overseas Cambodians / diaspora</span>
+            <span class="tag">6. How PHC verifies a project</span>
+          </div>
+
+          <div class="section-h" style="font-size:15px;">The shape every educational post follows</div>
+          <div class="rules">
+            <div class="rule"><div class="rule-n">1</div><div><div class="rule-title">Hook</div><div class="rule-detail">A real question or misconception, not a generic opener.</div></div></div>
+            <div class="rule"><div class="rule-n">2</div><div><div class="rule-title">3–4 points</div><div class="rule-detail">Each one a genuinely useful fact, not filler.</div></div></div>
+            <div class="rule"><div class="rule-n">3</div><div><div class="rule-title">One PHC-specific insight</div><div class="rule-detail">Something that shows how PHC actually works, not a generic real-estate tip.</div></div></div>
+            <div class="rule"><div class="rule-n">4</div><div><div class="rule-title">Soft CTA</div><div class="rule-detail">Invite a comment or DM. Never a hard sell.</div></div></div>
+            <div class="rule"><div class="rule-n">5</div><div><div class="rule-title">8–12 hashtags</div><div class="rule-detail">A mix of educational and brand tags.</div></div></div>
+          </div>
+
+          <div class="frame">
+            <div class="frame-bar"><div class="frame-dot"></div><div class="frame-dot"></div><div class="frame-dot"></div><div class="frame-url">example — myth-busting pillar</div></div>
+            <div class="frame-body">The question we get asked more than any other: "Isn't buying property in Cambodia risky because foreigners can't really own anything?" Let's clear that up.
+
+✅ Myth: Foreigners can't legally own property in Cambodia. Reality: foreigners can own strata-title condominium units outright — full legal ownership, registered in your name. What you can't own is land freehold.
+✅ Myth: A guaranteed return is a sign of a good deal. Reality: no legitimate advisor should promise a guaranteed return — ask for the data behind any number you're given.
+
+Comment "MYTHS" if you've heard a different one you want us to fact-check.</div>
+          </div>
+        </div>
+
+        <!-- PROPERTY LISTINGS -->
+        <div class="section-block" id="listings">
+          <div class="section-eyebrow">30% of the mix</div>
+          <div class="section-h">Property Listings</div>
+          <p class="section-p">Three fixed types. Not a template you write freely — the structure for each is exact, down to which sections appear.</p>
+
+          <table class="ptable">
+            <tr><th>Type</th><th>Sections</th><th>Location line</th><th>Contact</th></tr>
+            <tr><td><b>#ForSale</b><br>Resale unit</td><td>Unit Details + Features</td><td><span class="cross">None</span></td><td>Single Telegram</td></tr>
+            <tr><td><b>#ForRent</b><br>Rental unit</td><td>Unit Details + Included + Features</td><td><span class="chk">District, Phnom Penh</span></td><td>Single Telegram</td></tr>
+            <tr><td><b>#NewProject</b><br>New launch / off-plan</td><td>Highlights + Investment Advantage + Payment Terms</td><td><span class="chk">District, Phnom Penh</span></td><td>Dual Telegram</td></tr>
+          </table>
+
+          <div class="rules">
+            <div class="rule"><div class="rule-n">1</div><div><div class="rule-title">Section headers use special bold text</div><div class="rule-detail">𝗟𝗜𝗞𝗘 𝗧𝗛𝗜𝗦 — not markdown **bold**. Same for the title.</div></div></div>
+            <div class="rule"><div class="rule-n">2</div><div><div class="rule-title">Every bullet uses ✅</div><div class="rule-detail">And a ―――――――――― line divides sections.</div></div></div>
+            <div class="rule"><div class="rule-n">3</div><div><div class="rule-title">No 【】brackets in the title, ever</div><div class="rule-detail">On any of the three types.</div></div></div>
+            <div class="rule"><div class="rule-n">4</div><div><div class="rule-title">Only what's actually provided</div><div class="rule-detail">No fabricated data, no filled-in guesses for missing specs.</div></div></div>
+          </div>
+
+          <div class="frame">
+            <div class="frame-bar"><div class="frame-dot"></div><div class="frame-dot"></div><div class="frame-dot"></div><div class="frame-url">structure — #ForSale</div></div>
+            <div class="frame-body mono">#ForSale $[PRICE]
+
+𝗣𝗥𝗢𝗝𝗘𝗖𝗧 𝗡𝗔𝗠𝗘 | 𝗨𝗡𝗜𝗧 𝗧𝗬𝗣𝗘
+――――――――――
+𝗨𝗡𝗜𝗧 𝗗𝗘𝗧𝗔𝗜𝗟𝗦
+✅ [Bedrooms] Bedroom | [Bathrooms] Bathroom
+✅ Size: [X]㎡ · Floor: [X]ᵗʰ
+
+𝗙𝗘𝗔𝗧𝗨𝗥𝗘𝗦
+✅ [Feature 1]  ✅ [Feature 2]
+――――――――――
+📞 096 966 1555
+📱 t.me/PropertyHubCambodia</div>
+          </div>
+          <p class="section-p" style="font-size:12px;color:var(--ink-3);">Full structure for all three types, plus the Unicode bold alphabet reference, lives in the <code>phc-listing</code> skill — open it any time you're unsure.</p>
+        </div>
+
+        <!-- VIDEO SCRIPTS -->
+        <div class="section-block" id="video">
+          <div class="section-eyebrow">Video</div>
+          <div class="section-h">Video Scripts</div>
+          <div class="info-box">
+            <div class="ib-label">Current owner</div>
+            Nick manages video end-to-end via Higgsfield today — this isn't something the team needs to produce yet. It's here so the tone stays consistent if that ever changes.
+          </div>
+          <div class="rules">
+            <div class="rule"><div class="rule-n">1</div><div><div class="rule-title">The brand line belongs in every script</div><div class="rule-detail">買う前に、正しく比較しましょう。 — worked in naturally, not just tacked on.</div></div></div>
+            <div class="rule"><div class="rule-n">2</div><div><div class="rule-title">The full CTA block is never shortened</div><div class="rule-detail">Japanese and English versions both exist in full — see <code>reference_video_script_style.md</code>.</div></div></div>
+            <div class="rule"><div class="rule-n">3</div><div><div class="rule-title">Always offer 3 hook options</div><div class="rule-detail">Never open with a generic "today I'm at the showroom" line.</div></div></div>
+            <div class="rule"><div class="rule-n">4</div><div><div class="rule-title">Avoid absolute language</div><div class="rule-detail">No "definitely recommend," "guaranteed," "highest yield," "100% safe." Use conditional framing instead — "this may suit your investment style" rather than a blanket claim.</div></div></div>
+          </div>
+        </div>
+
+        <!-- CONTACT BLOCKS -->
+        <div class="section-block" id="contact">
+          <div class="section-eyebrow">Reference</div>
+          <div class="section-h">Contact Blocks — know which one to use</div>
+          <p class="section-p">Two different phone numbers appear across PHC content, depending on content type. Match the block below to what you're posting — don't reuse whichever one you remember from last time.</p>
+
+          <table class="ptable">
+            <tr><th>Content type</th><th>Contact block</th></tr>
+            <tr><td><b>Educational posts</b><br>(social)</td><td>📞 011 666 952<br>📱 t.me/PropertyHubCambodia<br>🌐 propertyhubcambodia.com</td></tr>
+            <tr><td><b>Listings</b><br>#ForSale / #ForRent</td><td>📞 096 966 1555<br>📱 t.me/PropertyHubCambodia</td></tr>
+            <tr><td><b>Listings</b><br>#NewProject</td><td>📞 096 966 1555<br>💬 t.me/Nick_REAKH (personal)<br>📣 t.me/PropertyHubCambodia (channel)</td></tr>
+          </table>
+
+          <div class="warn-box">
+            <div class="ib-label">Worth confirming with Nick</div>
+            These two phone numbers come straight from the current source files as-is — I haven't assumed either is a mistake. But two different numbers for different content types is an easy thing to drift on by accident. Worth a quick confirm that the split is intentional before the team scales up how much they publish.
+          </div>
+        </div>
+
+        <!-- CHECKLIST -->
+        <div class="section-block" id="checklist">
+          <div class="section-eyebrow">Last step</div>
+          <div class="section-h">Before You Publish</div>
+          <p class="section-p">Run through this on anything before it goes out — educational post, listing, or video script.</p>
+          <div class="rules">
+            <div class="rule"><div class="rule-n">1</div><div><div class="rule-title">Right structure for the content type</div><div class="rule-detail">Format 8 for educational · correct listing type structure · video script requirements.</div></div></div>
+            <div class="rule"><div class="rule-n">2</div><div><div class="rule-title">No guaranteed returns, no project-specific net yield</div></div></div>
+            <div class="rule"><div class="rule-n">3</div><div><div class="rule-title">No "delayed" or "behind schedule" language</div></div></div>
+            <div class="rule"><div class="rule-n">4</div><div><div class="rule-title">Correct contact block for this content type</div></div></div>
+            <div class="rule"><div class="rule-n">5</div><div><div class="rule-title">No developer contact info anywhere</div></div></div>
+            <div class="rule"><div class="rule-n">6</div><div><div class="rule-title">Nothing invented — only what was actually provided</div></div></div>
+            <div class="rule"><div class="rule-n">7</div><div><div class="rule-title">Hashtag count in range</div><div class="rule-detail">8–12 for educational posts.</div></div></div>
+          </div>
+
+          <div class="info-box">
+            <div class="ib-label">Where the full rules live</div>
+            <code>content-os/docs/PHC_Brand_Rules.md</code> · <code>content-os/docs/PHC_Content_Machine_Prompt.md</code> · <code>phc-listing</code> skill · <code>claude-memory/reference_video_script_style.md</code> · <code>docs/PHC_70_30_Content_Roadmap.md</code>
+          </div>
+
+          <div class="btnrow">
+            <a href="index.html" class="btn primary">← Back to the Hub</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
