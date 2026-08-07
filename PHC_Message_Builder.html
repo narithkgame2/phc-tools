@@ -1973,7 +1973,10 @@ function renderSegments() {
 function renderScenarios() {
   const list = document.getElementById('scenario-list');
   if (!state.seg) {
-    list.innerHTML = '<div style="padding:16px 10px;font-size:12px;color:var(--ink-3);text-align:center">Select a segment above to see available scenarios</div>';
+    list.innerHTML = '<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px;text-align:center;opacity:.6">'
+      + '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--ink-3)"><polyline points="17,11 12,6 7,11"/><line x1="12" y1="6" x2="12" y2="18"/></svg>'
+      + '<div style="font-size:12px;color:var(--ink-3);line-height:1.6;max-width:180px">Pick a segment above to see its scenarios here</div>'
+      + '</div>';
     return;
   }
 
