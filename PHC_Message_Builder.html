@@ -401,10 +401,11 @@ body {
 .sc-part-label {
   flex: 1;
   font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: .1em;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
   text-transform: uppercase;
-  color: var(--ink-3);
+  color: var(--ink-2);
 }
 .sc-part-count {
   font-family: var(--font-mono);
@@ -1456,6 +1457,52 @@ const SCENARIOS = [
           vaNote:'Russian leads respond to directness. Skip pleasantries. Qualify immediately. Never send project lists before knowing their criteria.',
         }
       ]
+    }
+  },
+  {
+    id:'s37', part:'p0', title:'Landing Page / Details Already Provided', when:'Lead already submitted budget, project interest, or timeline via a form or landing page — do not re-ask what they already told you',
+    segments: {
+      en: [
+        {
+          lang:'English', tag:'S37-A', color:'#1877f2', label:'General — acknowledge details, skip re-qualifying',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. David'},{key:'PROJECT_INTEREST',label:'[PROJECT/AREA THEY GAVE]',ph:'e.g. Time Square 9'},{key:'BUDGET',label:'[BUDGET THEY GAVE]',ph:'e.g. $80K–$100K'},{key:'AGENT_NAME',label:'[YOUR NAME]',ph:'e.g. Monika'}],
+          lines:['Hi [FIRST_NAME] 👋','','Thanks for your interest in [PROJECT_INTEREST] — I can see you\'re looking in the [BUDGET] range.','','I\'m [AGENT_NAME], your dedicated advisor for this enquiry.','','Based on what you\'ve already shared, I\'ll put together a focused shortlist with current pricing and availability — no generic brochure.','','One quick question so I get this exactly right: what\'s your rough timeline to decide?','','I\'ll have something for you shortly.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Use when the lead already gave budget/project/interest via a landing page or inquiry form — check the lead record before sending S0. Reference their actual details here, don\'t re-ask what they already told you. Ask only for what\'s genuinely missing (usually timeline).',
+        },
+      ],
+      jp: [
+        {
+          lang:'Japanese', tag:'S37-B', color:'#e63946', label:'Japanese — acknowledge details, one polite follow-up',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'},{key:'BUKKEN',label:'[物件名/エリア]',ph:'e.g. Time Square 9'},{key:'YOSAN',label:'[ご予算]',ph:'e.g. 8万〜10万ドル'},{key:'TANTO',label:'[担当者名]',ph:'e.g. Monika'}],
+          lines:['[ONAMAE]様','','[BUKKEN]へのご関心、また[YOSAN]のご予算感をお知らせいただき、誠にありがとうございます。','','担当の[TANTO]と申します。','','いただいた情報をもとに、ご予算とご希望に合った物件を厳選してご提案いたします。','','1点だけお伺いできますでしょうか：ご検討のおおよそのお時期はいつ頃でしょうか？','','近日中にご提案をお送りいたします。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Lead already provided budget/interest via a form. Acknowledge specifics, do not re-ask the basics. Only ask for timeline if missing.',
+          jpTip:'Thank you for your interest in [Project] and for sharing your budget of [Budget]. I\'ll prepare a tailored shortlist based on this. One question: what\'s your rough timeline to decide?',
+        },
+      ],
+      de: [
+        {
+          lang:'German / EU', tag:'S37-C', color:'#2d9e6b', label:'European — direct, reference their data',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Thomas'},{key:'PROJECT_INTEREST',label:'[PROJECT/AREA THEY GAVE]',ph:'e.g. Time Square 9'},{key:'BUDGET',label:'[BUDGET THEY GAVE]',ph:'e.g. $80K–$100K'},{key:'AGENT_NAME',label:'[YOUR NAME]',ph:'e.g. Monika'}],
+          lines:['Hi [FIRST_NAME],','','Thank you for your enquiry to Property Hub Cambodia, including the details on [PROJECT_INTEREST] and your budget around [BUDGET].','','I\'m [AGENT_NAME], your dedicated advisor.','','Based on what you\'ve provided, I\'ll prepare a shortlist with verified figures — not marketing claims.','','One point I\'d like to confirm: what\'s your timeline to decide?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Do not repeat the qualifying questions the form already answered — Europeans notice redundancy and read it as not having read their submission.',
+        },
+      ],
+      ru: [
+        {
+          lang:'Russian', tag:'S37-D', color:'#c0392b', label:'Russian — direct, confirm and move',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Alexei'},{key:'PROJECT_INTEREST',label:'[PROJECT/AREA THEY GAVE]',ph:'e.g. Time Square 9'},{key:'BUDGET',label:'[BUDGET THEY GAVE]',ph:'e.g. $80K–$100K'},{key:'AGENT_NAME',label:'[YOUR NAME]',ph:'e.g. Monika'}],
+          lines:['Hi [FIRST_NAME],','','I\'m [AGENT_NAME] at Property Hub Cambodia. Got your details — [PROJECT_INTEREST], budget [BUDGET].','','Sending tailored options based on that. One thing first: timeline to decide?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Confirm you have their details, do not re-ask. Russian leads notice and dislike redundant questions.',
+        },
+      ],
+      kh: [
+        {
+          lang:'Overseas KH', tag:'S37-E', color:'#2196a3', label:'Overseas Cambodian — warm, confirms details',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Chenda'},{key:'PROJECT_INTEREST',label:'[PROJECT/AREA THEY GAVE]',ph:'e.g. Time Square 9'},{key:'BUDGET',label:'[BUDGET THEY GAVE]',ph:'e.g. $80K–$100K'},{key:'AGENT_NAME',label:'[YOUR NAME]',ph:'e.g. Monika'}],
+          lines:['Hi [FIRST_NAME] 👋','','Thank you for sharing your interest in [PROJECT_INTEREST] and your budget around [BUDGET] — I really appreciate you taking the time.','','I\'m [AGENT_NAME], and I\'ll be looking after your enquiry personally.','','I\'ll put together options that match what you\'ve shared — no generic lists.','','Just one thing to confirm: roughly when are you hoping to decide? Take your time if you\'re still discussing with family.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Acknowledge the details they already gave rather than re-asking. Still leave room for family consultation — don\'t push for a fast timeline answer.',
+        },
+      ],
     }
   },
 
