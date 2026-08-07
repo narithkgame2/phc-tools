@@ -983,6 +983,23 @@ const SEGMENTS = [
   { id:'vip', label:'⭐ VIP', name:'VIP $300K+',       color:'#8b5cf6', desc:'Director handoff' },
 ];
 
+// Inline SVG flags - rendered as real vector shapes, not Unicode emoji.
+// Windows Chromium doesn't compose regional-indicator flag emoji into flag
+// glyphs, it falls back to showing raw letter codes ("GB", "JP"). SVG
+// renders identically everywhere regardless of OS font support.
+const FLAGS = {
+  en: '<svg width="16" height="12" viewBox="0 0 20 15" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="15" fill="#00247d"/><path d="M0 0L20 15M20 0L0 15" stroke="#fff" stroke-width="3"/><path d="M0 0L20 15M20 0L0 15" stroke="#cf142b" stroke-width="1.2"/><path d="M10 0V15M0 7.5H20" stroke="#fff" stroke-width="5"/><path d="M10 0V15M0 7.5H20" stroke="#cf142b" stroke-width="3"/></svg>',
+  jp: '<svg width="16" height="12" viewBox="0 0 20 15" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="15" fill="#fff"/><circle cx="10" cy="7.5" r="4.2" fill="#bc002d"/></svg>',
+  de: '<svg width="16" height="12" viewBox="0 0 20 15" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="5" fill="#000"/><rect y="5" width="20" height="5" fill="#dd0000"/><rect y="10" width="20" height="5" fill="#ffce00"/></svg>',
+  ru: '<svg width="16" height="12" viewBox="0 0 20 15" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="5" fill="#fff"/><rect y="5" width="20" height="5" fill="#0039a6"/><rect y="10" width="20" height="5" fill="#d52b1e"/></svg>',
+  kh: '<svg width="16" height="12" viewBox="0 0 20 15" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="15" fill="#032ea1"/><rect y="3.75" width="20" height="7.5" fill="#e00025"/><rect x="7" y="5.5" width="1.6" height="4" fill="#fff"/><rect x="9.2" y="5.5" width="1.6" height="4" fill="#fff"/><rect x="11.4" y="5.5" width="1.6" height="4" fill="#fff"/></svg>',
+};
+function flagIcon(segId) {
+  const svg = FLAGS[segId];
+  if (!svg) return '';
+  return `<span style="display:inline-flex;vertical-align:-1px;margin-right:5px;border-radius:2px;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.15);flex-shrink:0">${svg}</span>`;
+}
+
 const PARTS = [
   { id:'p0', label:'PART 0 — FIRST CONTACT' },
   { id:'p1', label:'PART 1 — FOLLOW-UP SEQUENCE' },
@@ -1960,7 +1977,7 @@ function renderSegments() {
          onclick="selectSegment('${seg.id}')" style="--dot:${seg.color}">
       <span class="seg-dot" style="background:${seg.color}"></span>
       <div>
-        <div class="seg-name">${seg.label}</div>
+        <div class="seg-name">${flagIcon(seg.id)}${seg.label}</div>
         <div style="font-size:10px;color:var(--ink-3)">${seg.desc}</div>
       </div>
     </div>
@@ -2016,7 +2033,7 @@ function renderLangTabs() {
 
   tabs.innerHTML = variants.map((v, i) => `
     <div class="lang-tab ${state.variantIdx === i ? 'active' : ''}"
-         onclick="selectVariant(${i})">${v.lang}</div>
+         onclick="selectVariant(${i})">${flagIcon(state.seg)}${v.lang}</div>
   `).join('');
 }
 
@@ -2127,7 +2144,7 @@ function renderMessage() {
   out.innerHTML = `
     <div class="msg-card">
       <div class="msg-hdr">
-        <div class="msg-seg-badge" style="background:${variant.color}">${variant.lang}</div>
+        <div class="msg-seg-badge" style="background:${variant.color}">${flagIcon(state.seg)}${variant.lang}</div>
         <div class="msg-variant-title">${variant.label}</div>
         <div class="msg-scenario-tag">${variant.tag}</div>
       </div>
@@ -2266,7 +2283,7 @@ function doSearch(q) {
   results.innerHTML = matches.map((m, i) => `
     <div class="search-result" data-idx="${i}"
          onclick="searchSelect('${m.scId}','${m.segId}','${m.variantTag}')">
-      <div class="sr-tag" style="background:${m.color}">${m.lang}</div>
+      <div class="sr-tag" style="background:${m.color}">${flagIcon(m.segId)}${m.lang}</div>
       <div class="sr-info">
         <div class="sr-title">${m.title}</div>
         <div class="sr-sub">${m.variantLabel}</div>
