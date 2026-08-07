@@ -1460,47 +1460,93 @@ const SCENARIOS = [
     }
   },
   {
-    id:'s37', part:'p0', title:'Landing Page / Details Already Provided', when:'Lead already submitted budget, project interest, or timeline via a form or landing page — do not re-ask what they already told you',
+    id:'s37', part:'p0', title:'Landing Page Lead — Message 1: Short Reach-Out', when:'Lead already submitted budget/project/timeline via a form or landing page — first message, no options or shortlist yet, just a warm short reach-out',
     segments: {
       en: [
         {
-          lang:'English', tag:'S37-A', color:'#1877f2', label:'General — acknowledge details, skip re-qualifying',
-          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. David'},{key:'PROJECT_INTEREST',label:'[PROJECT/AREA THEY GAVE]',ph:'e.g. Time Square 9'},{key:'BUDGET',label:'[BUDGET THEY GAVE]',ph:'e.g. $80K–$100K'},{key:'AGENT_NAME',label:'[YOUR NAME]',ph:'e.g. Monika'}],
-          lines:['Hi [FIRST_NAME] 👋','','Thanks for your interest in [PROJECT_INTEREST] — I can see you\'re looking in the [BUDGET] range.','','I\'m [AGENT_NAME], your dedicated advisor for this enquiry.','','Based on what you\'ve already shared, I\'ll put together a focused shortlist with current pricing and availability — no generic brochure.','','One quick question so I get this exactly right: what\'s your rough timeline to decide?','','I\'ll have something for you shortly.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
-          vaNote:'Use when the lead already gave budget/project/interest via a landing page or inquiry form — check the lead record before sending S0. Reference their actual details here, don\'t re-ask what they already told you. Ask only for what\'s genuinely missing (usually timeline).',
+          lang:'English', tag:'S37-A', color:'#1877f2', label:'General — short, no options yet, one soft question',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. David'},{key:'PROJECT_INTEREST',label:'[PROJECT/AREA THEY GAVE]',ph:'e.g. Time Square 9'},{key:'AGENT_NAME',label:'[YOUR NAME]',ph:'e.g. Monika'}],
+          lines:['Hi [FIRST_NAME],','','Thanks for reaching out about [PROJECT_INTEREST] — good to connect.','','I\'m [AGENT_NAME], your advisor here at Property Hub Cambodia.','','I can put together current pricing, payment plans, and rental yield figures that match what you shared. Would that be helpful?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Keep this short — do not list options, price, or a full shortlist yet. This is a reach-out, not a proposal. Goal is one reply. If they say yes, follow with S38 (request a call) or send the shortlist directly, based on how they respond.',
         },
       ],
       jp: [
         {
-          lang:'Japanese', tag:'S37-B', color:'#e63946', label:'Japanese — acknowledge details, one polite follow-up',
-          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'},{key:'BUKKEN',label:'[物件名/エリア]',ph:'e.g. Time Square 9'},{key:'YOSAN',label:'[ご予算]',ph:'e.g. 8万〜10万ドル'},{key:'TANTO',label:'[担当者名]',ph:'e.g. Monika'}],
-          lines:['[ONAMAE]様','','[BUKKEN]へのご関心、また[YOSAN]のご予算感をお知らせいただき、誠にありがとうございます。','','担当の[TANTO]と申します。','','いただいた情報をもとに、ご予算とご希望に合った物件を厳選してご提案いたします。','','1点だけお伺いできますでしょうか：ご検討のおおよそのお時期はいつ頃でしょうか？','','近日中にご提案をお送りいたします。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
-          vaNote:'Lead already provided budget/interest via a form. Acknowledge specifics, do not re-ask the basics. Only ask for timeline if missing.',
-          jpTip:'Thank you for your interest in [Project] and for sharing your budget of [Budget]. I\'ll prepare a tailored shortlist based on this. One question: what\'s your rough timeline to decide?',
+          lang:'Japanese', tag:'S37-B', color:'#e63946', label:'Japanese — short, formal, one soft question',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'},{key:'BUKKEN',label:'[物件名/エリア]',ph:'e.g. Time Square 9'},{key:'TANTO',label:'[担当者名]',ph:'e.g. Monika'}],
+          lines:['[ONAMAE]様','','[BUKKEN]についてお問い合わせいただき、ありがとうございます。','','担当の[TANTO]と申します。','','現在の価格、お支払いプラン、賃貸利回りの情報をご案内できますが、ご興味はございますか。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Short reach-out only — no price list or shortlist yet. Goal is one reply.',
+          jpTip:'Thank you for your enquiry about [Project]. I can share current pricing, payment plans, and rental yield data — would that be helpful?',
         },
       ],
       de: [
         {
-          lang:'German / EU', tag:'S37-C', color:'#2d9e6b', label:'European — direct, reference their data',
-          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Thomas'},{key:'PROJECT_INTEREST',label:'[PROJECT/AREA THEY GAVE]',ph:'e.g. Time Square 9'},{key:'BUDGET',label:'[BUDGET THEY GAVE]',ph:'e.g. $80K–$100K'},{key:'AGENT_NAME',label:'[YOUR NAME]',ph:'e.g. Monika'}],
-          lines:['Hi [FIRST_NAME],','','Thank you for your enquiry to Property Hub Cambodia, including the details on [PROJECT_INTEREST] and your budget around [BUDGET].','','I\'m [AGENT_NAME], your dedicated advisor.','','Based on what you\'ve provided, I\'ll prepare a shortlist with verified figures — not marketing claims.','','One point I\'d like to confirm: what\'s your timeline to decide?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
-          vaNote:'Do not repeat the qualifying questions the form already answered — Europeans notice redundancy and read it as not having read their submission.',
+          lang:'German / EU', tag:'S37-C', color:'#2d9e6b', label:'European — short, direct, one soft question',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Thomas'},{key:'PROJECT_INTEREST',label:'[PROJECT/AREA THEY GAVE]',ph:'e.g. Time Square 9'},{key:'AGENT_NAME',label:'[YOUR NAME]',ph:'e.g. Monika'}],
+          lines:['Hi [FIRST_NAME],','','Thank you for your enquiry about [PROJECT_INTEREST].','','I\'m [AGENT_NAME], your advisor at Property Hub Cambodia.','','I can share current pricing, payment plans, and net yield figures based on what you provided. Would that be useful?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Short reach-out only — no figures or shortlist yet, just confirm interest first.',
         },
       ],
       ru: [
         {
-          lang:'Russian', tag:'S37-D', color:'#c0392b', label:'Russian — direct, confirm and move',
-          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Alexei'},{key:'PROJECT_INTEREST',label:'[PROJECT/AREA THEY GAVE]',ph:'e.g. Time Square 9'},{key:'BUDGET',label:'[BUDGET THEY GAVE]',ph:'e.g. $80K–$100K'},{key:'AGENT_NAME',label:'[YOUR NAME]',ph:'e.g. Monika'}],
-          lines:['Hi [FIRST_NAME],','','I\'m [AGENT_NAME] at Property Hub Cambodia. Got your details — [PROJECT_INTEREST], budget [BUDGET].','','Sending tailored options based on that. One thing first: timeline to decide?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
-          vaNote:'Confirm you have their details, do not re-ask. Russian leads notice and dislike redundant questions.',
+          lang:'Russian', tag:'S37-D', color:'#c0392b', label:'Russian — very short, one soft question',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Alexei'},{key:'PROJECT_INTEREST',label:'[PROJECT/AREA THEY GAVE]',ph:'e.g. Time Square 9'},{key:'AGENT_NAME',label:'[YOUR NAME]',ph:'e.g. Monika'}],
+          lines:['Hi [FIRST_NAME],','','I\'m [AGENT_NAME] at Property Hub Cambodia. Got your enquiry on [PROJECT_INTEREST].','','I can send current pricing and yield numbers — want me to?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Short and direct. No numbers yet — confirm interest first.',
         },
       ],
       kh: [
         {
-          lang:'Overseas KH', tag:'S37-E', color:'#2196a3', label:'Overseas Cambodian — warm, confirms details',
-          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Chenda'},{key:'PROJECT_INTEREST',label:'[PROJECT/AREA THEY GAVE]',ph:'e.g. Time Square 9'},{key:'BUDGET',label:'[BUDGET THEY GAVE]',ph:'e.g. $80K–$100K'},{key:'AGENT_NAME',label:'[YOUR NAME]',ph:'e.g. Monika'}],
-          lines:['Hi [FIRST_NAME] 👋','','Thank you for sharing your interest in [PROJECT_INTEREST] and your budget around [BUDGET] — I really appreciate you taking the time.','','I\'m [AGENT_NAME], and I\'ll be looking after your enquiry personally.','','I\'ll put together options that match what you\'ve shared — no generic lists.','','Just one thing to confirm: roughly when are you hoping to decide? Take your time if you\'re still discussing with family.','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
-          vaNote:'Acknowledge the details they already gave rather than re-asking. Still leave room for family consultation — don\'t push for a fast timeline answer.',
+          lang:'Overseas KH', tag:'S37-E', color:'#2196a3', label:'Overseas Cambodian — warm, short, one soft question',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Chenda'},{key:'PROJECT_INTEREST',label:'[PROJECT/AREA THEY GAVE]',ph:'e.g. Time Square 9'},{key:'AGENT_NAME',label:'[YOUR NAME]',ph:'e.g. Monika'}],
+          lines:['Hi [FIRST_NAME] 👋','','Thank you for reaching out about [PROJECT_INTEREST] — really appreciate it.','','I\'m [AGENT_NAME], and I\'ll be looking after your enquiry personally.','','I can share current pricing and payment plan details — would that be helpful?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Short and warm — no full details yet, just confirm they want to continue.',
+        },
+      ],
+    }
+  },
+  {
+    id:'s38', part:'p0', title:'Landing Page Lead — Message 2: Request a Clarification Call', when:'Sent after S37 once they reply — especially useful for first-time Cambodia investors who need legality, tax, and area context a text thread can\'t cover well',
+    segments: {
+      en: [
+        {
+          lang:'English', tag:'S38-A', color:'#1877f2', label:'General — 15-minute intro call, low pressure',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. David'},{key:'AGENT_NAME',label:'[YOUR NAME]',ph:'e.g. Monika'}],
+          lines:['Hi [FIRST_NAME],','','Since this may be your first time looking at property in Cambodia, there\'s usually a fair bit to cover — legal ownership, taxes, areas, and what actually fits your goals.','','The quickest way I can help properly is a short 15-minute call to walk through it, rather than back-and-forth over text.','','Are you free sometime this week?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Only send after they\'ve replied to S37 showing interest. Frame the call as removing effort for them (faster than text), not as a sales push. If they decline the call, send the shortlist by text instead — don\'t insist.',
+        },
+      ],
+      jp: [
+        {
+          lang:'Japanese', tag:'S38-B', color:'#e63946', label:'Japanese — formal, 15-minute call offer',
+          fields:[{key:'ONAMAE',label:'[お名前]',ph:'e.g. 田中'},{key:'TANTO',label:'[担当者名]',ph:'e.g. Monika'}],
+          lines:['[ONAMAE]様','','カンボジアでの不動産購入は初めてかと存じますので、法的所有権、税金、エリアの特徴など、ご説明したい点がいくつかございます。','','文章でのやり取りよりも、15分程度のお電話でご案内する方が確実かと存じます。','','今週中でご都合の良いお時間はございますでしょうか。','','Property Hub Cambodia | カンボジア不動産\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Send only after they respond to S37. Frame as making it easier for them, not as pressure. If they prefer text, respect that.',
+          jpTip:'Since this may be your first time considering property in Cambodia, a short 15-minute call would let me cover the legal, tax, and area details more efficiently than text. Are you available this week?',
+        },
+      ],
+      de: [
+        {
+          lang:'German / EU', tag:'S38-C', color:'#2d9e6b', label:'European — efficient, 15-minute call offer',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Thomas'},{key:'AGENT_NAME',label:'[YOUR NAME]',ph:'e.g. Monika'}],
+          lines:['Hi [FIRST_NAME],','','As this is likely your first property purchase in Cambodia, there\'s a fair amount to cover — legal ownership structure, taxes, and area fit for your goals.','','A short 15-minute call is usually the most efficient way to go through this properly, rather than a long text exchange.','','Would you have time this week?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Europeans respond well to "efficient" framing. Only send after they\'ve engaged with S37 — don\'t push the call if they haven\'t replied yet.',
+        },
+      ],
+      ru: [
+        {
+          lang:'Russian', tag:'S38-D', color:'#c0392b', label:'Russian — direct, 15-minute call offer',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Alexei'},{key:'AGENT_NAME',label:'[YOUR NAME]',ph:'e.g. Monika'}],
+          lines:['Hi [FIRST_NAME],','','Since this is likely your first purchase in Cambodia — ownership rules, taxes, areas, all worth covering properly.','','15-minute call is faster than text for this. Free this week?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Short and direct, matches Russian client preference. Only after they\'ve responded to S37.',
+        },
+      ],
+      kh: [
+        {
+          lang:'Overseas KH', tag:'S38-E', color:'#2196a3', label:'Overseas Cambodian — warm, 15-minute call offer',
+          fields:[{key:'FIRST_NAME',label:'[FIRST NAME]',ph:'e.g. Chenda'},{key:'AGENT_NAME',label:'[YOUR NAME]',ph:'e.g. Monika'}],
+          lines:['Hi [FIRST_NAME],','','There\'s usually a fair bit to cover for a first property purchase back home — ownership rules, taxes, and which area fits best.','','A quick 15-minute call is often easier than going back and forth over text, and I\'m happy to include family on the call if that helps.','','Would sometime this week work for you?','','Property Hub Cambodia\n📞 011 666 952\n📱 t.me/Monika_PHC\n🏠 t.me/PropertyHubCambodia'],
+          vaNote:'Offer to include family on the call — common for overseas Cambodian buyers making a joint decision. Only send after they\'ve engaged with S37.',
         },
       ],
     }
@@ -2118,9 +2164,16 @@ function renderScenarios() {
 }
 
 function togglePart(partId) {
-  if (collapsedParts.has(partId)) collapsedParts.delete(partId);
-  else collapsedParts.add(partId);
+  const wasCollapsed = collapsedParts.has(partId);
+  // Accordion: only one part open at a time keeps the list compact.
+  PARTS.forEach(p => collapsedParts.add(p.id));
+  if (wasCollapsed) collapsedParts.delete(partId);
   renderScenarios();
+}
+
+function openOnlyPart(partId) {
+  PARTS.forEach(p => collapsedParts.add(p.id));
+  collapsedParts.delete(partId);
 }
 
 // ═══════════════════════════════════════════════════════
@@ -2332,7 +2385,7 @@ function selectScenario(scId) {
   state.variantIdx = 0;
   state.fills = {};
   const sc = SCENARIOS.find(s => s.id === scId);
-  if (sc) collapsedParts.delete(sc.part);
+  if (sc) openOnlyPart(sc.part);
   renderScenarios();
   renderLangTabs();
   renderFillForm();
@@ -2406,7 +2459,7 @@ function searchSelect(scId, segId, variantTag) {
   state.scId = scId;
   state.variantIdx = Math.max(0, vIdx);
   state.fills = {};
-  if (sc) collapsedParts.delete(sc.part);
+  if (sc) openOnlyPart(sc.part);
 
   renderSegments();
   renderScenarios();
