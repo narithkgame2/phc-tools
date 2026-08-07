@@ -379,14 +379,48 @@ body {
   text-overflow: ellipsis;
 }
 
+.sc-part-hdr {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 8px;
+  margin-top: 2px;
+  border-radius: var(--r);
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--tr);
+}
+.sc-part-hdr:hover { background: var(--bg-3); }
+.sc-part-chevron {
+  display: flex;
+  flex-shrink: 0;
+  color: var(--ink-3);
+  transition: transform var(--tr);
+}
+.sc-part-hdr.open .sc-part-chevron { transform: rotate(90deg); }
 .sc-part-label {
+  flex: 1;
   font-family: var(--font-mono);
   font-size: 9px;
   letter-spacing: .1em;
   text-transform: uppercase;
   color: var(--ink-3);
-  padding: 10px 10px 4px;
 }
+.sc-part-count {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--ink-3);
+  background: var(--bg-3);
+  border-radius: 8px;
+  padding: 1px 6px;
+  flex-shrink: 0;
+}
+.sc-part-items {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height var(--tr);
+}
+.sc-part-items.open { max-height: 2000px; }
 
 /* Language tabs */
 .lang-tabs {
@@ -1008,6 +1042,10 @@ const PARTS = [
   { id:'p4', label:'PART 4 — BOOKING & MILESTONES' },
   { id:'p5', label:'PART 5 — SEGMENT-SPECIFIC' },
 ];
+
+// All parts start collapsed for a compact list - expanding a part (or
+// selecting/search-jumping to a scenario inside one) reveals it.
+const collapsedParts = new Set(PARTS.map(p => p.id));
 
 // Each scenario: id, part, title, when, segments array with variant per segment
 // Each variant: lang, langLabel, segColor, tag, fields[], lines[], vaNote?, jpTip?, escalate?
@@ -2000,25 +2038,42 @@ function renderScenarios() {
   // Filter scenarios that have variants for this segment
   const available = SCENARIOS.filter(sc => sc.segments[state.seg]);
 
+  // Group by part, preserving PARTS order
+  const byPart = {};
+  available.forEach(sc => { (byPart[sc.part] = byPart[sc.part] || []).push(sc); });
+
   let html = '';
-  let lastPart = null;
-  available.forEach((sc, i) => {
-    if (sc.part !== lastPart) {
-      const part = PARTS.find(p => p.id === sc.part);
-      html += `<div class="sc-part-label">${part?.label || sc.part}</div>`;
-      lastPart = sc.part;
-    }
+  PARTS.forEach(part => {
+    const items = byPart[part.id];
+    if (!items || !items.length) return;
+    const isOpen = !collapsedParts.has(part.id);
     html += `
-      <div class="sc-item ${state.scId === sc.id ? 'active' : ''}"
-           onclick="selectScenario('${sc.id}')">
-        <div class="sc-num">S${sc.id.replace('s','')}</div>
-        <div class="sc-info">
-          <div class="sc-title">${sc.title}</div>
-          <div class="sc-when">${sc.when}</div>
-        </div>
-      </div>`;
+      <div class="sc-part-hdr ${isOpen ? 'open' : ''}" onclick="togglePart('${part.id}')">
+        <span class="sc-part-chevron"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,6 15,12 9,18"/></svg></span>
+        <span class="sc-part-label">${part.label}</span>
+        <span class="sc-part-count">${items.length}</span>
+      </div>
+      <div class="sc-part-items ${isOpen ? 'open' : ''}">`;
+    items.forEach(sc => {
+      html += `
+        <div class="sc-item ${state.scId === sc.id ? 'active' : ''}"
+             onclick="selectScenario('${sc.id}')">
+          <div class="sc-num">S${sc.id.replace('s','')}</div>
+          <div class="sc-info">
+            <div class="sc-title">${sc.title}</div>
+            <div class="sc-when">${sc.when}</div>
+          </div>
+        </div>`;
+    });
+    html += `</div>`;
   });
   list.innerHTML = html;
+}
+
+function togglePart(partId) {
+  if (collapsedParts.has(partId)) collapsedParts.delete(partId);
+  else collapsedParts.add(partId);
+  renderScenarios();
 }
 
 // ═══════════════════════════════════════════════════════
@@ -2229,6 +2284,8 @@ function selectScenario(scId) {
   state.scId = scId;
   state.variantIdx = 0;
   state.fills = {};
+  const sc = SCENARIOS.find(s => s.id === scId);
+  if (sc) collapsedParts.delete(sc.part);
   renderScenarios();
   renderLangTabs();
   renderFillForm();
@@ -2302,6 +2359,7 @@ function searchSelect(scId, segId, variantTag) {
   state.scId = scId;
   state.variantIdx = Math.max(0, vIdx);
   state.fills = {};
+  if (sc) collapsedParts.delete(sc.part);
 
   renderSegments();
   renderScenarios();
