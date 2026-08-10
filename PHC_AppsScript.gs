@@ -324,7 +324,7 @@ function sendTelegramAlert(lead) {
       'Language: '       + langLabel,
       'Score: '          + scoreTag,
       'Source: '         + (lead.source       || 'Website'),
-      rawNotes ? '\nMessage: ' + rawNotes : null,
+      rawNotes ? '\nMessage:\n' + rawNotes : null,
     ].filter(Boolean).join('\n');
 
     const url = 'https://api.telegram.org/bot' + token + '/sendMessage';
