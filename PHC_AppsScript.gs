@@ -302,33 +302,59 @@ function sendTelegramAlert(lead) {
 
     const scoreNum  = parseInt(lead.score) || 0;
     const scoreTag  = scoreNum >= 5 ? 'VIP' : scoreNum >= 4 ? 'A' : scoreNum >= 3 ? 'B' : 'C';
-    const nat       = (lead.nationality || '').toLowerCase();
-    const langLabel = nat === 'japanese' ? 'JP' : nat === 'german' ? 'DE' : nat === 'cambodian' ? 'KH' : 'EN';
-    const rawNotes  = (lead.notes || '').replace(/\[Language:[^\]]*\]\s*\|?\s*/i, '').replace(/^Website inquiry:\s*/i, '').trim();
+    // Language and the bracket-tagged [Form]/[Suggested advisor] lines are
+    // deliberately not shown here — staff feedback was that the alert had
+    // too many fields non-technical readers didn't need. Score stays as-is;
+    // the team already knows this system.
+    const rawNotes = (lead.notes || '')
+      .replace(/\[Language:[^\]]*\]\s*\|?\s*/i, '')
+      .replace(/^Website inquiry:\s*/i, '')
+      .replace(/\n?\[Form:[^\]]*\]/i, '')
+      .trim();
     const scenario  = detectScenario(lead);
     const typeLabel = scenario === 'viewing' ? 'New Viewing Request' : scenario === 'property' ? 'New Property Inquiry' : 'New Website Inquiry';
     const viewing   = scenario === 'viewing' ? parseViewingDetails(lead) : null;
+
+    const personLines = [
+      'Name: '  + (lead.fullName || '—'),
+      'Phone: ' + (lead.phone    || '—'),
+      'Email: ' + (lead.email    || '—'),
+      'Score: ' + scoreTag,
+    ].join('\n');
+
+    const propertyLines = [
+      'Property: ' + (lead.interestedIn || '—'),
+      viewing ? 'Date: ' + viewing.date : null,
+      viewing ? 'Time: ' + viewing.time : null,
+      'Budget: '   + (lead.budget   || '—'),
+      'Timeline: ' + (lead.timeline || '—'),
+    ].filter(Boolean).join('\n');
+
+    // "Website" is the default/fallback value, not a real channel — only
+    // show this line when there's an actual answer to "where from".
+    const leadInfoLines = [
+      (lead.source && lead.source !== 'Website') ? 'Came from: ' + lead.source : null,
+      lead.referralPartner ? 'Referral partner: ' + lead.referralPartner : null,
+    ].filter(Boolean).join('\n');
 
     const msg = [
       '🔔 *PHC LEAD ALERT*',
       '*' + typeLabel + '*',
       '',
-      'Name: '           + (lead.fullName     || '—'),
-      'Phone/WhatsApp: ' + (lead.phone        || '—'),
-      'Email: '          + (lead.email        || '—'),
-      'Property: '       + (lead.interestedIn || '—'),
-      viewing ? 'Date: ' + viewing.date : null,
-      viewing ? 'Time: ' + viewing.time : null,
-      'Budget: '         + (lead.budget       || '—'),
-      'Timeline: '       + (lead.timeline     || '—'),
-      'Language: '       + langLabel,
-      'Score: '          + scoreTag,
-      'Source: '         + (lead.source       || 'Website'),
-      rawNotes ? '\nMessage:\n' + rawNotes : null,
+      '*Person:*',
+      personLines,
+      '',
+      '*Property requirements:*',
+      propertyLines,
+      rawNotes      ? '\n*Message:*\n'   + rawNotes      : null,
+      leadInfoLines ? '\n*Lead Info:*\n' + leadInfoLines : null,
     ].filter(Boolean).join('\n');
 
+    Logger.log('Telegram message built, length: ' + msg.length);
+    Logger.log(msg);
+
     const url = 'https://api.telegram.org/bot' + token + '/sendMessage';
-    UrlFetchApp.fetch(url, {
+    const response = UrlFetchApp.fetch(url, {
       method: 'post',
       contentType: 'application/json',
       payload: JSON.stringify({
@@ -338,7 +364,8 @@ function sendTelegramAlert(lead) {
       }),
       muteHttpExceptions: true,
     });
-    Logger.log('Telegram alert sent for lead: ' + name);
+    Logger.log('Telegram API response: ' + response.getContentText());
+    Logger.log('Telegram alert sent for lead: ' + (lead.fullName || 'unknown'));
   } catch (err) {
     Logger.log('Telegram alert error: ' + err);
   }
@@ -556,6 +583,18 @@ function buildAgentEmailHtml(lead, scenario, lang) {
   const langLabel     = { en:'EN', ja:'JP', de:'DE', kh:'KH' }[lang] || lang.toUpperCase();
   const scoreNum      = parseInt(lead.score) || 0;
   const scoreTag      = scoreNum >= 5 ? 'VIP' : scoreNum >= 4 ? 'A' : scoreNum >= 3 ? 'B' : 'C';
+  const scoreColors   = { VIP:['#fde8e8','#a3282f'], A:['#e6f4ea','#1e7a34'], B:['#dce8fb','#1a4d8f'], C:['#f1f1f1','#555555'] }[scoreTag];
+  const scoreHtml     = '<span style="display:inline-block;padding:3px 10px;border-radius:999px;background:' +
+    scoreColors[0] + ';color:' + scoreColors[1] + ';font-weight:700;font-size:11px;">' + scoreTag + '</span>';
+
+  // Same cleanup as the Telegram alert: strip the [Language]/"Website
+  // inquiry:" bookkeeping and the [Form: ...] tag — staff read this table,
+  // not the raw Sheet cell, so only the actual message should show.
+  const rawMessage = (lead.notes || '')
+    .replace(/\[Language:[^\]]*\]\s*\|?\s*/i, '')
+    .replace(/^Website inquiry:\s*/i, '')
+    .replace(/\n?\[Form:[^\]]*\]/i, '')
+    .trim();
 
   const rows = [
     ['Name',            escH(lead.fullName    || '—')],
@@ -565,20 +604,42 @@ function buildAgentEmailHtml(lead, scenario, lang) {
     ['Budget',          escH(lead.budget      || '—')],
     ['Timeline',        escH(lead.timeline    || '—')],
     ['Language',        langLabel],
-    ['Score',           scoreTag],
-    ['Source',          'Website'],
+    ['Score',           scoreHtml],
   ];
+  // "Website" is the fallback value, not a real channel — only add the row
+  // when there's an actual answer to "where did this come from".
+  if (lead.source && lead.source !== 'Website') rows.push(['Source', escH(lead.source)]);
+  if (rawMessage) rows.push(['Message', escH(rawMessage).replace(/\n/g, '<br>')]);
+  if (lead.referralPartner) rows.push(['Referral Partner', escH(lead.referralPartner)]);
 
   const rowsHtml = rows.map(r =>
     '<tr>' +
-    '<td style="padding:9px 16px;border-bottom:1px solid #e8ecf2;font-size:12px;color:#7a8799;width:140px;white-space:nowrap">' + r[0] + '</td>' +
-    '<td style="padding:9px 16px;border-bottom:1px solid #e8ecf2;font-size:13px;color:#1f2437;font-weight:600">'               + r[1] + '</td>' +
+    '<td style="padding:9px 16px;border-bottom:1px solid #e8ecf2;font-size:12px;color:#7a8799;width:140px;white-space:nowrap;vertical-align:top">' + r[0] + '</td>' +
+    '<td style="padding:9px 16px;border-bottom:1px solid #e8ecf2;font-size:13px;color:#1f2437;font-weight:600;line-height:1.5">'                     + r[1] + '</td>' +
     '</tr>'
   ).join('');
 
   const phone    = (lead.phone || '').replace(/[^0-9+]/g, '');
   const waLink   = phone ? 'https://wa.me/' + phone.replace('+','') : '#';
   const callLink = phone ? 'tel:' + phone : '#';
+
+  // Table-based buttons, not flexbox — flexbox is unreliable across email
+  // clients (notably Outlook). A table with evenly-sized <td>s is the
+  // email-safe way to get centered, equal-width buttons.
+  const buttons = [
+    phone ? { label: 'WhatsApp', href: waLink,   bg: '#25D366', color: '#ffffff' } : null,
+    phone ? { label: 'Call',     href: callLink, bg: '#083467', color: '#ffffff' } : null,
+    { label: 'Open CRM', href: 'https://narithkgame2.github.io/phc-tools/PHC_Lead_Tracker.html', bg: '#cc9d4d', color: '#083467' },
+  ].filter(Boolean);
+  const widthPct = (100 / buttons.length).toFixed(2) + '%';
+  const buttonCells = buttons.map(function (b, i) {
+    const padLeft  = i === 0 ? '0' : '4px';
+    const padRight = i === buttons.length - 1 ? '0' : '4px';
+    return '<td style="width:' + widthPct + ';padding:0 ' + padRight + ' 0 ' + padLeft + '">' +
+      '<a href="' + b.href + '" style="display:block;text-align:center;padding:10px 0;background:' + b.bg +
+      ';border-radius:7px;font-size:12px;font-weight:bold;color:' + b.color + ';text-decoration:none">' + b.label + '</a>' +
+    '</td>';
+  }).join('');
 
   return '<!DOCTYPE html><html><head><meta charset="UTF-8"/></head>' +
   '<body style="margin:0;padding:0;background:#f0f2f7;font-family:Arial,Helvetica,sans-serif">' +
@@ -596,11 +657,7 @@ function buildAgentEmailHtml(lead, scenario, lang) {
 
   // Action buttons
   '<tr><td style="padding:16px 20px;background:#f8fafc;border-top:1px solid #e8ecf2">' +
-  '<table cellpadding="0" cellspacing="0"><tr>' +
-  (phone ? '<td style="padding-right:8px"><a href="'+waLink+'" style="display:inline-block;padding:10px 18px;background:#25D366;border-radius:7px;font-size:12px;font-weight:bold;color:#ffffff;text-decoration:none">WhatsApp</a></td>' : '') +
-  (phone ? '<td style="padding-right:8px"><a href="'+callLink+'" style="display:inline-block;padding:10px 18px;background:#083467;border-radius:7px;font-size:12px;font-weight:bold;color:#ffffff;text-decoration:none">Call</a></td>' : '') +
-  '<td><a href="https://narithkgame2.github.io/phc-tools/PHC_Lead_Tracker.html" style="display:inline-block;padding:10px 18px;background:#cc9d4d;border-radius:7px;font-size:12px;font-weight:bold;color:#083467;text-decoration:none">Open CRM</a></td>' +
-  '</tr></table>' +
+  '<table style="width:100%;border-collapse:collapse"><tr>' + buttonCells + '</tr></table>' +
   '</td></tr>' +
 
   '</table></td></tr></table></body></html>';
