@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>PHC Tools · Quick Launch</title>
+<script>(function(){var t=localStorage.getItem('phc_theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -13,22 +14,38 @@
   --bg:#060e1e;--card:#0b1829;--card-h:#0f2035;
   --border:rgba(201,153,63,.15);--border-h:rgba(201,153,63,.35);
   --text:#e8edf5;--muted:rgba(232,237,245,.45);
+  --text-strong:#ffffff;--footer-text:rgba(255,255,255,.2);--shadow:rgba(0,0,0,.4);
+}
+:root[data-theme="light"]{
+  --navy:#083467;--navy-d:#083467;--navy-m:#0b3d7a;
+  --gold:#cc9d4d;--gold-lt:#b8842f;
+  --bg:#f5f6f8;--card:#ffffff;--card-h:#f5f6f8;
+  --border:#e8ecf2;--border-h:rgba(204,157,77,.4);
+  --text:#1a2535;--muted:#7a8799;
+  --text-strong:#0c1830;--footer-text:rgba(10,20,40,.35);--shadow:rgba(15,25,45,.12);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;transition:background-color .2s ease,color .2s ease;}
 
-header{background:var(--navy-d);border-bottom:1px solid var(--border);padding:20px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+header{background:var(--navy-d);border-bottom:1px solid var(--border);padding:20px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;transition:background-color .2s ease,border-color .2s ease;}
 .logo-row{display:flex;align-items:center;gap:12px;}
-.logo-mark{width:36px;height:36px;border-radius:9px;background:rgba(201,153,63,.12);border:1px solid rgba(201,153,63,.28);display:flex;align-items:center;justify-content:center;}
-.logo-mark svg{color:var(--gold);}
-.brand{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#fff;}
+.logo-mark{width:36px;height:36px;flex-shrink:0;}
+.logo-mark img{width:100%;height:100%;object-fit:contain;}
+.brand{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--gold);}
 .brand span{color:var(--gold);}
 .meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.05em;}
+.header-right{display:flex;align-items:center;gap:14px;}
+.theme-toggle{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;flex-shrink:0;}
+.theme-toggle:hover{border-color:var(--border-h);color:var(--gold);}
+.theme-toggle svg{display:block;}
+.theme-toggle .icon-sun{display:none;}
+:root[data-theme="light"] .theme-toggle .icon-moon{display:none;}
+:root[data-theme="light"] .theme-toggle .icon-sun{display:block;}
 
 main{max-width:960px;margin:0 auto;padding:40px 24px 64px;}
 
 .page-title{margin-bottom:32px;}
-.page-title h1{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:#fff;margin-bottom:6px;}
+.page-title h1{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--text-strong);margin-bottom:6px;}
 .page-title p{font-size:13px;color:var(--muted);line-height:1.6;}
 
 .section{margin-bottom:36px;}
@@ -37,13 +54,13 @@ main{max-width:960px;margin:0 auto;padding:40px 24px 64px;}
 
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;}
 
-.card{display:block;text-decoration:none;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;transition:all .18s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;}
+.card{display:block;text-decoration:none;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;transition:background-color .18s cubic-bezier(.4,0,.2,1),border-color .18s cubic-bezier(.4,0,.2,1),transform .18s cubic-bezier(.4,0,.2,1),box-shadow .18s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;}
 .card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent);opacity:0;transition:opacity .18s;}
-.card:hover{background:var(--card-h);border-color:var(--border-h);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.4);}
+.card:hover{background:var(--card-h);border-color:var(--border-h);transform:translateY(-2px);box-shadow:0 8px 32px var(--shadow);}
 .card:hover::before{opacity:1;}
 
 .card-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;flex-shrink:0;}
-.card-title{font-size:14px;font-weight:600;color:#fff;margin-bottom:4px;line-height:1.3;}
+.card-title{font-size:14px;font-weight:600;color:var(--text-strong);margin-bottom:4px;line-height:1.3;}
 .card-desc{font-size:12px;color:var(--muted);line-height:1.5;}
 .card-tag{display:inline-flex;align-items:center;margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.07em;padding:2px 8px;border-radius:10px;border:1px solid;}
 
@@ -60,12 +77,34 @@ main{max-width:960px;margin:0 auto;padding:40px 24px 64px;}
 .ic-red{background:rgba(230,57,70,.12);color:#f87171;}
 .ic-teal{background:rgba(33,150,163,.12);color:#4ec7d6;}
 
-footer{text-align:center;padding:20px;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,.2);border-top:1px solid var(--border);letter-spacing:.05em;}
+footer{text-align:center;padding:20px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--footer-text);border-top:1px solid var(--border);letter-spacing:.05em;}
+
+.search-wrap{position:relative;margin-bottom:28px;}
+.search-wrap svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;}
+.search-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px 12px 40px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color .15s;}
+.search-input::placeholder{color:var(--muted);}
+.search-input:focus{border-color:var(--gold);}
+.search-empty{display:none;text-align:center;padding:40px 20px;color:var(--muted);font-size:13px;}
+
+.recent-section{margin-bottom:36px;display:none;}
+
+/* Start Here hero */
+.start-hero{display:flex;align-items:center;justify-content:space-between;gap:20px;text-decoration:none;background:linear-gradient(135deg,rgba(201,153,63,.14),rgba(201,153,63,.03));border:1px solid rgba(201,153,63,.4);border-radius:16px;padding:24px 28px;margin-bottom:32px;transition:all .18s cubic-bezier(.4,0,.2,1);}
+.start-hero{transition:background-color .18s cubic-bezier(.4,0,.2,1),border-color .18s cubic-bezier(.4,0,.2,1),transform .18s cubic-bezier(.4,0,.2,1),box-shadow .18s cubic-bezier(.4,0,.2,1);}
+.start-hero:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 8px 32px var(--shadow);}
+.start-hero-left{display:flex;align-items:center;gap:18px;min-width:0;}
+.start-hero-icon{width:50px;height:50px;border-radius:13px;background:var(--gold);color:var(--navy-d);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.start-hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);margin-bottom:5px;}
+.start-hero-title{font-family:'Playfair Display',serif;font-size:21px;font-weight:700;color:var(--text-strong);margin-bottom:4px;}
+.start-hero-desc{font-size:12.5px;color:var(--muted);line-height:1.5;max-width:460px;}
+.start-hero-cta{flex-shrink:0;background:var(--gold);color:var(--navy-d);font-size:12px;font-weight:700;padding:11px 18px;border-radius:8px;white-space:nowrap;}
 
 @media(max-width:600px){
   header{padding:16px 18px;}
   main{padding:24px 16px 48px;}
   .grid{grid-template-columns:1fr;}
+  .start-hero{flex-direction:column;align-items:flex-start;padding:20px;}
+  .start-hero-cta{width:100%;text-align:center;}
 }
 </style>
 </head>
@@ -75,15 +114,19 @@ footer{text-align:center;padding:20px;font-family:'JetBrains Mono',monospace;fon
 
 <header>
   <div class="logo-row">
-    <div class="logo-mark">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.5L14 4.5V11.5L8 14.5L2 11.5V4.5L8 1.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.2"/></svg>
-    </div>
+    <div class="logo-mark"><img src="data:image/png;base64,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" alt="PHC"></div>
     <div>
       <div class="brand">Property Hub <span>Cambodia</span></div>
       <div class="meta">Internal Tools · Quick Launch</div>
     </div>
   </div>
-  <div class="meta">15 Tools · Active</div>
+  <div class="header-right">
+    <button class="theme-toggle" onclick="phcToggleTheme()" title="Toggle light / dark mode">
+      <svg class="icon-moon" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 9.5A6 6 0 1 1 6.5 2.5a4.7 4.7 0 0 0 7 7Z"/></svg>
+      <svg class="icon-sun" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="8" cy="8" r="3"/><path d="M8 1.5v2M8 12.5v2M14.5 8h-2M3.5 8h-2M12.6 3.4l-1.4 1.4M4.8 11.2l-1.4 1.4M12.6 12.6l-1.4-1.4M4.8 4.8L3.4 3.4"/></svg>
+    </button>
+    <div class="meta">17 Tools · Active</div>
+  </div>
 </header>
 
 <main>
@@ -92,12 +135,46 @@ footer{text-align:center;padding:20px;font-family:'JetBrains Mono',monospace;fon
     <p>Click any tool to open it. Agent tools are for daily use · Director tools are Nick-only.</p>
   </div>
 
+  <div class="search-wrap">
+    <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="5"/><path d="m11 11 3 3"/></svg>
+    <input class="search-input" id="toolSearch" placeholder="Search tools by name or description…" oninput="filterTools(this.value)">
+  </div>
+  <div class="search-empty" id="searchEmpty">No tools match your search.</div>
+
+  <div class="section recent-section" id="recentSection">
+    <div class="section-label">Recently Opened</div>
+    <div class="grid" id="recentGrid"></div>
+  </div>
+
+  <a class="start-hero" href="PHC_Team_Handbook.html" target="_blank">
+    <div class="start-hero-left">
+      <div class="start-hero-icon">
+        <svg width="22" height="22" viewBox="0 0 18 18" fill="none"><path d="M4 3h8a2 2 0 0 1 2 2v10H6a2 2 0 0 0-2 2V3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M4 13h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div>
+        <div class="start-hero-eyebrow">New here? Start here</div>
+        <div class="start-hero-title">Team Handbook</div>
+        <div class="start-hero-desc">One page per tool — what it's for, who it's for, and exact steps. Pick your name and see only what's yours.</div>
+      </div>
+    </div>
+    <div class="start-hero-cta">Open →</div>
+  </a>
+
   <!-- AGENT TOOLS -->
   <div class="section">
     <div class="section-label">Agent Tools</div>
     <div class="grid">
 
-      <a class="card" href="PHC_Task_Manager_v4.html" target="_blank">
+      <a class="card" href="content-os/docs/PHC_Content_Guidelines.html" onclick="trackRecent(this)" target="_blank">
+        <div class="card-icon ic-teal">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M11 4l3 3-7.2 7.2-4 .8.8-4L11 4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="card-title">Content Guidelines</div>
+        <div class="card-desc">Plain-language rules for educational posts, listings &amp; video scripts — golden rules, formats, contact blocks.</div>
+        <div class="card-tag tag-agent">Marina · Monika</div>
+      </a>
+
+      <a class="card" href="PHC_Task_Manager_v4.html" onclick="trackRecent(this)" target="_blank">
         <div class="card-icon ic-purple">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5 6h8M5 9h8M5 12h5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="14" cy="12" r="3" fill="currentColor" fill-opacity=".15" stroke="currentColor" stroke-width="1.2"/><path d="M13 12l.8.8 1.4-1.4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
         </div>
@@ -106,7 +183,7 @@ footer{text-align:center;padding:20px;font-family:'JetBrains Mono',monospace;fon
         <div class="card-tag tag-agent">All Team</div>
       </a>
 
-      <a class="card" href="PHC_Message_Builder.html" target="_blank">
+      <a class="card" href="PHC_Message_Builder.html" onclick="trackRecent(this)" target="_blank">
         <div class="card-icon ic-blue">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="3" width="14" height="11" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5 7.5h8M5 10.5h5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
         </div>
@@ -115,7 +192,7 @@ footer{text-align:center;padding:20px;font-family:'JetBrains Mono',monospace;fon
         <div class="card-tag tag-agent">Agent</div>
       </a>
 
-      <a class="card" href="PHC_Agent_Training_v3.html" target="_blank">
+      <a class="card" href="PHC_Agent_Training_v3.html" onclick="trackRecent(this)" target="_blank">
         <div class="card-icon ic-gold">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2L15.5 5.5V12.5L9 16L2.5 12.5V5.5L9 2Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 8v4M9 6v.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
         </div>
@@ -124,7 +201,7 @@ footer{text-align:center;padding:20px;font-family:'JetBrains Mono',monospace;fon
         <div class="card-tag tag-agent">Agent</div>
       </a>
 
-      <a class="card" href="PHC_Lead_Tracker.html" target="_blank">
+      <a class="card" href="PHC_Lead_Tracker.html" onclick="trackRecent(this)" target="_blank">
         <div class="card-icon ic-green">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5 9h8M5 6h8M5 12h5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
         </div>
@@ -133,7 +210,7 @@ footer{text-align:center;padding:20px;font-family:'JetBrains Mono',monospace;fon
         <div class="card-tag tag-agent">Agent</div>
       </a>
 
-      <a class="card" href="PHC_Investment_Explorer.html" target="_blank">
+      <a class="card" href="PHC_Investment_Explorer.html" onclick="trackRecent(this)" target="_blank">
         <div class="card-icon ic-purple">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 14L7 9l3 3 5-7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
@@ -142,7 +219,7 @@ footer{text-align:center;padding:20px;font-family:'JetBrains Mono',monospace;fon
         <div class="card-tag tag-agent">Agent</div>
       </a>
 
-      <a class="card" href="PHC_Proposal_Generator.html" target="_blank">
+      <a class="card" href="PHC_Proposal_Generator.html" onclick="trackRecent(this)" target="_blank">
         <div class="card-icon ic-teal">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="2" width="12" height="14" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M6 6h6M6 9h6M6 12h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
         </div>
@@ -151,7 +228,7 @@ footer{text-align:center;padding:20px;font-family:'JetBrains Mono',monospace;fon
         <div class="card-tag tag-agent">Agent</div>
       </a>
 
-      <a class="card" href="PHC_Market_Intelligence_Cheat_Sheet.html" target="_blank">
+      <a class="card" href="PHC_Market_Intelligence_Cheat_Sheet.html" onclick="trackRecent(this)" target="_blank">
         <div class="card-icon ic-gold">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M9 5.5v4l2.5 2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
         </div>
@@ -160,7 +237,25 @@ footer{text-align:center;padding:20px;font-family:'JetBrains Mono',monospace;fon
         <div class="card-tag tag-agent">Agent</div>
       </a>
 
-      <a class="card" href="PHC_Lead_Magnet.html" target="_blank">
+      <a class="card" href="https://docs.google.com/spreadsheets/d/1r0myoeQdgjivBFhx5NMD-BPpOIn7DyD4qhDTH5lxMJ0/edit" onclick="trackRecent(this)" target="_blank">
+        <div class="card-icon ic-teal">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2L15.5 5.5V12.5L9 16L2.5 12.5V5.5L9 2Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 9v4M9 6.5v.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="9" cy="9" r="2.2" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+        </div>
+        <div class="card-title">Knowledge Base</div>
+        <div class="card-desc">Market knowledge learned from Realestate.com.kh &mdash; one row per source, with key takeaways and how it applies to PHC.</div>
+        <div class="card-tag tag-agent">All Team</div>
+      </a>
+
+      <a class="card" href="https://phc-content-os.lovable.app/" onclick="trackRecent(this)" target="_blank">
+        <div class="card-icon ic-purple">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M6 6.5h6M6 9h6M6 11.5h3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </div>
+        <div class="card-title">Content OS <span style="font-size:9px;color:var(--gold);border:1px solid rgba(201,153,63,.35);border-radius:8px;padding:1px 6px;margin-left:4px;vertical-align:1px;">IN DEV</span></div>
+        <div class="card-desc">AI marketing content generator, built on Lovable &mdash; property knowledge base, campaign templates, brand-safe generation. Not finalized yet.</div>
+        <div class="card-tag tag-agent">Marina · Monika</div>
+      </a>
+
+      <a class="card" href="PHC_Lead_Magnet.html" onclick="trackRecent(this)" target="_blank">
         <div class="card-icon ic-blue">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="3" width="14" height="12" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 7h8M5 10h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
         </div>
@@ -169,7 +264,7 @@ footer{text-align:center;padding:20px;font-family:'JetBrains Mono',monospace;fon
         <div class="card-tag tag-client">Client-Facing</div>
       </a>
 
-      <a class="card" href="PHC_Sales_Desk.html" target="_blank">
+      <a class="card" href="PHC_Sales_Desk.html" onclick="trackRecent(this)" target="_blank">
         <div class="card-icon ic-green">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M6 9l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
@@ -186,7 +281,7 @@ footer{text-align:center;padding:20px;font-family:'JetBrains Mono',monospace;fon
     <div class="section-label">Director Tools · Nick Only</div>
     <div class="grid">
 
-      <a class="card" href="PHC_CEO_Dashboard.html" target="_blank">
+      <a class="card" href="PHC_CEO_Dashboard.html" onclick="trackRecent(this)" target="_blank">
         <div class="card-icon ic-gold">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="10" width="3" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="7.5" y="6" width="3" height="10" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="13" y="2" width="3" height="14" rx="1" stroke="currentColor" stroke-width="1.4"/></svg>
         </div>
@@ -195,7 +290,7 @@ footer{text-align:center;padding:20px;font-family:'JetBrains Mono',monospace;fon
         <div class="card-tag tag-director">Director</div>
       </a>
 
-      <a class="card" href="PHC_Commission_Tracker.html" target="_blank">
+      <a class="card" href="PHC_Commission_Tracker.html" onclick="trackRecent(this)" target="_blank">
         <div class="card-icon ic-green">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M9 5.5v1M9 11.5v1M6.5 8a2.5 2.5 0 0 1 5 0c0 1.4-2.5 2-2.5 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
         </div>
@@ -204,7 +299,7 @@ footer{text-align:center;padding:20px;font-family:'JetBrains Mono',monospace;fon
         <div class="card-tag tag-director">Director</div>
       </a>
 
-      <a class="card" href="PHC_Setup_Tracker.html" target="_blank">
+      <a class="card" href="PHC_Setup_Tracker.html" onclick="trackRecent(this)" target="_blank">
         <div class="card-icon ic-red">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M9 2v2M9 14v2M2 9h2M14 9h2M4.22 4.22l1.41 1.41M12.37 12.37l1.41 1.41M4.22 13.78l1.41-1.41M12.37 5.63l1.41-1.41" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
         </div>
@@ -213,7 +308,7 @@ footer{text-align:center;padding:20px;font-family:'JetBrains Mono',monospace;fon
         <div class="card-tag tag-director">Director</div>
       </a>
 
-      <a class="card" href="PHC_CEO_Business_Plan.html" target="_blank">
+      <a class="card" href="PHC_CEO_Business_Plan.html" onclick="trackRecent(this)" target="_blank">
         <div class="card-icon ic-gold">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5 9h8M5 6h6M5 12h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
         </div>
@@ -222,7 +317,7 @@ footer{text-align:center;padding:20px;font-family:'JetBrains Mono',monospace;fon
         <div class="card-tag tag-director">Director</div>
       </a>
 
-      <a class="card" href="PHC_Client_Manager.html" target="_blank">
+      <a class="card" href="PHC_Client_Manager.html" onclick="trackRecent(this)" target="_blank">
         <div class="card-icon ic-green">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6.5" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M3 15c0-3.31 2.69-6 6-6s6 2.69 6 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
         </div>
@@ -231,7 +326,7 @@ footer{text-align:center;padding:20px;font-family:'JetBrains Mono',monospace;fon
         <div class="card-tag tag-director">Director</div>
       </a>
 
-      <a class="card" href="PHC_System_Map.html" target="_blank">
+      <a class="card" href="PHC_System_Map.html" onclick="trackRecent(this)" target="_blank">
         <div class="card-icon ic-purple">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="2" stroke="currentColor" stroke-width="1.4"/><circle cx="3" cy="5" r="1.5" stroke="currentColor" stroke-width="1.2"/><circle cx="15" cy="5" r="1.5" stroke="currentColor" stroke-width="1.2"/><circle cx="3" cy="13" r="1.5" stroke="currentColor" stroke-width="1.2"/><circle cx="15" cy="13" r="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 5.5L7.5 8M10.5 8l3-2.5M4.5 12.5L7.5 10M10.5 10l3 2.5" stroke="currentColor" stroke-width="1.2"/></svg>
         </div>
@@ -240,7 +335,7 @@ footer{text-align:center;padding:20px;font-family:'JetBrains Mono',monospace;fon
         <div class="card-tag tag-director">Director</div>
       </a>
 
-      <a class="card" href="PHC_Progress_Dashboard.html" target="_blank">
+      <a class="card" href="PHC_Progress_Dashboard.html" onclick="trackRecent(this)" target="_blank">
         <div class="card-icon ic-purple">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2a7 7 0 1 0 7 7h-7V2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M13.5 3.5A7 7 0 0 0 9 2v7h7c0-1.79-.63-3.44-1.68-4.73" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
         </div>
@@ -256,5 +351,79 @@ footer{text-align:center;padding:20px;font-family:'JetBrains Mono',monospace;fon
 
 <footer>Property Hub Cambodia · Internal Use Only · 011 666 952</footer>
 
+<script>
+function phcToggleTheme(){
+  var current = document.documentElement.getAttribute('data-theme') || 'dark';
+  var next = current === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('phc_theme', next);
+}
+
+// ── Recently Opened (tools navigate via target="_blank", so this tab
+// stays alive to record the click before the new tab takes focus) ──
+function trackRecent(el){
+  try{
+    var href = el.getAttribute('href');
+    var titleEl = el.querySelector('.card-title');
+    var descEl = el.querySelector('.card-desc');
+    var iconEl = el.querySelector('.card-icon');
+    var tagEl = el.querySelector('.card-tag');
+    if(!href || !titleEl) return;
+    var entry = {
+      href: href,
+      title: titleEl.textContent.trim(),
+      desc: descEl ? descEl.textContent.trim() : '',
+      iconClass: iconEl ? iconEl.className : 'card-icon ic-gold',
+      iconSvg: iconEl ? iconEl.innerHTML : '',
+      tagClass: tagEl ? tagEl.className : '',
+      tagText: tagEl ? tagEl.textContent.trim() : ''
+    };
+    var list = JSON.parse(localStorage.getItem('phc_recent') || '[]');
+    list = list.filter(function(x){ return x.href !== href; });
+    list.unshift(entry);
+    list = list.slice(0, 5);
+    localStorage.setItem('phc_recent', JSON.stringify(list));
+  }catch(e){}
+}
+
+function renderRecent(){
+  var list = [];
+  try{ list = JSON.parse(localStorage.getItem('phc_recent') || '[]'); }catch(e){}
+  var wrap = document.getElementById('recentSection');
+  if(!list.length){ wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  document.getElementById('recentGrid').innerHTML = list.map(function(t){
+    return '<a class="card" href="'+t.href+'" target="_blank" onclick="trackRecent(this)">'
+      + '<div class="'+t.iconClass+'">'+t.iconSvg+'</div>'
+      + '<div class="card-title">'+t.title+'</div>'
+      + '<div class="card-desc">'+t.desc+'</div>'
+      + (t.tagText ? '<div class="'+t.tagClass+'">'+t.tagText+'</div>' : '')
+      + '</a>';
+  }).join('');
+}
+
+// ── Live search across Agent Tools / Director Tools (Recently Opened is left as-is) ──
+function filterTools(q){
+  q = q.toLowerCase().trim();
+  var totalVisible = 0;
+  document.querySelectorAll('main > .section').forEach(function(sec){
+    if(sec.id === 'recentSection') return;
+    var anyVisible = false;
+    sec.querySelectorAll('.card').forEach(function(c){
+      var title = c.querySelector('.card-title') ? c.querySelector('.card-title').textContent : '';
+      var desc = c.querySelector('.card-desc') ? c.querySelector('.card-desc').textContent : '';
+      var match = !q || (title + ' ' + desc).toLowerCase().indexOf(q) > -1;
+      c.style.display = match ? '' : 'none';
+      if(match){ anyVisible = true; totalVisible++; }
+    });
+    sec.style.display = anyVisible ? '' : 'none';
+  });
+  var hero = document.querySelector('.start-hero');
+  if(hero) hero.style.display = q ? 'none' : '';
+  document.getElementById('searchEmpty').style.display = (q && totalVisible === 0) ? 'block' : 'none';
+}
+
+renderRecent();
+</script>
 </body>
 </html>
