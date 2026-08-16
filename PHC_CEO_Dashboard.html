@@ -353,6 +353,7 @@ a{text-decoration:none;cursor:pointer;color:inherit;}
 
 <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycbyCd3r8sX18YONWUf98_eB_B3uuXbn3ALq8A7ataIysQfUPU9y43DvZUe-OoRIticXBzg/exec';
+const API_KEY = '4fa0044f8132a04af7a24bface7613efe2152f97d9dcd432';
 
 const STAGES = ['New Lead','Contacted','Viewing','Negotiating','Closed','Hold','Released'];
 const ACTIVE_STAGES = ['New Lead','Contacted','Viewing','Negotiating'];
@@ -387,7 +388,7 @@ function scoreLabel(n){
 }
 
 async function fetchSheet(sheet){
-  const r = await fetch(API_URL+'?action=getAll&sheet='+sheet);
+  const r = await fetch(API_URL+'?action=getAll&sheet='+sheet+'&key='+encodeURIComponent(API_KEY));
   return r.json();
 }
 

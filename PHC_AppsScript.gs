@@ -57,9 +57,21 @@ const SHEET_HEADERS = {
 
 // ── HTTP entry points ────────────────────────────────────────────
 
+// Set an API_KEY value in Project Settings → Script Properties to require
+// every request to include a matching ?key=... (GET) or {key:...} (POST).
+// Deliberately fails OPEN (allows the request) if no API_KEY property has
+// been set yet, so deploying this code can never lock you out of your own
+// tools mid-rollout — it only enforces once you've actually set the key.
+function isAuthorized_(providedKey) {
+  const required = PropertiesService.getScriptProperties().getProperty('API_KEY');
+  if (!required) return true;
+  return providedKey === required;
+}
+
 function doGet(e) {
   try {
     const p = e.parameter || {};
+    if (!isAuthorized_(p.key)) return respond({ error: 'Unauthorized' });
     if (p.action === 'ping')   return respond({ ok: true, ts: new Date().toISOString() });
     if (p.action === 'getAll') return respond(getAllRows(p.sheet || 'Tasks'));
     return respond({ error: 'Unknown action: ' + p.action });
@@ -71,6 +83,7 @@ function doGet(e) {
 function doPost(e) {
   try {
     const body  = JSON.parse(e.postData.contents);
+    if (!isAuthorized_(body.key)) return respond({ error: 'Unauthorized' });
     const sheet = body.sheet || 'Tasks';
     if (body.action === 'insert') return respond(insertRow(sheet, body.data));
     if (body.action === 'update') return respond(updateRow(sheet, body.id, body.data));

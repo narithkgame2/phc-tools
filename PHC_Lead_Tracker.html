@@ -571,6 +571,7 @@ select.vt-sel{padding:4px 8px;border:1px solid var(--border);border-radius:6px;b
 const LS_API  = 'phc_api_v3';
 const LS_DATA = 'phc_leads_v3';
 const DEFAULT_API = 'https://script.google.com/macros/s/AKfycbzlAxcJqEI3upZ18sm-mj2Gxd3w2XSkD_YYqgkZ4kdw2_AV3V8f2B4qVcPESHZTOq2k8Q/exec';
+const API_KEY     = '4fa0044f8132a04af7a24bface7613efe2152f97d9dcd432';
 let API_URL      = localStorage.getItem(LS_API) || DEFAULT_API;
 let leads        = [];
 let currentView  = 'kanban';
@@ -757,11 +758,11 @@ function fuLabel(l){
 // API
 async function apiGET(q){
   if(!API_URL) return null;
-  try{ var r=await fetch(API_URL+'?'+new URLSearchParams(q)); return await r.json(); }catch{return null;}
+  try{ var r=await fetch(API_URL+'?'+new URLSearchParams(Object.assign({key:API_KEY},q))); return await r.json(); }catch{return null;}
 }
 async function apiPOST(body){
   if(!API_URL) return null;
-  try{ await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body),mode:'no-cors'}); return {ok:true}; }catch{return null;}
+  try{ await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(Object.assign({key:API_KEY},body)),mode:'no-cors'}); return {ok:true}; }catch{return null;}
 }
 let partners=[];
 async function loadPartners(){
