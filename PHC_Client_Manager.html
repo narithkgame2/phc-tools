@@ -477,6 +477,9 @@ a{text-decoration:none;color:inherit}
               <option value="KH">Cambodian</option><option value="CN">Chinese</option>
             </select>
           </div>
+          <div class="eg"><div class="el">Referred By</div>
+            <select class="es" id="dr-referral"><option value="">Not a referral</option></select>
+          </div>
         </div>
         <div class="dr-sect" style="margin-top:10px">Property</div>
         <div class="edit-grid">
@@ -559,6 +562,9 @@ a{text-decoration:none;color:inherit}
           </select>
         </div>
         <div class="m-group"><div class="m-lbl">Telegram</div><input class="m-inp" id="m-telegram" placeholder="@username"></div>
+        <div class="m-group"><div class="m-lbl">Referred By</div>
+          <select class="m-sel" id="m-referral"><option value="">Not a referral</option></select>
+        </div>
         <div class="m-group"><div class="m-lbl">Payment Day</div><input class="m-inp" id="m-pday" type="number" min="1" max="28" placeholder="7"></div>
         <div class="m-group"><div class="m-lbl">Monthly Amount ($)</div><input class="m-inp" id="m-pamount" type="number" placeholder="1715"></div>
         <div class="m-group"><div class="m-lbl">Total Payments</div><input class="m-inp" id="m-ptotal" type="number" value="45"></div>
@@ -589,6 +595,15 @@ let API_URL = localStorage.getItem(LS_API) || DEFAULT_API;
 async function apiGET(params){
   if(!API_URL) return null;
   try{const r=await fetch(API_URL+'?'+new URLSearchParams(params));return await r.json();}catch{return null;}
+}
+
+let partners=[];
+async function loadPartners(){
+  const res=await apiGET({action:'getAll',sheet:'Partners'});
+  partners=Array.isArray(res)?res.filter(p=>p.status==='Approved'):[];
+  const opts='<option value="">Not a referral</option>'+partners.map(p=>`<option value="${p.slug}">${p.displayName}</option>`).join('');
+  const mSel=document.getElementById('m-referral'); if(mSel) mSel.innerHTML=opts;
+  const drSel=document.getElementById('dr-referral'); if(drSel) drSel.innerHTML=opts;
 }
 async function apiPOST(body){
   if(!API_URL) return null;
@@ -816,6 +831,7 @@ function openDrawer(id){
   document.getElementById('dr-telegram').value=c.telegram||'';
   document.getElementById('dr-phone').value=c.phone||'';
   document.getElementById('dr-nat').value=c.nat||'JP';
+  document.getElementById('dr-referral').value=c.referralPartner||'';
   document.getElementById('dr-proj').value=c.project||PROJECTS[0];
   document.getElementById('dr-unit').value=c.unit||'';
   document.getElementById('dr-floor').value=c.floor||'';
@@ -858,6 +874,7 @@ function saveFromDrawer(){
     telegram:document.getElementById('dr-telegram').value.trim(),
     phone:document.getElementById('dr-phone').value.trim(),
     nat:document.getElementById('dr-nat').value,
+    referralPartner:document.getElementById('dr-referral').value,
     project:document.getElementById('dr-proj').value,
     unit:document.getElementById('dr-unit').value.trim(),
     floor:Number(document.getElementById('dr-floor').value)||0,
@@ -891,6 +908,7 @@ function openAddModal(){
   document.getElementById('m-pmade').value='0';
   document.getElementById('m-spa').value='false';
   document.getElementById('m-booking').value='';
+  document.getElementById('m-referral').value='';
   document.getElementById('modal-ov').classList.remove('hidden');
   setTimeout(()=>document.getElementById('m-name').focus(),80);
 }
@@ -908,6 +926,7 @@ function saveNewClient(){
     nat:document.getElementById('m-nat').value,
     telegram:document.getElementById('m-telegram').value.trim(),
     phone:'',
+    referralPartner:document.getElementById('m-referral').value,
     bookingDate:document.getElementById('m-booking').value,
     spa:document.getElementById('m-spa').value==='true',
     titleStatus:'Pending',
@@ -1022,8 +1041,9 @@ function exportCSV(){
 // ── INIT ──
 function renderAll(){updateStats();renderDashboard();if(currentView==='clients')renderClients();}
 
-document.addEventListener('DOMContentLoaded',function(){
+document.addEventListener('DOMContentLoaded',async function(){
   renderAll();
+  await loadPartners();
   if(API_URL){
     setApiStatus(null);
     loadFromSheets();
@@ -1034,12 +1054,13 @@ document.addEventListener('DOMContentLoaded',function(){
     try{
       const d=JSON.parse(pending);
       localStorage.removeItem('phc_convert_pending');
-      openModal();
+      openAddModal();
       setTimeout(function(){
         document.getElementById('m-name').value=d.name||'';
         if(d.nat) document.getElementById('m-nat').value=d.nat;
         if(d.project) document.getElementById('m-proj').value=d.project;
         document.getElementById('m-notes').value=d.notes||'';
+        document.getElementById('m-referral').value=d.referralPartner||'';
         document.getElementById('m-unit').focus();
       },120);
     }catch(e){}
