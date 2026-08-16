@@ -421,9 +421,12 @@ function seedInitialPartners() {
 
 // Confirmed live 2026-08-12.
 const FROM_EMAIL  = 'invest@propertyhubcambodia.com';
-// Single address only — Apps Script's GmailApp leaks the full bcc list to
-// every bcc'd recipient's own inbox when there's more than one address here.
-const BCC_EMAIL   = 'invest@propertyhubcambodia.com';
+// Internal addresses that get their own copy of every client confirmation
+// email. Sent as separate solo emails in sendClientConfirmation() below —
+// never as one email bcc'd to all of them — because GmailApp leaks the full
+// bcc list to every bcc'd recipient's own inbox once there's more than one
+// address. This way nobody sees anyone else's address.
+const CLIENT_COPY_RECIPIENTS = ['invest@propertyhubcambodia.com', 'propertyhubcambodia@gmail.com'];
 const WA_NUMBER   = '85511666952';
 const AGENT_EMAIL = 'invest@propertyhubcambodia.com,propertyhubcambodia@gmail.com,narithkgame2@gmail.com';
 
@@ -939,13 +942,28 @@ function sendClientConfirmation(lead, scenario, lang) {
   const gdpr   = lang === 'de'
     ? '<p style="margin:8px 0 0;font-size:11px;color:rgba(255,255,255,.4)">Sie erhalten diese E-Mail, weil Sie eine Anfrage auf propertyhubcambodia.com gestellt haben. Zur Datenlöschung antworten Sie bitte auf diese E-Mail.</p>'
     : '';
+  const html = buildClientEmailHtml(copy, waLink, gdpr);
 
   GmailApp.sendEmail(lead.email, copy.subject, '', {
-    htmlBody: buildClientEmailHtml(copy, waLink, gdpr),
+    htmlBody: html,
     name:     'Property Hub Cambodia',
     from:     FROM_EMAIL,
     replyTo:  FROM_EMAIL,
-    bcc:      BCC_EMAIL,
+  });
+
+  // Each internal recipient gets their own solo email, not a bcc'd copy —
+  // see the CLIENT_COPY_RECIPIENTS comment above for why. One failing send
+  // (e.g. a bad address) shouldn't stop the others or the client's own email.
+  CLIENT_COPY_RECIPIENTS.forEach(addr => {
+    try {
+      GmailApp.sendEmail(addr, '[Client Copy] ' + copy.subject, '', {
+        htmlBody: html,
+        name:     'PHC CRM',
+        from:     FROM_EMAIL,
+      });
+    } catch (err) {
+      Logger.log('Client copy to ' + addr + ' failed: ' + err);
+    }
   });
 }
 
