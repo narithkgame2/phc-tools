@@ -421,13 +421,10 @@ function seedInitialPartners() {
 
 // Confirmed live 2026-08-12.
 const FROM_EMAIL  = 'invest@propertyhubcambodia.com';
-// Internal addresses that get their own copy of every client confirmation
-// email. Sent as separate solo emails in sendClientConfirmation() below —
-// never as one email bcc'd to all of them — because GmailApp leaks the full
-// bcc list to every bcc'd recipient's own inbox once there's more than one
-// address. This way nobody sees anyone else's address.
-const CLIENT_COPY_RECIPIENTS = ['invest@propertyhubcambodia.com', 'propertyhubcambodia@gmail.com'];
 const WA_NUMBER   = '85511666952';
+// The agent notification email (sendAgentNotification, below) already goes
+// to everyone here with the full lead details — no separate copy of the
+// client-facing email is sent on top of it, to avoid duplicate/noisy alerts.
 const AGENT_EMAIL = 'invest@propertyhubcambodia.com,propertyhubcambodia@gmail.com,narithkgame2@gmail.com';
 
 // PLACEHOLDER — see file-header note. Real value is a long base64 PNG,
@@ -496,6 +493,18 @@ function formatReferralLabel_(slug) {
   return niceSlug + ' (unverified — not an approved partner)';
 }
 
+// Telegram's legacy Markdown parser treats a lone _ * ` [ as the start of
+// formatting — one unescaped underscore (e.g. a name like "Chan_Dara" or an
+// email like "john_doe@gmail.com") makes the whole message malformed, and
+// Telegram's API rejects it outright. Combined with muteHttpExceptions below,
+// that rejection is completely silent — the alert just never arrives, with
+// no error anywhere. Every piece of lead-controlled text must go through
+// this before being dropped into the message; only the static labels/
+// headers we write ourselves are safe to leave as real Markdown.
+function escTg_(s) {
+  return String(s == null ? '' : s).replace(/([_*`\[])/g, '\\$1');
+}
+
 function sendTelegramAlert(lead) {
   const props  = PropertiesService.getScriptProperties();
   const token  = props.getProperty('TELEGRAM_BOT_TOKEN');
@@ -510,16 +519,16 @@ function sendTelegramAlert(lead) {
 
   // The client's own typed message was buried in `notes` alongside bookkeeping
   // tags — strip those so only the real message shows, same cleanup as the email alert.
-  const clientMessage = (lead.notes || '')
+  const clientMessage = escTg_((lead.notes || '')
     .replace(/\[Language:[^\]]*\]\s*\|?\s*/i, '')
     .replace(/^Website inquiry:?\s*/i, '')
     .replace(/\n?\[Form:[^\]]*\]/i, '')
-    .trim();
+    .trim());
 
   const personLines = [
-    'Name: '  + (lead.fullName || '—'),
-    'Phone: ' + (lead.phone    || '—'),
-    'Email: ' + (lead.email    || '—'),
+    'Name: '  + escTg_(lead.fullName || '—'),
+    'Phone: ' + escTg_(lead.phone    || '—'),
+    'Email: ' + escTg_(lead.email    || '—'),
     'Score: ' + scoreTag_(lead.score),
   ].join('\n');
 
@@ -529,16 +538,16 @@ function sendTelegramAlert(lead) {
   // request, so staff don't read it as something the client asked for.
   const isSuggestedProperty = /\[Form: \/welcome Landing Page\]/.test(lead.notes || '');
   const propertyLines = [
-    (isSuggestedProperty ? 'Suggested Property: ' : 'Property: ') + (lead.interestedIn || '—'),
-    'Budget: '   + (lead.budget   || '—'),
-    'Timeline: ' + (lead.timeline || '—'),
+    (isSuggestedProperty ? 'Suggested Property: ' : 'Property: ') + escTg_(lead.interestedIn || '—'),
+    'Budget: '   + escTg_(lead.budget   || '—'),
+    'Timeline: ' + escTg_(lead.timeline || '—'),
   ].join('\n');
 
   // "Website" is the fallback value, not a real channel — only show a line
   // when there's an actual answer to "where did this come from".
   const leadInfoLines = [
-    (lead.source && lead.source !== 'Website') ? 'Came from: ' + lead.source : null,
-    lead.referralPartner ? 'Referral partner: ' + formatReferralLabel_(lead.referralPartner) : null,
+    (lead.source && lead.source !== 'Website') ? 'Came from: ' + escTg_(lead.source) : null,
+    lead.referralPartner ? 'Referral partner: ' + escTg_(formatReferralLabel_(lead.referralPartner)) : null,
   ].filter(Boolean).join('\n');
 
   const msg = [
@@ -942,28 +951,15 @@ function sendClientConfirmation(lead, scenario, lang) {
   const gdpr   = lang === 'de'
     ? '<p style="margin:8px 0 0;font-size:11px;color:rgba(255,255,255,.4)">Sie erhalten diese E-Mail, weil Sie eine Anfrage auf propertyhubcambodia.com gestellt haben. Zur Datenlöschung antworten Sie bitte auf diese E-Mail.</p>'
     : '';
-  const html = buildClientEmailHtml(copy, waLink, gdpr);
 
+  // No bcc/internal copy here on purpose — sendAgentNotification() already
+  // tells the team about every new lead with the full details. Copying this
+  // client-facing email on top of that was pure duplicate noise.
   GmailApp.sendEmail(lead.email, copy.subject, '', {
-    htmlBody: html,
+    htmlBody: buildClientEmailHtml(copy, waLink, gdpr),
     name:     'Property Hub Cambodia',
     from:     FROM_EMAIL,
     replyTo:  FROM_EMAIL,
-  });
-
-  // Each internal recipient gets their own solo email, not a bcc'd copy —
-  // see the CLIENT_COPY_RECIPIENTS comment above for why. One failing send
-  // (e.g. a bad address) shouldn't stop the others or the client's own email.
-  CLIENT_COPY_RECIPIENTS.forEach(addr => {
-    try {
-      GmailApp.sendEmail(addr, '[Client Copy] ' + copy.subject, '', {
-        htmlBody: html,
-        name:     'PHC CRM',
-        from:     FROM_EMAIL,
-      });
-    } catch (err) {
-      Logger.log('Client copy to ' + addr + ' failed: ' + err);
-    }
   });
 }
 
