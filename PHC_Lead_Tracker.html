@@ -543,6 +543,9 @@ select.vt-sel{padding:4px 8px;border:1px solid var(--border);border-radius:6px;b
             <option>Walk-in</option><option>TikTok</option><option>LinkedIn</option>
           </select>
         </div>
+        <div class="m-group"><label class="m-lbl">Referred By</label>
+          <select class="m-sel" id="mReferral"><option value="">Not a referral</option></select>
+        </div>
         <div class="m-group"><label class="m-lbl">Agent</label>
           <select class="m-sel" id="mAgent"><option>Nick</option><option>Monika</option><option>Reza</option></select>
         </div>
@@ -759,6 +762,13 @@ async function apiGET(q){
 async function apiPOST(body){
   if(!API_URL) return null;
   try{ await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body),mode:'no-cors'}); return {ok:true}; }catch{return null;}
+}
+let partners=[];
+async function loadPartners(){
+  var res=await apiGET({action:'getAll',sheet:'Partners'});
+  partners=Array.isArray(res)?res.filter(function(p){return p.status==='Approved';}):[];
+  var sel=document.getElementById('mReferral');
+  if(sel) sel.innerHTML='<option value="">Not a referral</option>'+partners.map(function(p){return '<option value="'+p.slug+'">'+p.displayName+'</option>';}).join('');
 }
 async function loadLeads(){
   if(!API_URL){
@@ -1094,6 +1104,7 @@ function renderDrawerDetails(l){
         '<div class="edit-group"><label class="edit-lbl">Project</label><select class="edit-sel" id="eProject"><option value="">-</option>'+['Time Square 7','Time Square 8','Time Square 9','Time Square 10','Time Square 11','Kingston Royale','Le Conde BKK1','J Tower 3','Odom Tower','Odom Living','UC88 Wyndham Garden','Diamond Bay Garden','Norea Square','Angkor Grace','Rose Apple Square','LZ Sea View Premium','Picasso Sky Gemme','GATO Tower','Multiple/TBD'].map(function(p){return '<option'+(l.interestedIn===p?' selected':'')+'>'+p+'</option>';}).join('')+'</select></div>'+
         '<div class="edit-group"><label class="edit-lbl">Agent</label><select class="edit-sel" id="eAgent">'+['Nick','Monika','Reza'].map(function(a){return '<option'+(l.agent===a?' selected':'')+'>'+a+'</option>';}).join('')+'</select></div>'+
         '<div class="edit-group"><label class="edit-lbl">Source</label><select class="edit-sel" id="eSource"><option value="">-</option>'+['WhatsApp','Facebook','Instagram','Telegram','LINE','REAKH','PHC Website','Referral','Walk-in','TikTok','LinkedIn'].map(function(s){return '<option'+(l.source===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select></div>'+
+        '<div class="edit-group"><label class="edit-lbl">Referred By</label><select class="edit-sel" id="eReferral"><option value="">Not a referral</option>'+partners.map(function(p){return '<option value="'+p.slug+'"'+(l.referralPartner===p.slug?' selected':'')+'>'+p.displayName+'</option>';}).join('')+'</select></div>'+
         '<div class="edit-group full"><label class="edit-lbl">Notes</label><textarea class="edit-ta" id="eNotes">'+escHtml(l.notes||'')+'</textarea></div>'+
       '</div>'+
     '</div>';
@@ -1182,6 +1193,7 @@ async function saveLead(){
   l.interestedIn=document.getElementById('eProject').value;
   l.agent=document.getElementById('eAgent').value;
   l.source=document.getElementById('eSource').value;
+  l.referralPartner=document.getElementById('eReferral').value;
   l.notes=document.getElementById('eNotes').value.trim();
   await persistLead(l,false);
   closeDrawer();
@@ -1259,6 +1271,7 @@ async function addLead(){
     agent:document.getElementById('mAgent').value,
     stage:stage,followUpDate:document.getElementById('mFU').value,
     followUpAction:'',notes:document.getElementById('mNotes').value.trim(),
+    referralPartner:document.getElementById('mReferral').value,
     activities:[],createdAt:new Date().toISOString()
   };
   leads.unshift(l);
@@ -1358,6 +1371,7 @@ function escAttr(s){ return String(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;
 // INIT
 document.addEventListener('DOMContentLoaded',function(){
   if(API_URL) setApiStatus(false);
+  loadPartners();
   loadLeads();
 });
 document.addEventListener('keydown',function(e){

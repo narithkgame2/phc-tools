@@ -135,6 +135,14 @@ tbody tr:hover{background:var(--g1);}
 .del-btn{color:var(--red);border-color:rgba(214,48,49,.2);}
 .del-btn:hover{background:#fee2e2;border-color:var(--red);}
 .empty-row td{text-align:center;padding:40px;color:var(--g4);font-size:13px;}
+.status-pill{display:inline-block;font-size:10px;font-weight:600;padding:3px 9px;border-radius:10px;letter-spacing:.02em;}
+.status-Approved{background:#d1fae5;color:#065f46;}
+.status-Pending{background:#fef3c7;color:#92400e;}
+.status-Inactive{background:var(--g2);color:var(--g4);}
+.link-cell{display:flex;align-items:center;gap:6px;}
+.link-text{font-family:'DM Mono',monospace;font-size:11px;color:var(--g4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;}
+.copy-btn{background:none;border:1px solid var(--g2);color:var(--g4);font-size:10px;padding:3px 8px;border-radius:6px;cursor:pointer;flex-shrink:0;transition:all .15s;}
+.copy-btn:hover{border-color:var(--gold);color:var(--gold);}
 
 /* ── Modal ── */
 .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(8,52,103,.45);z-index:200;align-items:center;justify-content:center;padding:20px;}
@@ -306,11 +314,13 @@ tbody tr:hover{background:var(--g1);}
       </div>
 
       <div class="split-section" style="border-left:3px solid var(--orange)">
-        <div class="split-title">Referral (optional)</div>
+        <div class="split-title">Referral Partner (optional)</div>
         <div class="split-row">
-          <input class="form-input" id="f-referrer" placeholder="Referrer name — leave blank if none" oninput="recalc()">
-          <input class="split-pct-input" id="f-referral-pct" type="number" min="0" max="100" step="1" value="15" oninput="recalc()">
-          <div class="split-amt" id="referral-amt" style="color:var(--orange)">$0</div>
+          <select class="form-input form-select" id="f-partner" onchange="onPartnerPick()">
+            <option value="">No referral partner</option>
+          </select>
+          <input class="split-pct-input" id="f-partner-pct" type="number" min="0" max="100" step="1" value="15" oninput="recalc()">
+          <div class="split-amt" id="partner-amt" style="color:var(--orange)">$0</div>
         </div>
       </div>
 
@@ -333,6 +343,60 @@ tbody tr:hover{background:var(--g1);}
     <div class="modal-footer">
       <button class="btn-cancel" onclick="closeModal()">Cancel</button>
       <button class="btn-save" onclick="saveDeal()">Save Deal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Partner Modal -->
+<div class="modal-backdrop" id="partnerModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="partner-modal-title">Add Partner</div>
+      <button class="modal-close" onclick="closePartnerModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row-2">
+        <div>
+          <label class="form-label">Name</label>
+          <input class="form-input" id="f-p-name" placeholder="e.g. Sokha Chan" oninput="onPartnerNameInput()">
+        </div>
+        <div>
+          <label class="form-label">Commission Rate (%)</label>
+          <input class="form-input" id="f-p-rate" type="number" min="0" max="100" step="0.1" placeholder="e.g. 15">
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div>
+          <label class="form-label">Slug (used in the referral link — can't be changed after saving)</label>
+          <input class="form-input" id="f-p-slug" placeholder="e.g. sokha-chan">
+        </div>
+        <div>
+          <label class="form-label">Status</label>
+          <select class="form-input form-select" id="f-p-status">
+            <option value="Approved">Approved</option>
+            <option value="Pending">Pending</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div>
+          <label class="form-label">Contact Phone (optional)</label>
+          <input class="form-input" id="f-p-phone" placeholder="e.g. 012 345 678">
+        </div>
+        <div>
+          <label class="form-label">Contact Email (optional)</label>
+          <input class="form-input" id="f-p-email" placeholder="e.g. sokha@example.com">
+        </div>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Notes (optional)</label>
+        <input class="form-input" id="f-p-notes" placeholder="How this partnership was agreed, terms, etc.">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closePartnerModal()">Cancel</button>
+      <button class="btn-save" onclick="savePartner()">Save Partner</button>
     </div>
   </div>
 </div>
@@ -379,6 +443,11 @@ tbody tr:hover{background:var(--g1);}
         <span class="sb-count" id="sbCntR">0</span>
       </a>
 
+      <div class="sb-section-label" style="margin-top:6px">Reports</div>
+      <a class="sb-item" id="sbPartners" onclick="showPartnersView(this)">
+        <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="5" r="2.5"/><path d="M1 13c0-2.76 2.24-5 5-5s5 2.24 5 5"/><circle cx="12.5" cy="5" r="2"/><path d="M15 13c0-2.21-1.34-4-3-4.5"/></svg></span><span class="sb-label">Partners</span>
+      </a>
+
       <div class="sb-section-label" style="margin-top:6px">Other Tools</div>
       <a class="sb-item" href="PHC_Lead_Tracker.html">
         <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="1" width="14" height="14" rx="2"/><path d="M4 8h8M4 5h8M4 11h5"/></svg></span><span class="sb-label">Lead Tracker</span>
@@ -405,7 +474,7 @@ tbody tr:hover{background:var(--g1);}
       <span class="bc-active" id="bcCurrent">All Deals</span>
     </div>
 
-    <div class="toolbar">
+    <div class="toolbar" id="toolbar">
       <select class="month-picker" id="monthPicker" onchange="renderAll()"></select>
       <button class="add-btn" onclick="openModal()">+ Log Deal</button>
     </div>
@@ -413,6 +482,7 @@ tbody tr:hover{background:var(--g1);}
     <div class="content-scroll">
       <div class="page">
 
+        <div id="dealsView">
         <!-- ── STAT CARDS ── -->
         <div class="stats-grid">
           <div class="stat-card c-navy">
@@ -471,6 +541,71 @@ tbody tr:hover{background:var(--g1);}
             <tbody id="deal-tbody"></tbody>
           </table>
         </div>
+        </div>
+
+        <!-- ── PARTNERS VIEW ── -->
+        <div id="partnersView" style="display:none">
+          <div class="stats-grid">
+            <div class="stat-card c-navy">
+              <div class="stat-label">Active Partners</div>
+              <div class="stat-val" id="p-count">—</div>
+              <div class="stat-sub">approved</div>
+            </div>
+            <div class="stat-card c-gold">
+              <div class="stat-label">Leads Referred</div>
+              <div class="stat-val" id="p-leads">—</div>
+              <div class="stat-sub">all time</div>
+            </div>
+            <div class="stat-card c-nick">
+              <div class="stat-label">Converted to Client</div>
+              <div class="stat-val" id="p-converted">—</div>
+              <div class="stat-sub">all time</div>
+            </div>
+            <div class="stat-card c-orange">
+              <div class="stat-label">Commission Owed</div>
+              <div class="stat-val" id="p-owed">—</div>
+              <div class="stat-sub">unpaid, all time</div>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <div class="table-header">
+              <div class="table-title">Partner Performance</div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Partner</th>
+                  <th>Leads Referred</th>
+                  <th>Converted to Client</th>
+                  <th>Deals Closed</th>
+                  <th>Commission Owed</th>
+                </tr>
+              </thead>
+              <tbody id="partner-tbody"></tbody>
+            </table>
+          </div>
+
+          <div class="table-wrap" style="margin-top:20px">
+            <div class="table-header">
+              <div class="table-title">Manage Partners</div>
+              <button class="add-btn" onclick="openPartnerModal()">+ Add Partner</button>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Commission Rate</th>
+                  <th>Status</th>
+                  <th>Registered</th>
+                  <th>Referral Link</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="partner-manage-tbody"></tbody>
+            </table>
+          </div>
+        </div>
 
       </div>
     </div>
@@ -481,11 +616,16 @@ tbody tr:hover{background:var(--g1);}
 <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycbyCd3r8sX18YONWUf98_eB_B3uuXbn3ALq8A7ataIysQfUPU9y43DvZUe-OoRIticXBzg/exec';
 const LS_KEY  = 'phc_deals_cache';
+const LS_PARTNERS = 'phc_partners_cache';
+const SITE_URL = 'https://propertyhubcambodia.com/';
 
 let deals = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
 let editingId = null;
 let deletingId = null;
 let dealFilter = 'all';   // 'all' | 'referral'
+let partners = [];        // approved partners only — used by the deal-log dropdown
+let allPartners = JSON.parse(localStorage.getItem(LS_PARTNERS) || '[]'); // every partner, any status
+let editingPartnerId = null;
 let agentFilter = '';     // '' | 'N' | 'M' | 'R'
 
 // ── Helpers ──────────────────────────────────────────────────────
@@ -512,9 +652,12 @@ function toggleSidebar(){ $('sidebar').classList.toggle('collapsed'); }
 
 function sbSetDealFilter(type, el){
   dealFilter = type;
-  document.querySelectorAll('#sbAll,#sbReferral').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('#sbAll,#sbReferral,#sbPartners').forEach(e=>e.classList.remove('active'));
   el.classList.add('active');
   $('bcCurrent').textContent = type==='referral' ? 'Referrals' : 'All Deals';
+  $('dealsView').style.display='';
+  $('partnersView').style.display='none';
+  $('toolbar').style.display='';
   renderAll();
 }
 
@@ -523,6 +666,169 @@ function sbSetAgent(agent, el){
   document.querySelectorAll('#sbAgentAll,#sbAgentN,#sbAgentM,#sbAgentR').forEach(e=>e.classList.remove('active'));
   el.classList.add('active');
   renderAll();
+}
+
+// ── Partners view ────────────────────────────────────────────────
+
+let leadsCache = null;
+let clientsCache = null;
+
+async function fetchSheet(sheet){
+  try{
+    const r=await fetch(API_URL+'?action=getAll&sheet='+sheet);
+    const data=await r.json();
+    return Array.isArray(data)?data:[];
+  }catch{ return []; }
+}
+
+async function showPartnersView(el){
+  document.querySelectorAll('#sbAll,#sbReferral,#sbPartners').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active');
+  $('bcCurrent').textContent='Partners';
+  $('dealsView').style.display='none';
+  $('partnersView').style.display='';
+  $('toolbar').style.display='none';
+  if(leadsCache===null) leadsCache=await fetchSheet('Leads');
+  if(clientsCache===null) clientsCache=await fetchSheet('Clients');
+  await loadPartners(); // refresh so status/rate edits show up immediately
+  renderPartnersView();
+  renderManagePartners();
+}
+
+function renderPartnersView(){
+  const leads=leadsCache||[];
+  const clients=clientsCache||[];
+  const rows=partners.map(p=>{
+    const leadCount=leads.filter(l=>l.referralPartner===p.slug).length;
+    const convertedCount=clients.filter(c=>c.referralPartner===p.slug).length;
+    const partnerDeals=deals.filter(d=>d.referralPartner===p.slug);
+    const owed=partnerDeals.reduce((s,d)=>s+(d.partnerAmt||0),0);
+    return {name:p.displayName, leadCount, convertedCount, dealCount:partnerDeals.length, owed};
+  });
+
+  $('p-count').textContent=partners.length;
+  $('p-leads').textContent=rows.reduce((s,r)=>s+r.leadCount,0);
+  $('p-converted').textContent=rows.reduce((s,r)=>s+r.convertedCount,0);
+  $('p-owed').textContent=usd(rows.reduce((s,r)=>s+r.owed,0));
+
+  if(!rows.length){
+    $('partner-tbody').innerHTML=`<tr class="empty-row"><td colspan="5">No approved partners yet — click "+ Add Partner" below</td></tr>`;
+    return;
+  }
+
+  $('partner-tbody').innerHTML=rows.sort((a,b)=>b.owed-a.owed).map(r=>`<tr>
+    <td>${r.name}</td>
+    <td>${r.leadCount}</td>
+    <td>${r.convertedCount}</td>
+    <td>${r.dealCount}</td>
+    <td class="price-cell">${usdFull(r.owed)}</td>
+  </tr>`).join('');
+}
+
+function renderManagePartners(){
+  if(!allPartners.length){
+    $('partner-manage-tbody').innerHTML=`<tr class="empty-row"><td colspan="6">No partners yet — click "+ Add Partner" to register one</td></tr>`;
+    return;
+  }
+  const sorted=[...allPartners].sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''));
+  $('partner-manage-tbody').innerHTML=sorted.map(p=>{
+    const registered=p.createdAt?new Date(p.createdAt).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'—';
+    const link=referralLink(p.slug);
+    return `<tr>
+      <td>${p.displayName||'—'}</td>
+      <td>${p.ratePct||0}%</td>
+      <td><span class="status-pill status-${p.status||'Pending'}">${p.status||'Pending'}</span></td>
+      <td style="font-family:'DM Mono',monospace;font-size:11px">${registered}</td>
+      <td>
+        <div class="link-cell">
+          <span class="link-text" title="${link}">${link}</span>
+          <button class="copy-btn" onclick="copyReferralLink('${p.slug}')">Copy</button>
+        </div>
+      </td>
+      <td style="white-space:nowrap">
+        <button class="action-btn" onclick="openPartnerModal('${p.id}')">Edit</button>
+        ${p.status==='Inactive'
+          ? `<button class="action-btn" onclick="setPartnerStatus('${p.id}','Approved')">Reactivate</button>`
+          : `<button class="action-btn del-btn" onclick="setPartnerStatus('${p.id}','Inactive')">Deactivate</button>`}
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function openPartnerModal(id){
+  editingPartnerId=id||null;
+  const p=id?allPartners.find(x=>x.id===id):null;
+  $('partner-modal-title').textContent=p?'Edit Partner':'Add Partner';
+  $('f-p-name').value=p?p.displayName:'';
+  $('f-p-slug').value=p?p.slug:'';
+  $('f-p-slug').disabled=!!p; // slug is permanent once saved — it's baked into the referral link and historical Leads/Deals rows
+  $('f-p-rate').value=p?p.ratePct:'15';
+  $('f-p-status').value=p?p.status:'Approved';
+  $('f-p-phone').value=p?(p.contactPhone||''):'';
+  $('f-p-email').value=p?(p.contactEmail||''):'';
+  $('f-p-notes').value=p?(p.notes||''):'';
+  $('partnerModal').classList.add('show');
+}
+
+function closePartnerModal(){ $('partnerModal').classList.remove('show'); }
+
+function onPartnerNameInput(){
+  if(editingPartnerId) return; // never auto-change the slug of an existing partner
+  $('f-p-slug').value=slugify($('f-p-name').value);
+}
+
+async function savePartner(){
+  const name=$('f-p-name').value.trim();
+  const slug=slugify($('f-p-slug').value);
+  if(!name){ toast('Enter a name'); return; }
+  if(!slug){ toast('Enter a slug'); return; }
+  if(!editingPartnerId && allPartners.some(p=>p.slug===slug)){ toast('That slug is already in use'); return; }
+
+  const now=new Date().toISOString();
+  const payload={
+    slug,
+    displayName:name,
+    ratePct:Number($('f-p-rate').value)||0,
+    status:$('f-p-status').value,
+    contactPhone:$('f-p-phone').value.trim(),
+    contactEmail:$('f-p-email').value.trim(),
+    notes:$('f-p-notes').value.trim(),
+    updatedAt:now,
+  };
+
+  if(editingPartnerId){
+    const idx=allPartners.findIndex(p=>p.id===editingPartnerId);
+    if(idx>-1) allPartners[idx]={...allPartners[idx],...payload};
+    await apiPOST({action:'update',sheet:'Partners',id:editingPartnerId,data:payload});
+    toast('Partner updated');
+  }else{
+    const id='P-'+slug+'-'+Date.now();
+    allPartners.push({id, createdAt:now, ...payload});
+    await apiPOST({action:'insert',sheet:'Partners',data:{id, createdAt:now, ...payload}});
+    toast('Partner added');
+  }
+
+  partners=allPartners.filter(p=>p.status==='Approved');
+  localStorage.setItem(LS_PARTNERS,JSON.stringify(allPartners));
+  populatePartnerSelect('');
+  closePartnerModal();
+  renderManagePartners();
+  renderPartnersView();
+}
+
+async function setPartnerStatus(id,status){
+  const idx=allPartners.findIndex(p=>p.id===id);
+  if(idx===-1) return;
+  allPartners[idx].status=status;
+  const now=new Date().toISOString();
+  allPartners[idx].updatedAt=now;
+  await apiPOST({action:'update',sheet:'Partners',id,data:{status,updatedAt:now}});
+  partners=allPartners.filter(p=>p.status==='Approved');
+  localStorage.setItem(LS_PARTNERS,JSON.stringify(allPartners));
+  populatePartnerSelect('');
+  renderManagePartners();
+  renderPartnersView();
+  toast(status==='Inactive'?'Partner deactivated':'Partner reactivated');
 }
 
 // ── Month picker ─────────────────────────────────────────────────
@@ -544,6 +850,49 @@ async function apiPOST(body){
   try{ await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body),mode:'no-cors'}); return {ok:true}; }catch{return null;}
 }
 
+async function loadPartners(){
+  try{
+    const r=await fetch(API_URL+'?action=getAll&sheet=Partners');
+    const data=await r.json();
+    if(Array.isArray(data)){
+      allPartners=data;
+      partners=data.filter(p=>p.status==='Approved');
+      localStorage.setItem(LS_PARTNERS,JSON.stringify(allPartners));
+    }
+  }catch{}
+  populatePartnerSelect('');
+}
+
+function populatePartnerSelect(selectedSlug){
+  const sel=$('f-partner');
+  if(!sel) return;
+  sel.innerHTML='<option value="">No referral partner</option>'+partners.map(p=>`<option value="${p.slug}"${p.slug===selectedSlug?' selected':''}>${p.displayName}</option>`).join('');
+}
+
+function partnerLabel(slug){
+  // looks up allPartners (not just approved) so a deal logged while a partner
+  // was still active still shows their name after they're later deactivated
+  const p=allPartners.find(x=>x.slug===slug);
+  return p?p.displayName:(slug||'');
+}
+
+function slugify(name){
+  return (name||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+}
+
+function referralLink(slug){
+  return SITE_URL+'?ref='+slug;
+}
+
+function copyReferralLink(slug){
+  const link=referralLink(slug);
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(link).then(()=>toast('Referral link copied')).catch(()=>toast(link));
+  }else{
+    toast(link);
+  }
+}
+
 async function loadDeals(){
   try{
     const r=await fetch(API_URL+'?action=getAll&sheet=Deals');
@@ -556,7 +905,7 @@ async function loadDeals(){
         commissionTotal:Number(d.commissionTotal)||0,
         nickPct:Number(d.nickPct)||0, monikaPct:Number(d.monikaPct)||0, rezaPct:Number(d.rezaPct)||0,
         nickAmt:Number(d.nickAmt)||0, monikaAmt:Number(d.monikaAmt)||0, rezaAmt:Number(d.rezaAmt)||0,
-        referralPct:Number(d.referralPct)||0, referralAmount:Number(d.referralAmount)||0
+        partnerPct:Number(d.partnerPct)||0, partnerAmt:Number(d.partnerAmt)||0
       }));
       localStorage.setItem(LS_KEY,JSON.stringify(deals));
       $('syncDot').className='api-dot ok';
@@ -580,7 +929,7 @@ function monthFilteredDeals(){
 function filteredDeals(){
   return monthFilteredDeals().filter(d=>{
     if(agentFilter && d.agent!==agentFilter) return false;
-    if(dealFilter==='referral' && !d.referrerName) return false;
+    if(dealFilter==='referral' && !d.referralPartner) return false;
     return true;
   });
 }
@@ -588,7 +937,7 @@ function filteredDeals(){
 function updateSidebarCounts(){
   const md=monthFilteredDeals();
   $('sbCntAll').textContent=md.length;
-  $('sbCntReferral').textContent=md.filter(d=>d.referrerName).length;
+  $('sbCntReferral').textContent=md.filter(d=>d.referralPartner).length;
   $('sbCntN').textContent=md.filter(d=>d.agent==='N').length;
   $('sbCntM').textContent=md.filter(d=>d.agent==='M').length;
   $('sbCntR').textContent=md.filter(d=>d.agent==='R').length;
@@ -607,8 +956,8 @@ function renderStats(fd){
   const nick=fd.reduce((s,d)=>s+d.nickAmt,0);
   const monika=fd.reduce((s,d)=>s+d.monikaAmt,0);
   const reza=fd.reduce((s,d)=>s+d.rezaAmt,0);
-  const referred=fd.filter(d=>d.referrerName);
-  const referralTotal=referred.reduce((s,d)=>s+d.referralAmount,0);
+  const referred=fd.filter(d=>d.referralPartner);
+  const referralTotal=referred.reduce((s,d)=>s+d.partnerAmt,0);
   const period=$('monthPicker').value==='ALL'?'all time':monthLabel($('monthPicker').value);
   $('s-count').textContent=fd.length;
   $('s-count-sub').textContent=fd.length===1?'deal · '+period:'deals · '+period;
@@ -674,7 +1023,7 @@ function renderTable(fd){
       <td>
         <div class="deal-client">${d.clientName||'—'}</div>
         <div class="deal-project">${d.project||''} ${d.unit?'· Unit '+d.unit:''}</div>
-        ${d.referrerName?`<div style="font-size:10px;font-family:'DM Mono',monospace;color:var(--orange);margin-top:2px;">↩ ${d.referrerName} · ${usdFull(d.referralAmount)}</div>`:''}
+        ${d.referralPartner?`<div style="font-size:10px;font-family:'DM Mono',monospace;color:var(--orange);margin-top:2px;">↩ ${partnerLabel(d.referralPartner)} · ${usdFull(d.partnerAmt)}</div>`:''}
       </td>
       <td style="font-family:'DM Mono',monospace;font-size:11px">${dateStr}</td>
       <td class="price-cell">${usdFull(d.salePrice)}</td>
@@ -700,6 +1049,12 @@ function renderTable(fd){
 
 // ── Modal ────────────────────────────────────────────────────────
 
+function onPartnerPick(){
+  const slug=$('f-partner').value;
+  const p=partners.find(x=>x.slug===slug);
+  if(p) $('f-partner-pct').value=p.ratePct||15;
+  recalc();
+}
 function recalc(){
   const price=Number($('f-price').value)||0;
   const rate=Number($('f-rate').value)||0;
@@ -716,9 +1071,9 @@ function recalc(){
   $('reza-amt').textContent=usdFull(Math.round(comm*(rezaP/100)));
   $('split-warn').style.display=total!==100?'block':'none';
 
-  const referrerSet=$('f-referrer').value.trim().length>0;
-  const referralP=Number($('f-referral-pct').value)||0;
-  $('referral-amt').textContent=referrerSet?usdFull(Math.round(comm*(referralP/100))):'$0';
+  const partnerSet=$('f-partner').value.length>0;
+  const partnerP=Number($('f-partner-pct').value)||0;
+  $('partner-amt').textContent=partnerSet?usdFull(Math.round(comm*(partnerP/100))):'$0';
 }
 
 function openModal(){
@@ -735,8 +1090,8 @@ function openModal(){
   $('f-reza-pct').value='33';
   $('f-agent').value='N';
   $('f-notes').value='';
-  $('f-referrer').value='';
-  $('f-referral-pct').value='15';
+  populatePartnerSelect('');
+  $('f-partner-pct').value='15';
   recalc();
   $('modal').classList.add('show');
 }
@@ -757,8 +1112,8 @@ function openEdit(id){
   $('f-reza-pct').value=d.rezaPct||0;
   $('f-agent').value=d.agent||'N';
   $('f-notes').value=d.notes||'';
-  $('f-referrer').value=d.referrerName||'';
-  $('f-referral-pct').value=d.referralPct||15;
+  populatePartnerSelect(d.referralPartner||'');
+  $('f-partner-pct').value=d.partnerPct||15;
   recalc();
   $('modal').classList.add('show');
 }
@@ -776,9 +1131,9 @@ function saveDeal(){
   const comm=Math.round(price*(rate/100)*100)/100;
   const now=new Date().toISOString();
 
-  const referrerName=$('f-referrer').value.trim();
-  const referralPct=referrerName?(Number($('f-referral-pct').value)||0):0;
-  const referralAmount=referrerName?Math.round(comm*(referralPct/100)):0;
+  const referralPartner=$('f-partner').value;
+  const partnerPct=referralPartner?(Number($('f-partner-pct').value)||0):0;
+  const partnerAmt=referralPartner?Math.round(comm*(partnerPct/100)):0;
 
   const payload={
     id: editingId||('D'+Date.now()),
@@ -797,9 +1152,9 @@ function saveDeal(){
     rezaAmt: Math.round(comm*(rezaP/100)),
     agent: $('f-agent').value,
     notes: $('f-notes').value.trim(),
-    referrerName: referrerName,
-    referralPct: referralPct,
-    referralAmount: referralAmount
+    referralPartner: referralPartner,
+    partnerPct: partnerPct,
+    partnerAmt: partnerAmt
   };
 
   if(editingId){
@@ -837,6 +1192,7 @@ function confirmDelete(){
 
 buildMonthPicker();
 renderAll();
+loadPartners();
 loadDeals();
 </script>
 </body>
