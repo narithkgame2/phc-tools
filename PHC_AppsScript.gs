@@ -425,7 +425,11 @@ const WA_NUMBER   = '85511666952';
 // The agent notification email (sendAgentNotification, below) already goes
 // to everyone here with the full lead details — no separate copy of the
 // client-facing email is sent on top of it, to avoid duplicate/noisy alerts.
-const AGENT_EMAIL = 'invest@propertyhubcambodia.com,propertyhubcambodia@gmail.com,narithkgame2@gmail.com';
+// invest@ is deliberately left out — it's FROM_EMAIL, the sender, so it
+// always gets its own record in Sent regardless of being listed here, and
+// Gmail never delivers a self-sent copy to Inbox either way. Listing it
+// achieved nothing but making the "to" line look like it emails itself.
+const AGENT_EMAIL = 'propertyhubcambodia@gmail.com,narithkgame2@gmail.com';
 
 // PLACEHOLDER — see file-header note. Real value is a long base64 PNG,
 // never fully captured here. DO NOT deploy this file until these four
