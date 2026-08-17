@@ -467,10 +467,6 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;font-size:13px;color:var(
         <span class="li-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
         <span class="li-label">J Tower 3 Campaign</span><span class="li-count" id="lic-japan">2</span>
       </div>
-      <div class="list-item" onclick="listGo(this,'japan-content')">
-        <span class="li-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></span>
-        <span class="li-label">JP Content Creation</span><span class="li-count">1</span>
-      </div>
     </div>
 
     <!-- German Space -->
@@ -1653,7 +1649,7 @@ function listGo(el,key){
   currentNav=key; currentFilter='all'; specialView=null;
   document.querySelectorAll('.sb-nav-item,.list-item').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
-  const titles={sales:'Sales & Listings',content:'Content & Marketing',admin:'Admin & Operations',training:'Training',japan:'Japanese Market','japan-content':'JP Content Creation',german:"Reza's Pipeline"};
+  const titles={sales:'Sales & Listings',content:'Content & Marketing',admin:'Admin & Operations',training:'Training',japan:'Japanese Market',german:"Reza's Pipeline"};
   document.getElementById('tn-title').textContent=titles[key]||key;
   renderAll();
 }
@@ -1706,9 +1702,6 @@ function updateBadge(){
 
 // Recomputes every space/list count from the real task list instead of the
 // hardcoded numbers that were baked into the HTML and went stale on every add/edit/delete.
-// "JP Content Creation" has no corresponding task category in the system yet, so its
-// count is left as-is rather than faking a number for it — needs a product decision
-// (add a real category, or drop the nav item) before it can be made live too.
 function updateSidebarCounts(){
   const byCat = {};
   tasks.forEach(t=>{ byCat[t.cat] = (byCat[t.cat]||0)+1; });
