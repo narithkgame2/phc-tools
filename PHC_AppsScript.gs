@@ -422,10 +422,15 @@ function seedInitialPartners() {
 // Confirmed live 2026-08-12.
 const FROM_EMAIL  = 'invest@propertyhubcambodia.com';
 const WA_NUMBER   = '85511666952';
-// The agent notification email (sendAgentNotification, below) already goes
-// to everyone here with the full lead details — no separate copy of the
-// client-facing email is sent on top of it, to avoid duplicate/noisy alerts.
 const AGENT_EMAIL = 'invest@propertyhubcambodia.com,propertyhubcambodia@gmail.com,narithkgame2@gmail.com';
+// These two also get a plain copy of the exact client-facing email (not
+// just the Agent Alert) — useful for checking the actual wording/quality
+// without digging through the CRM. invest@ is left out since it already
+// gets the Agent Alert and doesn't need a second copy. Sent as separate
+// solo emails in sendClientConfirmation() below, never one bcc'd email —
+// GmailApp leaks the full bcc list to every bcc'd recipient's own inbox
+// once there's more than one address, so nobody would see the other's.
+const CLIENT_COPY_RECIPIENTS = ['propertyhubcambodia@gmail.com', 'narithkgame2@gmail.com'];
 
 // PLACEHOLDER — see file-header note. Real value is a long base64 PNG,
 // never fully captured here. DO NOT deploy this file until these four
@@ -951,15 +956,29 @@ function sendClientConfirmation(lead, scenario, lang) {
   const gdpr   = lang === 'de'
     ? '<p style="margin:8px 0 0;font-size:11px;color:rgba(255,255,255,.4)">Sie erhalten diese E-Mail, weil Sie eine Anfrage auf propertyhubcambodia.com gestellt haben. Zur Datenlöschung antworten Sie bitte auf diese E-Mail.</p>'
     : '';
+  const html = buildClientEmailHtml(copy, waLink, gdpr);
 
-  // No bcc/internal copy here on purpose — sendAgentNotification() already
-  // tells the team about every new lead with the full details. Copying this
-  // client-facing email on top of that was pure duplicate noise.
   GmailApp.sendEmail(lead.email, copy.subject, '', {
-    htmlBody: buildClientEmailHtml(copy, waLink, gdpr),
+    htmlBody: html,
     name:     'Property Hub Cambodia',
     from:     FROM_EMAIL,
     replyTo:  FROM_EMAIL,
+  });
+
+  // Plain copy (same subject, no prefix) to each address in
+  // CLIENT_COPY_RECIPIENTS — as separate solo emails, not one bcc'd email,
+  // so neither recipient ever sees the other's address. One failing send
+  // shouldn't stop the others or the client's own email above.
+  CLIENT_COPY_RECIPIENTS.forEach(addr => {
+    try {
+      GmailApp.sendEmail(addr, copy.subject, '', {
+        htmlBody: html,
+        name:     'Property Hub Cambodia',
+        from:     FROM_EMAIL,
+      });
+    } catch (err) {
+      Logger.log('Client copy to ' + addr + ' failed: ' + err);
+    }
   });
 }
 
