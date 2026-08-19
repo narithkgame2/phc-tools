@@ -245,6 +245,12 @@ body{background:#e8ecf3;-webkit-font-smoothing:antialiased;min-height:100%;displ
         <div class="sb-badge"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="5.8"/><path d="M8 5v1M8 10v1M6.2 7a1.8 1.8 0 0 1 3.6 0c0 1-1.8 1.4-1.8 2.2"/></svg></div>
         <div><div class="sb-label">Payment Reminder Bot</div><div class="sb-owner">Marina</div></div>
       </div>
+
+      <div class="sb-group"><span class="sb-group-txt">Decisions &amp; Guidelines</span></div>
+      <div class="sb-row" data-view="content-style" onclick="showView('content-style')">
+        <div class="sb-badge"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3.6c-1.5-1-3.5-1-5-.3v9c1.5-.7 3.5-.7 5 .3 1.5-1 3.5-1 5-.3v-9c-1.5-.7-3.5-.7-5 .3z"/><path d="M8 3.6v9"/></svg></div>
+        <div><div class="sb-label">Content Style Guide</div><div class="sb-owner">Marina · Monika</div></div>
+      </div>
     </div>
 
     <div class="main">
@@ -617,6 +623,66 @@ body{background:#e8ecf3;-webkit-font-smoothing:antialiased;min-height:100%;displ
           </div>
         </div>
 
+        <!-- CONTENT STYLE GUIDE -->
+        <div class="view" id="v-content-style">
+          <div class="eyebrow">Decisions &amp; Guidelines · Marina · Monika</div>
+          <div class="heading">Content Style Guide</div>
+          <div class="subhead">How every Insights article on the website should read, and why — so anyone writing one lands on the same voice without re-deciding it each time.</div>
+
+          <div class="obj-card">
+            <div class="obj-row"><span class="obj-arrow">→</span><span>Who uses it: <b>anyone drafting an Insights article</b> — Marina day to day, Monika reviewing before publish.</span></div>
+            <div class="obj-row"><span class="obj-arrow">→</span><span>Where articles actually go live: <b>propertyhubcambodia.com/admin/blog</b> — write it anywhere, then copy-paste into that editor and publish.</span></div>
+          </div>
+
+          <div class="section-lbl">The 9 rules</div>
+          <div class="rules">
+            <div class="rule"><div class="rule-n">1</div><div><div class="rule-title">Headline: benefit-led, not a topic label</div><div class="rule-detail">"What Foreign Buyers Actually Own" beats "Foreign Ownership Explained."</div></div></div>
+            <div class="rule"><div class="rule-n">2</div><div><div class="rule-title">Answer first, context after</div><div class="rule-detail">The direct answer goes in the first 2–3 sentences. Never make the reader scroll to find out what the article is even about.</div></div></div>
+            <div class="rule"><div class="rule-n">3</div><div><div class="rule-title">A subheading every 150–250 words</div><div class="rule-detail">Scannable, not a wall of text — a busy investor should get the shape of the answer just from skimming headers.</div></div></div>
+            <div class="rule"><div class="rule-n">4</div><div><div class="rule-title">Only state what's pre-approved</div><div class="rule-detail">Stick to the "can confidently state" list below. Hedge or leave out anything from "requires care" — never a guarantee, never a single-decimal yield figure.</div></div></div>
+            <div class="rule"><div class="rule-n">5</div><div><div class="rule-title">One CTA, at the end only</div><div class="rule-detail">Never mid-article — that reads as a pitch interrupting advice. One soft WhatsApp prompt, after the article has actually delivered value.</div></div></div>
+            <div class="rule"><div class="rule-n">6</div><div><div class="rule-title">Real author, real credibility</div><div class="rule-detail">Name, role, one line of relevant expertise — never a generic "Author." Builds the advisor identity PHC actually wants people to see.</div></div></div>
+            <div class="rule"><div class="rule-n">7</div><div><div class="rule-title">Calm, expert, second person</div><div class="rule-detail">"You" for the reader's situation, "we" for PHC. Advice from someone who's done this before — not marketing copy.</div></div></div>
+            <div class="rule"><div class="rule-n">8</div><div><div class="rule-title">700–1000 words for pillar content</div><div class="rule-detail">Long enough for real depth, short enough to respect the reader's time. If extending, add one genuinely new section — never pad to hit a word count.</div></div></div>
+            <div class="rule"><div class="rule-n">9</div><div><div class="rule-title">Ranges, never false precision</div><div class="rule-detail">"6–8% gross yield," never "7.3%." Cambodia's market doesn't support that level of certainty, and claiming it undermines trust.</div></div></div>
+          </div>
+
+          <div class="info-box">
+            <div class="ib-label">What we can confidently state</div>
+            Strata-title eligibility for foreigners, USD-denominated pricing, 6–8% <i>gross</i> rental yield (approximate range), project-specific payment plans, foreign ownership via strata title (not land freehold).
+          </div>
+
+          <div class="warn-box">
+            <div class="ib-label">What requires care — hedge or leave out</div>
+            Net yield (only with real management-fee data for that project), district-level yield claims, "delayed construction" labels (legally sensitive), any "guaranteed rental" claim without written developer documentation, and anything implying an individual condo buyer gets business-investment tax incentives (Law on Investment incentives are for registered companies, not personal buyers).
+          </div>
+
+          <div class="section-lbl">What we deliberately don't copy from competitors</div>
+          <div class="info-box">
+            <div class="ib-label">Format inspiration ≠ tone to copy</div>
+            realestate.com.kh's article format (Editor's Picks curation, punchier headlines, related-article links) is worth learning from. Their <i>tone</i> is not — it leans aspirational/opportunity-framed, which cuts against PHC's own rule of "advice, not a pitch." Also skip stats headers and view counts on our own site until we actually have the traffic to show honestly, not before.
+          </div>
+
+          <div class="section-lbl">Publishing workflow — why it's manual, on purpose</div>
+          <div class="obj-card">
+            <div class="obj-row"><span class="obj-arrow">→</span><span>Write the article (any format — Google Doc, plain text, whatever's easiest), then copy-paste into the existing editor at <b>/admin/blog</b>, add images, review, publish.</span></div>
+            <div class="obj-row"><span class="obj-arrow">→</span><span>We tested an automated "AI pushes drafts straight into the queue" pipeline. It technically worked, but felt slower in practice — the real bottlenecks (sourcing images, reviewing before publish) are identical either way, and automation only skipped the one step that was never actually slow.</span></div>
+            <div class="obj-row"><span class="obj-arrow">→</span><span>Human review before publish is <b>not optional</b> — the site makes real legal/financial claims, and that's exactly what the "requires care" list above exists to protect.</span></div>
+          </div>
+
+          <div class="section-lbl">Reference articles built to these rules</div>
+          <div class="btnrow">
+            <a class="btn cta" href="https://claude.ai/code/artifact/d1b4a5e4-94bc-4ad8-a9a0-ea920d2112bc" target="_blank">3 sample articles →</a>
+            <a class="btn" href="https://claude.ai/code/artifact/1cb96736-9de2-4e15-a2e1-d88b5bfbb09d" target="_blank">Listing page comparison</a>
+            <a class="btn" href="https://claude.ai/code/artifact/2fef18f7-0bbc-47d4-b4a8-6707af407752" target="_blank">Article page comparison</a>
+          </div>
+
+          <div class="section-lbl">Decision log — update this whenever a rule changes</div>
+          <div class="rules">
+            <div class="rule"><div class="rule-n">·</div><div><div class="rule-title">2026-08-19 — Style guide + workflow decided</div><div class="rule-detail">9 rules set, 3 sample articles built. Chose manual copy-paste publishing over an automated draft pipeline (built and tested, but added steps without saving real time at current volume).</div></div></div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -628,7 +694,7 @@ function showView(id){
   document.getElementById('v-'+id).classList.add('active');
   document.querySelectorAll('.sb-row').forEach(function(r){r.classList.remove('active');});
   document.querySelector('.sb-row[data-view="'+id+'"]').classList.add('active');
-  var labels={overview:'Team Handbook',tasks:'Task Manager',leads:'Lead Tracker',clients:'Client Manager',messages:'Message Builder',proposal:'Proposal Generator',explorer:'Investment Explorer',contentbot:'Content Bot',paymentbot:'Payment Reminder Bot'};
+  var labels={overview:'Team Handbook',tasks:'Task Manager',leads:'Lead Tracker',clients:'Client Manager',messages:'Message Builder',proposal:'Proposal Generator',explorer:'Investment Explorer',contentbot:'Content Bot',paymentbot:'Payment Reminder Bot','content-style':'Content Style Guide'};
   document.getElementById('tb-ctx').textContent = labels[id] || 'Team Handbook';
   document.querySelector('.main').scrollTop = 0;
 }
