@@ -142,6 +142,20 @@ body{background:#e8ecf3;-webkit-font-smoothing:antialiased;min-height:100%;displ
 .view.active{display:block;animation:rise .25s cubic-bezier(.4,0,.2,1);}
 @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
+/* article style example */
+.art-ex{padding:22px 24px;}
+.art-chip{display:inline-block;font-size:10px;font-weight:600;padding:4px 11px;border-radius:12px;border:1px solid var(--navy-md);color:var(--navy-md);margin-bottom:12px;}
+.art-h{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:var(--ink);line-height:1.3;margin-bottom:8px;}
+.art-sub{font-size:12.5px;color:var(--ink-2);line-height:1.6;margin-bottom:14px;}
+.art-byline{display:flex;align-items:center;gap:9px;padding:11px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:16px;}
+.art-av{width:28px;height:28px;border-radius:50%;background:var(--navy);color:var(--gold-lt);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:12px;flex-shrink:0;}
+.art-byline b{font-size:12px;color:var(--ink);display:block;}
+.art-byline span{font-size:10.5px;color:var(--ink-3);}
+.art-body{font-size:12.5px;color:var(--ink-2);line-height:1.72;}
+.art-body p{margin-bottom:12px;}
+.art-body h3{font-family:'Playfair Display',serif;font-size:14px;color:var(--ink);margin:16px 0 8px;}
+.art-cta{background:var(--navy-d);color:#fff;border-radius:8px;padding:14px 16px;margin-top:14px;text-align:center;font-size:11.5px;}
+.art-cta .btn{margin-top:8px;background:var(--gold);border-color:var(--gold);color:#fff;padding:8px 16px;font-size:11.5px;}
 .hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:22px 0 6px;}
 .hs{background:var(--bg-2);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center;}
 .hs-n{font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);font-weight:700;line-height:1;margin-bottom:3px;}
@@ -670,11 +684,32 @@ body{background:#e8ecf3;-webkit-font-smoothing:antialiased;min-height:100%;displ
             <div class="obj-row"><span class="obj-arrow">→</span><span>Human review before publish is <b>not optional</b> — the site makes real legal/financial claims, and that's exactly what the "requires care" list above exists to protect.</span></div>
           </div>
 
-          <div class="section-lbl">Reference articles built to these rules</div>
-          <div class="btnrow">
-            <a class="btn cta" href="https://claude.ai/code/artifact/d1b4a5e4-94bc-4ad8-a9a0-ea920d2112bc" target="_blank">3 sample articles →</a>
-            <a class="btn" href="https://claude.ai/code/artifact/1cb96736-9de2-4e15-a2e1-d88b5bfbb09d" target="_blank">Listing page comparison</a>
-            <a class="btn" href="https://claude.ai/code/artifact/2fef18f7-0bbc-47d4-b4a8-6707af407752" target="_blank">Article page comparison</a>
+          <div class="section-lbl">What it looks like — a worked example</div>
+          <div class="frame">
+            <div class="frame-bar"><div class="frame-dot"></div><div class="frame-dot"></div><div class="frame-dot"></div><div class="frame-url">propertyhubcambodia.com/insights/foreign-ownership-strata-title</div></div>
+            <div class="frame-body art-ex" style="flex-direction:column;">
+              <span class="art-chip">Legal &amp; Tax</span>
+              <div class="art-h">What Foreign Buyers Actually Own in Cambodia (And What They Don't)</div>
+              <div class="art-sub">Strata title lets foreigners legally own condos here outright — but the fine print decides whether that ownership is airtight or full of gaps.</div>
+              <div class="art-byline">
+                <div class="art-av">M</div>
+                <div><b>Monika</b><span>CEO, Property Hub Cambodia — advises foreign investors on ownership structure daily</span></div>
+              </div>
+              <div class="art-body">
+                <p><i>Cambodia is one of the few countries in Southeast Asia where foreigners can own property outright, not just lease it. But "foreign ownership" gets thrown around loosely, and the details decide whether your ownership is real or just paperwork that looks real.</i></p>
+                <h3>The short answer</h3>
+                <p>Foreigners can own units from the second floor upward in a co-owned building, through a legal structure called strata title. You cannot own land directly, and in most projects you cannot own a ground-floor unit.</p>
+                <p style="color:var(--ink-3);font-style:italic;">[…full article continues with what strata title does/doesn't give you, the 70/30 rule, the one document that matters, and PHC's take — see rule 8 above for target length]</p>
+              </div>
+              <div class="art-cta">
+                Want to know if a specific project is properly strata-titled before you commit to anything?
+                <div class="btnrow" style="justify-content:center;margin-top:8px;"><span class="btn" style="background:var(--gold);border-color:var(--gold);color:#fff;">Message Us on WhatsApp</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="info-box">
+            <div class="ib-label">Two more full examples exist</div>
+            "The Buying Process, Step by Step" (Buyer's Guide, by Reza) and "Can Foreigners Own Property in Cambodia? The Complete Legal Picture" (Legal &amp; Tax, by Monika) — ask Nick if you want the full drafts to copy from before writing a new one.
           </div>
 
           <div class="section-lbl">Decision log — update this whenever a rule changes</div>
