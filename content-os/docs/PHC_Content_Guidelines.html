@@ -36,7 +36,7 @@ body{background:#e8ecf3;-webkit-font-smoothing:antialiased;min-height:100%;displ
 #phc-gate .err{display:none;color:#f87171;font-size:12px;margin-top:12px;}
 
 /* ── APP SHELL ── */
-#app{width:100%;max-width:1180px;background:var(--bg);border-radius:20px;box-shadow:0 12px 60px rgba(6,38,79,.18),0 2px 8px rgba(6,38,79,.08);overflow:hidden;display:flex;flex-direction:column;min-height:calc(100vh - 32px);border:1px solid var(--line-md);}
+#app{width:100%;max-width:1180px;background:var(--bg);border-radius:20px;box-shadow:0 12px 60px rgba(6,38,79,.18),0 2px 8px rgba(6,38,79,.08);overflow:hidden;display:flex;flex-direction:column;height:calc(100vh - 32px);border:1px solid var(--line-md);}
 .layout{display:flex;flex:1;min-height:0;}
 
 .topbar{background:var(--navy-d);height:56px;padding:0 20px;display:flex;align-items:center;gap:12px;flex-shrink:0;position:relative;border-bottom:1px solid rgba(255,255,255,.05);}
@@ -125,7 +125,7 @@ body{background:#e8ecf3;-webkit-font-smoothing:antialiased;min-height:100%;displ
 
 @media(max-width:860px){
   body{padding:0;}
-  #app{border-radius:0;min-height:100dvh;border:none;box-shadow:none;}
+  #app{border-radius:0;height:100dvh;border:none;box-shadow:none;}
   .layout{flex-direction:column;}
   .sidebar{width:100%;border-right:none;border-bottom:1px solid var(--line);display:flex;overflow-x:auto;padding:8px;gap:4px;white-space:nowrap;}
   .sb-group{display:none;}
@@ -198,6 +198,10 @@ body{background:#e8ecf3;-webkit-font-smoothing:antialiased;min-height:100%;displ
       <a class="sb-row" href="#video">
         <div class="sb-badge"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="2" y="3.5" width="9" height="9" rx="1.5"/><path d="M11 6.5l3-2v7l-3-2"/></svg></div>
         <div class="sb-label">Video Scripts</div>
+      </a>
+      <a class="sb-row" href="#insights">
+        <div class="sb-badge"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3.6c-1.5-1-3.5-1-5-.3v9c1.5-.7 3.5-.7 5 .3 1.5-1 3.5-1 5-.3v-9c-1.5-.7-3.5-.7-5 .3z"/><path d="M8 3.6v9"/></svg></div>
+        <div class="sb-label">Insights Articles</div>
       </a>
       <div class="sb-group"><span class="sb-group-txt">Reference</span></div>
       <a class="sb-row" href="#contact">
@@ -364,6 +368,48 @@ Comment "MYTHS" if you've heard a different one you want us to fact-check.</div>
           </div>
         </div>
 
+        <!-- INSIGHTS ARTICLES -->
+        <div class="section-block" id="insights">
+          <div class="section-eyebrow">Website — long-form</div>
+          <div class="section-h">Insights Articles</div>
+          <p class="section-p">The educational articles that live permanently on <code>propertyhubcambodia.com/insights</code> — the canonical, SEO home for a topic, distinct from the shorter social posts above. All 5 Golden Rules still apply here; this section covers what's specific to long-form articles.</p>
+
+          <div class="obj-card">
+            <div class="obj-row"><span class="obj-arrow">→</span><span><b>Who writes it:</b> Marina drafts, Monika reviews and publishes at <code>propertyhubcambodia.com/admin/blog</code>.</span></div>
+            <div class="obj-row"><span class="obj-arrow">→</span><span><b>How to publish:</b> write it anywhere easy (Google Doc, plain text), copy-paste into the admin editor, add images, review, publish — see the note below on why this stays manual.</span></div>
+          </div>
+
+          <div class="section-h" style="font-size:15px;">The shape every article follows</div>
+          <div class="rules">
+            <div class="rule"><div class="rule-n">1</div><div><div class="rule-title">Headline: benefit-led, not a topic label</div><div class="rule-detail">"What Foreign Buyers Actually Own" beats "Foreign Ownership Explained."</div></div></div>
+            <div class="rule"><div class="rule-n">2</div><div><div class="rule-title">Answer first, context after</div><div class="rule-detail">The direct answer goes in the first 2–3 sentences — never make the reader scroll to find out what it's about.</div></div></div>
+            <div class="rule"><div class="rule-n">3</div><div><div class="rule-title">A subheading every 150–250 words</div><div class="rule-detail">Scannable, not a wall of text.</div></div></div>
+            <div class="rule"><div class="rule-n">4</div><div><div class="rule-title">One CTA, at the end only</div><div class="rule-detail">Never mid-article — that reads as a pitch interrupting advice.</div></div></div>
+            <div class="rule"><div class="rule-n">5</div><div><div class="rule-title">Real author, real credibility</div><div class="rule-detail">Name, role, one line of relevant expertise — never a generic "Author." Builds the advisor identity PHC wants people to see.</div></div></div>
+            <div class="rule"><div class="rule-n">6</div><div><div class="rule-title">Calm, expert, second person</div><div class="rule-detail">"You" for the reader's situation, "we" for PHC.</div></div></div>
+            <div class="rule"><div class="rule-n">7</div><div><div class="rule-title">700–1000 words</div><div class="rule-detail">Long enough for real depth, short enough to respect the reader's time. Extending means adding one genuinely new section — never padding to hit a word count.</div></div></div>
+          </div>
+
+          <div class="frame">
+            <div class="frame-bar"><div class="frame-dot"></div><div class="frame-dot"></div><div class="frame-dot"></div><div class="frame-url">propertyhubcambodia.com/insights/foreign-ownership-strata-title</div></div>
+            <div class="frame-body" style="flex-direction:column;padding:18px 20px;">
+              <div style="font-size:10px;font-weight:600;padding:3px 10px;border:1px solid var(--navy-md);color:var(--navy-md);border-radius:12px;display:inline-block;width:fit-content;margin-bottom:10px;">Legal &amp; Tax</div>
+              <div style="font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--ink);line-height:1.3;margin-bottom:8px;">What Foreign Buyers Actually Own in Cambodia (And What They Don't)</div>
+              <div style="font-size:12px;color:var(--ink-2);line-height:1.6;margin-bottom:12px;">Strata title lets foreigners legally own condos here outright — but the fine print decides whether that ownership is airtight or full of gaps.</div>
+              <div style="display:flex;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:12px;">
+                <div style="width:24px;height:24px;border-radius:50%;background:var(--navy);color:var(--gold-lt);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:11px;">M</div>
+                <div><b style="font-size:11px;color:var(--ink);display:block;">Monika</b><span style="font-size:9.5px;color:var(--ink-3);">CEO, Property Hub Cambodia — advises foreign investors on ownership structure daily</span></div>
+              </div>
+              <div style="font-size:11.5px;color:var(--ink-2);line-height:1.65;font-style:italic;">Cambodia is one of the few countries in Southeast Asia where foreigners can own property outright, not just lease it. But "foreign ownership" gets thrown around loosely, and the details decide whether your ownership is real or just paperwork that looks real. […]</div>
+            </div>
+          </div>
+
+          <div class="info-box">
+            <div class="ib-label">Publishing stays manual — on purpose</div>
+            An automated pipeline exists (pushes a finished draft straight into the admin review queue) but isn't the default — tested once, it added steps without saving real time, since the actual bottlenecks (images, human review before publish) are identical either way. Only reach for it if publishing volume goes up enough to matter.
+          </div>
+        </div>
+
         <!-- CONTACT BLOCKS -->
         <div class="section-block" id="contact">
           <div class="section-eyebrow">Reference</div>
@@ -387,9 +433,9 @@ Comment "MYTHS" if you've heard a different one you want us to fact-check.</div>
         <div class="section-block" id="checklist">
           <div class="section-eyebrow">Last step</div>
           <div class="section-h">Before You Publish</div>
-          <p class="section-p">Run through this on anything before it goes out — educational post, listing, or video script.</p>
+          <p class="section-p">Run through this on anything before it goes out — educational post, listing, video script, or Insights article.</p>
           <div class="rules">
-            <div class="rule"><div class="rule-n">1</div><div><div class="rule-title">Right structure for the content type</div><div class="rule-detail">Format 8 for educational · correct listing type structure · video script requirements.</div></div></div>
+            <div class="rule"><div class="rule-n">1</div><div><div class="rule-title">Right structure for the content type</div><div class="rule-detail">Format 8 for educational · correct listing type structure · video script requirements · lede-first + one end CTA for Insights articles.</div></div></div>
             <div class="rule"><div class="rule-n">2</div><div><div class="rule-title">No guaranteed returns, no project-specific net yield</div></div></div>
             <div class="rule"><div class="rule-n">3</div><div><div class="rule-title">No "delayed" or "behind schedule" language</div></div></div>
             <div class="rule"><div class="rule-n">4</div><div><div class="rule-title">Correct contact block for this content type</div></div></div>

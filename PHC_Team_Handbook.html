@@ -36,7 +36,7 @@ body{background:#e8ecf3;-webkit-font-smoothing:antialiased;min-height:100%;displ
 #phc-gate .err{display:none;color:#f87171;font-size:12px;margin-top:12px;}
 
 /* ── APP SHELL ── */
-#app{width:100%;max-width:1180px;background:var(--bg);border-radius:20px;box-shadow:0 12px 60px rgba(6,38,79,.18),0 2px 8px rgba(6,38,79,.08);overflow:hidden;display:flex;flex-direction:column;min-height:calc(100vh - 32px);border:1px solid var(--line-md);}
+#app{width:100%;max-width:1180px;background:var(--bg);border-radius:20px;box-shadow:0 12px 60px rgba(6,38,79,.18),0 2px 8px rgba(6,38,79,.08);overflow:hidden;display:flex;flex-direction:column;height:calc(100vh - 32px);border:1px solid var(--line-md);}
 .layout{display:flex;flex:1;min-height:0;}
 
 .topbar{background:var(--navy-d);height:56px;padding:0 20px;display:flex;align-items:center;gap:12px;flex-shrink:0;position:relative;border-bottom:1px solid rgba(255,255,255,.05);}
@@ -142,20 +142,6 @@ body{background:#e8ecf3;-webkit-font-smoothing:antialiased;min-height:100%;displ
 .view.active{display:block;animation:rise .25s cubic-bezier(.4,0,.2,1);}
 @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-/* article style example */
-.art-ex{padding:22px 24px;}
-.art-chip{display:inline-block;font-size:10px;font-weight:600;padding:4px 11px;border-radius:12px;border:1px solid var(--navy-md);color:var(--navy-md);margin-bottom:12px;}
-.art-h{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:var(--ink);line-height:1.3;margin-bottom:8px;}
-.art-sub{font-size:12.5px;color:var(--ink-2);line-height:1.6;margin-bottom:14px;}
-.art-byline{display:flex;align-items:center;gap:9px;padding:11px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:16px;}
-.art-av{width:28px;height:28px;border-radius:50%;background:var(--navy);color:var(--gold-lt);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:12px;flex-shrink:0;}
-.art-byline b{font-size:12px;color:var(--ink);display:block;}
-.art-byline span{font-size:10.5px;color:var(--ink-3);}
-.art-body{font-size:12.5px;color:var(--ink-2);line-height:1.72;}
-.art-body p{margin-bottom:12px;}
-.art-body h3{font-family:'Playfair Display',serif;font-size:14px;color:var(--ink);margin:16px 0 8px;}
-.art-cta{background:var(--navy-d);color:#fff;border-radius:8px;padding:14px 16px;margin-top:14px;text-align:center;font-size:11.5px;}
-.art-cta .btn{margin-top:8px;background:var(--gold);border-color:var(--gold);color:#fff;padding:8px 16px;font-size:11.5px;}
 .hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:22px 0 6px;}
 .hs{background:var(--bg-2);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center;}
 .hs-n{font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);font-weight:700;line-height:1;margin-bottom:3px;}
@@ -163,7 +149,7 @@ body{background:#e8ecf3;-webkit-font-smoothing:antialiased;min-height:100%;displ
 
 @media(max-width:860px){
   body{padding:0;}
-  #app{border-radius:0;min-height:100dvh;border:none;box-shadow:none;}
+  #app{border-radius:0;height:100dvh;border:none;box-shadow:none;}
   .layout{flex-direction:column;}
   .sidebar{width:100%;border-right:none;border-bottom:1px solid var(--line);display:flex;overflow-x:auto;padding:8px;gap:4px;white-space:nowrap;}
   .sb-group{display:none;}
@@ -261,10 +247,10 @@ body{background:#e8ecf3;-webkit-font-smoothing:antialiased;min-height:100%;displ
       </div>
 
       <div class="sb-group"><span class="sb-group-txt">Decisions &amp; Guidelines</span></div>
-      <div class="sb-row" data-view="content-style" onclick="showView('content-style')">
+      <a class="sb-row" href="content-os/docs/PHC_Content_Guidelines.html#insights">
         <div class="sb-badge"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3.6c-1.5-1-3.5-1-5-.3v9c1.5-.7 3.5-.7 5 .3 1.5-1 3.5-1 5-.3v-9c-1.5-.7-3.5-.7-5 .3z"/><path d="M8 3.6v9"/></svg></div>
-        <div><div class="sb-label">Content Style Guide</div><div class="sb-owner">Marina · Monika</div></div>
-      </div>
+        <div><div class="sb-label">Content Style Guide ↗</div><div class="sb-owner">Lives in Content Guidelines</div></div>
+      </a>
     </div>
 
     <div class="main">
@@ -637,86 +623,6 @@ body{background:#e8ecf3;-webkit-font-smoothing:antialiased;min-height:100%;displ
           </div>
         </div>
 
-        <!-- CONTENT STYLE GUIDE -->
-        <div class="view" id="v-content-style">
-          <div class="eyebrow">Decisions &amp; Guidelines · Marina · Monika</div>
-          <div class="heading">Content Style Guide</div>
-          <div class="subhead">How every Insights article on the website should read, and why — so anyone writing one lands on the same voice without re-deciding it each time.</div>
-
-          <div class="obj-card">
-            <div class="obj-row"><span class="obj-arrow">→</span><span>Who uses it: <b>anyone drafting an Insights article</b> — Marina day to day, Monika reviewing before publish.</span></div>
-            <div class="obj-row"><span class="obj-arrow">→</span><span>Where articles actually go live: <b>propertyhubcambodia.com/admin/blog</b> — write it anywhere, then copy-paste into that editor and publish.</span></div>
-          </div>
-
-          <div class="section-lbl">The 9 rules</div>
-          <div class="rules">
-            <div class="rule"><div class="rule-n">1</div><div><div class="rule-title">Headline: benefit-led, not a topic label</div><div class="rule-detail">"What Foreign Buyers Actually Own" beats "Foreign Ownership Explained."</div></div></div>
-            <div class="rule"><div class="rule-n">2</div><div><div class="rule-title">Answer first, context after</div><div class="rule-detail">The direct answer goes in the first 2–3 sentences. Never make the reader scroll to find out what the article is even about.</div></div></div>
-            <div class="rule"><div class="rule-n">3</div><div><div class="rule-title">A subheading every 150–250 words</div><div class="rule-detail">Scannable, not a wall of text — a busy investor should get the shape of the answer just from skimming headers.</div></div></div>
-            <div class="rule"><div class="rule-n">4</div><div><div class="rule-title">Only state what's pre-approved</div><div class="rule-detail">Stick to the "can confidently state" list below. Hedge or leave out anything from "requires care" — never a guarantee, never a single-decimal yield figure.</div></div></div>
-            <div class="rule"><div class="rule-n">5</div><div><div class="rule-title">One CTA, at the end only</div><div class="rule-detail">Never mid-article — that reads as a pitch interrupting advice. One soft WhatsApp prompt, after the article has actually delivered value.</div></div></div>
-            <div class="rule"><div class="rule-n">6</div><div><div class="rule-title">Real author, real credibility</div><div class="rule-detail">Name, role, one line of relevant expertise — never a generic "Author." Builds the advisor identity PHC actually wants people to see.</div></div></div>
-            <div class="rule"><div class="rule-n">7</div><div><div class="rule-title">Calm, expert, second person</div><div class="rule-detail">"You" for the reader's situation, "we" for PHC. Advice from someone who's done this before — not marketing copy.</div></div></div>
-            <div class="rule"><div class="rule-n">8</div><div><div class="rule-title">700–1000 words for pillar content</div><div class="rule-detail">Long enough for real depth, short enough to respect the reader's time. If extending, add one genuinely new section — never pad to hit a word count.</div></div></div>
-            <div class="rule"><div class="rule-n">9</div><div><div class="rule-title">Ranges, never false precision</div><div class="rule-detail">"6–8% gross yield," never "7.3%." Cambodia's market doesn't support that level of certainty, and claiming it undermines trust.</div></div></div>
-          </div>
-
-          <div class="info-box">
-            <div class="ib-label">What we can confidently state</div>
-            Strata-title eligibility for foreigners, USD-denominated pricing, 6–8% <i>gross</i> rental yield (approximate range), project-specific payment plans, foreign ownership via strata title (not land freehold).
-          </div>
-
-          <div class="warn-box">
-            <div class="ib-label">What requires care — hedge or leave out</div>
-            Net yield (only with real management-fee data for that project), district-level yield claims, "delayed construction" labels (legally sensitive), any "guaranteed rental" claim without written developer documentation, and anything implying an individual condo buyer gets business-investment tax incentives (Law on Investment incentives are for registered companies, not personal buyers).
-          </div>
-
-          <div class="section-lbl">What we deliberately don't copy from competitors</div>
-          <div class="info-box">
-            <div class="ib-label">Format inspiration ≠ tone to copy</div>
-            realestate.com.kh's article format (Editor's Picks curation, punchier headlines, related-article links) is worth learning from. Their <i>tone</i> is not — it leans aspirational/opportunity-framed, which cuts against PHC's own rule of "advice, not a pitch." Also skip stats headers and view counts on our own site until we actually have the traffic to show honestly, not before.
-          </div>
-
-          <div class="section-lbl">Publishing workflow — why it's manual, on purpose</div>
-          <div class="obj-card">
-            <div class="obj-row"><span class="obj-arrow">→</span><span>Write the article (any format — Google Doc, plain text, whatever's easiest), then copy-paste into the existing editor at <b>/admin/blog</b>, add images, review, publish.</span></div>
-            <div class="obj-row"><span class="obj-arrow">→</span><span>We tested an automated "AI pushes drafts straight into the queue" pipeline. It technically worked, but felt slower in practice — the real bottlenecks (sourcing images, reviewing before publish) are identical either way, and automation only skipped the one step that was never actually slow.</span></div>
-            <div class="obj-row"><span class="obj-arrow">→</span><span>Human review before publish is <b>not optional</b> — the site makes real legal/financial claims, and that's exactly what the "requires care" list above exists to protect.</span></div>
-          </div>
-
-          <div class="section-lbl">What it looks like — a worked example</div>
-          <div class="frame">
-            <div class="frame-bar"><div class="frame-dot"></div><div class="frame-dot"></div><div class="frame-dot"></div><div class="frame-url">propertyhubcambodia.com/insights/foreign-ownership-strata-title</div></div>
-            <div class="frame-body art-ex" style="flex-direction:column;">
-              <span class="art-chip">Legal &amp; Tax</span>
-              <div class="art-h">What Foreign Buyers Actually Own in Cambodia (And What They Don't)</div>
-              <div class="art-sub">Strata title lets foreigners legally own condos here outright — but the fine print decides whether that ownership is airtight or full of gaps.</div>
-              <div class="art-byline">
-                <div class="art-av">M</div>
-                <div><b>Monika</b><span>CEO, Property Hub Cambodia — advises foreign investors on ownership structure daily</span></div>
-              </div>
-              <div class="art-body">
-                <p><i>Cambodia is one of the few countries in Southeast Asia where foreigners can own property outright, not just lease it. But "foreign ownership" gets thrown around loosely, and the details decide whether your ownership is real or just paperwork that looks real.</i></p>
-                <h3>The short answer</h3>
-                <p>Foreigners can own units from the second floor upward in a co-owned building, through a legal structure called strata title. You cannot own land directly, and in most projects you cannot own a ground-floor unit.</p>
-                <p style="color:var(--ink-3);font-style:italic;">[…full article continues with what strata title does/doesn't give you, the 70/30 rule, the one document that matters, and PHC's take — see rule 8 above for target length]</p>
-              </div>
-              <div class="art-cta">
-                Want to know if a specific project is properly strata-titled before you commit to anything?
-                <div class="btnrow" style="justify-content:center;margin-top:8px;"><span class="btn" style="background:var(--gold);border-color:var(--gold);color:#fff;">Message Us on WhatsApp</span></div>
-              </div>
-            </div>
-          </div>
-          <div class="info-box">
-            <div class="ib-label">Two more full examples exist</div>
-            "The Buying Process, Step by Step" (Buyer's Guide, by Reza) and "Can Foreigners Own Property in Cambodia? The Complete Legal Picture" (Legal &amp; Tax, by Monika) — ask Nick if you want the full drafts to copy from before writing a new one.
-          </div>
-
-          <div class="section-lbl">Decision log — update this whenever a rule changes</div>
-          <div class="rules">
-            <div class="rule"><div class="rule-n">·</div><div><div class="rule-title">2026-08-19 — Style guide + workflow decided</div><div class="rule-detail">9 rules set, 3 sample articles built. Chose manual copy-paste publishing over an automated draft pipeline (built and tested, but added steps without saving real time at current volume).</div></div></div>
-          </div>
-        </div>
 
       </div>
     </div>
@@ -729,7 +635,7 @@ function showView(id){
   document.getElementById('v-'+id).classList.add('active');
   document.querySelectorAll('.sb-row').forEach(function(r){r.classList.remove('active');});
   document.querySelector('.sb-row[data-view="'+id+'"]').classList.add('active');
-  var labels={overview:'Team Handbook',tasks:'Task Manager',leads:'Lead Tracker',clients:'Client Manager',messages:'Message Builder',proposal:'Proposal Generator',explorer:'Investment Explorer',contentbot:'Content Bot',paymentbot:'Payment Reminder Bot','content-style':'Content Style Guide'};
+  var labels={overview:'Team Handbook',tasks:'Task Manager',leads:'Lead Tracker',clients:'Client Manager',messages:'Message Builder',proposal:'Proposal Generator',explorer:'Investment Explorer',contentbot:'Content Bot',paymentbot:'Payment Reminder Bot'};
   document.getElementById('tb-ctx').textContent = labels[id] || 'Team Handbook';
   document.querySelector('.main').scrollTop = 0;
 }
