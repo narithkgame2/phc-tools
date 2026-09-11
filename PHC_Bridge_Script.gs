@@ -168,7 +168,7 @@ function rowToLead(row) {
     interestedIn:   '',
     stage:          mapStage(row[COL.STAGE]),
     score:          mapScore(row[COL.SCORE]),
-    agent:          String(row[COL.AGENT_ASSIGNED] || 'N').trim(),
+    agent:          String(row[COL.AGENT_ASSIGNED] || '').trim(),
     notes:          notes,
     lastContact:    formatDate(row[COL.TIMESTAMP]),
     followUpDate:   formatDate(row[COL.NEXT_FOLLOW_UP]),

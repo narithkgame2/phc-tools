@@ -98,9 +98,9 @@ Every tool has an inline password gate (sessionStorage — clears when browser c
 `id, name, status, priority, category, due, assignees, memo, link, createdAt, updatedAt`
 
 **Leads** (Lead Tracker)
-`id, createdAt, updatedAt, fullName, nationality, phone, telegram, email, source, budget, timeline, interestedIn, stage, score, agent, notes, lastContact, followUpDate, followUpAction, activities`
+`id, createdAt, updatedAt, fullName, nationality, phone, telegram, email, source, budget, timeline, interestedIn, stage, score, agent, notes, lastContact, followUpDate, followUpAction, activities, languages, unitType`
 
-> **Note:** `telegram` was added after the initial schema. Run `migrateLeadsSchema()` once in Apps Script to add this column to an existing Leads sheet without losing data.
+> **Note:** `telegram` was added after the initial schema. Run `migrateLeadsSchema()` once in Apps Script to add this column to an existing Leads sheet without losing data. `languages` (free text, e.g. "EN, DE") and `unitType` (Studio/1BR/2BR/3BR/4BR+/Villa/Penthouse/Land/Commercial) were added 2026-09-11 the same way — no migration function was needed since both are plain new columns the Apps Script `insert`/`update` handlers pass through automatically via `Object.assign`.
 
 **Clients**
 `id, createdAt, updatedAt, name, nat, telegram, phone, project, unit, floor, bookingDate, spa, titleStatus, payDay, payAmount, payTotal, payMade, bank, status, notes`
@@ -214,6 +214,10 @@ Timeline:    0-3m=5, 3-6m=4, 6-12m=2, 12+m=1
 
 **Convert Lead → Client:** When stage = Closed, a "→ Convert to Client" button appears in the drawer. Clicking saves `phc_convert_pending` to localStorage and opens Client Manager in a new tab, which pre-fills the new client modal.
 
+**Needs Assignment (added 2026-09-11):** A lead is "unassigned" when `!l.agent || !AGENT_AV[l.agent]` (helper: `needsAssignment(l)`) — covers both a blank agent and a stale/invalid value like the Bridge Script's old `'N'` placeholder (see Bridge Script note below). `isUnassignedActive(l)` adds `stage!=='Closed'&&stage!=='Released'` so old closed deals never get flagged. Unassigned active leads: render with a dashed amber `.k-card-flag` border and a "Suggest {agent}" footer (checkmark = `confirmAssignment(id)`, which sets `l.agent` to `autoAssign(l.nationality)`'s result and logs a `System` activity; the "⋯" reassign button just opens the drawer so a human picks manually from the existing Agent dropdown — nothing is auto-assigned without an explicit click). Surfaced via a sidebar nav item ("Needs Assignment", mirrors the "Overdue" pattern, `stageFilter='__needsassign__'`), a banner, and a live sidebar count. The suggestion logic itself is just `autoAssign()` — no separate routing rules were added.
+
+**Activity Timeline — system vs. real entries:** Auto-generated activity log entries (stage change, follow-up set, agent confirmed) use `type:'System'` and render as a compact grouped line at the bottom of the timeline, separate from real manually-logged entries (WhatsApp/Call/Email/etc., which render as cards with hover-revealed edit/delete). Before 2026-09-11 these auto-entries used `type:'Note'`, which collided with the manual "Note" activity type — if you ever see old data with `type:'Note'` that reads like "Stage: X to Y" or "Follow-up set: ...", it's legacy system noise, not a real note. The Log Activity input is a `<textarea>` (`.act-ta`), not a single-line `<input>` — Enter inserts a newline, Ctrl/Cmd+Enter submits.
+
 ---
 
 ## CLIENT MANAGER — ARCHITECTURE
@@ -256,6 +260,7 @@ rezaAmt  = commissionTotal * (rezaPct  / 100)
 - Run `setupTrigger()` once — installs onChange trigger
 - Run `syncAllToPHC()` — backfills all existing rows (safe to re-run)
 - Bridge IDs are prefixed `B-` (e.g. `B-L-20260202-192549`)
+- **Fixed 2026-09-11:** `rowToLead()` used to default a blank Agent Assigned column to the literal string `'N'`, which doesn't match any real agent — Lead Tracker would then silently render it as "Nick" (first `<option>` in an unmatched `<select>`) with nobody having actually decided that. It now defaults to `''` instead, so a bridged lead with no agent typed in the source sheet shows up in Lead Tracker's Needs Assignment queue for a human to confirm. **This requires you to paste the updated file into the Apps Script editor bound to the lead inquiry sheet and redeploy — it does not update itself.**
 
 ---
 
