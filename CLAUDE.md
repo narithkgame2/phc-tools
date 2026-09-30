@@ -52,6 +52,7 @@ The website has its own CLAUDE.md at `~/Desktop/phc-website/CLAUDE.md`.
 | `PHC_Lead_Tracker.html` | ✅ Live + Sheets | /phc-tools/PHC_Lead_Tracker.html |
 | `PHC_Sales_Desk.html` | ✅ Live | /phc-tools/PHC_Sales_Desk.html |
 | `PHC_Agent_Training_v3.html` | ✅ Live | /phc-tools/PHC_Agent_Training_v3.html |
+| `PHC_Agent_Training_v4.html` | 🚧 WIP, not linked | /phc-tools/PHC_Agent_Training_v4.html — in-progress step-by-step rebuild of v3 (new design system, plain-language rewrite). Not linked from `index.html` and not yet a replacement — v3 stays the live/linked tool until v4 is finished and swapped in. |
 | `PHC_Proposal_Generator.html` | ✅ Live | /phc-tools/PHC_Proposal_Generator.html |
 | `PHC_Client_Manager.html` | ✅ Live | /phc-tools/PHC_Client_Manager.html |
 | `PHC_Message_Builder.html` | ✅ Live | /phc-tools/PHC_Message_Builder.html |
@@ -99,15 +100,19 @@ Every tool has an inline password gate (sessionStorage — clears when browser c
 `id, name, status, priority, category, due, assignees, memo, link, createdAt, updatedAt`
 
 **Leads** (Lead Tracker)
-`id, createdAt, updatedAt, fullName, nationality, phone, telegram, email, source, budget, timeline, interestedIn, stage, score, agent, notes, lastContact, followUpDate, followUpAction, activities, languages, unitType`
+`id, createdAt, updatedAt, fullName, nationality, phone, telegram, email, source, budget, timeline, interestedIn, stage, score, agent, notes, lastContact, followUpDate, followUpAction, activities, languages, unitType, referralPartner`
 
-> **Note:** `telegram` was added after the initial schema. Run `migrateLeadsSchema()` once in Apps Script to add this column to an existing Leads sheet without losing data. `languages` (free text, e.g. "EN, DE") and `unitType` (Studio/1BR/2BR/3BR/4BR+/Villa/Penthouse/Land/Commercial) were added 2026-09-11 the same way — no migration function was needed since both are plain new columns the Apps Script `insert`/`update` handlers pass through automatically via `Object.assign`.
+> **Note:** `telegram` was added after the initial schema. Run `migrateLeadsSchema()` once in Apps Script to add this column to an existing Leads sheet without losing data. `languages` (free text, e.g. "EN, DE") and `unitType` (Studio/1BR/2BR/3BR/4BR+/Villa/Penthouse/Land/Commercial) were added 2026-09-11 the same way — no migration function was needed since both are plain new columns the Apps Script `insert`/`update` handlers pass through automatically via `Object.assign`. `referralPartner` (Partners referral tracking) was added via `migrateLeadsSchemaForReferral()` — run once on an existing sheet.
 
 **Clients**
-`id, createdAt, updatedAt, name, nat, telegram, phone, project, unit, floor, bookingDate, spa, titleStatus, payDay, payAmount, payTotal, payMade, bank, status, notes`
+`id, createdAt, updatedAt, name, nat, telegram, phone, project, unit, floor, bookingDate, spa, titleStatus, payDay, payAmount, payTotal, payMade, bank, status, notes, referralPartner, channel, groupChatId, lastReminderSent`
+
+> **Note:** `referralPartner` was added via `migrateClientsSchemaForReferral()` (Partners referral tracking — carries a lead's referral attribution through to Client Manager). `channel` (`Telegram`/`WhatsApp`/`Other`), `groupChatId`, and `lastReminderSent` were added via `migrateClientsSchemaForReminders()` for the Payment Reminder Bot (@PHC_ClientCare_Bot) — see `PHC_AppsScript.gs`'s "PAYMENT REMINDER BOT" section for the one-time setup steps. Both are append-only migrations; run once each on an existing sheet if missing.
 
 **Deals** (Commission Tracker — run `initializeAll()` if tab missing)
-`id, createdAt, updatedAt, closedDate, clientName, project, unit, salePrice, commissionRate, commissionTotal, nickPct, monikaPct, rezaPct, nickAmt, monikaAmt, rezaAmt, agent, notes`
+`id, createdAt, updatedAt, closedDate, clientName, project, unit, salePrice, commissionRate, commissionTotal, referralPartner, partnerPct, partnerAmt, nickPct, monikaPct, rezaPct, nickAmt, monikaAmt, rezaAmt, agent, notes`
+
+> **Note:** `referralPartner`, `partnerPct`, `partnerAmt` (inserted immediately after `commissionTotal`) were added via `migrateDealsSchemaForReferral()` for Partners referral tracking — run once on an existing sheet if missing.
 
 ---
 
