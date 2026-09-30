@@ -22,6 +22,11 @@ Style and behaviour follow the house style in `~/.claude/skills/speak-like-an-ad
 - A lesson plays as cards (`lessonCards`): intro → per section: section card, "Which is the PHC way?" (before/now),
   one card per rule → practice the conversation (client line, model line, record, compare) → debrief → quiz →
   your words (saved in `state.refl`) → done with 1–3 stars.
+- "Coming soon" steps (`stub`) never block the climb (audit 2026-09-30): `MTN.now` = next playable lesson (Continue, the
+  pulsing step), `MTN.edge` = where the flag stands (`now`, or the first unfinished step after your last finished one);
+  `climb()` counts only playable lessons, so ranks advance; `playUnlock` walks past stubs; stub nodes are dashed (`.soon`).
+- Backups are `app:'phc-agent-training'` (files from Speak Like a Leader are refused). Settings "Test" plays `at0-t0`.
+- Text style: sentence case for titles and section labels; no "Rule 1:" / "Step 1:" prefixes (the card shows "1 of 3").
 - Home: a glass high-rise (`mtnModel` builds the route up the facade, `mtnArt` draws the city, the tower, lit windows
   for finished weeks, mist above your level). Weeks = levels (`UNIT_DEF`, `CAMPS`, floors in `ALTS`), rooftop =
   "PHC Certified" (`RANKS`).

@@ -258,7 +258,7 @@ body.focus main{ padding-top:16px; padding-bottom:calc(240px + env(safe-area-ins
 .alert{ width:100%; text-align:left; background:var(--red-soft); border:1px solid color-mix(in srgb, var(--red) 35%, transparent); border-radius:12px; padding:12px 14px; font-size:0.9rem; line-height:1.5; margin-top:16px; }
 /* footer + result banner */
 .fx-foot{ position:fixed; left:0; right:0; bottom:0; z-index:8; background:color-mix(in srgb, var(--bg) 92%, transparent); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); border-top:1px solid var(--line); padding:16px 18px calc(16px + env(safe-area-inset-bottom,0px)); animation:slideUp .22s ease-out; }
-.fx-foot-in{ max-width:680px; margin:0 auto; display:flex; flex-direction:column; gap:14px; }
+.fx-foot-in{ max-width:644px; margin:0 auto; display:flex; flex-direction:column; gap:14px; }
 .fx-btns{ display:flex; gap:12px; justify-content:space-between; }
 .fx-btns .solid-btn{ flex:1; max-width:260px; margin-left:auto; }
 .fx-foot.good{ background:var(--pri-soft); border-top-color:color-mix(in srgb, var(--pri) 25%, transparent); }
@@ -491,6 +491,7 @@ main.home{ padding-bottom:0; }
 .mstars .on{ color:var(--gold-hi); } .mstars .off{ color:rgba(255,255,255,.8); }
 .mstars svg:nth-child(2){ translate:0 3px; }
 .mn.mini .mstars{ display:none; }
+.mn .node.soon{ opacity:.55; border-style:dashed; box-shadow:none; }
 .mn.fog{ opacity:.5; } .mn.fog .node{ box-shadow:none; }
 .mcamp.locked{ opacity:.75; } .mcamp.locked .camp-dot{ background:var(--mute); box-shadow:none; }
 .mflag{ width:0; height:0; z-index:2; pointer-events:none !important; }
@@ -646,7 +647,7 @@ const TRAINING = {
    ],
    "sections": [
     {
-     "label": "Company Identity",
+     "label": "Company identity",
      "heading": "The company you represent",
      "body": "Property Hub Cambodia (PHC) helps foreign investors buy property in Cambodia. We are based in BKK1, a district in Phnom Penh. We speak Khmer, English, Japanese, and German.<br><br>Here is the most important idea in this lesson: <strong>PHC is not a real estate agency. PHC is an advisory firm.</strong> A real estate agency's job is to sell property. PHC's job is to give honest advice, even when that advice is \"don't buy this one.\"",
      "dataTitle": "Company facts",
@@ -659,7 +660,7 @@ const TRAINING = {
      ]
     },
     {
-     "label": "Your Job Title",
+     "label": "Your job title",
      "heading": "You are an Investment Advisor, not a salesperson",
      "body": "These two jobs sound similar. They are not the same job. Read the difference below before you meet your first client.",
      "before": {
@@ -679,22 +680,22 @@ const TRAINING = {
      ]
     },
     {
-     "label": "The 3 Rules",
+     "label": "The 3 rules",
      "heading": "3 rules every PHC agent follows, always",
      "body": "These 3 rules apply in every conversation, with every client, every time. There are no exceptions.",
      "rules": [
       {
-       "title": "Rule 1: Be clear, not persuasive",
+       "title": "Be clear, not persuasive",
        "detail": "If you cannot explain something in a simple, honest sentence, do not say it at all. Go find the correct answer first.",
        "action": "If you don't know an answer, say \"let me confirm that for you.\" Never guess."
       },
       {
-       "title": "Rule 2: Trust is the real product",
+       "title": "Trust is the real product",
        "detail": "PHC's most valuable asset is not any single property listing. It is PHC's reputation. One client who feels pressured will tell other people not to trust PHC.",
        "action": "If you feel tempted to rush a client toward a decision, stop and slow down instead."
       },
       {
-       "title": "Rule 3: Follow the system, every time",
+       "title": "Follow the system, every time",
        "detail": "PHC has a process for a reason. Skipping steps because you are in a hurry causes mistakes.",
        "action": "Before you close a conversation, check: did I follow every step for today's stage?"
       }
@@ -817,7 +818,7 @@ const TRAINING = {
   {
    "id": 2,
    "week": 1,
-   "title": "The Phnom Penh Property Market",
+   "title": "The Phnom Penh property market",
    "short": "Phnom Penh Market",
    "objectives": [
     "Know the current state of the Phnom Penh condo market using Realestate.com.kh (REAKH) data",
@@ -826,7 +827,7 @@ const TRAINING = {
    ],
    "sections": [
     {
-     "label": "Where These Numbers Come From",
+     "label": "Where these numbers come from",
      "heading": "Realestate.com.kh (REAKH): our data partner",
      "body": "Every number in this lesson comes from Realestate.com.kh (REAKH), our official listing partner and the leading property platform in Cambodia. When you say a number to a client, you can say where it came from. That is what makes the number trustworthy instead of a guess.",
      "dataTitle": "Cambodia condo market, 2025/2026 snapshot",
@@ -834,11 +835,11 @@ const TRAINING = {
       "Average price across Phnom Penh: $1,800/sqm (gross floor area)",
       "Average price in BKK1: $2,000/sqm gross",
       "Transaction volume grew 25% in 2025. The market is recovering, not booming.",
-      "Total condo supply in Phnom Penh: about 60,000+ units by end of 2024"
+      "Total condo supply in Phnom Penh: over 60,000 units by end of 2024"
      ]
     },
     {
-     "label": "Prices and Rent by District",
+     "label": "Prices and rent by district",
      "heading": "Learn these numbers. Clients will test you.",
      "body": "Buy prices are gross floor area, per square meter. Rents are for a condo with normal shared facilities (pool, gym, lobby), the standard for the newer buildings PHC recommends.",
      "table": {
@@ -1066,7 +1067,7 @@ const TRAINING = {
   {
    "id": 3,
    "week": 1,
-   "title": "How Real Estate Works in Cambodia",
+   "title": "How real estate works in Cambodia",
    "short": "Real Estate Law",
    "objectives": [
     "Know the difference between 2 kinds of property title, and why the difference matters",
@@ -1075,7 +1076,7 @@ const TRAINING = {
    ],
    "sections": [
     {
-     "label": "Title Types",
+     "label": "Title types",
      "heading": "The single most important word in this lesson: title",
      "body": "\"Title\" is the legal document that proves who owns a property. Different title types give different rights. If a client buys the wrong title type, they may not legally own anything. This is the single biggest mistake to avoid in your entire job.",
      "analogy": "A strata title works like a car registration from the national government. It proves that exact car belongs to you, anywhere in the country, and any police officer can check it. A soft title is more like a note from your neighborhood chief. It might be true, but nobody outside that neighborhood has to accept it, and there is no national record of it at all.",
@@ -1087,7 +1088,7 @@ const TRAINING = {
      "warning": "If a developer cannot prove strata title for a condo, stop the conversation. Tell Nick before you say anything else to the client."
     },
     {
-     "label": "Foreign Ownership Rules",
+     "label": "Foreign ownership rules",
      "heading": "3 rules for foreign buyers. Know these by heart.",
      "body": "Cambodia does allow foreigners to own property, but only under 3 specific rules. A client will ask about this in almost every conversation. A wrong answer here breaks trust immediately. The two diagrams below show the two rules that are easiest to get wrong. Look at the picture, then read the rule.",
      "diagrams": [
@@ -1096,44 +1097,44 @@ const TRAINING = {
      ],
      "rules": [
       {
-       "title": "Rule 1: Ground floor is never allowed",
+       "title": "The ground floor is never allowed",
        "detail": "Foreigners can only own units starting from the 1st floor and up. A ground-floor unit cannot legally belong to a foreigner, no matter what title type it has.",
        "action": "If a foreign client likes a ground-floor unit, tell them immediately it is not possible, then show them a unit one floor up instead."
       },
       {
-       "title": "Rule 2: Max 70% foreign ownership per building",
+       "title": "Up to 70% foreign ownership per building",
        "detail": "No more than 70% of the units in one building can be owned by foreigners. This is called the \"foreign quota.\" Always check how much quota is left before you recommend a project.",
        "action": "Before recommending any project, ask: how much foreign quota is left in this building? If it's under 5%, say so clearly before showing anything."
       },
       {
-       "title": "Rule 3: Strata title is required, no exceptions",
+       "title": "Strata title is required, no exceptions",
        "detail": "Every unit sold to a foreign client must have strata title. This was covered in the section above, and it matters enough to repeat here.",
        "action": "Check the title type for every unit, every time, before you mention it to a foreign client."
       }
      ]
     },
     {
-     "label": "The Buying Process",
+     "label": "The buying process",
      "heading": "4 steps, in order. Memorize this order.",
      "body": "Every client will ask \"what happens next?\" at some point. Know this order without having to look it up.",
      "rules": [
       {
-       "title": "Step 1: Reservation",
+       "title": "Reservation",
        "detail": "The client pays a small deposit, usually $1,000 to $3,000. This holds the unit while paperwork is prepared. Ask the developer about their specific refund policy before the client pays.",
        "action": "Confirm the refund policy in writing before the client pays the reservation deposit."
       },
       {
-       "title": "Step 2: Sale & Purchase Agreement (SPA)",
+       "title": "Sale and Purchase Agreement (SPA)",
        "detail": "This is the main legal contract between the buyer and the developer. Always recommend the client hire their own independent lawyer to review it before signing.",
        "action": "Say this exact sentence to every client: \"I recommend having your own lawyer review the SPA before you sign.\""
       },
       {
-       "title": "Step 3: Payment Schedule",
+       "title": "Payment schedule",
        "detail": "Payments are usually made in stages during construction, or as one larger payment if the unit is already built. Know the payment schedule for every project you present.",
        "action": "Before showing a project, check its payment schedule so you can answer questions without pausing."
       },
       {
-       "title": "Step 4: Handover & Title Registration",
+       "title": "Handover and title registration",
        "detail": "The developer hands over the finished unit. The client makes the final payment. Then the strata title is registered in the client's name at the Ministry of Land Management. PHC helps coordinate this step.",
        "action": "Tell the client this step exists early on, so the ending of the process is not a surprise."
       }
@@ -1261,7 +1262,7 @@ const TRAINING = {
   {
    "id": 4,
    "week": 1,
-   "title": "The PHC Project Portfolio",
+   "title": "The PHC project portfolio",
    "short": "Project Portfolio",
    "objectives": [
     "Know every active PHC project: developer, location, status, price, title type",
@@ -1270,7 +1271,7 @@ const TRAINING = {
    ],
    "sections": [
     {
-     "label": "The Two Developers You'll Mention Most",
+     "label": "The two developers you'll mention most",
      "heading": "Know these two developers as well as you know the projects",
      "body": "PHC works with several developers. Two of them come up constantly with international buyers. Learn their story, not just their name.",
      "table": {
@@ -1294,7 +1295,7 @@ const TRAINING = {
      }
     },
     {
-     "label": "Active Projects",
+     "label": "Active projects",
      "heading": "Know status, price, and best-fit client for each",
      "body": "These are the projects you will discuss in almost every client conversation.",
      "table": {
@@ -1380,7 +1381,7 @@ const TRAINING = {
      }
     },
     {
-     "label": "Quick Match Guide",
+     "label": "Quick match guide",
      "heading": "Filter by client type before you present anything",
      "body": "Use this list before your first recommendation to any client.",
      "rules": [
@@ -1412,7 +1413,7 @@ const TRAINING = {
      ]
     },
     {
-     "label": "A Real, Verified Result",
+     "label": "A real, verified result",
      "heading": "J Tower 2: a real transaction, not a projection",
      "body": "This is documented in Realestate.com.kh's own 2025 market report. Use it as evidence in conversation, never as a promise of what will happen to a new buyer.",
      "calc": {
@@ -1548,7 +1549,7 @@ const TRAINING = {
   {
    "id": 5,
    "week": 1,
-   "title": "Who Our Clients Are",
+   "title": "Who our clients are",
    "short": "Client Segments",
    "stub": true
   },
@@ -2383,112 +2384,112 @@ const TRAINING = {
   {
    "id": 6,
    "week": 2,
-   "title": "The PHC Advisor Mindset",
+   "title": "The PHC advisor mindset",
    "short": "Advisor Mindset",
    "stub": true
   },
   {
    "id": 7,
    "week": 2,
-   "title": "Qualifying Clients Correctly",
+   "title": "Qualifying clients correctly",
    "short": "Client Qualification",
    "stub": true
   },
   {
    "id": 8,
    "week": 2,
-   "title": "The Advisory Conversation Flow",
+   "title": "The advisory conversation flow",
    "short": "Advisory Flow",
    "stub": true
   },
   {
    "id": 9,
    "week": 2,
-   "title": "Language & Communication Standards",
+   "title": "Language & communication standards",
    "short": "Language Standards",
    "stub": true
   },
   {
    "id": 10,
    "week": 2,
-   "title": "Reading Client Signals",
+   "title": "Reading client signals",
    "short": "Reading Signals",
    "stub": true
   },
   {
    "id": 11,
    "week": 3,
-   "title": "Yield, ROI & Cost of Ownership",
+   "title": "Yield, ROI & cost of ownership",
    "short": "Yield & ROI",
    "stub": true
   },
   {
    "id": 12,
    "week": 3,
-   "title": "The Japanese Investor Protocol",
+   "title": "The Japanese investor protocol",
    "short": "Japanese Protocol",
    "stub": true
   },
   {
    "id": 13,
    "week": 3,
-   "title": "The European & German Investor Protocol",
+   "title": "The European & German investor protocol",
    "short": "European Protocol",
    "stub": true
   },
   {
    "id": 14,
    "week": 3,
-   "title": "Serving Khmer & Overseas Cambodian Clients",
+   "title": "Serving Khmer & overseas Cambodian clients",
    "short": "Khmer Clients",
    "stub": true
   },
   {
    "id": 15,
    "week": 3,
-   "title": "Handling Objections",
+   "title": "Handling objections",
    "short": "Objections",
    "stub": true
   },
   {
    "id": 16,
    "week": 4,
-   "title": "Site Visits & Property Presentations",
+   "title": "Site visits & property presentations",
    "short": "Site Visits",
    "stub": true
   },
   {
    "id": 17,
    "week": 4,
-   "title": "Writing Proposals & Follow-Ups",
+   "title": "Writing proposals & follow-ups",
    "short": "Proposals & Follow-Ups",
    "stub": true
   },
   {
    "id": 18,
    "week": 4,
-   "title": "Pipeline & Deal Management",
+   "title": "Pipeline & deal management",
    "short": "Pipeline Management",
    "stub": true
   },
   {
    "id": 19,
    "week": 4,
-   "title": "Performance Standards & Self-Evaluation",
+   "title": "Performance standards & self-evaluation",
    "short": "Performance Standards",
    "stub": true
   },
   {
    "id": 20,
    "week": 4,
-   "title": "Graduation: The PHC Standard Review",
+   "title": "Graduation: the PHC standard review",
    "short": "Graduation",
    "stub": true
   },
   {
    "id": 21,
    "week": 5,
-   "title": "Leads, Content & Distribution: How PHC's Channels Work",
+   "title": "Leads, content & distribution: how PHC's channels work",
    "short": "Leads & Distribution",
    "stub": true
   }
@@ -2598,9 +2599,10 @@ const RANKS=['Trainee','Associate','Advisor','Trusted Advisor','Senior Advisor',
 const CAMPS=['Level 1','Level 2','Level 3','Level 4','Level 5','Level 6','Level 7'];
 const ALTS=[1,5,9,12,15,19,23,27];   // floors: each level of the tower, the rooftop is floor 27
 const fmtM=m=>m>=ALTS[ALTS.length-1]?'Rooftop':`Floor ${Math.round(m)}`;
-function climb(us){ const r0=us.findIndex(u=>!u.items.every(x=>x.done)), r=r0<0?us.length:r0;
+function climb(us){ // a level counts as reached when every lesson in it that exists is done ("coming soon" ones don't block you)
+  const open=u=>u.items.filter(x=>!x.stub), r0=us.findIndex(u=>!open(u).length||!open(u).every(x=>x.done)), r=r0<0?us.length:r0;
   if(r>=us.length) return {r,alt:ALTS[ALTS.length-1]};
-  const u=us[r], frac=u.items.filter(x=>x.done).length/u.items.length;
+  const u=us[r], frac=open(u).length?open(u).filter(x=>x.done).length/open(u).length:0;
   return {r,alt:ALTS[r]+frac*(ALTS[r+1]-ALTS[r])}; }
 function profileSVG(alt){ const W=260,H=92, X=k=>14+k*(222/(ALTS.length-1)), Y=a=>H-8-(a/5000)*(H-18);
   const camps=ALTS.map((a,k)=>[X(k),Y(a)]), seg=ALTS.findIndex(a=>a>alt), k=seg<0?ALTS.length-1:Math.max(1,seg),
@@ -2651,10 +2653,11 @@ function mtnModel(){
   const C=[0], A=[0]; for(let k=1;k<D.length;k++){ const f=(BASE_Y-D[k][1])/(BASE_Y-PEAK[1]), l=Math.hypot(D[k][0]-D[k-1][0],D[k][1]-D[k-1][1]); C.push(C[k-1]+l*Math.pow(1.5,f)); A.push(A[k-1]+l); }
   const k0=0, k1=D.findIndex(p=>p[1]<=PEAK[1]+46), N=steps.length;
   steps.forEach((st,j)=>{ const tc=C[k0]+(C[k1]-C[k0])*j/(N-1); let k=C.findIndex(c=>c>=tc); if(k<0) k=D.length-1; st.x=D[k][0]; st.y=D[k][1]; st.d=k; st.a=A[k]; });
-  const now=steps.find(s=>!s.done)||null;
+  // now = your next lesson; edge = where your flag stands (a "coming soon" step when nothing playable is left)
+  const now=steps.find(s=>!s.done&&!s.stub)||null, last=steps.map(s=>s.done).lastIndexOf(true), edge=now||steps.slice(last+1).find(s=>!s.done)||null;
   steps.forEach((st,j)=>{ const a=steps[j-1], b=steps[j+1], dist=(p,q)=>Math.hypot(p.x-q.x,p.y-q.y); st.gap=Math.min(a?dist(a,st):1e9,b?dist(b,st):1e9);
     st.arc=a&&b?(b.a-a.a)/2:a?st.a-a.a:b.a-st.a; });
-  return {D,steps,now,us};
+  return {D,steps,now,edge,us};
 }
 function mtnArt(M,dark){ const R=rng(7), Z=dark?ZONES.dark:ZONES.light, st=M.steps;
   // A glass high-rise in a city at dusk (night in dark mode). Each week is a tinted band of floors; finished weeks
@@ -2692,9 +2695,9 @@ function mtnArt(M,dark){ const R=rng(7), Z=dark?ZONES.dark:ZONES.light, st=M.ste
   o+=`<rect x="-600" y="1480" width="${MW+1200}" height="600" fill="${dark?'#15191F':'#CFC8BA'}"/><path d="M-600 1500H${MW+600}" stroke="${dark?'#2A3038':'#E9E3D6'}" stroke-width="4" stroke-dasharray="26 18"/>`;
   for(let x=-80;x<1100;x+=70+R()*40){ if(x>230&&x<770) continue; const h=26+R()*14; o+=`<path d="M${x} 1480v-${h*.5}" stroke="${dark?'#2E3A30':'#6F7F68'}" stroke-width="4"/><circle cx="${x}" cy="${1480-h*.7}" r="${h*.42}" fill="${dark?'#243A2E':'#7FA588'}"/>`; }
   // mist over the levels you haven't reached
-  if(M.now&&M.now.ui<M.us.length-1){ const nx=M.steps.find(x=>x.ui===M.now.ui+1), yb=nx.y+60, mc=dark?'#0B111C':'#F4F2EC';
+  if(M.edge&&M.edge.ui<M.us.length-1){ const nx=M.steps.find(x=>x.ui===M.edge.ui+1), yb=nx.y+60, mc=dark?'#0B111C':'#F4F2EC';
     o+=`<defs><linearGradient id="mmist" x1="0" y1="-600" x2="0" y2="${yb}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${mc}" stop-opacity="${dark?.7:.72}"/><stop offset=".72" stop-color="${mc}" stop-opacity=".5"/><stop offset="1" stop-color="${mc}" stop-opacity="0"/></linearGradient></defs><rect x="-600" y="-600" width="${MW+1200}" height="${yb+600}" fill="url(#mmist)"/>`; }
-  o+=`<path d="M${PEAK[0]} ${PEAK[1]}v-58" stroke="${dark?'#E7E2D6':'#3A4048'}" stroke-width="3"/><path d="M${PEAK[0]} ${PEAK[1]-58}h40l-9 11 9 11h-40Z" fill="${M.now?(dark?'#56606B':'#9AA0A8'):'#C9A04F'}"/>`;
+  o+=`<path d="M${PEAK[0]} ${PEAK[1]}v-58" stroke="${dark?'#E7E2D6':'#3A4048'}" stroke-width="3"/><path d="M${PEAK[0]} ${PEAK[1]-58}h40l-9 11 9 11h-40Z" fill="${M.edge?(dark?'#56606B':'#9AA0A8'):'#C9A04F'}"/>`;
   return o; }
 
 function viewHome(){
@@ -2718,10 +2721,10 @@ function camClamp(c,W,H){ const hw=W/2/c.s, hh=H/2/c.s;
 function mtnApply(){ const st=$('mstage'); if(!st||!MTN) return; const W=st.clientWidth, H=st.clientHeight, c=cam;
   const px=(x,y)=>[W/2+(x-c.x)*c.s, H/2+(y-c.y)*c.s];
   $('mworld').setAttribute('transform',`translate(${(W/2-c.x*c.s).toFixed(2)} ${(H/2-c.y*c.s).toFixed(2)}) scale(${c.s.toFixed(4)})`);
-  const D=MTN.D, cut=Math.round(MTN.cutD??(MTN.now?MTN.now.d:D.length-1)), path=pts=>pts.map((p,i)=>{ const q=px(p[0],p[1]); return (i?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1); }).join('');
+  const D=MTN.D, cut=Math.round(MTN.cutD??(MTN.edge?MTN.edge.d:D.length-1)), path=pts=>pts.map((p,i)=>{ const q=px(p[0],p[1]); return (i?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1); }).join('');
   $('mtrail').innerHTML=`<path class="bed" d="${path(D)}"/><path class="rest" d="${path(D.slice(cut))}"/><path class="got" d="${path(D.slice(0,cut+1))}"/>`;
   const dots=MTN.steps.map(s=>{ const [a,b]=px(s.x,s.y); return [a,b,Math.max(10,Math.min(30,s.gap*c.s*0.36))+4]; });
-  MTN.els.forEach(({el,x,y,gap,kind,span,mine,side})=>{ if(kind==='flag'){ const p=MTN.flagPt||(MTN.now?[MTN.now.x,MTN.now.y]:null); el.hidden=!p; if(!p) return; [x,y]=p; }
+  MTN.els.forEach(({el,x,y,gap,kind,span,mine,side})=>{ if(kind==='flag'){ const p=MTN.flagPt||(MTN.edge?[MTN.edge.x,MTN.edge.y]:null); el.hidden=!p; if(!p) return; [x,y]=p; }
     let [a,b]=px(x,y);
     if(kind==='camp'){ const w=el.offsetWidth||160, hh=(el.offsetHeight||40)/2; a=side>0?Math.min(a,W-w-8):Math.max(a,w+8);
       const x0=side>0?a:a-w, hits=yy=>dots.some(([dx,dy,r])=>dx+r>x0&&dx-r<x0+w&&dy+r>yy-hh&&dy-r<yy+hh);
@@ -2744,16 +2747,16 @@ function drawScene(){ const st=$('mstage'); if(!st) return;
   MTN=mtnModel(); const W=st.clientWidth, H=st.clientHeight, dark=isDark();
   $('mart').setAttribute('viewBox',`0 0 ${W} ${H}`); $('mtrail').setAttribute('viewBox',`0 0 ${W} ${H}`); $('mworld').innerHTML=mtnArt(MTN,dark);
   const layer=$('mlayer'), now=MTN.now; let h='';
-  const myU=now?now.ui:99;
-  MTN.steps.forEach((s,j)=>{ const key=s.kind[0]+s.i, cls=s.done?'done':s===now?'now':'todo', half=!s.done&&s.kind==='scenario'&&(state.scR1||{})[s.i];
-    h+=`<div class="mn u-${s.color}${s===now?' is-now':''}${s.ui>myU?' fog':''}" data-k="${key}"><button class="node ${cls}${half?' half':''}" type="button" data-act="node" data-k="${key}" aria-label="${j+1}. ${esc(s.title)}${s.done?`, done, ${starsOf(key)} stars`:s===now?', you are here':''}"><span class="nnum">${j+1}</span></button>${s.done?starsHTML(key):''}</div>`; });
+  const edge=MTN.edge, myU=edge?edge.ui:99;
+  MTN.steps.forEach((s,j)=>{ const key=s.kind[0]+s.i, cls=s.done?'done':s===now?'now':s.stub?'todo soon':'todo', half=!s.done&&s.kind==='scenario'&&(state.scR1||{})[s.i];
+    h+=`<div class="mn u-${s.color}${s===now?' is-now':''}${s.ui>myU?' fog':''}" data-k="${key}"><button class="node ${cls}${half?' half':''}" type="button" data-act="node" data-k="${key}" aria-label="${j+1}. ${esc(s.title)}${s.done?`, done, ${starsOf(key)} stars`:s===now?', you are here':s.stub?', coming soon':''}"><span class="nnum">${j+1}</span></button>${s.done?starsHTML(key):''}</div>`; });
   h+=`<div class="mflag"><span class="me" aria-hidden="true">${ICO.flag}</span></div>`;
-  MTN.us.forEach((u,k)=>{ const s=MTN.steps.find(x=>x.ui===k), done=u.items.every(x=>x.done), right=s.x<500;
+  MTN.us.forEach((u,k)=>{ const s=MTN.steps.find(x=>x.ui===k), done=u.items.every(x=>x.done||x.stub)&&u.items.some(x=>x.done), right=s.x<500;
     h+=`<button class="mcamp u-${u.color}${right?' r':' l'}" type="button" data-act="mcamp" data-u="${k}"><span class="camp-dot"></span><span><b>${CAMPS[k]} · ${fmtM(ALTS[k])}${done?' · ✓':''}</b>${esc(u.name)}</span></button>`; });
-  h+=`<div class="msummit${now?'':' reached'}"><b>Rooftop</b>${RANKS[RANKS.length-1]}</div>`;
+  h+=`<div class="msummit${edge?'':' reached'}"><b>Rooftop</b>${RANKS[RANKS.length-1]}</div>`;
   layer.innerHTML=h;
   const els=[]; layer.querySelectorAll('.mn').forEach((el,j)=>{ const s=MTN.steps[j]; els.push({el,x:s.x,y:s.y,gap:s.gap,kind:'step'}); });
-  const myCamp=now?now.ui:-1;
+  const myCamp=edge?edge.ui:-1;
   layer.querySelectorAll('.mcamp').forEach(el=>{ const k=+el.dataset.u, ss=MTN.steps.filter(x=>x.ui===k), s=ss[0], nx=MTN.steps[MTN.steps.indexOf(ss[ss.length-1])+1];
     const side=s.x<500?1:-1; els.push({el,x:500+side*(trailHW(s.y)*0.74+96),y:s.y,kind:'camp',side,span:s.y-(nx?nx.y:PEAK[1]),mine:k===myCamp}); });
   els.push({el:layer.querySelector('.msummit'),x:PEAK[0]-8,y:PEAK[1]+6,kind:'summit'});
@@ -2764,14 +2767,14 @@ function drawScene(){ const st=$('mstage'); if(!st) return;
   if(just&&just.done){ flown=true; clearTimeout(flyT); flyT=0; camMode='you'; zoomLabel(); camTo(camFor(just,W,H),false); mtnDrag(st); return playUnlock(just); }
   // Once per visit: the whole mountain first, then fly in to where you are.
   if(flyT) camTo(camOverview(W,H),false);
-  else if(!flown&&camMode==='you'&&now&&MTN.steps.indexOf(now)>0){ flown=true; camTo(camOverview(W,H),false);
-    flyT=setTimeout(()=>{ flyT=0; const s2=$('mstage'); if(s2&&camMode==='you') camTo(camFor(MTN.now,s2.clientWidth,s2.clientHeight),true,1600); },700); }
-  else camTo(camMode==='all'?camOverview(W,H):camFor(now,W,H),false);
+  else if(!flown&&camMode==='you'&&edge&&MTN.steps.indexOf(edge)>0){ flown=true; camTo(camOverview(W,H),false);
+    flyT=setTimeout(()=>{ flyT=0; const s2=$('mstage'); if(s2&&camMode==='you') camTo(camFor(MTN.edge,s2.clientWidth,s2.clientHeight),true,1600); },700); }
+  else camTo(camMode==='all'?camOverview(W,H):camFor(edge,W,H),false);
   mtnDrag(st); }
 function camCamp(k,W,H){ const ss=MTN.steps.filter(x=>x.ui===k), xs=ss.map(x=>x.x), ys=ss.map(x=>x.y), over=Math.min(W/MW,H/(MH-60));
   const bw=Math.max(...xs)-Math.min(...xs)+180, bh=Math.max(...ys)-Math.min(...ys)+220, s=Math.min(3.2,Math.max(over,Math.min(W/bw,H/bh)));
   return {x:(Math.max(...xs)+Math.min(...xs))/2,y:(Math.max(...ys)+Math.min(...ys))/2,s}; }
-function zoomLabel(){ const b=$('mzoom'); if(b) b.hidden=!(MTN&&MTN.now); if(b) b.innerHTML=camMode!=='you'?`${ICO.flag}<span>Back to me</span>`:`<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20l6-10 4 6 3-4 5 8z"/></svg><span>Whole tower</span>`; }
+function zoomLabel(){ const b=$('mzoom'); if(b) b.hidden=!(MTN&&MTN.edge); if(b) b.innerHTML=camMode!=='you'?`${ICO.flag}<span>Back to me</span>`:`<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20l6-10 4 6 3-4 5 8z"/></svg><span>Whole tower</span>`; }
 function mtnSheet(key){ const sh=$('msheet'); if(!sh) return; const s=MTN.steps.find(x=>x.kind[0]+x.i===key);
   if(!s||sh.dataset.k===key&&!sh.hidden){ sh.hidden=true; sh.dataset.k=''; return; }
   const cls=s.done?'done':s===MTN.now?'now':'todo';
@@ -2806,10 +2809,11 @@ function gateHTML(k){ const top=k>=UNIT_DEF.length;
   <svg class="gate-peak" viewBox="0 0 120 50" aria-hidden="true"><path d="M8 50V34h14v16M96 50V30h16v20M24 50V40h10v10M84 50V38h10v12" fill="var(--bg-2)"/><path d="M44 50V12h32v38Z" fill="var(--bg-2)"/><path d="M50 12V6h20v6ZM60 6V1" fill="var(--bg-2)" stroke="var(--bg-2)"/><circle cx="60" cy="${(46-40*Math.min(1,k/UNIT_DEF.length)).toFixed(1)}" r="4" fill="var(--gold)"/></svg>
   <div class="gate-r">${top?'Your rank':'New rank'}</div><div class="gate-rank">${RANKS[Math.min(k,RANKS.length-1)]}</div>
   <button class="solid-btn" type="button" id="gateGo">${top?'See the whole tower':'Keep climbing'}</button></div></div>`; }
-function playUnlock(prev){ const j=MTN.steps.indexOf(prev), next=MTN.steps[j+1], key=prev.kind[0]+prev.i, reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function playUnlock(prev){ const j=MTN.steps.indexOf(prev), rest=MTN.steps.slice(j+1), next=rest.find(x=>!x.stub)||rest[0],   // walk past "coming soon" steps
+    key=prev.kind[0]+prev.i, reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const el=document.querySelector(`.mn[data-k="${key}"]`); if(!el) return;
   const nel=next&&document.querySelector(`.mn[data-k="${next.kind[0]+next.i}"]`), nb=nel&&nel.querySelector('.node');
-  if(nel){ nel.classList.remove('is-now'); nb.classList.remove('now'); nb.classList.add('todo'); }
+  if(nel&&!next.stub){ nel.classList.remove('is-now'); nb.classList.remove('now'); nb.classList.add('todo'); }
   el.querySelector('.node').classList.add('justdone'); el.querySelector('.mstars')?.remove(); el.insertAdjacentHTML('beforeend',starsHTML(key,true));
   MTN.cutD=prev.d; MTN.flagPt=[prev.x,prev.y]; mtnApply();
   const campDone=!next||next.ui!==prev.ui;
@@ -2824,7 +2828,7 @@ function playUnlock(prev){ const j=MTN.steps.indexOf(prev), next=MTN.steps[j+1],
       MTN.cutD=d; MTN.flagPt=MTN.D[Math.round(d)]; mtnApply();
       if(t<1) return requestAnimationFrame(tick);
       MTN.cutD=null; MTN.flagPt=null; mtnApply();
-      if(nel){ nel.classList.add('is-now'); nb.classList.remove('todo'); nb.classList.add('now','unlock'); }
+      if(nel&&!next.stub){ nel.classList.add('is-now'); nb.classList.remove('todo'); nb.classList.add('now','unlock'); }
       if(campDone) setTimeout(gate,500); };
     requestAnimationFrame(tick); }, reduce?0:1000); }
 
@@ -2833,12 +2837,10 @@ function viewLessons(){ const col=l=>(UNIT_DEF.find(u=>u.name===(l.unit||'Founda
       <span class="row-n ${state.done[i]?'done':''}">${state.done[i]?'✓':stepNo('lesson',i)}</span>
       <span class="row-body"><span class="row-title">${l.title}</span></span>
       <span class="chev" aria-hidden="true">›</span></button>`; }).join('')}</div>
-  <details class="fold principles"><summary>The five principles behind everything</summary><ol class="how">
-    <li><b>Never apologize for being there.</b> Not for their time, your nerves, or having a view.</li>
-    <li><b>Use fewer words.</b> Short sentences carry more weight.</li>
-    <li><b>Answer first.</b> The conclusion, then the reason.</li>
-    <li><b>Ask instead of defending.</b> A calm question sounds more secure than any argument.</li>
-    <li><b>Let silence work.</b> After a key point, a number, or a hard question.</li></ol></details>`;
+  <details class="fold principles"><summary>The 3 rules every PHC agent follows</summary><ol class="how">
+    <li><b>Be clear, not persuasive.</b> If you can't say it in one simple, honest sentence, confirm it first.</li>
+    <li><b>Trust is the real product.</b> One pressured client costs PHC more than one lost sale.</li>
+    <li><b>Follow the system, every time.</b> Skipped steps cause mistakes.</li></ol></details>`;
 }
 function renderScript(arr){ return arr.map(([t,type])=>{ t=personal(t);
   if(type==='pause') return '<span class="pause">‧‧‧</span>'; if(type==='pause-long') return '<span class="pause">‧‧‧‧‧</span>';
@@ -3488,6 +3490,7 @@ function lessonAct(a,btn){
   if(a==='ls-skipaudio'){ stopAll(); c.step='ready'; return render(); }
   if(a==='ls-rec') return lsRecord();
   if(a==='ls-stop') return stopRec();
+  if(a==='ls-again'&&c.type==='done') return startLesson(lsess.i);
   if(a==='ls-again'){ stopAll(); cancelRec(); c.step='ready'; c.err=null; return render(); }
   if(a==='ls-pmodel') return runBtn(btn,t=>lsModel(t));
   if(a==='ls-pme') return runBtn(btn,t=>playUrl(c.url,t));
@@ -3505,7 +3508,6 @@ function lessonAct(a,btn){
   if(a==='ls-flcheck'){ const p=LESSONS[lsess.i].pics[c.k]; c.checked=true; c.ok=c.sel.size===p.answer.length&&p.answer.every(f=>c.sel.has(f)); stopAll(); render(); return quizVerdict(c.ok,`c-at${lsess.i}-pq${c.k}-why`); }
   if(a==='ls-dc'){ if(c.dpick!=null) return; const x=LESSONS[lsess.i].decision.steps[c.k]; c.dpick=+btn.dataset.n; c.ok=x.options[c.dpick].v==='best'; stopAll(); render();
     if(coachOn()){ const t=++tok; coachSay('c-fx-'+(c.ok?'best':x.options[c.dpick].v==='risky'?'risky':'notway'),t).then(ok=>ok&&wait(150,t)).then(ok=>ok&&coachSay(`c-dc${lsess.i}-s${c.k}-o${c.dpick}`,t)); } return; }
-  if(a==='ls-again'&&c.type==='done'){ const i=lsess.i; return startLesson(i); }
   if(a==='ls-more'){ const i=lsess.i; endLesson(); state.route={name:'lesson',i}; save(); render(); window.scrollTo(0,0); return; }
   if(a==='ls-topic'){ let k; do{ k=Math.floor(Math.random()*P.list.length); }while(k===c.last&&P.list.length>1); c.last=k; c.topic=P.list[k];
     if(timerId){ clearInterval(timerId); timerId=null; } return render(); }
@@ -3819,7 +3821,7 @@ function act(a,btn){
   if(a==='speed'){ state.rate=SPEEDS.find(x=>x>state.rate+0.001)??SPEEDS[0]; save(); btn.textContent=(+state.rate.toFixed(2))+'×'; return; }
   if(a==='node') return mtnSheet(btn.dataset.k);
   if(a==='mzoom'){ clearTimeout(flyT); flyT=0; const st=$('mstage'); camMode=camMode==='all'?'you':'all'; zoomLabel(); $('msheet').hidden=true;
-    return camTo(camMode==='all'?camOverview(st.clientWidth,st.clientHeight):camFor(MTN.now,st.clientWidth,st.clientHeight),true); }
+    return camTo(camMode==='all'?camOverview(st.clientWidth,st.clientHeight):camFor(MTN.edge,st.clientWidth,st.clientHeight),true); }
   if(a==='mcamp'){ clearTimeout(flyT); flyT=0; const st=$('mstage'); camMode='camp'; zoomLabel(); return camTo(camCamp(+btn.dataset.u,st.clientWidth,st.clientHeight),true); }
   if(a.startsWith('st-')) return studioAct(a,btn);
   if(a==='coach') return runBtn(btn,t=>coachSay(btn.dataset.k,t));
@@ -3881,7 +3883,7 @@ function viewSettings(){
   </div>
   <p class="sec-k">Backup</p>
   <div class="card settings">
-    <p class="hint" style="margin:0">Your progress, meeting prep and recordings, in one file. Last backup: <b>${bkLast()}</b></p>
+    <p class="hint" style="margin:0">Your progress, notes and recordings, in one file. Last backup: <b>${bkLast()}</b></p>
     <div class="src-row">${BK?`<button class="small-btn on" type="button" id="bkSave">Save backup file · ${BK.size<1048576?Math.max(1,Math.round(BK.size/1024))+' KB':(BK.size/1048576).toFixed(1)+' MB'}</button>`:`<button class="small-btn" type="button" id="bkBtn">Back up</button>`}
       <label class="small-btn" style="cursor:pointer;color:var(--text)">Restore<input type="file" id="bkFile" accept="application/json,.json" hidden></label></div>
   </div>
@@ -3901,16 +3903,16 @@ async function bkPack(v){ if(v instanceof Blob) return {__blob:await blobTo64(v)
   const o={}; for(const [k,x] of Object.entries(v)) o[k]=await bkPack(x); return o; }
 async function bkUnpack(v){ if(v&&v.__blob) return (await fetch(v.__blob)).blob(); if(Array.isArray(v)||!v||typeof v!=='object') return v;
   const o={}; for(const [k,x] of Object.entries(v)) o[k]=await bkUnpack(x); return o; }
-async function bkPrepare(){ const out={app:'speak-like-a-leader',v:1,at:new Date().toISOString(),state:JSON.parse(localStorage.getItem(KEY)||'{}'),takes:{},history:{}};
+async function bkPrepare(){ const out={app:'phc-agent-training',v:1,at:new Date().toISOString(),state:JSON.parse(localStorage.getItem(KEY)||'{}'),takes:{},history:{}};
   for(const store of ['takes','history']) for(const k of (await IDB.req('readonly',s=>s.getAllKeys(),store))||[]){
     if(String(k).startsWith('pv:')) continue; out[store][k]=await bkPack(await IDB.req('readonly',s=>s.get(k),store)); }
-  BK=new File([JSON.stringify(out)],`speak-like-a-leader-backup-${ymd(new Date())}.json`,{type:'application/json'}); }
+  BK=new File([JSON.stringify(out)],`phc-agent-training-backup-${ymd(new Date())}.json`,{type:'application/json'}); }
 function bkSave(){ const f=BK; if(!f) return; const done=()=>{ state.lastBackup=Date.now(); save(); BK=null; render(); };
   const dl=()=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(f); a.download=f.name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },2000); done(); };
-  if(navigator.canShare&&navigator.canShare({files:[f]})) navigator.share({files:[f],title:'Speak Like a Leader backup'}).then(done).catch(e=>{ if(e&&e.name==='AbortError') return; dl(); });
+  if(navigator.canShare&&navigator.canShare({files:[f]})) navigator.share({files:[f],title:'PHC Agent Training backup'}).then(done).catch(e=>{ if(e&&e.name==='AbortError') return; dl(); });
   else dl(); }
 async function bkRestore(file){ let d=null; try{ d=JSON.parse(await file.text()); }catch(e){}
-  if(!d||d.app!=='speak-like-a-leader'||!d.state) return alert("That file isn't a Speak Like a Leader backup.");
+  if(!d||d.app!=='phc-agent-training'||!d.state) return alert("That file isn't a PHC Agent Training backup.");
   const when=new Date(d.at).toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'});
   if(!confirm(`Restore the backup from ${when}? It replaces the progress on this device.`)) return;
   for(const store of ['takes','history']){
@@ -3977,7 +3979,7 @@ function bind(n,i){
     $('voiceSel')?.addEventListener('change',e=>{ state.voice=e.target.value; save(); });
     $('coachVoiceT').addEventListener('change',e=>{ state.coachVoice=e.target.checked; save(); });
     $('rate').addEventListener('input',e=>{ state.rate=+e.target.value; $('rateVal').textContent=state.rate.toFixed(2)+'×'; save(); });
-    $('testVoice').addEventListener('click',e=>{ const b=e.currentTarget, c=AUDIO['l1-p0']; if(useFiles()&&c) runBtn(b,t=>playClip(c,[],t)); else playSegs(b, segsOf('Good to meet you. ‧‧‧ Thank you for your time. ↘')); });
+    $('testVoice').addEventListener('click',e=>{ const b=e.currentTarget, c=AUDIO['at0-t0']; if(useFiles()&&c) runBtn(b,t=>playClip(c,[],t)); else playSegs(b, segsOf('Good to meet you. ‧‧‧ Thank you for your time. ↘')); });
     document.querySelectorAll('[data-src]').forEach(b=>b.addEventListener('click',()=>{ stopAll(); state.voiceSrc=b.dataset.src; save(); render(); }));
     $('bkBtn')?.addEventListener('click',async e=>{ const b=e.currentTarget; b.disabled=true; b.textContent='Preparing…'; try{ await bkPrepare(); }catch(err){ alert('The backup could not be prepared.'); } render(); });
     $('bkSave')?.addEventListener('click',bkSave);
