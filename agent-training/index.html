@@ -564,6 +564,15 @@ main.home{ padding-bottom:0; }
 .at-client{ display:flex; gap:10px; align-items:flex-start; margin:0 0 12px; } .at-client p{ background:var(--card); border:1px solid var(--line); border-radius:4px 14px 14px 14px; padding:10px 14px; font-family:var(--serif); font-size:1.05rem; line-height:1.5; box-shadow:var(--shadow); }
 .at-client.reading p{ border-color:var(--gold); box-shadow:0 0 0 3px color-mix(in srgb, var(--gold) 22%, transparent), var(--shadow); }
 .at-av{ flex:0 0 32px; height:32px; border-radius:50%; background:linear-gradient(145deg, var(--u,#6B7280), var(--u-d,#4B5563)); color:#fff; font-family:var(--serif); font-weight:600; display:flex; align-items:center; justify-content:center; }
+.at-flow{ list-style:none; margin-top:18px; counter-reset:f; } .at-flow li{ counter-increment:f; position:relative; padding:0 0 14px 44px; min-height:40px; }
+.at-flow li::before{ content:counter(f); position:absolute; left:0; top:0; width:30px; height:30px; border-radius:50%; background:linear-gradient(145deg, var(--u,var(--gold)), var(--u-d,var(--gold))); color:#fff; font-weight:600; font-size:.85rem; display:flex; align-items:center; justify-content:center; }
+.at-flow li::after{ content:''; position:absolute; left:14px; top:32px; bottom:2px; width:2px; background:var(--line); } .at-flow li:last-child{ padding-bottom:0; } .at-flow li:last-child::after{ display:none; }
+.at-flow b{ display:block; font-size:1rem; line-height:1.3; padding-top:5px; } .at-flow span{ display:block; font-size:.9rem; line-height:1.45; color:var(--dim); margin-top:2px; }
+.at-grid{ margin-top:18px; display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:10px; } .at-grid .card{ padding:12px 14px; margin:0; }
+.at-grid b{ display:block; font-size:.95rem; margin-bottom:4px; } .at-grid p{ font-size:.92rem; line-height:1.5; color:var(--dim); margin:0; }
+.at-bars{ margin-top:18px; padding:14px 16px; } .at-bar + .at-bar{ margin-top:12px; } .at-bar-l{ display:flex; justify-content:space-between; gap:12px; font-size:.9rem; margin-bottom:6px; } .at-bar-l b{ font-variant-numeric:tabular-nums; }
+.at-bar i{ display:block; height:12px; border-radius:6px; background:var(--pri); } .at-bar.dim i{ background:color-mix(in srgb, var(--pri) 45%, var(--bg-2)); }
+.at-who{ display:block; font:600 .66rem var(--sans); letter-spacing:.12em; text-transform:uppercase; color:var(--dim); margin-bottom:2px; }
 .at-refl{ width:100%; min-height:150px; margin-top:6px; padding:14px 16px; border:1px solid var(--line); border-radius:12px; background:var(--card); color:var(--text); font:inherit; font-size:1rem; line-height:1.5; box-shadow:var(--shadow); resize:vertical; }
 .row.stub{ opacity:.55; cursor:default; } .row.stub .row-n{ background:var(--bg-2); color:var(--mute); }
 .row-soon{ font-size:.66rem; font-weight:600; text-transform:uppercase; letter-spacing:.12em; color:var(--mute); }
@@ -830,18 +839,20 @@ const TRAINING = {
      "label": "Where these numbers come from",
      "heading": "Realestate.com.kh (REAKH): our data partner",
      "body": "Every number in this lesson comes from Realestate.com.kh (REAKH), our official listing partner and the leading property platform in Cambodia. When you say a number to a client, you can say where it came from. That is what makes the number trustworthy instead of a guess.",
-     "dataTitle": "Cambodia condo market, 2025/2026 snapshot",
+     "dataTitle": "Cambodia condo market: REAKH 2026 report",
      "data": [
       "Average price across Phnom Penh: $1,800/sqm (gross floor area)",
-      "Average price in BKK1: $2,000/sqm gross",
-      "Transaction volume grew 25% in 2025. The market is recovering, not booming.",
-      "Total condo supply in Phnom Penh: over 60,000 units by end of 2024"
+      "BKK1, the city's benchmark: $2,300/sqm gross, and 36% of buyer interest",
+      "A typical 1-bedroom: 56 sqm, about $105,000. 1-bedrooms are 61% of sales and 72% of rentals",
+      "Buyers: 22% Cambodian, up from 19% a year before. The largest foreign groups: American 12%, Russian 9.6%, Polish 9.1%, French 7.4%",
+      "Supply: 64,000 condo units across Cambodia in 2025. Four major projects launched in early 2026",
+      "The trend: a flight to quality. Buyers choose trusted developers, good locations and fair prices"
      ]
     },
     {
      "label": "Prices and rent by district",
      "heading": "Learn these numbers. Clients will test you.",
-     "body": "Buy prices are gross floor area, per square meter. Rents are for a condo with normal shared facilities (pool, gym, lobby), the standard for the newer buildings PHC recommends.",
+     "body": "Buy prices are gross floor area, per square meter, from the REAKH 2026 report. Rents are for a condo with normal shared facilities (pool, gym, lobby), the standard for the newer buildings PHC recommends.",
      "table": {
       "headers": [
        "District",
@@ -853,7 +864,7 @@ const TRAINING = {
       "rows": [
        [
         "BKK1",
-        "$2,000",
+        "$2,300",
         "$800",
         "$1,450",
         "$2,550"
@@ -874,7 +885,7 @@ const TRAINING = {
        ],
        [
         "Chroy Changvar",
-        "$1,700",
+        "$1,600",
         "$450",
         "$900",
         "$1,800"
@@ -888,21 +899,21 @@ const TRAINING = {
        ],
        [
         "Toul Tompoung",
-        "$1,200",
+        "$1,800",
         "$450",
         "$800",
         "$1,300"
        ],
        [
         "BKK3",
-        "$1,600",
+        "$1,800",
         "$550",
         "$900",
         "$1,200"
        ],
        [
         "Sen Sok",
-        "$1,100",
+        "$1,400",
         "$400",
         "$650",
         "$950"
@@ -913,7 +924,7 @@ const TRAINING = {
     {
      "label": "Capital Gains Tax (CGT)",
      "heading": "The tax a client pays when they sell: a worked example",
-     "body": "Capital Gains Tax (CGT) is a tax on profit, not on the full sale price. Many clients confuse the two, and this mistake makes them think the tax is much bigger than it really is. Clear this up early, with real numbers.",
+     "body": "Capital Gains Tax (CGT) is a tax on profit, not on the full sale price. Many clients confuse the two, and this mistake makes them think the tax is much bigger than it really is. Clear this up early, with real numbers. Sellers can deduct either a flat allowance or their actual documented costs. This example uses documented costs.",
      "analogy": "Think of Capital Gains Tax like paying tax on your salary, not on the whole company's revenue. You are only taxed on what you actually gained: the sale price, minus what you originally paid and your documented costs.",
      "calc": {
       "title": "Example: bought for $100,000, sold for $200,000, $40,000 in documented costs",
@@ -957,22 +968,22 @@ const TRAINING = {
      "opts": [
       "$1,200",
       "$1,800 (Phnom Penh's citywide average)",
-      "$2,000",
+      "$2,300",
       "$2,800"
      ],
      "correct": 2,
-     "explain": "BKK1 averages $2,000/sqm gross. This is Realestate.com.kh's tracked figure across all project tiers in the district."
+     "explain": "BKK1 averages $2,300 per sqm gross in the REAKH 2026 report. It is the city's premium benchmark."
     },
     {
-     "q": "How much did transaction volume grow in 2025?",
+     "q": "What share of condo buyers were Cambodian in the REAKH 2026 report?",
      "opts": [
-      "Fell 10%",
-      "Grew 5%",
-      "Grew 25%",
-      "Stayed flat"
+      "About 5%",
+      "About 22%",
+      "About 50%",
+      "About 75%"
      ],
-     "correct": 2,
-     "explain": "Transaction volume grew 25% in 2025. This is the single most useful market-momentum number to know."
+     "correct": 1,
+     "explain": "22%, up from 19% a year before. Foreign buyers are still about 78%, but Cambodian demand is growing."
     },
     {
      "q": "Capital Gains Tax (CGT) is a tax on:",
@@ -1005,7 +1016,7 @@ const TRAINING = {
       "client": [
        "I heard there's a new tax on property in Cambodia. Is that true?"
       ],
-      "agent": "There *is* one coming. ‧‧‧ Capital Gains Tax is postponed to *January* 2027, ‧‧‧ so it's not payable *yet*."
+      "agent": "There *is* one coming. ‧‧‧ Capital Gains Tax is postponed until the *end* of 2026, ‧‧‧ so it's not payable *yet*."
      },
      {
       "client": [],
@@ -1083,7 +1094,8 @@ const TRAINING = {
      "dataTitle": "The 2 title types you need to know",
      "data": [
       "Strata Title: permanent ownership. Registered with the national government (Ministry of Land Management). The only title type foreigners can legally use. Every PHC property has this.",
-      "Soft Title: registered only with a local authority, not the national government. Not legally valid nationwide. Only for Cambodian citizens. Never recommend this to a PHC client."
+      "Soft Title: registered only with a local authority, not the national government. Not legally valid nationwide. Only for Cambodian citizens. Never recommend this to a PHC client.",
+      "Buildings from before 2010, or built without a strata licence, can't give a strata title, even if they sell units on a contract. Always check."
      ],
      "warning": "If a developer cannot prove strata title for a condo, stop the conversation. Tell Nick before you say anything else to the client."
     },
@@ -1097,9 +1109,9 @@ const TRAINING = {
      ],
      "rules": [
       {
-       "title": "The ground floor is never allowed",
-       "detail": "Foreigners can only own units starting from the 1st floor and up. A ground-floor unit cannot legally belong to a foreigner, no matter what title type it has.",
-       "action": "If a foreign client likes a ground-floor unit, tell them immediately it is not possible, then show them a unit one floor up instead."
+       "title": "No ground floor in a foreigner's own name",
+       "detail": "A foreigner can own a strata-title unit from the 1st floor up, in their own name. The ground floor cannot be in a foreigner's own name. Legal routes exist: since the 2019 Trust Law, a licensed trust company can hold it for them (over 1,700 trusts were registered by 2025), or a land-holding company that is at least 51% Cambodian-owned.",
+       "action": "If a foreign client likes a ground-floor unit, say clearly it can't be in their own name. Then offer both paths: the same layout one floor up, or a legal route set up with an independent lawyer. Check with Nick before you promise anything."
       },
       {
        "title": "Up to 70% foreign ownership per building",
@@ -1146,13 +1158,13 @@ const TRAINING = {
     {
      "q": "A foreign buyer wants to buy a ground-floor unit in a new BKK1 condo. What do you do?",
      "opts": [
-      "Continue. Ground floor is fine if the building has strata title",
-      "Explain clearly that foreigners cannot legally own ground-floor units, and offer an alternative unit",
-      "Ask the developer if they can make an exception",
-      "Suggest they use a Cambodian friend's name instead"
+      "Continue. The ground floor is fine with a strata title",
+      "Explain it can't be in their own name, then offer a unit one floor up or a legal route checked by a lawyer",
+      "Ask the developer to make an exception",
+      "Suggest a Cambodian friend's name"
      ],
      "correct": 1,
-     "explain": "Foreigners can only own units from the 1st floor and up. This rule has no exceptions. Redirect to a real, legal option right away."
+     "explain": "In their own name, foreigners own from the 1st floor up. The ground floor needs a legal route, like a licensed trust or a company at least 51% Cambodian-owned, set up with a lawyer. Never improvise one."
     },
     {
      "q": "A building already has 68% foreign ownership. A Japanese investor wants to buy a unit there. What do you do?",
@@ -1207,27 +1219,27 @@ const TRAINING = {
       "client": [
        "I like unit 01 on the ground floor. Can I buy it?"
       ],
-      "agent": "I need to tell you *clearly*: ‧‧‧ as a foreigner, ‧‧‧ you *cannot* legally own a *ground-floor* unit in Cambodia. ↘"
+      "agent": "I need to be *clear*: ‧‧‧ as a foreigner, ‧‧‧ you can't hold a *ground-floor* unit ‧‧‧ in your *own* name. ↘"
      },
      {
       "client": [
        "Why not?"
       ],
-      "agent": "Cambodian law only allows foreign ownership from the *first* floor and up. ‧‧‧ This rule applies no matter what *title* the unit has. ↘"
+      "agent": "Cambodian law lets foreigners own from the *first* floor up. ‧‧‧ The ground floor is reserved for *Cambodian* owners. ↘"
      },
      {
       "client": [
-       "But the developer told me it has strata title."
+       "So there's no way at all?"
       ],
-      "agent": "The title type is *correct*, ‧‧‧ but the *floor* rule still applies."
+      "agent": "There *are* legal routes: ‧‧‧ a licensed *trust*, ‧‧‧ or a company that's at least *fifty-one* percent Cambodian. ‧‧‧ They need a *lawyer*, ‧‧‧ and they add *cost*."
      },
      {
       "client": [],
-      "agent": "Unit 02, ‧‧‧ one floor *up*, ‧‧‧ has the *same* layout, ‧‧‧ and it's fully available to you. ‧‧‧ Would you like to *see* it?"
+      "agent": "Or, ‧‧‧ unit 02, ‧‧‧ one floor *up*, ‧‧‧ has the *same* layout, ‧‧‧ in your *own* name. ‧‧‧ Would you like to *see* it?"
      }
     ],
-    "note": "Did the agent sound direct without sounding harsh? Did the client feel redirected, not rejected?",
-    "debrief": "The floor rule is a hard rule. Do not soften it or suggest a workaround. Redirect confidently to a real option instead."
+    "note": "Did the agent sound clear without being harsh? Did the client hear both paths: one floor up, or a legal route with a lawyer?",
+    "debrief": "Be exact: not in their own name. Then show both paths. Never improvise a workaround, and never promise a route before a lawyer and Nick have checked it."
    },
    "pics": [
     {
@@ -1249,13 +1261,13 @@ const TRAINING = {
     {
      "after": 1,
      "kind": "floors",
-     "prompt": "Tap every floor a foreign client can own.",
+     "prompt": "Tap every floor a foreigner can own in their own name.",
      "answer": [
       1,
       2,
       3
      ],
-     "why": "First floor and up. The ground floor can never belong to a foreigner, whatever the title."
+     "why": "1st floor and up. The ground floor can't be in a foreigner's own name. Only a legal route, like a trust or a majority-Cambodian company, can hold it."
     }
    ]
   },
@@ -1318,7 +1330,7 @@ const TRAINING = {
         "Time Square 9",
         "BKK1",
         "~$1,700/sqm",
-        "Under construction",
+        "Launched early 2026, done 2029",
         "JP investors, EU buyers, upscale Khmer"
        ],
        [
@@ -1332,7 +1344,7 @@ const TRAINING = {
         "Time Square 11",
         "BKK3",
         "TBC",
-        "Launching Feb 2026",
+        "Launched early 2026, done 2029",
         "Local Khmer, first-home buyers"
        ],
        [
@@ -1374,7 +1386,7 @@ const TRAINING = {
         "G.A.T.O Tower",
         "BKK1",
         "TBC",
-        "Near launch",
+        "Launched early 2026, done 2030",
         "Luxury Japanese, $400K+ Europeans"
        ]
       ]
@@ -1415,7 +1427,7 @@ const TRAINING = {
     {
      "label": "A real, verified result",
      "heading": "J Tower 2: a real transaction, not a projection",
-     "body": "This is documented in Realestate.com.kh's own 2025 market report. Use it as evidence in conversation, never as a promise of what will happen to a new buyer.",
+     "body": "This is documented in Realestate.com.kh's market report (2026 edition). The 5 years were 3 years of construction, then 2 years rented. Use it as evidence in conversation, never as a promise of what will happen to a new buyer.",
      "calc": {
       "title": "J Tower 2, 2BR unit, bought 2019, sold 2024",
       "rows": [
@@ -1424,7 +1436,7 @@ const TRAINING = {
         "value": "$147,755"
        },
        {
-        "label": "Rental income, 5 years (net of fees)",
+        "label": "Net rent, 2 years after handover (90% occupied)",
         "value": "$23,392"
        },
        {
@@ -1551,7 +1563,173 @@ const TRAINING = {
    "week": 1,
    "title": "Who our clients are",
    "short": "Client Segments",
-   "stub": true
+   "objectives": [
+    "Know PHC's 5 client types: profile, goal and decision style",
+    "Tell which type a new client is within 5 minutes",
+    "Know which projects fit each type, and why"
+   ],
+   "sections": [
+    {
+     "label": "Why client types matter",
+     "heading": "One approach does not fit every client",
+     "body": "The biggest mistake a new agent makes is treating every client the same way. A safety-focused Japanese investor needs a very different conversation from a young Khmer professional buying a first home. Know the client's type before you talk about any project. That is the foundation of good advice.",
+     "box": {
+      "title": "The rule",
+      "lines": [
+       "Identify the client type first. Match the project second. Never the other way around."
+      ]
+     },
+     "before": {
+      "text": "Let me show you everything we have in BKK1, and you tell me what you like."
+     },
+     "now": {
+      "text": "Before I show you anything, can I ask three quick questions? Then I'll show you the two or three that fit."
+     },
+     "pairWhy": "Showing everything first is what a catalog does. Three questions first is what an advisor does, and the client feels it."
+    },
+    {
+     "label": "The 5 client types",
+     "heading": "Know each profile clearly",
+     "body": "These are the five types of client PHC serves. Each one has a different goal, decision style and best-fit project. Right now, 22% of condo buyers are Cambodian, and the fastest-growing foreign buyers are Russian and Polish (REAKH 2026).",
+     "grid": [
+      [
+       "Japanese investors",
+       "40 to 65, high earner, low risk tolerance. Wants: stable passive income, capital safety. Best fit: J Tower 2, J Tower 3, Time Square 9, Le Condé."
+      ],
+      [
+       "German and European",
+       "45 to 65, near retirement, analytical. Wants: monthly income to add to a pension. Best fit: Le Condé, Royal Platinum, Peninsula."
+      ],
+      [
+       "Overseas Cambodians",
+       "30 to 55, live abroad, family-focused. Wants: a home for family, safe capital. Best fit: Time Square 8, Time Square 11, Royal Platinum, Time Square 9."
+      ],
+      [
+       "Local Khmer",
+       "25 to 50, live in Phnom Penh, lifestyle upgrade. Wants: a safe family home, community. Best fit: Time Square 11 (BKK3), Royal Platinum, Time Square 8."
+      ],
+      [
+       "Other foreign investors",
+       "American, Russian, Polish, French and more: the fastest-growing groups. Hands-off rental. Wants: yield and management quality. Best fit: Le Condé, Peninsula, Time Square 9."
+      ]
+     ]
+    },
+    {
+     "label": "The 5-minute test",
+     "heading": "Three questions, in order, tell you the type",
+     "body": "In the first 5 minutes of any first meeting, ask these three questions in this order. By the end, you'll know who you're talking to.",
+     "flow": [
+      {
+       "title": "Background",
+       "sub": "Nationality and past investing"
+      },
+      {
+       "title": "Their goal",
+       "sub": "Income, lifestyle, or both"
+      },
+      {
+       "title": "The power question",
+       "sub": "What would make this the wrong decision?"
+      }
+     ],
+     "rules": [
+      {
+       "title": "Question 1: background",
+       "detail": "\"Have you invested in property before, here or anywhere else?\" This tells you the client type fast.",
+       "action": "Ask this within the first minute of any new conversation."
+      },
+      {
+       "title": "Question 2: their goal",
+       "detail": "\"What do you hope this investment gives you?\" Rental income points to an investor. Living there points to a home buyer.",
+       "action": "Listen for the word \"income\" or the word \"live\". That one word tells you a lot."
+      },
+      {
+       "title": "Question 3: the power question",
+       "detail": "\"What would make this the wrong decision for you?\" It shows risk tolerance, decision criteria and hidden worries all at once.",
+       "action": "Ask it word for word. It is the most useful sentence in this lesson."
+      }
+     ]
+    }
+   ],
+   "roleplay": {
+    "scenario": "Finding the client type in 5 minutes",
+    "instructions": "Make the three questions feel natural, not like an interview.",
+    "turns": [
+     {
+      "client": [
+       "I'm interested in property in BKK1. What do you have?"
+      ],
+      "agent": "Happy to. ‧‧‧ Before I *do*, ‧‧‧ can I ask two quick *questions*, ‧‧‧ so I only show you what *fits*?"
+     },
+     {
+      "client": [
+       "Sure, go ahead."
+      ],
+      "agent": "What's *driving* this right now? ‧‧‧ *Income*, ‧‧‧ a place to *live*, ‧‧‧ or a *mix*?"
+     },
+     {
+      "client": [
+       "Mostly a place to spend four or five months a year. Ideally it pays for itself when I'm away."
+      ],
+      "agent": "That's *helpful*. ‧‧‧ And is this for *retirement*, ‧‧‧ or are you still *working*?"
+     },
+     {
+      "client": [
+       "I retire in about 18 months. I live in Switzerland."
+      ],
+      "agent": "Then I'd like you to meet *Reza*, ‧‧‧ our co-founder. ‧‧‧ He works with *European* retirement buyers ‧‧‧ every *day*. ↘"
+     }
+    ],
+    "note": "Did the agent avoid showing anything before qualifying? Did the handoff to Reza feel smooth?",
+    "debrief": "The agent showed nothing. In four questions they found: European, retiring soon, part-year use plus rental, so Reza. Client type first. Always."
+   },
+   "quiz": [
+    {
+     "q": "A 52-year-old German client says their main goal is \"reliable monthly income to add to my pension.\" Which client type is this?",
+     "opts": [
+      "Other foreign investors",
+      "German and European",
+      "Japanese investors",
+      "Overseas Cambodians"
+     ],
+     "correct": 1,
+     "explain": "German and European. Pension income, European nationality and a logical approach fit the profile. Bring in Reza early."
+    },
+    {
+     "q": "A local Khmer buyer says \"I need to talk to my parents before deciding.\" What do you do?",
+     "opts": [
+      "Push for a faster decision. The parents aren't buying",
+      "Support it: give them documents to share and welcome the family in",
+      "Lower the price to make it easier",
+      "Follow up more often to keep momentum"
+     ],
+     "correct": 1,
+     "explain": "Family agreement is a normal part of buying for local Khmer clients. Support it, and prepare documents they can share."
+    },
+    {
+     "q": "Which of the three questions tells you the most?",
+     "opts": [
+      "\"What's your budget?\"",
+      "\"How did you hear about us?\"",
+      "\"What would make this the wrong decision for you?\"",
+      "\"Is this for you or an investment?\""
+     ],
+     "correct": 2,
+     "explain": "It shows risk tolerance, worries and decision criteria all at once. It is the most valuable question you can ask."
+    },
+    {
+     "q": "An overseas Cambodian contacts you about a home for their family in Phnom Penh. What matters most?",
+     "opts": [
+      "Investment yield, like any foreign buyer",
+      "Clear comparisons, fast replies and video-call support",
+      "The same approach as a local buyer",
+      "Passing them to a Khmer-only agent"
+     ],
+     "correct": 1,
+     "explain": "Overseas Cambodians often decide faster, but they need clear comparisons and remote support. Fast replies matter."
+    }
+   ],
+   "reflection": "You meet a new client. In the first 5 minutes, what 3 things do you want to know, and why those 3?"
   },
   {
    "id": "p1",
@@ -2133,17 +2311,17 @@ const TRAINING = {
        {
         "t": "Trust the developer. They know the rules.",
         "v": "wrong",
-        "result": "The developer isn't the one whose name is on the advice. If the title can't be registered in the client's name, the client owns nothing."
+        "result": "The developer isn't the one giving the advice. A ground-floor unit can't be registered in the client's own name, so it needs a proper legal route, checked by a lawyer, not a promise."
        },
        {
-        "t": "Tell the client clearly it isn't possible, and show the same layout one floor up.",
+        "t": "Tell the client it can't be in their own name, and explain both paths: one floor up, or a legal route with a lawyer.",
         "v": "best",
-        "result": "Clear, then redirect. The floor rule has no exceptions, so the kindest thing is to say it now."
+        "result": "Exact, then options. The client decides with the full picture."
        },
        {
         "t": "Say nothing for now and let the lawyer raise it later.",
         "v": "risky",
-        "result": "Delaying a hard truth feels polite, but the client keeps falling for a unit they can't own, and trust breaks later."
+        "result": "Delaying a hard truth feels polite, but the client keeps falling for a unit they can't own in their name, and trust breaks later."
        }
       ]
      },
@@ -2153,22 +2331,22 @@ const TRAINING = {
        {
         "t": "Suggest buying it in a Cambodian friend's name.",
         "v": "wrong",
-        "result": "Nominee arrangements put the client's money at risk and break the rule PHC exists to protect. Never suggest them."
+        "result": "A nominee puts the client's money in one person's hands. PHC never arranges it."
        },
        {
-        "t": "Look for a 1st-floor unit with a big terrace or a garden view.",
+        "t": "Show both: a 1st-floor unit with a big terrace, and the legal routes, with Nick and an independent lawyer.",
         "v": "best",
-        "result": "Redirect, don't reject. Find what the client really wants inside the law."
+        "result": "Redirect, don't reject. A legal route exists. Make sure it's done properly, by people qualified to do it."
        },
        {
         "t": "Tell them PHC can't help with that.",
         "v": "risky",
-        "result": "True, but a dead end. The client wanted a garden, not a ground floor. Offer a real option."
+        "result": "Not true, and a dead end. There are legal routes, and there may be a better unit. Offer real options."
        }
       ]
      }
     ],
-    "principle": "A hard rule gets a clear answer, then a real alternative. Redirect, don't reject."
+    "principle": "A hard rule gets an exact answer, then real options. Redirect, don't reject."
    }
   },
   {
@@ -2286,7 +2464,7 @@ const TRAINING = {
    "short": "“Just use my friend's name”",
    "review": true,
    "decision": {
-    "situation": "A client wants land for a villa. Foreigners can't own land, so he says: “I'll buy it in my Cambodian friend's name. You can arrange that, right?”",
+    "situation": "A client wants land for a villa. Foreigners can't own land in their own name, so he says: “I'll buy it in my Cambodian friend's name. You can arrange that, right?”",
     "svg": "d-nominee",
     "steps": [
      {
@@ -2300,7 +2478,7 @@ const TRAINING = {
        {
         "t": "“I can't arrange that. Let me explain the risk, and the legal options you do have.”",
         "v": "best",
-        "result": "Clear no, then real options: strata-title condos from the 1st floor up, and his own independent lawyer."
+        "result": "Clear no, then the legal routes: a licensed trust, or a land-holding company at least 51% Cambodian-owned. Or a strata-title condo in his own name. Always with his own independent lawyer."
        },
        {
         "t": "“That's between you and your friend.”",
@@ -2310,7 +2488,7 @@ const TRAINING = {
       ]
      }
     ],
-    "principle": "PHC never arranges ownership workarounds. Explain the risk, then show the legal options."
+    "principle": "PHC never arranges a nominee. Explain the risk, then the legal routes."
    }
   },
   {
@@ -2386,117 +2564,2788 @@ const TRAINING = {
    "week": 2,
    "title": "The PHC advisor mindset",
    "short": "Advisor Mindset",
-   "stub": true
+   "objectives": [
+    "Understand what separates a trusted advisor from a salesperson",
+    "Know PHC's trust-building order for a first meeting",
+    "Avoid the 5 most common mistakes new agents make"
+   ],
+   "sections": [
+    {
+     "label": "The mindset shift",
+     "heading": "Calm questions build more trust than talking",
+     "body": "Most agents try to impress a client by showing what they know. PHC advisors do the opposite. They ask more than they tell. They explain risk before return. They say \"this project might not be right for you\" and mean it. That calm, patient approach is what builds trust.",
+     "flow": [
+      {
+       "title": "Listen first",
+       "sub": "Understand the client before showing anything"
+      },
+      {
+       "title": "Risk before return",
+       "sub": "Name the downside before the upside"
+      },
+      {
+       "title": "Show 2 or 3 options",
+       "sub": "With a reason for each one"
+      },
+      {
+       "title": "No pressure",
+       "sub": "Never force a decision in the first meeting"
+      },
+      {
+       "title": "Written follow-up",
+       "sub": "A same-day summary, always"
+      }
+     ],
+     "before": {
+      "text": "This one will definitely go up. If I were you, I'd buy now."
+     },
+     "now": {
+      "text": "Here's what the data shows, and here's the main risk. Take the time you need."
+     },
+     "pairWhy": "No advisor can promise what a market will do. Data and an honest risk build trust. A promise and a push destroy it."
+    },
+    {
+     "label": "The 5 mistakes",
+     "heading": "What destroys trust instantly",
+     "body": "These five habits damage your credibility with a client. Each one is common. None of them is acceptable at PHC.",
+     "rules": [
+      {
+       "title": "Calling gross yield net yield",
+       "detail": "Always show the net figure. Gross yield leaves out the real costs the client will pay.",
+       "action": "Say the word \"net\" every time you say a yield number."
+      },
+      {
+       "title": "Promising future prices",
+       "detail": "\"This will definitely go up\" or \"guaranteed rental income\" damage your credibility. No one can promise what a market will do.",
+       "action": "Replace any guarantee with: \"Here is what the data shows.\""
+      },
+      {
+       "title": "Creating false urgency",
+       "detail": "\"Only 2 units left\" or \"the price goes up tomorrow\" works once, then destroys trust for good. PHC never uses these tactics.",
+       "action": "If you feel the urge to create urgency, don't. Let the facts speak."
+      },
+      {
+       "title": "Showing projects too early",
+       "detail": "Leading with a project before you understand the client is what a volume salesperson does, not an advisor.",
+       "action": "Ask at least 2 qualifying questions before you show any project."
+      },
+      {
+       "title": "Skipping the written follow-up",
+       "detail": "A conversation is forgotten. A written summary shows professionalism and gives the client something to check later.",
+       "action": "Send it the same day. Every time."
+      }
+     ]
+    }
+   ],
+   "roleplay": {
+    "scenario": "Starting a first meeting with a new client",
+    "instructions": "Build trust with questions, not by talking.",
+    "turns": [
+     {
+      "client": [
+       "I've been looking at property in Phnom Penh for a while. I know what I want."
+      ],
+      "agent": "That's a great *start*. ‧‧‧ What draws you to Phnom Penh: ‧‧‧ *investment*, ‧‧‧ *lifestyle*, ‧‧‧ or *both*?"
+     },
+     {
+      "client": [
+       "Investment. I want an 8% return."
+      ],
+      "agent": "Understood. ‧‧‧ Before I show you *anything*, ‧‧‧ what have you looked at so *far*, ‧‧‧ and what made you *hesitate*?"
+     },
+     {
+      "client": [
+       "A couple of projects. The yields looked good, but I wasn't sure about the developer."
+      ],
+      "agent": "That's the right *instinct*. ‧‧‧ The developer's *track record* ‧‧‧ is one of the biggest *risks* here. ‧‧‧ Let me ask about your *timeline* ‧‧‧ before I recommend *anything*. ↘"
+     }
+    ],
+    "note": "The agent asked four questions before naming a single project. Did it feel natural, or slow?",
+    "debrief": "A good advisor asks more questions than a salesperson would think of. Every question delays the pitch, and that delay is what builds trust."
+   },
+   "quiz": [
+    {
+     "q": "What is PHC's approach to a first meeting?",
+     "opts": [
+      "Show the best project first to impress",
+      "Listen, assess, then match. Never show a project before you understand the client",
+      "Give a market overview, then wait for questions",
+      "Ask the price range early to filter buyers"
+     ],
+     "correct": 1,
+     "explain": "Listen, assess, match. This order never changes."
+    },
+    {
+     "q": "A client asks you to guarantee an 8% return. What do you do?",
+     "opts": [
+      "Give a cautious estimate to make them feel good",
+      "Explain that a responsible advisor never guarantees returns, and why",
+      "Check with the developer and repeat their number",
+      "Quote the highest gross yield you've heard"
+     ],
+     "correct": 1,
+     "explain": "Never guarantee a return. Explaining why honestly builds trust, not resistance."
+    },
+    {
+     "q": "Why is a same-day written follow-up required?",
+     "opts": [
+      "It shows you are busy",
+      "It records what was discussed and shows professionalism",
+      "It gives the client time to read brochures",
+      "It helps you get a commitment before a competitor does"
+     ],
+     "correct": 1,
+     "explain": "It confirms what you discussed and the risks you disclosed, and gives the client something to check later."
+    },
+    {
+     "q": "Which mistake is most likely to lose a serious investor for good?",
+     "opts": [
+      "Forgetting to mention a promotion",
+      "Fake urgency, like \"only 2 units left\"",
+      "Asking too many questions",
+      "Starting five minutes late"
+     ],
+     "correct": 1,
+     "explain": "False urgency works once, then destroys trust. A serious investor sees the tactic immediately."
+    }
+   ],
+   "reflection": "Think of a time you felt respected and not sold to. What did that person do differently, and how can you do the same?"
   },
   {
    "id": 7,
    "week": 2,
    "title": "Qualifying clients correctly",
    "short": "Client Qualification",
-   "stub": true
+   "objectives": [
+    "Know the 4 things you must find out about every client",
+    "Qualify a client in under 10 minutes without it feeling like an interview",
+    "Know which questions reveal the most, and why"
+   ],
+   "sections": [
+    {
+     "label": "Why qualifying matters",
+     "heading": "Showing the wrong project is worse than showing nothing",
+     "body": "Recommending the wrong project is a failure, even if the client buys it. It creates an unhappy client, a bad review and no referrals. Qualifying protects the client and PHC's reputation. Find out four things.",
+     "grid": [
+      [
+       "1. Goal",
+       "What do they want this investment to give them?"
+      ],
+      [
+       "2. Timeline",
+       "When do they need to act, and when do they expect results?"
+      ],
+      [
+       "3. Budget",
+       "A real range, not a guess"
+      ],
+      [
+       "4. Risk comfort",
+       "What worries them most?"
+      ]
+     ]
+    },
+    {
+     "label": "The questions",
+     "heading": "Open questions, not closed ones",
+     "body": "Good qualifying questions sound like curiosity, not an interrogation. How you ask matters as much as what you ask.",
+     "before": {
+      "text": "What's your budget, and do you want one bedroom or two?"
+     },
+     "now": {
+      "text": "What would make this investment a mistake for you?"
+     },
+     "pairWhy": "A closed question gets a number. An open question gets the client's real worries, and that is what you need to match well.",
+     "rules": [
+      {
+       "title": "About their goal",
+       "detail": "\"What do you hope this investment gives you, over 3 years and over 10 years?\" The gap between the two answers tells you a lot.",
+       "action": "Ask about both time frames, not just one."
+      },
+      {
+       "title": "About timeline",
+       "detail": "\"If you found the right option today, what would need to happen before you could go ahead?\" This reveals hidden obstacles: a visa, money, family, other plans.",
+       "action": "Listen for anything that sounds like a real blocker, and deal with it early."
+      },
+      {
+       "title": "About budget",
+       "detail": "\"What range are you working with, and is there room if the right option comes up?\"",
+       "action": "Ask about flexibility. Don't assume the first number is final."
+      },
+      {
+       "title": "About risk",
+       "detail": "\"What would make this investment a mistake for you?\" It is the most honest question you can ask, and it shows real risk tolerance at once.",
+       "action": "Ask it word for word. Don't soften it."
+      }
+     ]
+    },
+    {
+     "label": "Warning signs",
+     "heading": "Know when to slow down, or step back",
+     "body": "Not every client is right for PHC. Seeing this quickly protects everyone's time.",
+     "rules": [
+      {
+       "title": "Unrealistic returns",
+       "detail": "\"I need a 15% net yield.\" If expectations don't match the market, realign them with data. If they won't adjust, they are not your client.",
+       "action": "Show real market data before you go any further."
+      },
+      {
+       "title": "Rushed urgency",
+       "detail": "\"I must buy this week.\" Urgency without information points to a poor decision, not a buying signal.",
+       "action": "Slow the pace down. Ask what is driving the rush."
+      },
+      {
+       "title": "Nominee requests",
+       "detail": "A client who wants to hold property in a Cambodian national's name must be stopped. It is a legal risk PHC does not support.",
+       "action": "Explain the risk clearly, then the legal routes: a licensed trust, or a company at least 51% Cambodian-owned, set up with an independent lawyer."
+      }
+     ]
+    }
+   ],
+   "roleplay": {
+    "scenario": "A full qualifying conversation in under 10 minutes",
+    "instructions": "Cover all four areas in a natural order, not as a checklist.",
+    "turns": [
+     {
+      "client": [],
+      "agent": "Thanks for coming in. ‧‧‧ Before I show you *anything*, ‧‧‧ what's *driving* your interest in Cambodia right now?"
+     },
+     {
+      "client": [
+       "I heard the yields here are good. A friend made money on a place he bought."
+      ],
+      "agent": "What yield was he *getting*? ‧‧‧ Do you know if that was *gross*, ‧‧‧ or *net*?"
+     },
+     {
+      "client": [
+       "Not sure. He said 8%."
+      ],
+      "agent": "That's probably *gross*. ‧‧‧ *After* costs, ‧‧‧ net is usually *five* to *seven* percent. ‧‧‧ Is that still in your *range*?"
+     },
+     {
+      "client": [
+       "Yes, that's still good."
+      ],
+      "agent": "*Good*. ‧‧‧ And your *timeline*? ‧‧‧ Deciding in the next few *months*, ‧‧‧ or still *exploring*?"
+     }
+    ],
+    "note": "Did the agent correct the yield mix-up calmly, without embarrassing the client? Did it feel like a conversation?",
+    "debrief": "Correct a wrong number at once, gently, with data. Never let a wrong number pass."
+   },
+   "quiz": [
+    {
+     "q": "A client says \"I need a 15% net yield.\" What do you do?",
+     "opts": [
+      "Show the projects with the highest advertised yield",
+      "Realign the expectation with real market data before going further",
+      "Agree, and hope you find something",
+      "Tell them Cambodia is wrong for them"
+     ],
+     "correct": 1,
+     "explain": "Realign calmly, with data: 15% net is not realistic in Phnom Penh today. If they won't adjust, they are not a fit for PHC."
+    },
+    {
+     "q": "Which question shows a client's real risk tolerance best?",
+     "opts": [
+      "\"What's your budget?\"",
+      "\"What would make this investment a mistake for you?\"",
+      "\"Are you comfortable with off-plan risk?\"",
+      "\"How much experience do you have?\""
+     ],
+     "correct": 1,
+     "explain": "It is open and personal. It brings out fears and deal-breakers that no closed question can."
+    },
+    {
+     "q": "A client asks you to set up a Cambodian nominee to hold a villa for them. What do you do?",
+     "opts": [
+      "Refer them to a lawyer who arranges nominees",
+      "Help them. It's common",
+      "Explain that PHC does not support nominee structures because of the legal risk, and offer a legal alternative",
+      "Say nothing until you ask Nick"
+     ],
+     "correct": 2,
+     "explain": "PHC does not support nominee structures. Explain the risk, then the legal routes: a licensed trust or a majority-Cambodian company, with a lawyer."
+    },
+    {
+     "q": "What does asking about a 3-year and a 10-year goal show you?",
+     "opts": [
+      "Nothing. One time frame is enough",
+      "The gap between the answers shows the client's real priorities",
+      "It slows down eager clients",
+      "It only matters for retirees"
+     ],
+     "correct": 1,
+     "explain": "Income now or security later: the gap shows what the client really cares about."
+    }
+   ],
+   "reflection": "Think of a conversation where you didn't understand what the client really wanted. Which questions would you ask differently now?"
   },
   {
    "id": 8,
    "week": 2,
    "title": "The advisory conversation flow",
    "short": "Advisory Flow",
-   "stub": true
+   "objectives": [
+    "Know PHC's 5-stage advisory conversation",
+    "Know what to say at each stage, and what never to say",
+    "Move through the stages naturally, without sounding scripted"
+   ],
+   "sections": [
+    {
+     "label": "The framework",
+     "heading": "Five stages, every client, every time",
+     "body": "Every PHC conversation follows the same five stages. The content changes. The order never does. Risks come before options: that order is what makes PHC different.",
+     "flow": [
+      {
+       "title": "Open",
+       "sub": "Build comfort, no selling"
+      },
+      {
+       "title": "Qualify",
+       "sub": "Goal, timeline, budget, risk"
+      },
+      {
+       "title": "Risks",
+       "sub": "Name every relevant risk clearly"
+      },
+      {
+       "title": "Match",
+       "sub": "Show 2 or 3 options, with reasons"
+      },
+      {
+       "title": "Next step",
+       "sub": "One clear action, no pressure"
+      }
+     ]
+    },
+    {
+     "label": "Each stage",
+     "heading": "Know the goal of each stage before you enter it",
+     "body": "Each stage has one job. Doing two at once, like selling while you open, breaks the whole flow.",
+     "rules": [
+      {
+       "title": "Open",
+       "detail": "Welcome the client and build comfort. Sell nothing yet. Goal: the client feels relaxed and free to talk.",
+       "action": "If you mention a project in the first 2 minutes, stop and go back to listening."
+      },
+      {
+       "title": "Qualify",
+       "detail": "Ask about goal, timeline, budget and risk tolerance. No project talk yet. Goal: you understand the client better than they expected.",
+       "action": "Don't move on until you can sum up the client's goal in one sentence."
+      },
+      {
+       "title": "Risks",
+       "detail": "Before any option, name the real risks: how fast they could sell, realistic net yield, the developer's record, and Capital Gains Tax (CGT). Goal: the client feels informed, not sold to.",
+       "action": "Say the risks before the client asks. Don't wait to be questioned."
+      },
+      {
+       "title": "Match",
+       "detail": "Show 2 or 3 options only, each with a clear reason. Never show everything. Goal: you are a filter, not a catalog.",
+       "action": "For each project, say exactly why it fits. Never just \"this is a good one.\""
+      },
+      {
+       "title": "Next step",
+       "detail": "Propose one clear action: a site visit, a contract review, a meeting with Nick. Never end a meeting without one.",
+       "action": "Suggest exactly one next step, not a list."
+      }
+     ]
+    },
+    {
+     "label": "Language",
+     "heading": "What PHC advisors say, and never say",
+     "body": "The words you choose matter as much as the order.",
+     "table": {
+      "headers": [
+       "Instead of…",
+       "Say…"
+      ],
+      "rows": [
+       [
+        "\"Guaranteed returns\"",
+        "\"Based on current data, net yield is 5 to 7%\""
+       ],
+       [
+        "\"You should buy now\"",
+        "\"Given your timeline, this window may matter\""
+       ],
+       [
+        "\"Only 2 units left\"",
+        "Never use scarcity tactics"
+       ],
+       [
+        "\"This will definitely go up\"",
+        "\"Past data shows this. The future isn't guaranteed\""
+       ],
+       [
+        "\"Don't worry about CGT\"",
+        "\"CGT applies. Here's what it means for you\""
+       ]
+      ]
+     },
+     "before": {
+      "text": "Returns here are guaranteed. Only two units left, so you should buy now."
+     },
+     "now": {
+      "text": "Based on current data, net yield is 5 to 7%. Here are the risks before we look at options."
+     },
+     "pairWhy": "Guarantees and scarcity are sales tactics. A range, the data and the risks are what an advisor offers."
+    }
+   ],
+   "roleplay": {
+    "scenario": "All five stages in one conversation",
+    "instructions": "Move through the stages naturally. The client should never feel processed.",
+    "turns": [
+     {
+      "client": [],
+      "agent": "Thanks for coming in *today*. ‧‧‧ How did you first hear about *PHC*?"
+     },
+     {
+      "client": [
+       "Through Realestate.com.kh. I've been watching for a few months."
+      ],
+      "agent": "*Great*. ‧‧‧ What's behind the *timing*? ‧‧‧ *Income*, ‧‧‧ a place to *live*, ‧‧‧ or *both*?"
+     },
+     {
+      "client": [
+       "Investment. I want passive income."
+      ],
+      "agent": "Understood. ‧‧‧ What's your *timeline*, ‧‧‧ and roughly what *budget*?"
+     },
+     {
+      "client": [
+       "One hundred and fifty to two hundred thousand. Within three months, ideally."
+      ],
+      "agent": "That's *workable*. ‧‧‧ Before I show you *options*, ‧‧‧ I want to be clear about the *risks*. ‧‧‧ Selling here is *slower* than in Singapore. ‧‧‧ *Net* yield is lower than the advertised *gross*. ‧‧‧ And *Capital Gains Tax* ‧‧‧ applies when you *sell*."
+     },
+     {
+      "client": [
+       "I'd rather know that up front."
+      ],
+      "agent": "*Good*. ‧‧‧ Then let me show you the *two* options I think fit *best*, ‧‧‧ and *why*. ↘"
+     }
+    ],
+    "note": "Did the risks come before any project was shown? That is PHC's order.",
+    "debrief": "Risks before options is the biggest difference between a PHC advisor and everyone else. Master this order."
+   },
+   "quiz": [
+    {
+     "q": "When do you disclose risks in PHC's flow?",
+     "opts": [
+      "At the end, once the client is interested",
+      "Before you show any project options",
+      "Only if the client asks",
+      "After the site visit"
+     ],
+     "correct": 1,
+     "explain": "Risks come before options. Always. It is what sets PHC apart."
+    },
+    {
+     "q": "How many options do you show at the Match stage?",
+     "opts": [
+      "As many as possible",
+      "Just 1",
+      "2 or 3, each with a clear reason",
+      "5, one per client type"
+     ],
+     "correct": 2,
+     "explain": "A long list says you don't understand the client. A short list with reasons says you do."
+    },
+    {
+     "q": "What replaces \"only 2 units left\"?",
+     "opts": [
+      "\"There's high demand for this building\"",
+      "Nothing. PHC never uses scarcity tactics",
+      "\"I'd decide soon\"",
+      "\"The developer says stock is limited\""
+     ],
+     "correct": 1,
+     "explain": "There is no acceptable version. The tactic itself is the problem."
+    },
+    {
+     "q": "What is the goal of the Open stage?",
+     "opts": [
+      "Get the budget fast",
+      "Build comfort, with no selling",
+      "Show the strongest project",
+      "Confirm contact details"
+     ],
+     "correct": 1,
+     "explain": "Open is about comfort. Rushing into projects or budget breaks the flow."
+    }
+   ],
+   "reflection": "Which of the five stages comes most naturally to you, and which will you need to practice most?"
   },
   {
    "id": 9,
    "week": 2,
    "title": "Language & communication standards",
    "short": "Language Standards",
-   "stub": true
+   "objectives": [
+    "Know PHC's exact language rules for yield, guarantees and risk",
+    "Understand how your tone changes by client type",
+    "Adjust your style without changing your standards"
+   ],
+   "sections": [
+    {
+     "label": "Yield language",
+     "heading": "Gross or net: say it clearly, every time",
+     "body": "Yield is the number clients care about most, and the number most often used to mislead. PHC's rule is absolute: always say net yield.",
+     "box": {
+      "title": "PHC's yield standard",
+      "lines": [
+       "Always say: \"net yield, after management fees and vacancy\"",
+       "Never promise a return yourself. A developer's \"guaranteed rental return\" is their contract, with conditions: show the terms, and who stands behind them",
+       "Always give a range, like \"5.5 to 6.5% net on current data\", never one exact number",
+       "Always mention: management fees, vacancy, and Capital Gains Tax (CGT) when selling"
+      ]
+     },
+     "before": {
+      "text": "This project yields 8%."
+     },
+     "now": {
+      "text": "About 5.5 to 6.5% net, after management fees and vacancy. The developer's 8% is gross."
+     },
+     "pairWhy": "A single gross number misleads. A net range with the costs named is honest, and clients trust it more."
+    },
+    {
+     "label": "Tone by client type",
+     "heading": "Same standards, different tone",
+     "body": "PHC's standards never change. How you deliver them should fit the person in front of you.",
+     "table": {
+      "headers": [
+       "Client type",
+       "Tone",
+       "What to emphasize"
+      ],
+      "rows": [
+       [
+        "Japanese investors",
+        "Formal, structured, unhurried",
+        "Risk first, verified data, always a written follow-up"
+       ],
+       [
+        "German and European",
+        "Logical, precise, no emotional words",
+        "Return on investment, the downside, legal clarity"
+       ],
+       [
+        "Overseas Cambodians",
+        "Warm, clear, family framing",
+        "Safety, community, developer reputation"
+       ],
+       [
+        "Local Khmer",
+        "Warm, respectful, community-focused",
+        "Comfort, status, flexible payment"
+       ],
+       [
+        "Russian and Eastern European investors",
+        "Direct, data first, efficient",
+        "Yield data, management quality, how to sell later"
+       ]
+      ]
+     }
+    },
+    {
+     "label": "The absolute rule",
+     "heading": "Never pass on a gross yield as if it were net",
+     "body": "This is short because it must be remembered exactly.",
+     "warning": "Quoting a gross yield without saying it is gross is a misrepresentation. If a developer gives you a gross figure, convert it to net and say so before it reaches any client."
+    }
+   ],
+   "roleplay": {
+    "scenario": "The same facts in two tones",
+    "instructions": "Say the same facts to a Japanese investor, then to a German investor. The tone changes. The facts don't.",
+    "turns": [
+     {
+      "client": [],
+      "agent": "Nakamura-san, ‧‧‧ before I share any project *details*, ‧‧‧ I'd like to walk through the *risks*. ↘"
+     },
+     {
+      "client": [],
+      "agent": "Selling in Cambodia is getting *easier*, ‧‧‧ but it's still *slower* than in *Japan*. ‧‧‧ Rental income is *real*, ‧‧‧ but it depends on *occupancy* ‧‧‧ and *management*."
+     },
+     {
+      "client": [],
+      "agent": "Before we look at the *numbers*, ‧‧‧ here's the full picture, ‧‧‧ including the *downside*. ‧‧‧ Net yield in BKK1 is *five* to *seven* percent ‧‧‧ on current *data*."
+     },
+     {
+      "client": [],
+      "agent": "*Capital Gains Tax* applies when you *sell*. ‧‧‧ For a *long* hold, ‧‧‧ the data supports this market. ‧‧‧ Under *five* years, ‧‧‧ the numbers change *significantly*. ↘"
+     }
+    ],
+    "note": "Same standard, different tone. What changed, and what stayed exactly the same?",
+    "debrief": "The Japanese client needed safety first. The German client wanted the complete numbers at once. Neither got a sales pitch. Both got the same honest standard, delivered differently."
+   },
+   "quiz": [
+    {
+     "q": "A developer says a project yields 9.5%. Before telling a client, you:",
+     "opts": [
+      "Repeat 9.5%",
+      "Say \"up to 9.5% depending on occupancy\"",
+      "Convert it to a net estimate, give a range, and say it's the developer's figure",
+      "Round it down to 8% to be safe"
+     ],
+     "correct": 2,
+     "explain": "Convert to net, give a range, and name the source. That is PHC's standard for any yield claim."
+    },
+    {
+     "q": "A Japanese investor asks about yield. You:",
+     "opts": [
+      "Lead with the yield number",
+      "Lead with the risks, then give yield with evidence",
+      "Give a range with no data",
+      "Match the developer's number"
+     ],
+     "correct": 1,
+     "explain": "Japanese clients need to feel safe before they hear numbers. Risk first, then evidence."
+    },
+    {
+     "q": "\"This will definitely go up in value\" is:",
+     "opts": [
+      "Fine if BKK1 prices support it",
+      "Never acceptable",
+      "Fine for Khmer buyers who want reassurance",
+      "Fine with a disclaimer after"
+     ],
+     "correct": 1,
+     "explain": "Future prices are never guaranteed. This applies to every client."
+    },
+    {
+     "q": "With a German or European client, you emphasize:",
+     "opts": [
+      "Community and lifestyle",
+      "Return on investment, the downside and legal clarity",
+      "Family and safety",
+      "Fast decisions"
+     ],
+     "correct": 1,
+     "explain": "They respond to logic and precision, not lifestyle words."
+    }
+   ],
+   "reflection": "Write the exact words you would use to explain net yield to a Japanese investor who has never owned property outside Japan."
   },
   {
    "id": 10,
    "week": 2,
    "title": "Reading client signals",
    "short": "Reading Signals",
-   "stub": true
+   "objectives": [
+    "Tell a buying signal from a stall signal",
+    "Respond to hesitation without pressure",
+    "Know when to re-qualify a client who has gone quiet"
+   ],
+   "sections": [
+    {
+     "label": "Buying or stalling",
+     "heading": "Read what a client is really saying",
+     "body": "Clients rarely say \"I'm ready to buy.\" They show it. Reading these signals correctly is one of the most valuable advisory skills.",
+     "grid": [
+      [
+       "Buying signals",
+       "Asks about payment timing or the deposit. Asks about a specific floor or unit. Brings a partner or family to the next meeting. Asks about handover or furniture. Asks for the contract or legal documents."
+      ],
+      [
+       "Stall signals",
+       "\"I need to think about it\" with no concern named. Vague answers to direct questions. Delays the next meeting. Asks the same question in different ways. Goes quiet after a strong first meeting."
+      ]
+     ]
+    },
+    {
+     "label": "Responding to hesitation",
+     "heading": "Curiosity beats pressure, every time",
+     "body": "A client who is unsure is not a lost client. Pushing past the hesitation will lose them.",
+     "rules": [
+      {
+       "title": "\"I need to think about it\"",
+       "detail": "This is information, not failure. Ask: \"Of course. Is there a part you'd like to think through more? I want you to have everything you need.\"",
+       "action": "Ask what exactly needs more thought. Don't accept the vague answer."
+      },
+      {
+       "title": "\"I'm looking at other options too\"",
+       "detail": "Normal. Ask: \"What are you comparing us with? It helps me give you an honest comparison.\"",
+       "action": "Never speak badly about another agency or project."
+      },
+      {
+       "title": "\"My accountant needs to review it\"",
+       "detail": "A strong buying signal from a careful investor. Send PHC's legal documents right away and make the review easy.",
+       "action": "Send the documents the same day. Don't make them ask twice."
+      },
+      {
+       "title": "Silence for more than 7 days",
+       "detail": "Re-qualify gently with a message that brings new information, not pressure: \"I wanted to share an update on the project. Let me know if it's still relevant for you.\"",
+       "action": "Always add something new. Never just \"following up.\""
+      }
+     ]
+    }
+   ],
+   "pics": [
+    {
+     "after": 0,
+     "prompt": "Which client is showing a buying signal?",
+     "options": [
+      {
+       "svg": "sig-think",
+       "cap": "\"I'll think about it…\""
+      },
+      {
+       "svg": "sig-floor",
+       "cap": "\"Which floor gets the morning sun?\""
+      },
+      {
+       "svg": "sig-vague",
+       "cap": "\"Maybe. Hard to say.\""
+      }
+     ],
+     "answer": 1,
+     "why": "A question about a specific floor means the client is picturing owning it. Give it real attention."
+    }
+   ],
+   "roleplay": {
+    "scenario": "A client hesitates after a strong first meeting",
+    "instructions": "Respond with curiosity, not pressure.",
+    "turns": [
+     {
+      "client": [
+       "I liked what I saw. I just need some time to think."
+      ],
+      "agent": "Of *course*. ‧‧‧ Is there a *part* you'd like to think through more? ‧‧‧ I want you to have *everything* you need. ↘"
+     },
+     {
+      "client": [
+       "Mostly the developer. I hadn't heard of Megakim before."
+      ],
+      "agent": "That's the right *instinct*. ‧‧‧ I'll send you their *delivery* record: ‧‧‧ *seven* buildings finished. ‧‧‧ Would it help to speak with a current *owner*?"
+     }
+    ],
+    "note": "Did the agent answer the hesitation with curiosity, not a defense or a push?",
+    "debrief": "Every hesitation carries information. Find it, and answer the real concern, not the surface words."
+   },
+   "quiz": [
+    {
+     "q": "A client asks \"which floor do you recommend?\" This is:",
+     "opts": [
+      "A neutral question",
+      "A buying signal: they're picturing ownership",
+      "A stalling tactic",
+      "A price comparison"
+     ],
+     "correct": 1,
+     "explain": "Questions about a specific floor or unit are among the clearest buying signals."
+    },
+    {
+     "q": "A client has been silent for 10 days after a strong meeting. You send:",
+     "opts": [
+      "\"Just checking in\"",
+      "A message with a real piece of new, relevant information",
+      "Nothing. They're not interested",
+      "A call every day until they answer"
+     ],
+     "correct": 1,
+     "explain": "New information, like a market update or project milestone, reopens the conversation naturally. \"Just checking in\" feels like pressure."
+    },
+    {
+     "q": "\"My accountant needs to review this first\" means:",
+     "opts": [
+      "The deal has stalled",
+      "A strong signal from a careful investor",
+      "They don't trust PHC",
+      "Nothing. No action needed"
+     ],
+     "correct": 1,
+     "explain": "Send the legal documents at once and make the review easy."
+    },
+    {
+     "q": "\"I'm also looking at other options.\" You:",
+     "opts": [
+      "Point out the other agencies' flaws",
+      "Ask what they're comparing, so you can compare honestly",
+      "Offer a discount",
+      "Ignore it"
+     ],
+     "correct": 1,
+     "explain": "Never criticize a competitor. It hurts your credibility more than theirs."
+    }
+   ],
+   "reflection": "Think of a client who went cold. What signal were they giving, and what could you have done differently?"
   },
   {
    "id": 11,
    "week": 3,
    "title": "Yield, ROI & cost of ownership",
    "short": "Yield & ROI",
-   "stub": true
+   "objectives": [
+    "Work out gross and net yield correctly for any unit",
+    "Explain the full cost of owning: buying, holding and selling",
+    "Walk a client through a realistic return, step by step"
+   ],
+   "sections": [
+    {
+     "label": "Gross or net yield",
+     "heading": "The number that matters is net",
+     "body": "Most developers advertise gross yield. Gross is not what reaches the client's bank account. Net is. Here is the gap on one unit.",
+     "box": {
+      "title": "How to work out net yield",
+      "lines": [
+       "Net yield = yearly rent, minus management, vacancy and rental tax, divided by the price",
+       "Typical costs: management about $1.8 per sqm a month, about 10% vacancy, and rental tax: 14% for owners living abroad, 10% for residents",
+       "Gross and net are usually 1.5 to 2.5 points apart, more once vacancy is counted"
+      ]
+     },
+     "bars": {
+      "title": "A $150K unit renting for $800 a month",
+      "bars": [
+       {
+        "label": "Gross yield, before any costs",
+        "valueLabel": "6.4%",
+        "pct": 100
+       },
+       {
+        "label": "After management and rental tax",
+        "valueLabel": "4.7%",
+        "pct": 74,
+        "dim": true
+       },
+       {
+        "label": "After 10% vacancy too",
+        "valueLabel": "4.2%",
+        "pct": 66,
+        "dim": true
+       }
+      ]
+     },
+     "before": {
+      "text": "This unit yields 8%. That's your return."
+     },
+     "now": {
+      "text": "Let me show you costs first, then income, then what happens when you sell."
+     },
+     "pairWhy": "Leading with costs gives the client the honest number. They trust it more than an attractive one."
+    },
+    {
+     "label": "The full cost",
+     "heading": "What a client pays, start to finish",
+     "body": "The advertised price is only part of the cost. A serious investor will ask for the full picture. Know it before they ask.",
+     "table": {
+      "headers": [
+       "Cost",
+       "Rate",
+       "On a $150K unit"
+      ],
+      "rows": [
+       [
+        "Booking deposit",
+        "$500 to $2,000",
+        "One time, refund terms vary"
+       ],
+       [
+        "Down payment",
+        "20 to 30% of price",
+        "$30K to $45K at signing"
+       ],
+       [
+        "Transfer tax (stamp duty)",
+        "4% of value",
+        "$6,000 (exemptions may apply)"
+       ],
+       [
+        "Legal and contract review",
+        "0.5 to 1% of value",
+        "$750 to $1,500"
+       ],
+       [
+        "Furniture and fit-out",
+        "Varies",
+        "$5K to $15K typical"
+       ],
+       [
+        "Yearly property tax",
+        "0.1% of 80% of the value, above $25K",
+        "About $95 a year"
+       ],
+       [
+        "Building management",
+        "$1 to $2 per sqm a month",
+        "$53 to $106 a month (53 sqm)"
+       ],
+       [
+        "Rental income tax",
+        "14% abroad, 10% resident",
+        "Of the rent received"
+       ],
+       [
+        "Agent commission when selling",
+        "3 to 5% of the sale price",
+        "Paid by the seller"
+       ]
+      ]
+     }
+    },
+    {
+     "label": "A full worked example",
+     "heading": "Walk through this example with any client",
+     "body": "This is how to take a client through seven years of owning a unit, from purchase to sale.",
+     "calc": {
+      "title": "$150,000 unit, 53 sqm, $800 a month rent, held 7 years",
+      "rows": [
+       {
+        "label": "Price plus transfer tax and legal fees",
+        "value": "about $158,000"
+       },
+       {
+        "label": "Net rent over 7 years (after management, vacancy, 14% tax)",
+        "value": "$44,040"
+       },
+       {
+        "label": "Estimated sale price after 7 years",
+        "value": "$185,000"
+       },
+       {
+        "label": "Minus Capital Gains Tax (CGT) on the gain (20%)",
+        "value": "minus $5,400"
+       },
+       {
+        "label": "Total 7-year return",
+        "value": "$65,640 (about 6% a year)",
+        "total": true
+       }
+      ]
+     },
+     "warning": "These are estimates for one example, not a promise. Say \"this is how the numbers work\", never \"this is what you will earn.\""
+    }
+   ],
+   "roleplay": {
+    "scenario": "Walking a client through the full cost picture",
+    "instructions": "Start with costs, not the exciting number.",
+    "turns": [
+     {
+      "client": [
+       "What would my real return be on a $150,000 unit?"
+      ],
+      "agent": "Let me give you the *full* picture: ‧‧‧ *costs* first, ‧‧‧ then *income*, ‧‧‧ then what happens when you *sell*."
+     },
+     {
+      "client": [
+       "Okay, go ahead."
+      ],
+      "agent": "With transfer tax and legal fees, ‧‧‧ you're closer to a hundred and *fifty-eight* thousand. ‧‧‧ After management, vacancy and tax, ‧‧‧ rent nets about *five twenty-five* a month."
+     },
+     {
+      "client": [],
+      "agent": "Over *seven* years, ‧‧‧ with a realistic *sale*, ‧‧‧ that's about *six* percent a year, ‧‧‧ *net*. ↘"
+     },
+     {
+      "client": [
+       "That's lower than the 8% I saw advertised."
+      ],
+      "agent": "That eight percent is almost certainly *gross*. ‧‧‧ I'd rather give you the *honest* number ‧‧‧ than the *attractive* one. ↘"
+     }
+    ],
+    "note": "Did the agent lead with costs? Did they explain the gross and net gap before being asked?",
+    "debrief": "Leading with costs, not yield, is what separates a PHC advisor from a sales pitch. The client trusts the honest, lower number."
+   },
+   "quiz": [
+    {
+     "q": "A developer advertises 9% yield. Before quoting it, you:",
+     "opts": [
+      "Use 9%. It's the developer's number",
+      "Convert it to net, give a range, and say it's the developer's estimate",
+      "Round down to 7%",
+      "Only mention it if asked"
+     ],
+     "correct": 1,
+     "explain": "The same standard as in the language lesson: net, a range, and the source."
+    },
+    {
+     "q": "On a $150,000 purchase, what is the transfer tax?",
+     "opts": [
+      "$1,500",
+      "$3,000",
+      "$6,000",
+      "$15,000"
+     ],
+     "correct": 2,
+     "explain": "Transfer tax is 4% of the value: $6,000 on $150,000."
+    },
+    {
+     "q": "What makes net yield lower than gross?",
+     "opts": [
+      "Only property tax",
+      "Management fees, vacancy and rental tax together",
+      "Only CGT when selling",
+      "Usually nothing"
+     ],
+     "correct": 1,
+     "explain": "Management, vacancy and rental tax together take a real share of the rent."
+    },
+    {
+     "q": "In the 7-year example, when is Capital Gains Tax (CGT) paid?",
+     "opts": [
+      "Every year, on rent",
+      "Once, when you sell, on the gain only",
+      "Twice: when buying and selling",
+      "Never after 5 years"
+     ],
+     "correct": 1,
+     "explain": "CGT is paid once, when you sell, and only on the gain."
+    }
+   ],
+   "reflection": "Walk through the full cost of owning a BKK1 unit priced at $150,000, from reservation to sale. What is the total paid, and what is the realistic net return over 7 years?"
   },
   {
    "id": 12,
    "week": 3,
    "title": "The Japanese investor protocol",
    "short": "Japanese Protocol",
-   "stub": true
+   "objectives": [
+    "Understand how Japanese investors think about risk and decisions",
+    "Know PHC's protocol for every stage of a Japanese investor conversation",
+    "Match your tone, evidence and follow-up to Japanese professional standards"
+   ],
+   "sections": [
+    {
+     "label": "Understanding the client",
+     "heading": "Who you're talking to",
+     "body": "Japanese investors in Cambodia are usually professionals aged 40 to 65 with a high income and low risk tolerance. They prefer stability over high returns, think long term, distrust urgency, and need evidence they can check before they decide.",
+     "box": {
+      "title": "Japanese investor profile",
+      "lines": [
+       "Age: usually 40 to 65. Income: high. Risk tolerance: low",
+       "Main goal: stable passive income and a safe capital",
+       "Decision style: structured, evidence-based, often with the family",
+       "Best fit: J Tower 2 and J Tower 3 (Tanichu), Le Condé (managed by Hopetree Japan)"
+      ]
+     }
+    },
+    {
+     "label": "The protocol",
+     "heading": "This exact order, every time",
+     "body": "With Japanese investors, the order is not flexible. Showing yield before risk signals inexperience and ends the trust at once.",
+     "flow": [
+      {
+       "title": "Respectful open",
+       "sub": "No product talk yet"
+      },
+      {
+       "title": "Risk before return",
+       "sub": "Always, no exceptions"
+      },
+      {
+       "title": "2 options at most",
+       "sub": "With verified evidence"
+      },
+      {
+       "title": "No pressure",
+       "sub": "Family consultation is normal"
+      },
+      {
+       "title": "Same-day written summary",
+       "sub": "Non-negotiable"
+      }
+     ],
+     "rules": [
+      {
+       "title": "Open with respect, not a product",
+       "detail": "\"Thank you for your time today. Before I share anything about our projects, I'd like to understand your goals and concerns.\"",
+       "action": "Never mention a project in your first sentence."
+      },
+      {
+       "title": "Never rush a decision",
+       "detail": "\"I need to discuss this with my family\" is normal, not a stall. Respect it and set up a second meeting.",
+       "action": "Say: \"Of course. Take the time you need. I'll prepare a written summary for that conversation.\""
+      }
+     ]
+    },
+    {
+     "label": "Language and evidence",
+     "heading": "What to say, and never say",
+     "body": "Precision matters more with this client than with any other.",
+     "table": {
+      "headers": [
+       "Never say",
+       "Say instead"
+      ],
+      "rows": [
+       [
+        "\"Guaranteed 8% return\"",
+        "\"On verified data, net yield is 5 to 7%\""
+       ],
+       [
+        "\"Buy now, prices are rising\"",
+        "\"Four major projects launched in early 2026. Here is the data on timing\""
+       ],
+       [
+        "\"This is a great opportunity\"",
+        "\"This developer has a verified delivery record. Here are the facts\""
+       ],
+       [
+        "\"Don't worry about CGT\"",
+        "\"Capital Gains Tax applies when you sell. Here is the calculation for you\""
+       ],
+       [
+        "\"Other Japanese investors are buying\"",
+        "Never use social pressure. Show data instead"
+       ]
+      ]
+     },
+     "before": {
+      "text": "This is a great opportunity. Many Japanese investors are buying here."
+     },
+     "now": {
+      "text": "This developer has a verified delivery record. Here are the facts."
+     },
+     "pairWhy": "Enthusiasm and social pressure make a Japanese investor cautious. Verified facts make them comfortable."
+    }
+   ],
+   "roleplay": {
+    "scenario": "Opening a first meeting with a Japanese investor",
+    "instructions": "Risk before return, never the reverse.",
+    "turns": [
+     {
+      "client": [],
+      "agent": "Tanaka-san, ‧‧‧ thank you for coming *today*. ‧‧‧ Before I share anything about our *projects*, ‧‧‧ what matters *most* to you? ‧‧‧ *Stability*, ‧‧‧ *income*, ‧‧‧ or *both*?"
+     },
+     {
+      "client": [
+       "Capital safety first. Income is secondary."
+      ],
+      "agent": "Thank you. ‧‧‧ Then let me be *honest* about this market first. ‧‧‧ Selling here is *slower* than in Japan. ‧‧‧ If you needed to sell within *three* years, ‧‧‧ that could be a *real* limit."
+     },
+     {
+      "client": [],
+      "agent": "For a *seven* to *ten* year hold, ‧‧‧ the data supports it *much* better. ↘"
+     },
+     {
+      "client": [
+       "I understand. What about rental income?"
+      ],
+      "agent": "One *verified* sale is a good guide. ‧‧‧ A comparable unit returned about *six point eight five* percent a year, ‧‧‧ rent and *growth* together, ‧‧‧ over *five* years. ‧‧‧ That's a *real* result, ‧‧‧ not a *projection*. ↘"
+     }
+    ],
+    "note": "Was risk mentioned before any return figure? Did the agent use verified data instead of enthusiasm?",
+    "debrief": "Risk before return, evidence before enthusiasm. This order is why a Japanese client trusts a PHC advisor over any other agency."
+   },
+   "quiz": [
+    {
+     "q": "With a Japanese investor, when do you disclose risk?",
+     "opts": [
+      "After the options, so it doesn't scare them",
+      "Before any specific project, always",
+      "Only if they ask",
+      "At the end, as a formality"
+     ],
+     "correct": 1,
+     "explain": "Risk before return, with no exceptions. It is the most important rule for this client."
+    },
+    {
+     "q": "A Japanese client says \"I need to discuss this with my family.\" This means:",
+     "opts": [
+      "They're not serious",
+      "A normal part of how they decide. Respect it",
+      "Try to close before they leave",
+      "Lower the price"
+     ],
+     "correct": 1,
+     "explain": "Family consultation is normal. Respect it and prepare a written summary they can take home."
+    },
+    {
+     "q": "Which projects fit Japanese investors best?",
+     "opts": [
+      "Le Condé and Royal Platinum",
+      "Time Square 9 and G.A.T.O Tower",
+      "J Tower 2 and J Tower 3 (Tanichu), and Le Condé (Hopetree Japan)",
+      "Peninsula and Time Square 8"
+     ],
+     "correct": 2,
+     "explain": "A Japanese developer and Japanese management are the strongest trust signals for this client."
+    },
+    {
+     "q": "What must follow every meeting with a Japanese investor?",
+     "opts": [
+      "Nothing extra",
+      "A same-day written summary",
+      "A follow-up only if asked",
+      "A discount offer"
+     ],
+     "correct": 1,
+     "explain": "A same-day written summary is required. It is the professionalism this client expects."
+    }
+   ],
+   "reflection": "Write the first 3 sentences you would say to open a meeting with a 55-year-old Japanese investor, building trust before any product is mentioned."
   },
   {
    "id": 13,
    "week": 3,
    "title": "The European & German investor protocol",
    "short": "European Protocol",
-   "stub": true
+   "objectives": [
+    "Understand how German and European investors decide",
+    "Present yield, legal structure and risk the way this client wants",
+    "Avoid the mistakes that break trust with European clients"
+   ],
+   "sections": [
+    {
+     "label": "Understanding the client",
+     "heading": "Logic and precision, not lifestyle words",
+     "body": "European investors in Cambodia are usually analytical, good with numbers and very skeptical of promotional language. They respond to structure, numbers and an honest downside.",
+     "grid": [
+      [
+       "Age and profile",
+       "Usually 45 to 65, near retirement, often wealthy"
+      ],
+      [
+       "Main goal",
+       "Reliable monthly income to add to a pension or savings"
+      ],
+      [
+       "Decision style",
+       "Logical, wants documents, compares carefully"
+      ],
+      [
+       "Key advisor",
+       "Reza, PHC co-founder, the specialist for these clients"
+      ]
+     ]
+    },
+    {
+     "label": "Their 3 real questions",
+     "heading": "Answer these before they ask",
+     "body": "European clients rarely ask these out loud, but they are always thinking them.",
+     "bars": {
+      "title": "A $150K unit renting for $800 a month",
+      "bars": [
+       {
+        "label": "Gross monthly rent",
+        "valueLabel": "$800",
+        "pct": 100
+       },
+       {
+        "label": "Net after management and rental tax",
+        "valueLabel": "about $593",
+        "pct": 74,
+        "dim": true
+       }
+      ]
+     },
+     "rules": [
+      {
+       "title": "\"What's my real monthly income?\"",
+       "detail": "Rent after costs, not the advertised gross. Example: $800 rent, minus $95 management, minus $112 rental tax (14% for an owner living abroad), leaves about $593 a month, about 4.7% of the price.",
+       "action": "Always show the calculation, not just the result."
+      },
+      {
+       "title": "\"What's my downside?\"",
+       "detail": "Selling can be slow. Cambodia is improving but is not as fast as Germany or France. A sale within 2 or 3 years may be hard at the price they want.",
+       "action": "Name this risk clearly. Vague reassurance is worse than no answer."
+      },
+      {
+       "title": "\"What protects me legally?\"",
+       "detail": "A strata title, registered with the government. The 70% foreign quota keeps Cambodian owners in the majority of every building. An independent contract review is standard.",
+       "action": "Always present an independent legal review as a normal step, not an extra."
+      }
+     ]
+    },
+    {
+     "label": "Common mistakes",
+     "heading": "What breaks trust with this client fastest",
+     "body": "These habits end a European client's confidence quickly.",
+     "rules": [
+      {
+       "title": "Lifestyle words instead of numbers",
+       "detail": "\"Beautiful lifestyle\" or \"vibrant community\" tells this client you don't understand them. They want returns, not adjectives.",
+       "action": "If a sentence has no number or fact, consider cutting it."
+      },
+      {
+       "title": "Upside without the downside",
+       "detail": "Talking about price growth without CGT, vacancy or how hard it is to sell is a red flag to an analytical investor. They notice what's missing.",
+       "action": "Name at least one real risk before the client asks."
+      },
+      {
+       "title": "Not bringing in Reza",
+       "detail": "Reza is PHC's specialist for these clients. Bring him in from the second conversation.",
+       "action": "Introduce Reza by the second meeting, every time."
+      }
+     ]
+    }
+   ],
+   "pics": [
+    {
+     "after": 2,
+     "prompt": "Which sounds right to a German investor?",
+     "options": [
+      {
+       "svg": "eu-life",
+       "cap": "\"A beautiful, vibrant lifestyle!\""
+      },
+      {
+       "svg": "eu-math",
+       "cap": "\"$593 a month net. Here's the math.\""
+      }
+     ],
+     "answer": 1,
+     "why": "European investors trust numbers they can check. Lifestyle words tell them you don't understand what they came for."
+    }
+   ],
+   "roleplay": {
+    "scenario": "Presenting net yield to a German investor",
+    "instructions": "Lead with the calculation, not the headline number.",
+    "turns": [
+     {
+      "client": [
+       "I want the real numbers. What's my net yield after all costs?"
+      ],
+      "agent": "Good *question*. ‧‧‧ Let me walk you *through* it. ‧‧‧ Eight hundred a month in *rent*, ‧‧‧ minus *ninety-five* for management, ‧‧‧ minus a hundred and *twelve* in rental tax."
+     },
+     {
+      "client": [],
+      "agent": "That leaves about *five ninety-three* a month, ‧‧‧ roughly *four point seven* percent ‧‧‧ of the price. ↘"
+     },
+     {
+      "client": [
+       "So that's lower than the 8% I saw advertised."
+      ],
+      "agent": "*Correct*. ‧‧‧ That eight percent is *gross*. ‧‧‧ I'll also send you a *verified* sale on a comparable unit, ‧‧‧ so you can check the *long-term* numbers *yourself*. ↘"
+     }
+    ],
+    "note": "Did the agent lead with the calculation? Was any lifestyle language used?",
+    "debrief": "German and European clients trust a number they can check more than any adjective. Show your math every time."
+   },
+   "quiz": [
+    {
+     "q": "A German investor asks for their real monthly income on a $150K unit. You:",
+     "opts": [
+      "\"$800, minus a small fee\"",
+      "Show the full calculation: rent, minus management, minus rental tax",
+      "\"Around 8%, as advertised\"",
+      "\"Hard to say\""
+     ],
+     "correct": 1,
+     "explain": "This client wants to check the math. Show every step."
+    },
+    {
+     "q": "Which risk do you raise first with a European investor?",
+     "opts": [
+      "Furniture cost",
+      "Selling can be slow: Cambodia's resale market is slower than Europe's",
+      "Time zones",
+      "Language barriers"
+     ],
+     "correct": 1,
+     "explain": "How fast they could sell is the most relevant downside. Name it clearly, before they ask."
+    },
+    {
+     "q": "When do you bring Reza in for a German or European client?",
+     "opts": [
+      "Only if they ask",
+      "From the second conversation, for every client of this type",
+      "Only above $300K",
+      "Never. He only handles closings"
+     ],
+     "correct": 1,
+     "explain": "Reza is PHC's specialist for these clients. Bringing him in early is an advantage."
+    },
+    {
+     "q": "Which phrase damages trust with a European investor fastest?",
+     "opts": [
+      "\"Here is the net yield calculation\"",
+      "\"This community has a vibrant, beautiful lifestyle\"",
+      "\"Selling can be slow here\"",
+      "\"An independent lawyer should review the contract\""
+     ],
+     "correct": 1,
+     "explain": "Lifestyle words tell this client you don't understand them."
+    }
+   ],
+   "reflection": "Write a short follow-up summary for a German client after a first meeting, who is interested in Le Condé in BKK1."
   },
   {
    "id": 14,
    "week": 3,
    "title": "Serving Khmer & overseas Cambodian clients",
    "short": "Khmer Clients",
-   "stub": true
+   "objectives": [
+    "Understand what local Khmer and overseas Cambodian clients value most",
+    "Adapt your approach, projects and support for each",
+    "Avoid the assumptions that damage trust with these clients"
+   ],
+   "sections": [
+    {
+     "label": "Two different clients",
+     "heading": "\"Khmer client\" is not one profile. It's two",
+     "body": "Local Khmer buyers and overseas Cambodians have different goals, decision speeds and feelings about buying. Treating them the same is the first mistake most agents make.",
+     "grid": [
+      [
+       "Local Khmer home buyer",
+       "25 to 50, lives in Phnom Penh, upgrading or buying a family home. Values community, nearby schools, developer reputation and flexible payment. Decides slowly, usually with the family."
+      ],
+      [
+       "Overseas Cambodian",
+       "30 to 55, lives abroad (USA, France, Australia, Canada). Wants an investment, a family connection and safe capital. Often decides faster. Needs a clear remote process, video calls and documents they can trust without seeing the unit."
+      ]
+     ]
+    },
+    {
+     "label": "Local Khmer clients",
+     "heading": "Community and family come before yield",
+     "body": "Local Khmer buyers are rarely driven by investment numbers first. Lead with what matters to them.",
+     "rules": [
+      {
+       "title": "Lead with safety and community",
+       "detail": "\"This project is by Megakim: 7 buildings finished on schedule. It has 24-hour security and good schools nearby.\" This lands. Net yield does not.",
+       "action": "Mention the developer's record and the neighborhood before any numbers."
+      },
+      {
+       "title": "Support the family decision",
+       "detail": "Parents, siblings or a spouse are often part of the decision. That is normal, not a delay to overcome.",
+       "action": "Prepare a simple document the client can take home to the family."
+      },
+      {
+       "title": "Flexible payment matters",
+       "detail": "Know the payment plan for every project. Some let buyers pay up to 50% at handover, which lowers their risk during construction.",
+       "action": "Lead with a flexible payment plan whenever a project has one."
+      }
+     ],
+     "before": {
+      "text": "Can we reserve today, before your parents see it? Units are going fast."
+     },
+     "now": {
+      "text": "Of course. I'll prepare a simple summary your family can read, and I'm happy to meet them too."
+     },
+     "pairWhy": "For Khmer buyers, the family is part of the decision. Helping that conversation wins more deals than trying to go around it."
+    },
+    {
+     "label": "Overseas Cambodians",
+     "heading": "Remote buyers need more support, not lower standards",
+     "body": "Overseas Cambodians often decide faster, but they worry about buying something they can't see in person.",
+     "rules": [
+      {
+       "title": "Lead with the developer's record",
+       "detail": "\"Megakim has delivered 7 projects. Here are the handover photos from Time Square 8, and a sample strata title.\" Proof of past deliveries replaces the visit they can't make.",
+       "action": "Send proof of past deliveries before they ask."
+      },
+      {
+       "title": "A flawless remote process",
+       "detail": "Give them a written payment schedule, an online contract review, the title transfer documents and a property management option.",
+       "action": "\"You don't need to be here\" only works if every step is in writing."
+      },
+      {
+       "title": "Reply fast, across time zones",
+       "detail": "These clients often message outside Phnom Penh office hours. A slow reply loses them to a competitor.",
+       "action": "Reply as fast as you can, even outside normal hours."
+      }
+     ]
+    }
+   ],
+   "roleplay": {
+    "scenario": "Supporting a family decision for a local Khmer buyer",
+    "instructions": "Support the family process. Don't rush it.",
+    "turns": [
+     {
+      "client": [
+       "I like the unit at Time Square 11. But I need to talk to my parents first."
+      ],
+      "agent": "Of *course*. ‧‧‧ That's completely *normal*. ‧‧‧ I'd like to make that conversation *easier* for you."
+     },
+     {
+      "client": [
+       "How would you do that?"
+      ],
+      "agent": "I'll prepare a *simple* summary: ‧‧‧ the *developer's* record, ‧‧‧ the *payment* plan, ‧‧‧ and the *monthly* costs. ‧‧‧ Something *clear*, ‧‧‧ they can read on their *own*."
+     },
+     {
+      "client": [
+       "Yes, that would help a lot."
+      ],
+      "agent": "I'll send it *today*. ‧‧‧ And if it helps, ‧‧‧ I'm happy to *meet* your family ‧‧‧ and answer their questions *directly*. ↘"
+     }
+    ],
+    "note": "Did the agent create urgency, or truly support the family process?",
+    "debrief": "For Khmer clients, family is part of the process. An agent who helps the family conversation closes more deals than one who tries to go around it."
+   },
+   "quiz": [
+    {
+     "q": "A local Khmer buyer says \"my parents want to see the building first.\" You:",
+     "opts": [
+      "Say it can happen after they reserve",
+      "Make a family site visit a priority",
+      "Say the building isn't ready for visits",
+      "Send a video instead"
+     ],
+     "correct": 1,
+     "explain": "A family that has seen the building is far more likely to support the decision."
+    },
+    {
+     "q": "An overseas Cambodian messages you at 10 p.m. from Los Angeles. You:",
+     "opts": [
+      "Reply tomorrow morning",
+      "Reply as quickly as you can: speed builds trust with remote buyers",
+      "Ask them to call in office hours",
+      "Send a brochure and follow up later"
+     ],
+     "correct": 1,
+     "explain": "Remote clients have small windows. Fast replies are a real advantage."
+    },
+    {
+     "q": "For local Khmer buyers, what matters most when choosing a project?",
+     "opts": [
+      "Net yield projections",
+      "Developer reputation, flexible payment and community",
+      "Price per sqm",
+      "Foreign ownership rules"
+     ],
+     "correct": 1,
+     "explain": "Buyers who will live in the unit care about community, safety, the developer and payment flexibility."
+    },
+    {
+     "q": "What do you send an overseas Cambodian before they ask?",
+     "opts": [
+      "A full yield analysis",
+      "Proof of the developer's past deliveries",
+      "A discount",
+      "A comparison with competitors"
+     ],
+     "correct": 1,
+     "explain": "Proof of past deliveries replaces the visit they can't easily make."
+    }
+   ],
+   "reflection": "How would you open a conversation with a 35-year-old Khmer professional buying a first home, compared with a 45-year-old Cambodian-American investing remotely? What changes, and what stays the same?"
   },
   {
    "id": 15,
    "week": 3,
    "title": "Handling objections",
    "short": "Objections",
-   "stub": true
+   "objectives": [
+    "Recognize the most common objections in Cambodian property",
+    "Answer each one with data and calm, never pressure",
+    "Tell a buying signal from a real deal-breaker"
+   ],
+   "sections": [
+    {
+     "label": "What an objection is",
+     "heading": "Information, not rejection",
+     "body": "Every objection carries information. \"It's too expensive\" means \"help me see the value.\" \"I need more time\" means \"I don't have enough to decide yet.\" Listen for the real meaning and answer that. Trying to overpower an objection loses the client.",
+     "flow": [
+      {
+       "title": "Acknowledge",
+       "sub": "Show you heard them"
+      },
+      {
+       "title": "Clarify",
+       "sub": "One question to find the real concern"
+      },
+      {
+       "title": "Answer with data",
+       "sub": "Never with pressure"
+      },
+      {
+       "title": "Confirm",
+       "sub": "Check the concern is resolved"
+      },
+      {
+       "title": "Move forward",
+       "sub": "Suggest the next step"
+      }
+     ],
+     "before": {
+      "text": "Cambodia isn't risky at all. Everyone is buying here now."
+     },
+     "now": {
+      "text": "That's a fair concern. Which risk worries you most: the market, the developer, or something else?"
+     },
+     "pairWhy": "Arguing tells the client you aren't listening. Acknowledge, then ask. The answer shows you the real concern."
+    },
+    {
+     "label": "The common objections",
+     "heading": "Know the answer before you hear the question",
+     "body": "Every PHC agent hears these often. Prepare with facts, not memorized scripts.",
+     "rules": [
+      {
+       "title": "\"The market feels risky\"",
+       "detail": "Acknowledge: \"That's a fair concern.\" Then data: REAKH's 2026 report shows a flight to quality. Buyers are choosing trusted developers, four major projects launched in early 2026, and Cambodian buyers grew to 22%. The risk is real, but the direction is clear for long-term owners.",
+       "action": "Always ask: \"Which risk worries you most?\""
+      },
+      {
+       "title": "\"The yield is lower than elsewhere\"",
+       "detail": "Agree in part: \"Net yield here is 5 to 7%. Lower than some emerging markets, higher than most developed ones.\" It's in US dollars, with no currency risk, in a market recovering from its low.",
+       "action": "Bring in the verified J Tower 2 sale as real evidence."
+      },
+      {
+       "title": "\"I don't know this developer\"",
+       "detail": "\"That's the right instinct. The developer's record is the biggest risk here. Megakim has finished 7 projects. Would their delivery record help?\"",
+       "action": "Always offer proof, not just reassurance."
+      },
+      {
+       "title": "\"Capital Gains Tax makes it less attractive\"",
+       "detail": "\"The tax is on the profit, not the sale price. Sell for $200,000 after buying for $100,000 with $40,000 in costs, and the tax is $12,000: a small part of a 7 to 10 year return.\"",
+       "action": "Always work out the real number. Never leave CGT as a vague worry."
+      },
+      {
+       "title": "\"I want to think about it\"",
+       "detail": "Ask: \"Of course. Is there a part you'd like to think through more?\" Then answer the real concern.",
+       "action": "Never accept it as final without asking what's behind it."
+      }
+     ]
+    }
+   ],
+   "roleplay": {
+    "scenario": "Handling \"the market feels risky\"",
+    "instructions": "Acknowledge, clarify, answer with data, confirm.",
+    "turns": [
+     {
+      "client": [
+       "Honestly, I'm not sure. Cambodia still feels risky to me."
+      ],
+      "agent": "That's a completely *fair* concern, ‧‧‧ and I don't want to *brush* past it. ‧‧‧ What *exactly* feels risky? ‧‧‧ The *market*, ‧‧‧ the *developer*, ‧‧‧ or something *else*?"
+     },
+     {
+      "client": [
+       "Mostly that I've heard of developers not finishing projects."
+      ],
+      "agent": "That *did* happen with some projects, ‧‧‧ between *2015* and *2019*. ‧‧‧ It's *exactly* why PHC only recommends developers ‧‧‧ with a *verified* delivery record."
+     },
+     {
+      "client": [],
+      "agent": "Megakim has finished *seven* projects. ‧‧‧ Tanichu delivered J Tower 2 *on time*. ‧‧‧ Would it help to see their *delivery* documents?"
+     },
+     {
+      "client": [
+       "Yes, that would help."
+      ],
+      "agent": "I'll send them *today*. ‧‧‧ Then let's talk again ‧‧‧ once you've *read* them. ↘"
+     }
+    ],
+    "note": "Did the agent acknowledge before answering? Did they ask what was behind the objection?",
+    "debrief": "Acknowledge, clarify, answer with data. Skipping \"clarify\" is the most common mistake: you end up guessing at the concern instead of answering it."
+   },
+   "quiz": [
+    {
+     "q": "\"The yield seems lower than other markets.\" The PHC answer is:",
+     "opts": [
+      "Disagree: Cambodia has the best yields in Asia",
+      "Agree in part, then add context: US dollars, market recovery and the verified J Tower 2 sale",
+      "Change the subject to price growth",
+      "Apologize and offer a discount"
+     ],
+     "correct": 1,
+     "explain": "Partial agreement, context and real evidence. Never argue with a fact, and never dodge."
+    },
+    {
+     "q": "What is always your first step with an objection?",
+     "opts": [
+      "Your strongest counter-argument",
+      "Acknowledge the concern",
+      "Ask for the budget",
+      "Offer a discount"
+     ],
+     "correct": 1,
+     "explain": "Jumping to a counter-argument feels like you aren't listening, even if your facts are right."
+    },
+    {
+     "q": "\"I want to think about it.\" Next you:",
+     "opts": [
+      "End the meeting",
+      "Ask which part they'd like to think through more",
+      "Offer a time-limited discount",
+      "Wait exactly 2 weeks"
+     ],
+     "correct": 1,
+     "explain": "It almost always hides a specific concern. Asking brings it out."
+    },
+    {
+     "q": "The Capital Gains Tax (CGT) objection is best handled by:",
+     "opts": [
+      "Telling them not to worry",
+      "Working out the real tax for their case",
+      "Avoiding the topic",
+      "Comparing with a country with no CGT"
+     ],
+     "correct": 1,
+     "explain": "A vague worry becomes manageable once the client sees the real, modest number."
+    }
+   ],
+   "reflection": "Which objection would you find hardest to answer? Write how you would handle it: acknowledge, clarify, answer with data, confirm, move forward."
   },
   {
    "id": 16,
    "week": 4,
    "title": "Site visits & property presentations",
    "short": "Site Visits",
-   "stub": true
+   "objectives": [
+    "Prepare, run and debrief a site visit professionally",
+    "Know what to point out on a walkthrough, and what never to say",
+    "Turn a strong site visit into one clear next step"
+   ],
+   "sections": [
+    {
+     "label": "Before the visit",
+     "heading": "Preparation is the visit",
+     "body": "Most agents turn up and react to whatever happens. PHC agents prepare, and preparation decides most of the outcome. A well-prepared visit builds authority before a single door opens.",
+     "flow": [
+      {
+       "title": "Research the unit",
+       "sub": "Floor, sqm, view, fees, payment plan"
+      },
+      {
+       "title": "Set the agenda",
+       "sub": "Tell the client what to expect"
+      },
+      {
+       "title": "Check the quota",
+       "sub": "Confirm the foreign share left"
+      },
+      {
+       "title": "Prepare for objections",
+       "sub": "Think through likely concerns"
+      }
+     ],
+     "rules": [
+      {
+       "title": "Research the unit before you arrive",
+       "detail": "Know the floor, unit number, size, view, management fee and payment schedule. If you check your phone for basic answers on site, you have already lost ground."
+      },
+      {
+       "title": "Set the agenda before arrival",
+       "detail": "Message the client first: \"We'll see the unit and the facilities, meet the building team if they're in, and I'll take you through the full costs.\" It signals structure."
+      },
+      {
+       "title": "Know the foreign quota",
+       "detail": "Confirm how much of the foreign quota is left before the visit. If it's low, tell the client before, not on site. Surprises on site destroy confidence."
+      },
+      {
+       "title": "Prepare your answers",
+       "detail": "Expect the 2 or 3 concerns most likely for this client's profile, and prepare the data before you walk in."
+      }
+     ]
+    },
+    {
+     "label": "During the visit",
+     "heading": "What to do, and what never to say",
+     "body": "A site visit is not a sales show. It is the client's chance to discover and check. Your role is to guide, not to sell.",
+     "rules": [
+      {
+       "title": "Let the client lead",
+       "detail": "Open the door and step back. Let the client move through the space and note what they comment on. Their reactions are qualifying information."
+      },
+      {
+       "title": "Specifics, not general praise",
+       "detail": "\"This is the 17th floor, facing south. Direct sun from 9 a.m. to 3 p.m.\" Not \"the views are amazing.\" Specifics sound like an expert. Praise sounds like a tour guide."
+      },
+      {
+       "title": "Introduce the building team",
+       "detail": "If you can, introduce the building manager or reception. A third party, especially a Japanese management brand, carries more weight than you do."
+      },
+      {
+       "title": "No urgency on site",
+       "detail": "\"Only 3 units left on this floor\" is a pressure tactic serious buyers see at once. If stock really is low, say it once, as a fact."
+      }
+     ]
+    },
+    {
+     "label": "After the visit",
+     "heading": "The debrief is where deals are won",
+     "body": "The 15 minutes after a visit, in the lobby, a café or on the phone, are the most valuable advisory time in the whole process. Use them on purpose.",
+     "rules": [
+      {
+       "title": "Ask three questions straight away",
+       "detail": "\"What did you like most?\" \"What concerned you?\" \"Does this feel like the right kind of property for what you told me?\" Their answers show you the next step."
+      },
+      {
+       "title": "Confirm or change your recommendation",
+       "detail": "\"Given what you said about space, the 2-bedroom at Time Square 9 may fit better. Can I show you that one next?\""
+      },
+      {
+       "title": "Propose one next step",
+       "detail": "\"The natural next step is to review the contract together. Shall I arrange it with our legal team this week?\" One step. Never push to close."
+      },
+      {
+       "title": "Send a written summary within 24 hours",
+       "detail": "The unit you saw, what you noticed, open questions and the agreed next step. Standard after every visit."
+      }
+     ]
+    }
+   ],
+   "pics": [
+    {
+     "after": 1,
+     "prompt": "On a site visit, which one sounds like an advisor?",
+     "options": [
+      {
+       "svg": "site-wow",
+       "cap": "\"The views are amazing!\""
+      },
+      {
+       "svg": "site-fact",
+       "cap": "\"17th floor, facing south. Sun from 9 to 3.\""
+      }
+     ],
+     "answer": 1,
+     "why": "Specific facts sound like an expert. General praise sounds like a tour guide."
+    }
+   ],
+   "roleplay": {
+    "scenario": "The debrief after a site visit",
+    "instructions": "Ask all three questions before you suggest anything.",
+    "turns": [
+     {
+      "client": [],
+      "agent": "Thank you for coming *today*. ‧‧‧ What did you like *most* about the unit?"
+     },
+     {
+      "client": [
+       "The view was better than I expected. And the building feels solid."
+      ],
+      "agent": "Good to *hear*. ‧‧‧ And what *concerned* you? ‧‧‧ Anything that gave you *pause*?"
+     },
+     {
+      "client": [
+       "The size. 53 square meters feels a bit small."
+      ],
+      "agent": "That's really *useful*. ‧‧‧ Last question: ‧‧‧ does this *kind* of project ‧‧‧ feel right for what you *told* me?"
+     },
+     {
+      "client": [
+       "Yes, I think so. Just the size."
+      ],
+      "agent": "Then let me show you the *two*-bedroom ‧‧‧ in the same *building*. ‧‧‧ *Seventy-eight* square meters, ‧‧‧ same management, ‧‧‧ same *view*."
+     },
+     {
+      "client": [],
+      "agent": "It's forty thousand *more*, ‧‧‧ but it rents for about *nine* hundred, ‧‧‧ not eight. ‧‧‧ Would that be worth *seeing*? ↘"
+     }
+    ],
+    "note": "Did the agent ask all three questions before proposing anything? Did the change of unit feel natural?",
+    "debrief": "The three questions are not small talk. The client's answers tell you exactly what to do next. Listen before you speak."
+   },
+   "quiz": [
+    {
+     "q": "Before a site visit, the most important thing to confirm is:",
+     "opts": [
+      "The client's passport",
+      "The floor, view, size, payment plan and the foreign quota left",
+      "That the showroom looks good",
+      "That the unit is furnished"
+     ],
+     "correct": 1,
+     "explain": "Know the unit before you go, especially the foreign quota. If it's nearly full, say so before the visit."
+    },
+    {
+     "q": "On site, the client says \"the views are amazing.\" You say:",
+     "opts": [
+      "\"Yes, one of the best in Phnom Penh!\"",
+      "\"This is the 17th floor, facing south. Direct sun from 9 to 3, and a clear river view.\"",
+      "\"Wait until you see the pool.\"",
+      "\"Everyone says that about this floor.\""
+     ],
+     "correct": 1,
+     "explain": "Specifics sound like an Investment Advisor. Agreeing with \"amazing\" sounds like a tour guide."
+    },
+    {
+     "q": "Right after a visit, you ask:",
+     "opts": [
+      "\"Ready to book? What's your budget? When can you sign?\"",
+      "\"What did you like most? What concerned you? Does this fit your goals?\"",
+      "\"Did you love it? Shall I check availability?\"",
+      "\"Any questions? Want to see another?\""
+     ],
+     "correct": 1,
+     "explain": "These three show what they liked, what still worries them, and whether it fits."
+    },
+    {
+     "q": "After a strong first site visit, the right next step is:",
+     "opts": [
+      "Take a booking deposit while they're excited",
+      "A contract review with the legal team, or a visit to a better-matched unit",
+      "A call in two weeks",
+      "A meeting with Nick to commit"
+     ],
+     "correct": 1,
+     "explain": "One clear step. Pushing to close on the day of a first visit is pressure, not advice."
+    }
+   ],
+   "reflection": "Describe your ideal site visit, from the message you send before arrival to the written summary the next day."
   },
   {
    "id": 17,
    "week": 4,
    "title": "Writing proposals & follow-ups",
    "short": "Proposals & Follow-Ups",
-   "stub": true
+   "objectives": [
+    "Write a PHC-standard proposal after every client meeting",
+    "Write follow-ups that add value instead of pressure",
+    "Know the difference between a check-in and a chase"
+   ],
+   "sections": [
+    {
+     "label": "Why writing matters",
+     "heading": "The document is the professional",
+     "body": "Conversations are forgotten. A written summary is what the client goes back to when deciding, often days later and often shared with family or advisors abroad. A good PHC proposal can close a deal without another meeting. A poor one can undo a great meeting.",
+     "box": {
+      "title": "PHC's writing standard",
+      "lines": [
+       "Every client meeting: a same-day written summary",
+       "Every site visit: a written summary within 24 hours",
+       "Every qualified investor: a written proposal within 48 hours of the first meeting",
+       "Clear, structured, data-led. No marketing language, no pressure"
+      ]
+     }
+    },
+    {
+     "label": "The proposal",
+     "heading": "What a PHC proposal must contain",
+     "body": "A PHC proposal is not a brochure. It is an advisory document, and every section has a job.",
+     "flow": [
+      {
+       "title": "Situation",
+       "sub": "What the client told you"
+      },
+      {
+       "title": "Recommendation",
+       "sub": "1 or 2 projects, and why"
+      },
+      {
+       "title": "The numbers",
+       "sub": "Net yield, full cost, CGT"
+      },
+      {
+       "title": "Risks",
+       "sub": "Stated clearly, not hidden"
+      },
+      {
+       "title": "Next step",
+       "sub": "One clear action"
+      }
+     ],
+     "rules": [
+      {
+       "title": "The client's situation",
+       "detail": "Two or three sentences on what the client told you: goal, timeline, budget and risk comfort. It shows you listened."
+      },
+      {
+       "title": "Your recommendation, and why",
+       "detail": "The 1 or 2 projects you recommend, and why each one fits what this client said, not why it's a good project in general."
+      },
+      {
+       "title": "The numbers",
+       "detail": "Net yield, the total cost including transfer tax, the monthly income estimate, and Capital Gains Tax (CGT) on an example sale. Show your working."
+      },
+      {
+       "title": "The risks, stated clearly",
+       "detail": "The 2 or 3 risks that matter most for this client: how fast they could sell, CGT, vacancy, construction risk if it's off-plan. This section builds the most trust."
+      },
+      {
+       "title": "One next step",
+       "detail": "One action: \"I suggest a contract review with our legal team this week.\" Not a list of options."
+      }
+     ]
+    },
+    {
+     "label": "Follow-up principles",
+     "heading": "Add value or stay silent",
+     "body": "The most common mistake is a message that adds nothing and just says \"checking in.\" That is pressure dressed up as care. PHC follow-ups always add something: a market update, a useful number, or the answer to an open question.",
+     "rules": [
+      {
+       "title": "The check-in with a reason",
+       "detail": "\"The foreign quota at Le Condé is now 64% this week, which matters for your timeline. Happy to discuss.\""
+      },
+      {
+       "title": "The answer to an open question",
+       "detail": "If you couldn't answer something in the meeting, the follow-up is the answer: \"You asked about the management fee at J Tower 3. I confirmed it's $1.8 per sqm a month, the same as J Tower 2.\""
+      },
+      {
+       "title": "After silence",
+       "detail": "After 7 to 10 days with no reply: \"I wanted to reach out, not to push, but to check if anything has changed in your timeline. I'm happy to send anything new that helps.\" \"Are you still interested?\" is not PHC."
+      }
+     ]
+    }
+   ],
+   "pics": [
+    {
+     "after": 2,
+     "prompt": "Eight days without a reply. Which message do you send?",
+     "options": [
+      {
+       "svg": "msg-chase",
+       "cap": "\"Hi! Just checking in. Still interested?\""
+      },
+      {
+       "svg": "msg-value",
+       "cap": "\"Le Condé's foreign quota is now 64%. Relevant to your timeline.\""
+      }
+     ],
+     "answer": 1,
+     "why": "A follow-up must add something new. \"Just checking in\" is pressure dressed up as care."
+    }
+   ],
+   "roleplay": {
+    "scenario": "A follow-up after a first meeting with a German investor",
+    "instructions": "Read your message aloud to a colleague, then swap.",
+    "turns": [
+     {
+      "client": [],
+      "agent": "Dear Mr. Schmidt, ‧‧‧ thank you for visiting us *today*. ‧‧‧ As promised, ‧‧‧ here is a summary of the *two* projects I recommended, ‧‧‧ with the full *costs*, ‧‧‧ and the *risks* we discussed."
+     },
+     {
+      "client": [],
+      "agent": "Le Condé, ‧‧‧ one bedroom, ‧‧‧ BKK1, ‧‧‧ *completed*. ‧‧‧ Total cost about a hundred and *sixty-four* thousand, ‧‧‧ with transfer tax. ‧‧‧ Estimated net yield, ‧‧‧ about *five point two* percent."
+     },
+     {
+      "client": [],
+      "agent": "As a next *step*, ‧‧‧ I suggest a call with *Reza*, ‧‧‧ our European advisor, ‧‧‧ to go through the *legal* structure. ‧‧‧ Are you free *this* week? ↘"
+     }
+    ],
+    "note": "Any pressure language? Were the risks visible? Was there exactly one next step?",
+    "debrief": "The best follow-up reads like a memo from a trusted advisor. If any agency could have sent it, it isn't PHC quality. Make it specific to what this client told you.",
+    "context": "He is 52, interested in Le Condé or J Tower 2, with a budget of $200K and 3 to 6 months. His main worry is selling later. You're writing his follow-up."
+   },
+   "quiz": [
+    {
+     "q": "A PHC proposal must always include:",
+     "opts": [
+      "A brochure and price list",
+      "The client's situation, your recommendation and why, net numbers, risks, and one next step",
+      "At least 5 projects",
+      "Testimonials"
+     ],
+     "correct": 1,
+     "explain": "Situation shows you listened. Recommendation shows you matched. Numbers show precision. Risks show honesty. One step shows clarity."
+    },
+    {
+     "q": "A client hasn't replied for 8 days. You send:",
+     "opts": [
+      "\"Just checking in. Still interested?\"",
+      "\"Prices may be moving. Heads up!\"",
+      "\"Not to push, but has anything changed in your timeline? Happy to send anything new that helps.\"",
+      "\"Do you want to go ahead or not?\""
+     ],
+     "correct": 2,
+     "explain": "It opens the door without pushing through it."
+    },
+    {
+     "q": "The risks section of a proposal is:",
+     "opts": [
+      "Optional",
+      "A short disclaimer at the bottom",
+      "A clear list of the 2 or 3 risks that matter most for this client",
+      "Only for off-plan projects"
+     ],
+     "correct": 2,
+     "explain": "It is the most trust-building part of the proposal. Make it clear and specific, not a legal footnote."
+    },
+    {
+     "q": "Which is a PHC-quality follow-up?",
+     "opts": [
+      "\"Any decision yet?\"",
+      "\"I confirmed the J Tower 3 management fee you asked about: $1.8 per sqm a month, the same as J Tower 2.\"",
+      "\"Great meeting! Let me know.\"",
+      "\"The market is moving fast. Decide soon.\""
+     ],
+     "correct": 1,
+     "explain": "It answers an open question with new information, and adds no pressure."
+    }
+   ],
+   "reflection": "Write a PHC-standard proposal for a Japanese investor interested in J Tower 2, with a budget of $200K, whose main concern is whether the developer is reliable."
   },
   {
    "id": 18,
    "week": 4,
    "title": "Pipeline & deal management",
    "short": "Pipeline Management",
-   "stub": true
+   "objectives": [
+    "Know PHC's pipeline stages and what moves each one",
+    "Manage many clients at once without losing quality",
+    "Decide which leads get your time, and which to park or close"
+   ],
+   "sections": [
+    {
+     "label": "Pipeline stages",
+     "heading": "Every client is at a stage. Know which one",
+     "body": "Managing a pipeline is not about tracking. It is about knowing what each client needs next, and delivering it. 20 leads managed precisely beat 50 managed loosely.",
+     "table": {
+      "headers": [
+       "Stage",
+       "Meaning",
+       "What the client needs next"
+      ],
+      "rows": [
+       [
+        "New lead",
+        "First contact, not yet qualified",
+        "The 5-minute qualification"
+       ],
+       [
+        "Qualified",
+        "Client type, budget and timeline confirmed",
+        "A shortlist and first proposal within 48 hours"
+       ],
+       [
+        "Presented",
+        "Projects shown, first proposal sent",
+        "Answers to concerns, a site visit offer"
+       ],
+       [
+        "Site visited",
+        "Viewing done",
+        "A summary, then a contract review or a better match"
+       ],
+       [
+        "Proposal sent",
+        "Full written proposal delivered",
+        "Space to decide, a useful check-in at 7 days"
+       ],
+       [
+        "Legal review",
+        "Contract with the client's lawyer",
+        "Help the review, answer questions, don't rush"
+       ],
+       [
+        "Ready to close",
+        "Client has confirmed",
+        "The booking deposit and a clear timeline"
+       ],
+       [
+        "Closed",
+        "Booking paid, contract signed",
+        "Handover help, property management set-up"
+       ],
+       [
+        "Parked",
+        "Not ready, 6+ months away",
+        "A light update every 4 to 6 weeks"
+       ]
+      ]
+     }
+    },
+    {
+     "label": "Your time",
+     "heading": "Who deserves your time this week",
+     "body": "Most agents spread their time evenly. That's a mistake. Put your time where your action moves a deal forward. The rest get a light touch.",
+     "rules": [
+      {
+       "title": "High focus",
+       "detail": "Qualified leads who have seen at least one project and plan to decide within 3 months. Work on these every day."
+      },
+      {
+       "title": "Keep warm",
+       "detail": "Qualified, but 3 to 6 months away. A weekly or fortnightly check-in with something useful. No heavy selling."
+      },
+      {
+       "title": "Parked",
+       "detail": "6+ months away, or missing something important. A monthly update, like a market figure or a new project. No meetings until they re-qualify."
+      },
+      {
+       "title": "Close politely",
+       "detail": "No clear budget, unrealistic yield (15% net or more) or a nominee request. Close politely and don't invest time."
+      }
+     ]
+    },
+    {
+     "label": "Weekly review",
+     "heading": "Know your numbers before you're asked",
+     "body": "Nick reviews these numbers every week. Know yours before he asks.",
+     "grid": [
+      [
+       "Leads this week",
+       "New first contacts, with the source: Realestate.com.kh (REAKH), referral, social media, walk-in"
+      ],
+      [
+       "Qualification rate",
+       "The share of leads that pass qualification. A low rate means you're talking to the wrong people"
+      ],
+      [
+       "Site visits",
+       "Qualified leads who have seen a project in person. The best predictor of closings"
+      ],
+      [
+       "Proposals sent",
+       "Every qualified client gets one within 48 hours"
+      ],
+      [
+       "Closings",
+       "Deposits paid and contracts in progress. The result that counts"
+      ],
+      [
+       "Pipeline value",
+       "The total value of all active qualified leads. Know this number"
+      ]
+     ]
+    }
+   ],
+   "roleplay": {
+    "scenario": "Your weekly pipeline review with Nick",
+    "instructions": "One person plays Nick, one plays the agent. Then swap.",
+    "turns": [
+     {
+      "client": [
+       "Walk me through your pipeline. How many qualified leads do you have this week?"
+      ],
+      "agent": "*Seven* qualified leads. ‧‧‧ *Three* have proposals from last week. ‧‧‧ *Two* have seen a site, ‧‧‧ and are reviewing the *contract*.",
+      "who": "Nick"
+     },
+     {
+      "client": [],
+      "agent": "*One* is ready to close: ‧‧‧ the deposit is due *Friday*. ‧‧‧ And *one* is now parked: ‧‧‧ their timeline moved to the *end* of the year. ↘"
+     },
+     {
+      "client": [
+       "And the three with proposals?"
+      ],
+      "agent": "The German investor asked about *Capital Gains Tax*. ‧‧‧ I'm sending the worked example *today*. ‧‧‧ The Japanese couple hasn't replied in *six* days, ‧‧‧ so this afternoon I'm sending them the J Tower 3 *pre-sale* news.",
+      "who": "Nick"
+     },
+     {
+      "client": [],
+      "agent": "The overseas Cambodian family ‧‧‧ needs *one* more week ‧‧‧ to talk it *through*. ↘"
+     }
+    ],
+    "note": "Was the agent specific? Did they know where each lead stands, and what it needs next?",
+    "debrief": "Pipeline discipline is what separates a productive week from a reactive one. If you don't know every qualified lead's status by Monday morning, you are already behind."
+   },
+   "quiz": [
+    {
+     "q": "A client has sat at \"proposal sent\" for 10 days with no reply. You:",
+     "opts": [
+      "Mark them lost",
+      "Send a useful check-in with something new, not pressure",
+      "Call every day",
+      "Resend with a lower price"
+     ],
+     "correct": 1,
+     "explain": "Ten days of silence is normal. Something new, like a quota update or an answered question, reopens the conversation."
+    },
+    {
+     "q": "Which lead gets the most of your time this week?",
+     "opts": [
+      "A new $500K enquiry with no timeline",
+      "A qualified lead who saw a site 5 days ago, plans to decide in 2 months and asked about the contract",
+      "A parked lead from 6 months ago",
+      "An overseas lead silent for 3 weeks"
+     ],
+     "correct": 1,
+     "explain": "Put your time where your next action can move the deal to the next stage."
+    },
+    {
+     "q": "Which leads do you close politely?",
+     "opts": [
+      "Clients who ask many questions",
+      "Clients 6 months away",
+      "No clear budget, net expectations of 15% or more, or nominee requests",
+      "Clients from certain countries"
+     ],
+     "correct": 2,
+     "explain": "These leads take time and put PHC's standards at risk."
+    },
+    {
+     "q": "Which number best predicts upcoming closings?",
+     "opts": [
+      "New leads",
+      "Messages sent",
+      "Site visits by qualified leads",
+      "Proposals sent"
+     ],
+     "correct": 2,
+     "explain": "A qualified client who has seen a project and has a short timeline is the closest thing to a sale."
+    }
+   ],
+   "reflection": "Write your honest pipeline review for this week: how many qualified leads, what stage each is at, and the one action each needs."
   },
   {
    "id": 19,
    "week": 4,
    "title": "Performance standards & self-evaluation",
    "short": "Performance Standards",
-   "stub": true
+   "objectives": [
+    "Know PHC's performance standards and what they measure",
+    "Judge your own performance with data, not feelings",
+    "Choose one improvement to work on for the next 4 weeks"
+   ],
+   "sections": [
+    {
+     "label": "What PHC measures",
+     "heading": "The numbers that define performance",
+     "body": "Performance at PHC is not hours worked, enthusiasm or messages sent. It is results and the quality of your process. Nick reviews these weekly. Review yours daily.",
+     "grid": [
+      [
+       "Leads",
+       "New first contacts this week, with the source"
+      ],
+      [
+       "Viewings",
+       "Qualified leads who completed a site visit"
+      ],
+      [
+       "Closings",
+       "Deposits paid or contracts signed"
+      ],
+      [
+       "Revenue",
+       "Commission confirmed this week"
+      ],
+      [
+       "Pipeline value",
+       "The total value of active qualified leads"
+      ],
+      [
+       "Conversion rate",
+       "Closings divided by qualified leads, over the last 4 weeks"
+      ]
+     ]
+    },
+    {
+     "label": "Quality standards",
+     "heading": "The standard is not the average",
+     "body": "Volume without quality is not PHC. An agent who closes 2 deals from 6 well-handled leads performs better than one who closes 2 from 40 unmanaged contacts. PHC measures results and process.",
+     "rules": [
+      {
+       "title": "Proposal quality",
+       "detail": "Every qualified lead gets a written proposal within 48 hours, with the situation, recommendation, net yield, risks and one next step. No exceptions."
+      },
+      {
+       "title": "Follow-up",
+       "detail": "Every qualified lead gets a useful follow-up within 7 days of the last contact. No lead sits in silence for more than 7 days."
+      },
+      {
+       "title": "Yield accuracy",
+       "detail": "Every yield a client hears is net. Management, vacancy and rental tax come off first. Any gross figure is called gross."
+      },
+      {
+       "title": "Risk disclosure",
+       "detail": "Every investor hears the risks before any recommendation: how fast they could sell, realistic yield, the developer's record and Capital Gains Tax. Named, not hinted."
+      }
+     ]
+    },
+    {
+     "label": "Self-review",
+     "heading": "Honest review, not self-criticism",
+     "body": "Self-review is not about feeling bad. It is about finding the one change that will make the most difference in the next 4 weeks.",
+     "rules": [
+      {
+       "title": "Four questions every Friday",
+       "detail": "How many qualified leads did I move forward? Did every proposal have all five parts? Did any client hear a gross yield without being told it was gross? Did I skip or soften any risk?"
+      },
+      {
+       "title": "One improvement at a time",
+       "detail": "Find the single biggest gap this week. Write it down. Build one habit to fix it. An agent who fixes one real thing a month beats one who tries to fix ten and fixes none."
+      },
+      {
+       "title": "When to ask Nick",
+       "detail": "Ask at once about: an unclear strata title, a foreign quota near its limit, an off-plan project from an unverified developer, a nominee request, or any legal question. Don't guess."
+      }
+     ]
+    }
+   ],
+   "roleplay": {
+    "scenario": "Your own review at the end of the week",
+    "instructions": "Take turns reviewing your weeks.",
+    "turns": [
+     {
+      "client": [],
+      "agent": "This week: ‧‧‧ *four* qualified leads, ‧‧‧ *two* site visits, ‧‧‧ *one* proposal, ‧‧‧ no closings yet. ‧‧‧ The proposal had all *five* parts. ‧‧‧ *Good*."
+     },
+     {
+      "client": [],
+      "agent": "At the first site visit, ‧‧‧ I didn't check the *quota* beforehand. ‧‧‧ I had to look it up on my *phone*. ‧‧‧ Next week, ‧‧‧ I check the quota the *day* before every visit. ↘"
+     },
+     {
+      "client": [],
+      "agent": "*One* lead went *nine* days without hearing from me. ‧‧‧ That breaks the *seven*-day standard. ‧‧‧ I'll set a reminder for every lead ‧‧‧ at day *five*. ↘"
+     }
+    ],
+    "note": "Was the review specific? Did it end with one concrete change?",
+    "debrief": "A review that produces one specific habit is worth ten pep talks. The goal is not to feel better. It is to perform better next week.",
+    "context": "It's Friday. Review your own week out loud, honestly. The goal is one change for next week."
+   },
+   "quiz": [
+    {
+     "q": "PHC judges performance mainly on:",
+     "opts": [
+      "Hours and messages sent",
+      "Enthusiasm",
+      "Results (closings, revenue) and process quality (proposals, yield accuracy, risks)",
+      "Client scores only"
+     ],
+     "correct": 2,
+     "explain": "High volume with a poor process is not the PHC standard."
+    },
+    {
+     "q": "\"Did any client hear a gross yield without being told it was gross?\" is:",
+     "opts": [
+      "Optional",
+      "Only for Japanese and European clients",
+      "A weekly check for every client",
+      "Only for formal reviews"
+     ],
+     "correct": 2,
+     "explain": "An unlabelled gross yield is a misrepresentation. Catch the habit early."
+    },
+    {
+     "q": "The one-improvement rule means:",
+     "opts": [
+      "Fix every gap at once",
+      "Pick the biggest gap and build one habit to fix it",
+      "Only work on what Nick picks",
+      "Stop improving once you close deals"
+     ],
+     "correct": 1,
+     "explain": "One real improvement a month adds up. Ten at once fixes nothing."
+    },
+    {
+     "q": "When do you ask Nick instead of answering yourself?",
+     "opts": [
+      "Price negotiation",
+      "Yield maths",
+      "Strata title doubts, a nearly full quota, nominee requests, unverified off-plan developers, any legal question",
+      "Only before closing"
+     ],
+     "correct": 2,
+     "explain": "Guessing on these puts the client and PHC's reputation at risk."
+    }
+   ],
+   "reflection": "What is the biggest gap in your work this week, and what one habit will you build next week to close it?"
   },
   {
    "id": 20,
    "week": 4,
    "title": "Graduation: the PHC standard review",
    "short": "Graduation",
-   "stub": true
+   "objectives": [
+    "Bring every lesson together in one client case",
+    "Know the PHC standard in five lines",
+    "Know your responsibilities after training"
+   ],
+   "sections": [
+    {
+     "label": "What you've covered",
+     "heading": "Every level. One standard",
+     "body": "You've climbed every level of PHC Agent Training. Before your graduation review with Nick, this last lesson asks you to use everything together, not recall single facts.",
+     "grid": [
+      [
+       "Foundation",
+       "PHC, the market, property law, the projects, client types"
+      ],
+      [
+       "Professional presence",
+       "Calm, your introduction, pace, silence, certainty, saying less"
+      ],
+      [
+       "Tough calls",
+       "Hard decisions, the PHC way"
+      ],
+      [
+       "Client and advisory skills",
+       "Mindset, qualifying, the conversation flow, language, signals"
+      ],
+      [
+       "Advanced advisory",
+       "Yield and costs, Japanese, European and Khmer clients, objections"
+      ],
+      [
+       "Operations and performance",
+       "Channels, site visits, proposals, pipeline, standards"
+      ]
+     ]
+    },
+    {
+     "label": "The PHC standard",
+     "heading": "Non-negotiable, every day",
+     "body": "These principles define a PHC Investment Advisor. Not just in training. Always.",
+     "flow": [
+      {
+       "title": "Clarity",
+       "sub": "Net yield, risks named, no spin"
+      },
+      {
+       "title": "Trust",
+       "sub": "The product you're really selling"
+      },
+      {
+       "title": "Client first",
+       "sub": "The client's profile picks the project"
+      },
+      {
+       "title": "Written follow-up",
+       "sub": "Every meeting, every time"
+      },
+      {
+       "title": "Ask",
+       "sub": "When unsure, ask Nick"
+      }
+     ],
+     "rules": [
+      {
+       "title": "Clarity over persuasion",
+       "detail": "If it can't be explained simply and honestly, don't sell it. Yields are net, risks are named, Capital Gains Tax is disclosed. Always."
+      },
+      {
+       "title": "Trust is the product",
+       "detail": "One lost deal protects ten future relationships. Protect PHC's reputation even when it costs a sale."
+      },
+      {
+       "title": "Client first, project second",
+       "detail": "The client's profile, goal and risk comfort decide the recommendation. Never the commission."
+      },
+      {
+       "title": "Written follow-up, every time",
+       "detail": "A same-day summary after every meeting. A proposal within 48 hours for every qualified client. Every lead followed up within 7 days."
+      },
+      {
+       "title": "Ask about what you don't know",
+       "detail": "Legal questions, strata titles, foreign quotas or a developer's credibility go to Nick at once. Confidence without knowledge is the most dangerous thing in advice."
+      }
+     ]
+    },
+    {
+     "label": "After training",
+     "heading": "The training ends. The standard doesn't",
+     "body": "Graduating means you are ready to work with PHC clients to the PHC standard. The market changes, new projects launch and tax rules evolve. Staying current is now your job.",
+     "rules": [
+      {
+       "title": "Market updates",
+       "detail": "Read Realestate.com.kh (REAKH) news and reports. Know what launched, what finished and what sold. Your knowledge is your credibility."
+      },
+      {
+       "title": "Product knowledge",
+       "detail": "For every new PHC project, know the developer's record, title type, foreign quota, price per sqm, rent estimate and management before you present it."
+      },
+      {
+       "title": "Cultural fluency",
+       "detail": "PHC serves Khmer, Japanese, German, English-speaking and other clients. Keep improving how you communicate with each, not just the language."
+      },
+      {
+       "title": "Nick's door is open",
+       "detail": "A hard objection, a legal question, an unusual request: if you're unsure, ask. That is how the standard stays high."
+      }
+     ]
+    }
+   ],
+   "roleplay": {
+    "scenario": "Your graduation review with Nick: one full client case",
+    "instructions": "One person plays Nick, one plays the agent. Then swap.",
+    "turns": [
+     {
+      "client": [
+       "A 58-year-old Japanese investor contacts PHC. He has 25 million yen, about $165,000, and has never invested outside Japan. He wants guaranteed income. Take me from first contact to written proposal."
+      ],
+      "agent": "First, ‧‧‧ I wouldn't accept the word *guaranteed*. ‧‧‧ I'd acknowledge his *goal*: ‧‧‧ *stable* income. ‧‧‧ Then qualify: ‧‧‧ *timeline*, ‧‧‧ *risk* comfort, ‧‧‧ *family*, ‧‧‧ and how *long* he'll hold.",
+      "who": "Nick"
+     },
+     {
+      "client": [
+       "He says he wants 8%, and other agencies are offering that."
+      ],
+      "agent": "I'd say: ‧‧‧ eight percent is usually *gross*. ‧‧‧ *Net*, ‧‧‧ after management, vacancy and tax, ‧‧‧ it's about *five* to *seven* percent in BKK1. ‧‧‧ I'd rather give you the *accurate* number ‧‧‧ than the *attractive* one.",
+      "who": "Nick"
+     },
+     {
+      "client": [
+       "Good. Which project would you recommend, and why?"
+      ],
+      "agent": "J Tower *2*. ‧‧‧ The developer, Tanichu, is *Japanese*, ‧‧‧ so the trust is *immediate*. ‧‧‧ It's *finished*, ‧‧‧ with a *verified* sale record.",
+      "who": "Nick"
+     },
+     {
+      "client": [],
+      "agent": "If he'd like a *second* option ‧‧‧ in *BKK1*, ‧‧‧ *Le Condé*, ‧‧‧ managed by Hopetree *Japan*. ↘"
+     }
+    ],
+    "note": "Did the agent refuse the guarantee, realign the yield with data, and match the project to the client's profile?",
+    "debrief": "This is the PHC standard in action: no guarantees, honest yield, risks first, a recommendation matched to the client. Not because it's scripted, but because it's right."
+   },
+   "quiz": [
+    {
+     "q": "A client opens with \"I want a guaranteed 8% income.\" The PHC response is:",
+     "opts": [
+      "Confirm 8% is possible in BKK1",
+      "Show projects advertising 8% gross",
+      "Acknowledge the goal, realign to net yield with data, and explain that responsible advisors don't guarantee returns",
+      "Ask Nick what to say"
+     ],
+     "correct": 2,
+     "explain": "Acknowledge the goal, correct the number, explain the principle, show the data."
+    },
+    {
+     "q": "What most separates a PHC Investment Advisor from a typical agent?",
+     "opts": [
+      "Better listings",
+      "Risks before returns, net yield, and projects matched to the client's profile",
+      "The lowest commission",
+      "Speaking many languages"
+     ],
+     "correct": 1,
+     "explain": "The advisory standard is the difference, not the features."
+    },
+    {
+     "q": "You're not sure a project's strata title is confirmed for a foreign buyer. You:",
+     "opts": [
+      "Present it with a small caveat",
+      "Ask the developer and trust their answer",
+      "Ask Nick at once. Never present it to a foreign buyer without a confirmed strata title",
+      "Wait and say nothing"
+     ],
+     "correct": 2,
+     "explain": "Don't guess, and don't rely on a developer's word without documents."
+    },
+    {
+     "q": "Finishing the training means:",
+     "opts": [
+      "You no longer need Nick's input",
+      "You know everything",
+      "You meet the PHC standard, and staying current is now your job",
+      "You can use your own approach now"
+     ],
+     "correct": 2,
+     "explain": "The standard never stops. The market changes, and staying current is ongoing."
+    }
+   ],
+   "reflection": "Write one specific commitment, not a list. One thing you will do in every client conversation from now on. Be precise: not \"I will be more professional\" but \"I will always give net yield and name every cost before any return figure.\""
   },
   {
    "id": 21,
    "week": 5,
    "title": "Leads, content & distribution: how PHC's channels work",
    "short": "Leads & Distribution",
-   "stub": true
+   "objectives": [
+    "Know who receives inbound leads from each language channel",
+    "Understand how PHC's listings are translated and posted to four channels",
+    "Understand why most of PHC's content teaches instead of sells"
+   ],
+   "sections": [
+    {
+     "label": "How listings reach clients",
+     "heading": "One bot, four languages, one tap",
+     "body": "Every PHC listing on Telegram goes through the same process before a client sees it. Nick sends the listing to PHC's Content Bot, which translates it into English, Japanese, Russian and German and sends back one message to review. Approving it posts all four versions at the same moment: the same listing, to the same standard, in every market PHC serves.",
+     "flow": [
+      {
+       "title": "Forward",
+       "sub": "The listing goes to the Content Bot"
+      },
+      {
+       "title": "Translate",
+       "sub": "English, Japanese, Russian, German"
+      },
+      {
+       "title": "Approve",
+       "sub": "One review, posted to every channel"
+      },
+      {
+       "title": "Two buttons",
+       "sub": "Contact Us and More Property on every post"
+      }
+     ]
+    },
+    {
+     "label": "Who gets the lead",
+     "heading": "Contact Us reaches a real person, not a queue",
+     "body": "The Contact Us button on every listing opens a direct Telegram chat with the advisor for that channel's audience. If a lead reaches you this way, you are their first contact. Treat it like a walk-in and use the advisory conversation flow from your first reply.",
+     "grid": [
+      [
+       "English channel",
+       "Contact Us goes to Monika"
+      ],
+      [
+       "Japanese channel",
+       "Contact Us goes to Nick"
+      ],
+      [
+       "Russian channel",
+       "Contact Us goes to Monika"
+      ],
+      [
+       "German channel",
+       "Contact Us goes to Reza"
+      ]
+     ]
+    },
+    {
+     "label": "Why PHC posts more than listings",
+     "heading": "70% education, 30% listings, on purpose",
+     "body": "An audience that only sees listings learns to scroll past them. Most of what a client sees from PHC before they message teaches them something: market data, the buying process, ownership law, honest answers to common worries. It's the same trust-first standard: a client should sense PHC is an advisor before the first conversation.",
+     "box": {
+      "title": "Topics in rotation",
+      "lines": [
+       "Foreign ownership and strata title law",
+       "The buying process and payment plans",
+       "Market data: yields, the US dollar, districts",
+       "Myths and common questions",
+       "How PHC checks a developer"
+      ]
+     }
+    }
+   ],
+   "roleplay": {
+    "scenario": "A message with no context arrives from a Contact Us button",
+    "instructions": "One person plays Nick, one plays the agent. Then swap.",
+    "turns": [
+     {
+      "client": [
+       "You get a Telegram message: \"Hi, is this still available? What's the payment plan?\" No name, no project. What's your first move?"
+      ],
+      "agent": "It came from a *Contact Us* button, ‧‧‧ so they're replying to a *listing* we posted. ‧‧‧ I'd *thank* them, ‧‧‧ and ask *which* project they saw, ‧‧‧ so I answer with the *right* details, ‧‧‧ not a *guess*.",
+      "who": "Nick"
+     },
+     {
+      "client": [
+       "Good. They reply: \"The one with the 24-hour nurse station.\" What now?"
+      ],
+      "agent": "That's *J Tower 3*. ‧‧‧ I'd confirm the *project*, ‧‧‧ then follow the normal *flow*: ‧‧‧ *qualify* first. ‧‧‧ I wouldn't just send the payment plan ‧‧‧ before I know their *timeline* ‧‧‧ and *goal*. ↘",
+      "who": "Nick"
+     }
+    ],
+    "note": "Did the agent work out where the lead came from, ask for context instead of guessing, and go back to the normal qualifying flow?",
+    "debrief": "A Contact Us lead is not a special process. It is a normal enquiry that starts with less context. Find the source, get the missing details, then give the same advisory standard as any client."
+   },
+   "quiz": [
+    {
+     "q": "Who receives Contact Us messages from the German channel?",
+     "opts": [
+      "Whoever is online",
+      "Reza",
+      "Monika",
+      "Nick"
+     ],
+     "correct": 1,
+     "explain": "Contact Us goes by channel, not by who's available: German to Reza, English and Russian to Monika, Japanese to Nick."
+    },
+    {
+     "q": "Why does PHC post mostly educational content?",
+     "opts": [
+      "Telegram shows listings less",
+      "It's faster to make",
+      "It builds trust before a client ever reaches out",
+      "The law requires it"
+     ],
+     "correct": 2,
+     "explain": "A client who has seen honest, useful content arrives expecting an advisor, not a salesperson."
+    },
+    {
+     "q": "A first message has no greeting, no name and no project. Most likely:",
+     "opts": [
+      "Not a serious buyer",
+      "They tapped Contact Us on a listing you haven't seen yet",
+      "Spam",
+      "Ask them to write in English"
+     ],
+     "correct": 1,
+     "explain": "Contact Us opens a new chat with no history. The client saw the listing. You haven't, until you ask."
+    },
+    {
+     "q": "You now know the project and the lead's question. What comes next?",
+     "opts": [
+      "Send the payment plan at once",
+      "Qualify: goal, timeline, budget and risk, as with any client",
+      "Pass them to Nick",
+      "Send every listing you have"
+     ],
+     "correct": 1,
+     "explain": "The channel is new, the standard isn't. Qualify first."
+    }
+   ],
+   "reflection": "A lead messages you through Contact Us with one line and no name. Write your first reply, word for word."
   }
  ]
 };
 function pairsOf(l){ const out=[]; (l.sections||[]).forEach((x,k)=>{ if(x.before&&x.now) out.push({sec:k,moment:x.heading,normal:x.before.text,better:x.now.text,
-  note:(x.rules&&x.rules[0]?x.rules[0].detail:x.body)}); }); return out; }
+  note:x.pairWhy||(x.rules&&x.rules[0]?x.rules[0].detail:x.body)}); }); return out; }
 const LESSONS = TRAINING.lessons.map(l=>Object.assign({sections:[],objectives:[],drill:{script:[],tag:'',note:''},why:'',own:''},l,
   {unit:TRAINING.weeks[l.week], rule:l.decision?'A tough call. What would you do?':(l.objectives||[])[0]||'Coming soon', sub:'', pairs:pairsOf(l)}));
 const SCENARIOS = [];
@@ -2562,7 +5411,7 @@ function lastRating(i){ const r=state.ratings[i]; return r&&r.length?r[r.length-
 /* Home is a learning path: one unit for the lessons, then one unit per scenario category. */
 /* Units in climbing order. Foundation holds the lessons without a unit; other units gather lessons with that
    "unit" and scenarios with that "cat". Each unit is a camp on the mountain. */
-const UNIT_DEF=[{name:'Foundation',color:'green'},{name:'Professional Presence',color:'ruby'},{name:'Tough Calls',color:'plum'},{name:'Client & Advisory Skills',color:'blue'},{name:'Advanced Advisory',color:'purple'},{name:'Performance',color:'teal'},{name:'Operations & Tools',color:'slate'}];
+const UNIT_DEF=[{name:'Foundation',color:'green'},{name:'Professional Presence',color:'ruby'},{name:'Tough Calls',color:'plum'},{name:'Client & Advisory Skills',color:'blue'},{name:'Advanced Advisory',color:'purple'},{name:'Operations & Tools',color:'slate'},{name:'Performance',color:'teal'}];
 const CATS=UNIT_DEF.map(u=>u.name).filter(n=>SCENARIOS.some(s=>s.cat===n));
 const catColor=cat=>(UNIT_DEF.find(u=>u.name===cat)||UNIT_DEF[0]).color;
 const ICO={
@@ -2620,7 +5469,7 @@ function viewJourney(us){
   const ld=LESSONS.filter((_,i)=>state.done[i]).length, sd=SCENARIOS.filter((_,i)=>state.scDone[i]).length;
   return `<aside class="journey home-rail"><p class="eyebrow">Your climb</p><div class="j-rank">${RANKS[c.r]}</div>
     <p class="j-next">${fmtM(c.alt)}${next?` · next: ${RANKS[c.r+1]}`:''}</p>
-    ${profileSVG(c.alt)}${nextItem()?`<button class="solid-btn j-cont" type="button" data-act="nextup">Continue · ${esc(nextItem().title)}</button>`:'<p class="j-next" style="margin-top:8px">More lessons coming soon.</p>'}</aside>`;
+    ${profileSVG(c.alt)}${nextItem()?`<button class="solid-btn j-cont" type="button" data-act="nextup">Continue · ${esc(nextItem().title)}</button>`:'<p class="j-next" style="margin-top:8px">Every level complete.</p>'}</aside>`;
 }
 /* ---------------- THE MOUNTAIN ----------------
    Home is one screen: a mountain seen from afar, the trail switching back and forth up its face.
@@ -3394,6 +6243,15 @@ const AT_ILL={
   'd-nominee':`<path d="M8 122h184"/>${IL.side(56)}<g transform="translate(200 0) scale(-1 1)">${IL.side(56)}</g><path class="f s" d="M84 60h32v40H84z"/><path class="m" d="M90 70h20M90 78h20M90 86h12"/><path d="M78 108q22 10 44 0" stroke-dasharray="3 4"/>`,
   'd-quota':`<path class="f s" d="M30 104a70 70 0 0 1 140 0"/><path class="gf" d="M30 104a70 70 0 0 1 128.6-38.4l-10 6A58 58 0 0 0 42 104z"/><path d="M100 104l40-40"/><circle class="f s" cx="100" cy="104" r="5"/><text x="100" y="124" class="t">68% of 70% foreign quota</text>`,
   'd-guarantee':ilDesk({extra:IL.bubble(100,4,94,'Guarantee 8%?',112)}),
+  'sig-think':ilDesk({eyes:'down',tilt:-6,extra:IL.bubble(108,4,88,'I\'ll think…',118)}),
+  'sig-floor':ilDesk({extra:IL.bubble(104,4,92,'Which floor?',114)+IL.paper(128,97,0)}),
+  'sig-vague':ilDesk({eyes:'side',tilt:7,extra:IL.bubble(112,4,84,'Maybe…',122)}),
+  'eu-life':ilDesk({extra:IL.bubble(92,4,104,'Beautiful lifestyle!',106)}),
+  'eu-math':ilDesk({extra:IL.bubble(100,4,96,'$593 net. See:',110)+`<g transform="translate(132 84)"><path class="f s" d="M0 0h40v24H0z"/><path class="m" d="M5 6h30M5 12h22M5 18h26"/></g>`}),
+  'site-wow':`<path d="M8 122h184"/><path class="f s" d="M118 20h70v84h-70z"/><path d="M153 20v84M118 62h70"/><circle class="gf" cx="170" cy="38" r="7"/>${IL.side(64,4,{arm:`<path d="M66 86q22-8 44-26"/>`})}${IL.bubble(10,2,98,'Amazing views!',50)}`,
+  'site-fact':`<path d="M8 122h184"/><path class="f s" d="M118 20h70v84h-70z"/><path d="M153 20v84M118 62h70"/><circle class="gf" cx="170" cy="38" r="7"/><text x="136" y="96" class="t">S</text><path class="m" d="M136 84v-12M132 76l4-4 4 4"/>${IL.side(64,4,{arm:`<path d="M60 88q12 4 20 0"/><path class="f s" d="M78 80h14v14H78z"/>`})}${IL.bubble(6,2,104,'Floor 17, south',50)}`,
+  'msg-chase':`<rect class="f s" x="66" y="4" width="68" height="122" rx="11"/><path d="M92 12h16"/><path class="f s" d="M74 42h52v20H74z"/><text x="100" y="55.5" class="t" style="font-size:10px">Hi?</text><path class="m" d="M74 74h36M74 82h24"/>`,
+  'msg-value':`<rect class="f s" x="66" y="4" width="68" height="122" rx="11"/><path d="M92 12h16"/><path class="f s" d="M74 34h52v44H74z"/><text x="100" y="46" class="t" style="font-size:9px">Quota 64%</text><rect class="gf" x="80" y="54" width="8" height="18"/><rect class="gf" x="92" y="60" width="8" height="12" opacity=".7"/><rect class="gf" x="104" y="64" width="8" height="8" opacity=".5"/><path class="m" d="M74 90h40M74 98h30"/>`,
 };
 function atSVG(key,label){ let m=String(key).match(/^sla:(\w+):([ab])$/); const body=m?(ILLUS_SLA[m[1]]||{})[m[2]]:AT_ILL[key];
   return body?`<svg class="il" viewBox="0 0 200 130" role="img" aria-label="${esc(label||'')}">${body}</svg>`:''; }
@@ -3404,7 +6262,7 @@ function lessonCards(i){ const l=LESSONS[i], cards=[{type:'intro'}];
   l.sections.forEach((x,k)=>{ cards.push({type:'sec',k}); const pk=l.pairs.findIndex(p=>p.sec===k); if(pk>=0) cards.push({type:'quiz',k:pk});
     (x.rules||[]).forEach((r,j)=>cards.push({type:'rule',k,j}));
     (l.pics||[]).forEach((p,pi)=>{ if(p.after===k) cards.push({type:'pq',k:pi,sel:new Set()}); }); });
-  if(l.roleplay){ cards.push({type:'rp'}); l.roleplay.turns.forEach((tn,j)=>cards.push({type:'say',them:tn.client,text:tn.agent,id:`at${i}-t${j}`,clip:`at${i}-t${j}`,label:l.roleplay.scenario,title:'Your line',rp:j}));
+  if(l.roleplay){ cards.push({type:'rp'}); l.roleplay.turns.forEach((tn,j)=>cards.push({type:'say',them:tn.client,who:tn.who,text:tn.agent,id:`at${i}-t${j}`,clip:`at${i}-t${j}`,label:l.roleplay.scenario,title:'Your line',rp:j}));
     cards.push({type:'debrief'}); }
   (LESSON_QUIZ[i]||[]).forEach((q,k)=>cards.push({type:'q',q,k}));
   if(l.reflection) cards.push({type:'reflect'});
@@ -3516,8 +6374,13 @@ function lessonAct(a,btn){
     timerId=setInterval(()=>{ s--; el.textContent=Math.max(s,0); if(s<=0){ clearInterval(timerId); timerId=null; el.textContent='Time'; el.classList.add('up'); btn.textContent='Start timer'; } },1000); }
 }
 /* Section extras: facts box, table, worked calculation, analogy, warning, and the two ownership diagrams. */
+const rpHow=rp=>{ const w=rp.turns.find(t=>t.client.length); return !w?'Hear the model line, then say it yourself.':`You're the agent. Hear ${w.who||'the client'}, hear the model answer, then say it yourself.`; };
 function atExtras(x){ let h='';
   if(x.analogy) h+=`<div class="at-analogy"><span>Think of it like this</span>${esc(x.analogy)}</div>`;
+  if(x.box) h+=`<div class="card at-box">${x.box.title?`<p class="at-box-t">${esc(x.box.title)}</p>`:''}<ul>${x.box.lines.map(d=>`<li>${esc(d)}</li>`).join('')}</ul></div>`;
+  if(x.flow) h+=`<ol class="at-flow">${x.flow.map(f=>`<li><b>${esc(f.title)}</b><span>${esc(f.sub)}</span></li>`).join('')}</ol>`;
+  if(x.grid) h+=`<div class="at-grid">${x.grid.map(([t,d])=>`<div class="card"><b>${esc(t)}</b><p>${esc(d)}</p></div>`).join('')}</div>`;
+  if(x.bars) h+=`<div class="card at-bars"><p class="at-box-t">${esc(x.bars.title)}</p>${x.bars.bars.map(b=>`<div class="at-bar${b.dim?' dim':''}"><div class="at-bar-l"><span>${esc(b.label)}</span><b>${esc(b.valueLabel)}</b></div><i style="width:${b.pct}%"></i></div>`).join('')}</div>`;
   if(x.data) h+=`<div class="card at-box">${x.dataTitle?`<p class="at-box-t">${esc(x.dataTitle)}</p>`:''}<ul>${x.data.map(d=>`<li>${esc(d)}</li>`).join('')}</ul></div>`;
   if(x.table) h+=`<div class="at-table"><table><thead><tr>${x.table.headers.map(t=>`<th>${esc(t)}</th>`).join('')}</tr></thead><tbody>${x.table.rows.map(r=>`<tr>${r.map(t=>`<td>${esc(t)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
   if(x.calc) h+=`<div class="card at-calc"><p class="at-box-t">${esc(x.calc.title)}</p>${x.calc.rows.map(r=>`<div class="at-calc-r${r.total?' tot':''}"><span>${esc(r.label)}</span><b>${esc(r.value)}</b></div>`).join('')}</div>`;
@@ -3525,10 +6388,10 @@ function atExtras(x){ let h='';
   if(x.warning) h+=`<div class="at-warn"><span class="res-ic">${ICO.warn}</span><p>${esc(x.warning)}</p></div>`;
   return h; }
 function atFloors(){ const fl=['4','3','2','1'];
-  return `<div class="card at-diag"><p class="at-box-t">Which floors can a foreigner own?</p><div class="at-bld"><svg viewBox="0 0 90 150" aria-hidden="true">
+  return `<div class="card at-diag"><p class="at-box-t">Which floors can a foreigner own in their own name?</p><div class="at-bld"><svg viewBox="0 0 90 150" aria-hidden="true">
     ${fl.map((f,k)=>`<rect x="10" y="${6+k*25}" width="70" height="22" rx="3" fill="var(--pri)" opacity=".85"/><text x="45" y="${21+k*25}" text-anchor="middle" font-size="11" font-weight="600" fill="#fff" font-family="Inter,sans-serif">Floor ${f}</text>`).join('')}
     <rect x="10" y="106" width="70" height="26" rx="3" fill="var(--red)"/><text x="45" y="123" text-anchor="middle" font-size="11" font-weight="600" fill="#fff" font-family="Inter,sans-serif">Ground</text><rect x="36" y="132" width="18" height="12" fill="var(--text)" opacity=".6"/></svg>
-    <div class="at-legend"><p><b class="bad">✕ Ground floor</b>Foreigners can never own it.</p><p><b class="ok">✓ 1st floor and up</b>Foreigners can own these.</p></div></div></div>`; }
+    <div class="at-legend"><p><b class="bad">✕ Ground floor</b>Not in a foreigner's own name. Only through a legal route.</p><p><b class="ok">✓ 1st floor and up</b>Foreigners can own these in their own name.</p></div></div></div>`; }
 function atQuota(){ return `<div class="card at-diag"><p class="at-box-t">How much of one building can foreigners own?</p>
   <div class="at-quota"><span class="f">Up to 70%</span><span class="l">At least 30%</span></div><div class="at-quota-cap"><span>Can be foreign-owned</span><span>Stays Cambodian-owned</span></div></div>`; }
 function viewLessonSession(){
@@ -3574,11 +6437,11 @@ function viewLessonSession(){
     ft=cont(); }
   else if(c.type==='rule'){ const x=l.sections[c.k], r=x.rules[c.j];
     body=`<p class="ctx">${esc(x.label)}${x.rules.length>1?` · ${c.j+1} of ${x.rules.length}`:''}</p><h1 class="fx-title">${esc(r.title)}</h1><p class="at-body">${esc(r.detail)}</p>
-      <div class="at-do"><span>Do this</span>${esc(r.action)}</div>`;
+      ${r.action?`<div class="at-do"><span>Do this</span>${esc(r.action)}</div>`:''}`;
     ft=cont(); }
   else if(c.type==='rp'){ const rp=l.roleplay;
     body=`<div class="ls-ico">${ICO.chat}</div><p class="ctx">Practice the conversation</p><h1 class="fx-title">${esc(rp.scenario)}</h1>
-      <p class="at-body">You're the agent. Hear the client, hear the model answer, then say it yourself.</p><p class="hint">With a colleague: ${esc(rp.instructions)}</p>`;
+      <p class="at-body">${esc(rp.context||rpHow(rp))}</p><p class="hint">With a colleague: ${esc(rp.instructions)}</p>`;
     ft=cont('Start'); }
   else if(c.type==='debrief'){ const rp=l.roleplay;
     body=`<p class="ctx">Debrief</p><h1 class="fx-title">${esc(rp.note)}</h1><p class="at-body">${esc(rp.debrief)}</p>`;
@@ -3607,7 +6470,7 @@ function viewLessonSession(){
     ft=cont(); }
   else if(c.type==='say'){ const st=c.step;
     const card=`<div class="say"><button class="spk" type="button" data-act="${st==='review'?'ls-pmodel':'ls-listen'}" aria-label="Listen">${ICO.spk}</button><div class="say-body"><div class="say-text">${parseLine(c.text).map((s,si)=>segHTML(s,'L',si)).join(' ')}</div></div></div>`;
-    body=`${c.moment?`<p class="ctx">${esc(c.moment)}</p>`:`<p class="${c.them?'ctx':'eyebrow'}">${esc(c.label)}</p>`}${(c.them||[]).map(t=>`<div class="at-client"><span class="at-av">C</span><p>${esc(t)}</p></div>`).join('')}<h1 class="fx-title">${c.title}</h1>${card}`;
+    body=`${c.moment?`<p class="ctx">${esc(c.moment)}</p>`:`<p class="${c.them?'ctx':'eyebrow'}">${esc(c.label)}</p>`}${(c.them||[]).map(t=>`<div class="at-client"><span class="at-av" aria-hidden="true">${c.who?esc(c.who[0]):'C'}</span><p>${c.who?`<b class="at-who">${esc(c.who)}</b>`:''}${esc(t)}</p></div>`).join('')}<h1 class="fx-title">${c.title}</h1>${card}`;
     const skip=`<div class="fx-btns"><button class="ghost-btn" type="button" data-act="ls-next">Skip</button></div>`;
     if(st==='listen'){ body+=`<p class="listening">${eq} Listening</p>`; ft=`<div class="fx-btns"><button class="ghost-btn" type="button" data-act="ls-skipaudio">Skip audio</button></div>`; }
     else if(st==='arming'){ body+=`<button class="speak-btn" type="button" disabled>${ICO.mic}Starting microphone…</button>`; ft=skip; }

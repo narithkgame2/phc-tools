@@ -16,7 +16,7 @@ SLA_DIR = os.environ.get("SLA_DIR", os.path.expanduser("~/Desktop/Speak Like A L
 sys.path.insert(0, os.path.join(SLA_DIR, "tools"))
 import make_voice as mv   # Kokoro engine, pauses, loudness and the 150 ms lead-in
 
-YOU, COACH, CLIENT = ("am_michael", 0.92), ("af_heart", 1.0), ("am_fenrir", 1.0)
+YOU, COACH, CLIENT, NICK = ("am_michael", 0.92), ("af_heart", 1.0), ("am_fenrir", 1.0), ("bm_george", 1.0)   # NICK: the manager in review roleplays
 
 # ---- say numbers the way people do: "$1,000" is "one thousand dollars", not "dollar one thousand" ----
 _ONES = "zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen".split()
@@ -39,7 +39,7 @@ def speakable(t):
         v = float(m.group(1).replace(",", "")) * {"K": 1000, "k": 1000, "M": 1000000}.get(m.group(2) or "", 1)
         return (number(f"{v:g}") if v != int(v) else words(v)) + " dollars"
     t = re.sub(r"\$([\d,]*\d(?:\.\d+)?)([KkM])?(?![A-Za-z])", money, t)
-    t = re.sub(r"/sqm\b", " per square meter", t); t = re.sub(r"\bsqm\b", "square meters", t)
+    t = re.sub(r"/sqm\b", " per square meter", t); t = re.sub(r"\bper sqm\b", "per square meter", t); t = re.sub(r"\bsqm\b", "square meters", t)
     t = re.sub(r"(\d+(?:\.\d+)?)\s?%", lambda m: number(m.group(1)) + " percent", t)
     t = re.sub(r"/yr\b", " a year", t)
     t = re.sub(r"\b([1-4])BR\b", lambda m: words(m.group(1)) + "-bedroom", t)
@@ -76,13 +76,15 @@ def jobs():
             if x.get("before") and x.get("now"):
                 add(f"c-lesson{i}-ask" if pk == 0 else f"c-lesson{i}-p{pk}-ask", COACH, dot(x["heading"]) + " Which is the PHC way?")
                 add(f"qz{i}-a", COACH, x["before"]["text"]); add(f"qz{i}-b", COACH, x["now"]["text"])
-                add(f"c-lesson{i}-p{pk}-note", COACH, x["rules"][0]["detail"] if x.get("rules") else plain(x["body"])); pk += 1
+                add(f"c-lesson{i}-p{pk}-note", COACH, x.get("pairWhy") or (x["rules"][0]["detail"] if x.get("rules") else plain(x["body"]))); pk += 1
             for j, r in enumerate(x.get("rules", [])):
-                add(f"c-at{i}-s{k}-r{j}", COACH, f"{dot(r['title'])} {r['detail']} Do this: {r['action']}")
+                add(f"c-at{i}-s{k}-r{j}", COACH, f"{dot(r['title'])} {r['detail']}" + (f" Do this: {r['action']}" if r.get("action") else ""))
         rp = l["roleplay"]
-        add(f"c-at{i}-rp", COACH, dot(rp["scenario"]) + " You're the agent. Hear the client, hear the model answer, then say it yourself.")
+        w = next((t for t in rp["turns"] if t["client"]), None)   # same wording as rpHow() in index.html
+        how = rp.get("context") or ("Hear the model line, then say it yourself." if not w else f"You're the agent. Hear {w.get('who') or 'the client'}, hear the model answer, then say it yourself.")
+        add(f"c-at{i}-rp", COACH, dot(rp["scenario"]) + " " + how)
         for j, tn in enumerate(rp["turns"]):
-            for m, c in enumerate(tn["client"]): add(f"at{i}-t{j}-c{m}", CLIENT, c)
+            for m, c in enumerate(tn["client"]): add(f"at{i}-t{j}-c{m}", NICK if tn.get("who") == "Nick" else CLIENT, c)
             add(f"at{i}-t{j}", YOU, tn["agent"])
         add(f"c-at{i}-db", COACH, dot(rp["note"]) + " " + rp["debrief"])
         for k, q in enumerate(l["quiz"]):
