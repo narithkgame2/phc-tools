@@ -114,6 +114,11 @@ Every tool has an inline password gate (sessionStorage — clears when browser c
 
 > **Note:** `referralPartner`, `partnerPct`, `partnerAmt` (inserted immediately after `commissionTotal`) were added via `migrateDealsSchemaForReferral()` for Partners referral tracking — run once on an existing sheet if missing.
 
+**Partners** (registry of approved referral partners — added with the Partners referral tracking feature, run `initializeAll()` if tab missing)
+`id, createdAt, updatedAt, slug, displayName, ratePct, status, contactName, contactPhone, contactEmail, notes`
+
+> **Note:** A `?ref=` slug only counts as a real, credited partner if it has an `Approved` row here (checked server-side in `PHC_AppsScript.gs`) — an unrecognized or unapproved slug still shows up in alerts so staff aren't blind to it, but is clearly marked unverified rather than silently treated as legitimate. Read/written by Lead Tracker, Client Manager, and Commission Tracker via `?action=getAll&sheet=Partners`. Seed existing partners once with `seedInitialPartners()`.
+
 ---
 
 ## APPS SCRIPT API (PHC_AppsScript.gs)
@@ -128,6 +133,7 @@ GET  ?action=getAll&sheet=Tasks         → [ ...row objects ]
 GET  ?action=getAll&sheet=Leads         → [ ...row objects ]
 GET  ?action=getAll&sheet=Clients       → [ ...row objects ]
 GET  ?action=getAll&sheet=Deals         → [ ...row objects ]
+GET  ?action=getAll&sheet=Partners      → [ ...row objects ]
 
 POST { action: "insert", sheet: "Leads", data: { id, ... } }      → { success: true, id }
 POST { action: "update", sheet: "Clients", id: "...", data: {} }   → { success: true }
@@ -495,7 +501,7 @@ These rules apply to every tool in this repo. Do not override without explicit i
 - **Mobile responsive is non-negotiable** — test every new UI at 390px width before finishing.
 - **Don't change the Apps Script web app URL** — it's baked into every tool. If redeploying, update CLAUDE.md first.
 - **Don't change password values** — only Nick decides if passwords change.
-- **Don't add new tabs to PHC CRM sheet** — the 4-tab schema (Tasks, Leads, Clients, Deals) is fixed. New data types need discussion first.
+- **Don't add new tabs to PHC CRM sheet** — the 5-tab schema (Tasks, Leads, Clients, Deals, Partners) is fixed. New data types need discussion first.
 
 ### Before starting any tool task, confirm:
 1. Which file are we editing? (Get the exact filename from the File Inventory above.)
@@ -535,3 +541,4 @@ Fonts: **DM Sans** (UI) · **DM Serif Display** (hero only) · **DM Mono** (labe
 | 2026-07-17 | Every tool uses the sidebar shell pattern (not topbar-only), colored with the live website's actual dark navy/gold theme, not the lighter `--navy`/`--gold` used in content areas | Unifies the whole suite visually; matches PHC's real brand instead of ad-hoc purple/grey placeholders that had crept into Lead Tracker/Client Manager over time. See DESIGN SYSTEM section above for the full spec. |
 | 2026-07-20 | Payment Reminder Bot is a separate bot (@PHC_ClientCare_Bot) from @PHC_Content_Bot, code added to `PHC_AppsScript.gs` rather than a new file | Nick's explicit request — this bot lives inside private client groups, kept distinct from the public listing-distribution bot. Reuses the CRM script's existing `Clients` tab rather than duplicating client data. |
 | 2026-07-20 | Non-Telegram clients are never auto-sent-to or silently skipped by the Payment Reminder Bot — they're flagged by name in a separate message | Prevents duplicate reminders across platforms (some clients use WhatsApp, not Telegram) while still guaranteeing nobody is missed. |
+| 2026-10-02 | Documented the `Partners` sheet tab (added earlier with the Partners referral tracking feature, commit `894f900`) in the GOOGLE SHEETS DATABASE and APPS SCRIPT API sections, and corrected the "4-tab schema is fixed" guardrail to 5 tabs | Routine audit found `PHC_AppsScript.gs` and three live tools (Lead Tracker, Client Manager, Commission Tracker) already reading/writing a `Partners` tab that CLAUDE.md never mentioned — documentation-only fix, no code changed. |
