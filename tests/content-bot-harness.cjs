@@ -61,6 +61,10 @@ function makeEnv() {
             env.telegramRejected = (env.telegramRejected || 0) + 1;
             return text({ ok: false, error_code: 400, description: 'Bad Request: chat not found' });
           }
+          if ((url.includes('/sendPhoto') || url.includes('/sendVideo') || url.includes('/editMessageCaption')) && p.caption && p.caption.length > 1024) {
+            env.telegramRejected = (env.telegramRejected || 0) + 1;
+            return text({ ok: false, error_code: 400, description: 'Bad Request: MEDIA_CAPTION_TOO_LONG' });
+          }
           return text({ ok: true, result: { message_id: 900 + env.calls.length } });
         }
         if (url.includes('/rest/v1/properties') && url.includes('select=features')) {
@@ -1953,6 +1957,134 @@ test('OWN CHANNEL BOLD: two bold parts on one line are both converted without sh
   const t = 'Hello big world today';
   const out = run(env, `boldEntitiesToUnicode(${JSON.stringify(t)}, ${JSON.stringify([boldAt(t, 'Hello'), boldAt(t, 'world')])})`);
   assert.strictEqual(out, '𝗛𝗲𝗹𝗹𝗼 big 𝘄𝗼𝗿𝗹𝗱 today');
+});
+
+// ====================== Phase 1: 1,024 caption guards & color review cards ======================
+
+test('CAPTION GUARD: truncateCaptionSafe leaves short text untouched', () => {
+  const env = makeEnv();
+  const short = 'A short caption 123';
+  assert.strictEqual(run(env, `truncateCaptionSafe(${JSON.stringify(short)}, 1024)`), short);
+});
+
+test('CAPTION GUARD: long caption with contact tail trims body to <= 1024, keeping contact block and separator', () => {
+  const env = makeEnv();
+  const contact = '――――――――――\n📞 011 666 952\n📱 t.me/PropertyHubCambodia';
+  const longBody = 'A'.repeat(1200);
+  const full = longBody + '\n' + contact;
+  const out = run(env, `truncateCaptionSafe(${JSON.stringify(full)}, 1024)`);
+  assert.ok(out.length <= 1024, 'must not exceed 1024 chars: ' + out.length);
+  assert.ok(out.endsWith(contact), 'must preserve the trailing contact block');
+  assert.ok(out.includes('…\n――――――――――'), 'must include ellipsis before separator');
+});
+
+test('CAPTION GUARD: surrogate pair at boundary is never split', () => {
+  const env = makeEnv();
+  const emoji = '😀'; // 2 UTF-16 code units: \uD83D\uDE00
+  const full = 'A'.repeat(9) + emoji + 'B'.repeat(50);
+  const out = run(env, `truncateCaptionSafe(${JSON.stringify(full)}, 10)`);
+  assert.ok(out.length <= 10, 'must not exceed maxLen: ' + out.length);
+  // Last char before ellipsis must not be a high surrogate
+  const lastCode = out.charCodeAt(out.length - 2);
+  assert.ok(lastCode < 0xD800 || lastCode > 0xDBFF, 'high surrogate must not be dangling');
+});
+
+test('CAPTION GUARD: single photo with long caption >1024 is trimmed and accepted by Telegram', () => {
+  const env = makeEnv();
+  const contact = '――――――――――\n📞 011 666 952\n📱 t.me/PropertyHubCambodia';
+  const longCaption = '#ForSale $100,000\n\n' + 'Luxury details '.repeat(80) + '\n' + contact;
+  assert.ok(longCaption.length > 1024, 'test caption should be >1024: ' + longCaption.length);
+
+  run(env, `sendTelegramPhoto('12345', 'P1', ${JSON.stringify(longCaption)})`);
+  assert.strictEqual(env.telegramRejected || 0, 0, 'Telegram must not reject the photo');
+  const photoCall = env.calls.find((c) => c.url.includes('/sendPhoto'));
+  assert.ok(photoCall, 'sendPhoto must be called');
+  assert.ok(photoCall.opts.payload.caption.length <= 1024, 'caption must be <=1024: ' + photoCall.opts.payload.caption.length);
+  assert.ok(photoCall.opts.payload.caption.endsWith(contact), 'contact footer must be intact');
+});
+
+test('CAPTION GUARD: single video with long caption >1024 is trimmed and accepted by Telegram', () => {
+  const env = makeEnv();
+  const contact = '――――――――――\n📞 011 666 952\n📱 t.me/PropertyHubCambodia';
+  const longCaption = '#ForSale $100,000\n\n' + 'Video unit details '.repeat(70) + '\n' + contact;
+  assert.ok(longCaption.length > 1024, 'test caption should be >1024: ' + longCaption.length);
+
+  run(env, `sendTelegramVideo('12345', 'V1', ${JSON.stringify(longCaption)})`);
+  assert.strictEqual(env.telegramRejected || 0, 0, 'Telegram must not reject the video');
+  const videoCall = env.calls.find((c) => c.url.includes('/sendVideo'));
+  assert.ok(videoCall, 'sendVideo must be called');
+  assert.ok(videoCall.opts.payload.caption.length <= 1024, 'caption must be <=1024: ' + videoCall.opts.payload.caption.length);
+});
+
+test('CAPTION GUARD: multi-photo album with long caption >1024 is NOT trimmed, keeping full text in separate message', () => {
+  const env = makeEnv();
+  const longCaption = '#ForSale $100,000\n\n' + 'Full details '.repeat(90);
+  assert.ok(longCaption.length > 1024, 'test caption should be >1024: ' + longCaption.length);
+
+  run(env, `postGalleryWithButtons('12345', ['P1', 'P2', 'P3'], ${JSON.stringify(longCaption)}, null)`);
+  assert.strictEqual(env.telegramRejected || 0, 0, 'Telegram must not reject');
+  // Album media sent with no caption
+  const mg = env.calls.find((c) => c.url.includes('/sendMediaGroup'));
+  assert.ok(mg, 'sendMediaGroup must be called');
+  // Full text sent via sendMessage
+  const msg = env.calls.find((c) => c.url.includes('/sendMessage'));
+  assert.ok(msg, 'sendMessage must be called');
+  assert.strictEqual(msg.opts.payload.text, longCaption, 'full caption must be preserved untouched');
+});
+
+test('CAPTION GUARD: finishReviewMessage trims photo caption edits exceeding 1024', () => {
+  const env = makeEnv();
+  const longText = 'A'.repeat(1020) + '\n\n✅ POSTED to EN + JP + RU + DE';
+  run(env, `finishReviewMessage('12345', 101, ${JSON.stringify(longText)}, true)`);
+  assert.strictEqual(env.telegramRejected || 0, 0, 'Telegram must not reject caption edit');
+  const edit = env.calls.find((c) => c.url.includes('/editMessageCaption'));
+  assert.ok(edit, 'editMessageCaption must be called');
+  assert.ok(edit.opts.payload.caption.length <= 1024, 'edited caption must be <=1024: ' + edit.opts.payload.caption.length);
+});
+
+test('REVIEW CARDS: category pills and media counts are assigned correctly', () => {
+  const env = makeEnv();
+  assert.strictEqual(run(env, `getListingCategoryPill('#ForSale $35,000 (Urgent)')`), '🔴 [URGENT RESALE]');
+  assert.strictEqual(run(env, `getListingCategoryPill('Time Square 8\\n#urgent')`), '🔴 [URGENT RESALE]');
+  assert.strictEqual(run(env, `getListingCategoryPill('#ForRent $650/month')`), '🟢 [FOR RENT]');
+  assert.strictEqual(run(env, `getListingCategoryPill('[For Rent] 1BR condo')`), '🟢 [FOR RENT]');
+  assert.strictEqual(run(env, `getListingCategoryPill('#NewProject Time Square 9')`), '🟣 [NEW PROJECT]');
+  assert.strictEqual(run(env, `getListingCategoryPill('#ForSale $120,000')`), '🔵 [FOR SALE]');
+  assert.strictEqual(run(env, `getListingCategoryPill('Needs urgent repair')`), '🔵 [FOR SALE]');
+
+  assert.strictEqual(run(env, `getMediaPill(['P1'])`), '📸 1 photo');
+  assert.strictEqual(run(env, `getMediaPill(['P1', 'P2', 'P3'])`), '📸 3 photos');
+  assert.strictEqual(run(env, `getMediaPill(['v:vid1'])`), '📹 1 video');
+  assert.strictEqual(run(env, `getMediaPill([])`), '');
+});
+
+test('REVIEW CARDS: sendCombinedReviewMessage builds color card and updated action buttons', () => {
+  const env = makeEnv();
+  const headers = ['id', 'createdAt', 'language', 'content', 'status', 'reviewMsgId', 'postedMsgId', 'postedAt', 'photoFileId', 'entities'];
+  const urgentListing = '#ForSale $45,000 (Urgent)\n\nResidence L\n📍 Toul Tompoung';
+  env.sheetData = [
+    headers,
+    ['SRC1-EN', new Date().toISOString(), 'EN', urgentListing, 'Pending Review', '', '', '', '["P1"]', JSON.stringify([{ type: 'bold', offset: 0, length: 8 }])],
+    ['SRC1-JP', new Date().toISOString(), 'JP', '[JP] ' + urgentListing, 'Pending Review', '', '', '', '["P1"]', ''],
+    ['SRC1-RU', new Date().toISOString(), 'RU', '[RU] ' + urgentListing, 'Pending Review', '', '', '', '["P1"]', ''],
+    ['SRC1-DE', new Date().toISOString(), 'DE', '[DE] ' + urgentListing, 'Pending Review', '', '', '', '["P1"]', ''],
+  ];
+
+  run(env, `sendCombinedReviewMessage(getQueueSheet(), ${JSON.stringify(headers)}, 'SRC1', ['P1'])`);
+  const photoCall = env.calls.find((c) => c.url.includes('/sendPhoto'));
+  assert.ok(photoCall, 'sendPhoto review card must be sent');
+  const caption = photoCall.opts.payload.caption;
+  assert.ok(caption.startsWith('🔴 [URGENT RESALE] · 📸 1 photo · New listing ready'), 'review caption header: ' + caption.slice(0, 70));
+  const markup = JSON.parse(photoCall.opts.payload.reply_markup);
+  assert.deepStrictEqual(markup.inline_keyboard[0], [
+    { text: '🟢 Approve All (4 Ch)', callback_data: 'approveAll_SRC1' },
+    { text: '🔴 Reject All', callback_data: 'rejectAll_SRC1' },
+  ]);
+
+  // Check shifted entities offset
+  const ents = JSON.parse(photoCall.opts.payload.caption_entities);
+  const prefix = '🔴 [URGENT RESALE] · 📸 1 photo · New listing ready — approving posts to EN + JP + RU + DE\n\n';
+  assert.strictEqual(ents[0].offset, prefix.length, 'entity offset must be shifted by exact prefix length');
 });
 
 console.log(failures ? `\n${failures} FAILED` : '\nALL PASSED');

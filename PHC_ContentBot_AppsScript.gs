@@ -1215,7 +1215,7 @@ function handleGroupCallback(cb, action, sourceId) {
     return;
   }
 
-  const hasPhoto = !!(cb.message.photo && cb.message.photo.length);
+  const hasPhoto = !!((cb.message.photo && cb.message.photo.length) || cb.message.video || cb.message.caption !== undefined);
   const originalText = hasPhoto ? cb.message.caption : cb.message.text;
 
   if (action === 'approveAll') {
@@ -1571,16 +1571,20 @@ function sendCombinedReviewMessage(sheet, headers, sourceId, photoFileIds) {
   }
   if (!matchingRows.length) return;
 
+  // Dynamic category pill and media pill with high-contrast review header.
   // Prefix pushes enContent's start further into the string — any entities
   // (Premium emoji) must shift by the prefix's length or they'll point at
   // the wrong characters once attached to this longer message.
-  const prefix = '📝 New listing ready — approving posts to EN + JP + RU + DE\n\n';
+  const categoryPill = getListingCategoryPill(enContent);
+  const mediaPill = getMediaPill(photoFileIds);
+  const pillHeader = [categoryPill, mediaPill].filter(Boolean).join(' · ');
+  const prefix = (pillHeader ? pillHeader + ' · ' : '') + 'New listing ready — approving posts to EN + JP + RU + DE\n\n';
   const reviewText = prefix + enContent;
   const shiftedEntities = enEntities ? enEntities.map(e => Object.assign({}, e, { offset: e.offset + prefix.length })) : null;
   const keyboard = {
     inline_keyboard: [[
-      { text: '✅ Approve All', callback_data: 'approveAll_' + sourceId },
-      { text: '❌ Reject All', callback_data: 'rejectAll_' + sourceId },
+      { text: '🟢 Approve All (4 Ch)', callback_data: 'approveAll_' + sourceId },
+      { text: '🔴 Reject All', callback_data: 'rejectAll_' + sourceId },
     ]],
   };
 
@@ -1607,12 +1611,15 @@ function sendRowForReview(sheet, headers, rowNum) {
   const language = row[langIdx] || 'TEST';
   const content = row[contentIdx];
   const photoIds = parsePhotoIds(photoIdx > -1 ? row[photoIdx] : '');
+  const categoryPill = getListingCategoryPill(content);
+  const mediaPill = getMediaPill(photoIds);
+  const pillHeader = [categoryPill, mediaPill].filter(Boolean).join(' · ');
 
-  const reviewText = '📝 New content ready — ' + language + (photoIds.length > 1 ? ' (' + mediaCountText(photoIds) + ', showing 1st)' : '') + '\n\n' + content;
+  const reviewText = (pillHeader ? pillHeader + ' · ' : '') + 'New content ready — ' + language + (photoIds.length > 1 ? ' (' + mediaCountText(photoIds) + ', showing 1st)' : '') + '\n\n' + content;
   const keyboard = {
     inline_keyboard: [[
-      { text: '✅ Approve', callback_data: 'approve_' + id },
-      { text: '❌ Reject', callback_data: 'reject_' + id },
+      { text: '🟢 Approve', callback_data: 'approve_' + id },
+      { text: '🔴 Reject', callback_data: 'reject_' + id },
     ]],
   };
 
@@ -1669,12 +1676,108 @@ function sendTelegramMessage(chatId, text, replyMarkup, entities) {
   return data.result;
 }
 
+// ── Listing category & media badge helpers ──────────────────────
+
+function getListingCategoryPill(content) {
+  if (!content) return '🔵 [FOR SALE]';
+  const text = String(content);
+  // Urgent resale check (match (Urgent), (緊急), (Срочно), (Dringend), #urgent, #urgentresale)
+  // Do NOT match loose word "urgent" in regular sentences (e.g. "urgent repairs needed")
+  if (/\(Urgent\)|\(緊急\)|\(Срочно\)|\(Dringend\)/i.test(text) || /(?:^|\s)#urgent(?:resale)?\b/i.test(text)) {
+    return '🔴 [URGENT RESALE]';
+  }
+  // For rent check
+  if (/(?:^|\s)#forrent\b/i.test(text) || /\[\s*for\s+rent\s*\]/i.test(text)) {
+    return '🟢 [FOR RENT]';
+  }
+  // New project check
+  if (/(?:^|\s)#new(?:project|launch)\b/i.test(text) || /\[\s*new\s+project\s*\]/i.test(text)) {
+    return '🟣 [NEW PROJECT]';
+  }
+  return '🔵 [FOR SALE]';
+}
+
+function getMediaPill(photoFileIds) {
+  if (!photoFileIds || !photoFileIds.length) return '';
+  const text = mediaCountText(photoFileIds);
+  const hasVideo = photoFileIds.some(isVideoId);
+  const hasPhoto = photoFileIds.some(function (id) { return !isVideoId(id); });
+  const icon = (hasVideo && hasPhoto) ? '📸📹' : (hasVideo ? '📹' : '📸');
+  return icon + ' ' + text;
+}
+
+// ── Telegram caption safety & truncation helpers ────────────────
+// Telegram /sendPhoto, /sendVideo, and /editMessageCaption strictly reject
+// captions exceeding 1,024 UTF-16 code units (MEDIA_CAPTION_TOO_LONG).
+// If a listing exceeds 1,024 chars, truncateCaptionSafe preserves the
+// trailing contact block (after ――――――――――) and trims the listing body
+// safely on whitespace/newline, avoiding broken surrogate pairs or emojis.
+function truncateCaptionSafe(text, maxLen) {
+  maxLen = maxLen || 1024;
+  if (!text || text.length <= maxLen) return text;
+
+  const sep = '――――――――――';
+  const sepIdx = text.lastIndexOf(sep);
+
+  if (sepIdx > 0) {
+    const tail = text.slice(sepIdx);
+    const connector = '\n…\n';
+    if (tail.length < maxLen - 20) {
+      const body = text.slice(0, sepIdx);
+      const budget = maxLen - tail.length - connector.length;
+      let cut = Math.min(budget, body.length);
+      const slice = body.slice(0, cut);
+      const lastBreak = Math.max(slice.lastIndexOf('\n'), slice.lastIndexOf(' '));
+      if (lastBreak > budget * 0.6) {
+        cut = lastBreak;
+      }
+      // Never split a UTF-16 surrogate pair
+      if (body.charCodeAt(cut - 1) >= 0xD800 && body.charCodeAt(cut - 1) <= 0xDBFF) {
+        cut--;
+      }
+      const trimmedBody = body.slice(0, cut).trimEnd();
+      const res = trimmedBody + connector + tail;
+      if (res.length <= maxLen) {
+        Logger.log('truncateCaptionSafe: caption trimmed from ' + text.length + ' to ' + res.length + ' chars');
+        return res;
+      }
+    }
+  }
+
+  const connector = '…';
+  const budget = maxLen - connector.length;
+  let cut = Math.min(budget, text.length);
+  const slice = text.slice(0, cut);
+  const lastBreak = Math.max(slice.lastIndexOf('\n'), slice.lastIndexOf(' '));
+  if (lastBreak > budget * 0.6) {
+    cut = lastBreak;
+  }
+  // Never split a UTF-16 surrogate pair
+  if (text.charCodeAt(cut - 1) >= 0xD800 && text.charCodeAt(cut - 1) <= 0xDBFF) {
+    cut--;
+  }
+  const res = text.slice(0, cut).trimEnd() + connector;
+  Logger.log('truncateCaptionSafe: caption trimmed from ' + text.length + ' to ' + res.length + ' chars');
+  return res;
+}
+
+function filterEntitiesSafe(entities, maxLen) {
+  if (!entities || !Array.isArray(entities)) return entities;
+  return entities.filter(function (e) {
+    return e && typeof e.offset === 'number' && typeof e.length === 'number' && (e.offset + e.length) <= maxLen;
+  });
+}
+
 function sendTelegramPhoto(chatId, fileId, caption, replyMarkup, entities) {
   const token = PropertiesService.getScriptProperties().getProperty('BOT_TOKEN');
-  const payload = { chat_id: chatId, photo: fileId, caption: caption };
+  const safeCaption = truncateCaptionSafe(caption, 1024);
+  const safeEntities = (entities && safeCaption && safeCaption.length < (caption || '').length)
+    ? filterEntitiesSafe(entities, safeCaption.length)
+    : entities;
+  const payload = { chat_id: chatId, photo: fileId, caption: safeCaption };
   if (replyMarkup) payload.reply_markup = JSON.stringify(replyMarkup);
-  if (entities) payload.caption_entities = JSON.stringify(entities);
-  if (entities) Logger.log('sendTelegramPhoto: sending caption_entities=' + payload.caption_entities); // TEMP diagnostic
+  if (safeEntities) payload.caption_entities = JSON.stringify(safeEntities);
+  if (safeEntities) Logger.log('sendTelegramPhoto: sending caption_entities=' + payload.caption_entities); // TEMP diagnostic
 
   const resp = UrlFetchApp.fetch('https://api.telegram.org/bot' + token + '/sendPhoto', {
     method: 'post',
@@ -1684,7 +1787,7 @@ function sendTelegramPhoto(chatId, fileId, caption, replyMarkup, entities) {
   });
   const data = JSON.parse(resp.getContentText());
   if (!data.ok) Logger.log('sendPhoto failed: ' + resp.getContentText());
-  else if (entities) Logger.log('sendTelegramPhoto: response entities=' + JSON.stringify(data.result && data.result.caption_entities)); // TEMP diagnostic — confirms what Telegram actually stored
+  else if (safeEntities) Logger.log('sendTelegramPhoto: response entities=' + JSON.stringify(data.result && data.result.caption_entities)); // TEMP diagnostic — confirms what Telegram actually stored
   return data.result;
 }
 
@@ -1802,9 +1905,13 @@ function sendMedia(chatId, id, caption, replyMarkup, entities) {
 
 function sendTelegramVideo(chatId, fileId, caption, replyMarkup, entities) {
   const token = PropertiesService.getScriptProperties().getProperty('BOT_TOKEN');
-  const payload = { chat_id: chatId, video: fileId, caption: caption, supports_streaming: true };
+  const safeCaption = truncateCaptionSafe(caption, 1024);
+  const safeEntities = (entities && safeCaption && safeCaption.length < (caption || '').length)
+    ? filterEntitiesSafe(entities, safeCaption.length)
+    : entities;
+  const payload = { chat_id: chatId, video: fileId, caption: safeCaption, supports_streaming: true };
   if (replyMarkup) payload.reply_markup = JSON.stringify(replyMarkup);
-  if (entities) payload.caption_entities = JSON.stringify(entities);
+  if (safeEntities) payload.caption_entities = JSON.stringify(safeEntities);
   const resp = UrlFetchApp.fetch('https://api.telegram.org/bot' + token + '/sendVideo', {
     method: 'post',
     contentType: 'application/x-www-form-urlencoded',
@@ -1821,11 +1928,12 @@ function finishReviewMessage(chatId, messageId, newText, hasPhoto) {
   const token = PropertiesService.getScriptProperties().getProperty('BOT_TOKEN');
   const url = 'https://api.telegram.org/bot' + token + '/' + (hasPhoto ? 'editMessageCaption' : 'editMessageText');
   const payload = {
-    chat_id: chatId,
-    message_id: messageId,
+    chat_id: String(chatId),
+    message_id: String(messageId),
     reply_markup: JSON.stringify({ inline_keyboard: [] }),
   };
-  payload[hasPhoto ? 'caption' : 'text'] = newText;
+  const safeText = hasPhoto ? truncateCaptionSafe(newText, 1024) : newText;
+  payload[hasPhoto ? 'caption' : 'text'] = safeText;
 
   UrlFetchApp.fetch(url, {
     method: 'post',
