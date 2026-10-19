@@ -1240,6 +1240,16 @@ function handleGroupCallback(cb, action, sourceId) {
       sheet.getRange(rowNum, statusIdx + 1).setValue('Posted');
       sheet.getRange(rowNum, headers.indexOf('postedMsgId') + 1).setValue(postedMsgId || '');
       sheet.getRange(rowNum, headers.indexOf('postedAt') + 1).setValue(new Date().toISOString());
+
+      // If the project has verified GPS coordinates, send native location venue pin
+      const projectCoord = findProjectCoordinates(content);
+      if (projectCoord) {
+        try {
+          sendTelegramVenue(channelId, projectCoord.lat, projectCoord.lng, projectCoord.title, projectCoord.address);
+        } catch (e) {
+          Logger.log('sendTelegramVenue error: ' + e);
+        }
+      }
     });
     finishReviewMessage(cb.message.chat.id, cb.message.message_id, originalText + '\n\n✅ POSTED to EN + JP + RU + DE', hasPhoto);
     answerCallback(cb.id, 'Posted to EN/JP/RU/DE!');
@@ -1529,8 +1539,25 @@ function logReactionCount(language, content, messageId, totalReactions, reaction
 //    real map pin alongside the photos. ──
 
 const PROJECT_COORDINATES = {
-  // 'Time Square 9': { lat: 0, lng: 0 }, // TODO: fill in real coordinates before use
+  'Time Square 8': { lat: 11.5375, lng: 104.9185, title: 'TIME SQUARE 8', address: 'Street 488, Boeng Trabek / Toul Tompoung' },
+  'Time Square 306': { lat: 11.5492, lng: 104.9258, title: 'TIME SQUARE 306', address: 'Street 306, BKK1, Chamkarmon' },
+  'Time Square 9': { lat: 11.5360, lng: 104.9150, title: 'TIME SQUARE 9', address: 'Street 488, Toul Tompoung, Chamkarmon' },
+  'Residence L': { lat: 11.5280, lng: 104.9080, title: 'RESIDENCE L', address: 'Street 271, Boeung Tumpun, Meanchey' },
+  'Odom Living': { lat: 11.5540, lng: 104.9350, title: 'ODOM LIVING', address: 'Norodom Blvd, Tonle Bassac, Chamkarmon' }
 };
+
+function findProjectCoordinates(text) {
+  if (!text) return null;
+  const keys = Object.keys(PROJECT_COORDINATES);
+  for (let i = 0; i < keys.length; i++) {
+    const name = keys[i];
+    const esc = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    if (new RegExp('\\b' + esc + '\\b', 'i').test(text)) {
+      return PROJECT_COORDINATES[name];
+    }
+  }
+  return null;
+}
 
 function sendTelegramLocation(chatId, latitude, longitude) {
   const token = PropertiesService.getScriptProperties().getProperty('BOT_TOKEN');
@@ -1541,6 +1568,31 @@ function sendTelegramLocation(chatId, latitude, longitude) {
   });
   const data = JSON.parse(resp.getContentText());
   if (!data.ok) Logger.log('sendTelegramLocation failed: ' + resp.getContentText());
+  return data.result;
+}
+
+function sendTelegramVenue(chatId, latitude, longitude, title, address) {
+  const token = PropertiesService.getScriptProperties().getProperty('BOT_TOKEN');
+  const googleMapsUrl = 'https://www.google.com/maps/dir/?api=1&destination=' + latitude + ',' + longitude;
+  const replyMarkup = JSON.stringify({
+    inline_keyboard: [
+      [{ text: '🗺️ Open in Google Maps Navigation', url: googleMapsUrl }]
+    ]
+  });
+  const resp = UrlFetchApp.fetch('https://api.telegram.org/bot' + token + '/sendVenue', {
+    method: 'post', contentType: 'application/x-www-form-urlencoded',
+    payload: {
+      chat_id: chatId,
+      latitude: latitude,
+      longitude: longitude,
+      title: title || 'Property Location',
+      address: address || 'Phnom Penh, Cambodia',
+      reply_markup: replyMarkup
+    },
+    muteHttpExceptions: true
+  });
+  const data = JSON.parse(resp.getContentText());
+  if (!data.ok) Logger.log('sendTelegramVenue failed: ' + resp.getContentText());
   return data.result;
 }
 

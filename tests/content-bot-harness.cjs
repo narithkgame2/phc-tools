@@ -2087,5 +2087,50 @@ test('REVIEW CARDS: sendCombinedReviewMessage builds color card and updated acti
   assert.strictEqual(ents[0].offset, prefix.length, 'entity offset must be shifted by exact prefix length');
 });
 
+test('COORDINATES & VENUE: findProjectCoordinates matches known Phnom Penh projects', () => {
+  const env = makeEnv();
+  const ts8 = run(env, `JSON.stringify(findProjectCoordinates('Great deal in Time Square 8 on 22nd floor'))`);
+  assert.strictEqual(JSON.parse(ts8).title, 'TIME SQUARE 8');
+  assert.strictEqual(JSON.parse(ts8).lat, 11.5375);
+
+  const resL = run(env, `JSON.stringify(findProjectCoordinates('1BR in Residence L Boeung Tumpun'))`);
+  assert.strictEqual(JSON.parse(resL).title, 'RESIDENCE L');
+
+  const ts306 = run(env, `JSON.stringify(findProjectCoordinates('Luxury unit in Time Square 306 BKK1'))`);
+  assert.strictEqual(JSON.parse(ts306).title, 'TIME SQUARE 306');
+
+  const unknown = run(env, `findProjectCoordinates('Generic villa in Tuol Kork')`);
+  assert.strictEqual(unknown, null);
+});
+
+test('COORDINATES & VENUE: approving a project post sends sendVenue with Google Maps navigation', () => {
+  const env = makeEnv();
+  const headers = ['id', 'createdAt', 'language', 'content', 'status', 'reviewMsgId', 'postedMsgId', 'postedAt', 'photoFileId', 'entities'];
+  const listing = '#ForSale $99,000\n\nTime Square 8 | 2BR\n📍 Boeng Trabek';
+  env.sheetData = [
+    headers,
+    ['SRC2-EN', new Date().toISOString(), 'EN', listing, 'Pending Review', '', '', '', '["P1"]', ''],
+    ['SRC2-JP', new Date().toISOString(), 'JP', '[JP] ' + listing, 'Pending Review', '', '', '', '["P1"]', ''],
+    ['SRC2-RU', new Date().toISOString(), 'RU', '[RU] ' + listing, 'Pending Review', '', '', '', '["P1"]', ''],
+    ['SRC2-DE', new Date().toISOString(), 'DE', '[DE] ' + listing, 'Pending Review', '', '', '', '["P1"]', ''],
+  ];
+
+  const cb = {
+    id: 'cb1',
+    data: 'approveAll_SRC2',
+    message: { chat: { id: 353195979 }, message_id: 100, photo: [{ file_id: 'P1' }], caption: listing }
+  };
+  run(env, `handleGroupCallback(${JSON.stringify(cb)}, 'approveAll', 'SRC2')`);
+
+  const venueCalls = env.calls.filter((c) => c.url.includes('/sendVenue'));
+  assert.strictEqual(venueCalls.length, 4, 'must send venue pin to all 4 language channels');
+  const enVenue = venueCalls[0].opts.payload;
+  assert.strictEqual(enVenue.title, 'TIME SQUARE 8');
+  assert.strictEqual(enVenue.latitude, 11.5375);
+  const markup = JSON.parse(enVenue.reply_markup);
+  assert.ok(markup.inline_keyboard[0][0].url.includes('google.com/maps'));
+});
+
 console.log(failures ? `\n${failures} FAILED` : '\nALL PASSED');
 process.exit(failures ? 1 : 0);
+
