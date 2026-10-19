@@ -223,3 +223,83 @@ function getStagingBotUpdates() {
   Logger.log(resp.getContentText());
   return JSON.parse(resp.getContentText());
 }
+
+// ── 7. VERIFIED GPS COORDINATES & GOOGLE MAPS PINS ──────────────
+const PROJECT_COORDINATES = {
+  'Time Square 8': { lat: 11.54345, lng: 104.91797 },
+  'Time Square 306': { lat: 11.55010, lng: 104.92240 },
+  'Time Square 9': { lat: 11.54120, lng: 104.91680 },
+  'Residence L': { lat: 11.53200, lng: 104.91200 },
+  'Odom Living': { lat: 11.55400, lng: 104.92800 },
+};
+
+function findProjectCoordinates(text) {
+  if (!text) return null;
+  for (const name of Object.keys(PROJECT_COORDINATES)) {
+    const rx = new RegExp(name.replace(/\s+/g, '\\s*'), 'i');
+    if (rx.test(text)) return { name: name, coords: PROJECT_COORDINATES[name] };
+  }
+  return null;
+}
+
+// ── 8. THE TRUST ENGINE: #audit (DUE DILIGENCE AUDIT) ─────────────
+function sendTestAuditCardToNick() {
+  const photoUrl = 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80';
+  const prefix = '🛡️ [PHC DUE DILIGENCE AUDIT] · Building Report\n\n';
+  const content = 
+    '#Audit TIME SQUARE 8\n' +
+    '📍 Boeng Trabek / Toul Tompoung, Chamkarmon\n\n' +
+    '――――――――――\n\n' +
+    '🏗️ DEVELOPER TRACK RECORD\n' +
+    '✅ Megakim World Corp (Taiwanese-backed)\n' +
+    '✅ Past towers 1-7: 100% completed & handed over\n\n' +
+    '📜 LEGAL TITLE & OWNERSHIP\n' +
+    '✅ Foreign Quota ownership (Strata Hard Title)\n' +
+    '✅ Master land title verified with Cadastral Office\n\n' +
+    '📊 INVESTMENT METRICS\n' +
+    '✅ High rental demand zone near Russian Market\n' +
+    '✅ Below developer launch price\n\n' +
+    '――――――――――\n' +
+    '⚖️ PHC AUDIT VERDICT: APPROVED (High Safety Tier)\n' +
+    '📱 t.me/PropertyHubCambodia';
+
+  const fullCaption = truncateCaptionSafe(prefix + content, 1024);
+
+  const keyboard = {
+    inline_keyboard: [[
+      { text: '🟢 Approve Audit Post', callback_data: 'test_approve_audit' },
+      { text: '🔴 Reject', callback_data: 'test_reject_audit' },
+    ]],
+  };
+
+  return sendTelegramPhotoStaging(STAGING_REVIEWER_CHAT_ID, photoUrl, fullCaption, keyboard);
+}
+
+// ── 9. THE TRUST ENGINE: #leased (VERIFIED TRANSACTION PROOF) ────
+function sendTestLeasedProofToNick() {
+  const photoUrl = 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80';
+  const prefix = '🏷️ [VERIFIED TRANSACTION PROOF] · Market Proof\n\n';
+  const content = 
+    '#Leased TIME SQUARE 306 | 1BR CONDO\n' +
+    '📍 BKK1, Phnom Penh\n\n' +
+    '――――――――――\n\n' +
+    '⚡ SPEED TO LEASE: 6 Days on Market\n' +
+    '💰 RENT ACHIEVED: $650/month (Annual Contract)\n' +
+    '📈 ACHIEVED YIELD: 8.1% Gross Yield\n' +
+    '🤝 TENANT PROFILE: Expat Corporate Professional\n\n' +
+    '――――――――――\n' +
+    'Verified by Property Hub Cambodia\n' +
+    '📱 t.me/PropertyHubCambodia';
+
+  const fullCaption = truncateCaptionSafe(prefix + content, 1024);
+
+  const keyboard = {
+    inline_keyboard: [[
+      { text: '🟢 Approve Proof Post', callback_data: 'test_approve_leased' },
+      { text: '🔴 Reject', callback_data: 'test_reject_leased' },
+    ]],
+  };
+
+  return sendTelegramPhotoStaging(STAGING_REVIEWER_CHAT_ID, photoUrl, fullCaption, keyboard);
+}
+
