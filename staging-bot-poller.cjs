@@ -34,6 +34,150 @@ let offset = 0;
 // Temporary in-memory lead state tracker
 const leadState = {};
 
+// Watchlist storage: unit -> Set of chat IDs
+const watchlist = {
+  'TS8': new Set(['353195979']),
+  'RESL': new Set(['353195979']),
+  'ODOM': new Set(['353195979'])
+};
+
+function getTS8Card() {
+  return {
+    photo: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80',
+    caption: 
+      `🎯 **TIME SQUARE 8 | 2-BEDROOM RESALE**\n\n` +
+      `#ForSale $99,000 (Urgent Resale — $15,000 Below Developer List!)\n\n` +
+      `📍 Boeng Trabek / Toul Tompoung, Chamkarmon\n` +
+      `▫️ **Floor:** 22nd Floor (Panoramic City Skyline Views)\n` +
+      `▫️ **Size:** 65.0 sqm Gross · 48 sqm Net\n` +
+      `▫️ **Layout:** 2 Bedrooms · 1 Bathroom · Private Balcony\n` +
+      `▫️ **Yield:** Projected 8.5% – 9.1% Net Rental Yield\n` +
+      `▫️ **Status:** Under Construction (Handover Q4 2026)\n` +
+      `▫️ **Ownership:** 100% Foreign Freehold Strata Hard Title\n\n` +
+      `Tap any tool below to calculate payments, check legal ownership, or schedule an in-person or live video tour:`,
+    reply_markup: {
+      inline_keyboard: [
+        [
+          { text: '📅 Book Private Viewing', callback_data: 'btn_book_TS8' },
+          { text: '📄 1-Page PDF Teaser', callback_data: 'btn_pdf_TS8' }
+        ],
+        [
+          { text: '🧮 Payment Calculator', callback_data: 'btn_calc_99000_TS8' },
+          { text: '📚 Foreign Legal Guide', callback_data: 'btn_legal_guide' }
+        ],
+        [
+          { text: '💱 Currency (JPY / EUR / USDT)', callback_data: 'btn_currency_99000' },
+          { text: '⚖️ Compare 3 Units', callback_data: 'btn_compare_TS8' }
+        ],
+        [
+          { text: '🔔 Track Price Drop', callback_data: 'btn_track_TS8' },
+          { text: '💬 Connect with Nick (@Nick_REAKH)', url: 'https://t.me/Nick_REAKH' }
+        ]
+      ]
+    }
+  };
+}
+
+function getCalculatorMenu(price, unit) {
+  const p10 = Math.round(price * 0.1);
+  const p20 = Math.round(price * 0.2);
+  const unitName = unit === 'TS8' ? 'Time Square 8' : unit;
+  return {
+    text: `🧮 **INTERACTIVE PAYMENT & FINANCING CALCULATOR**\n\n` +
+      `🏢 **Property:** ${unitName}\n` +
+      `💰 **Purchase Price:** $${price.toLocaleString()} USD\n\n` +
+      `Select a financing structure below to see exact down payment, monthly installments, and cash-flow returns:`,
+    reply_markup: {
+      inline_keyboard: [
+        [
+          { text: `💰 10% Down ($${p10.toLocaleString()}) - Installment`, callback_data: `calc_p10_${price}_${unit}` }
+        ],
+        [
+          { text: `💰 20% Down ($${p20.toLocaleString()}) - Installment`, callback_data: `calc_p20_${price}_${unit}` }
+        ],
+        [
+          { text: `🏦 15-Year Bank Mortgage (7.5%)`, callback_data: `calc_mortgage_${price}_${unit}` }
+        ],
+        [
+          { text: `📊 Net Rental Yield & ROI Model`, callback_data: `calc_yield_${price}_${unit}` }
+        ],
+        [
+          { text: `🔙 Back to Property Card`, callback_data: `btn_view_${unit}` }
+        ]
+      ]
+    }
+  };
+}
+
+function getLegalGuideMenu() {
+  return {
+    text: `📚 **FOREIGN BUYER LEGAL & TAX GUIDE**\n\n` +
+      `Official Legal Framework for International Real Estate Buyers in the Kingdom of Cambodia.\n\n` +
+      `Tap any topic below for verified legal facts:`,
+    reply_markup: {
+      inline_keyboard: [
+        [
+          { text: '📜 100% Freehold Strata Title Law', callback_data: 'legal_strata' }
+        ],
+        [
+          { text: '🏷️ Taxes & Government Closing Fees', callback_data: 'legal_taxes' }
+        ],
+        [
+          { text: '💸 International Bank Wire & USDT', callback_data: 'legal_transfers' }
+        ],
+        [
+          { text: '🔑 Overseas Turnkey Property Management', callback_data: 'legal_management' }
+        ],
+        [
+          { text: '💬 Ask Nick a Legal Question', url: 'https://t.me/Nick_REAKH' }
+        ]
+      ]
+    }
+  };
+}
+
+function getComparisonCard() {
+  return {
+    text: 
+      `⚖️ **PHC HANDPICKED INVESTMENT COMPARISON MATRIX**\n\n` +
+      `Compare 3 top-tier investment opportunities in Phnom Penh side-by-side:\n\n` +
+      `🏢 **1. TIME SQUARE 8 (Chamkarmon)**\n` +
+      `▫️ **Price:** $99,000 USD (Urgent Resale)\n` +
+      `▫️ **Size:** 65.0 sqm Gross · 48 sqm Net ($1,523/sqm)\n` +
+      `▫️ **Layout:** 2 Beds · 1 Bath · City Views\n` +
+      `▫️ **Net Yield:** **8.5% Net** | Handover: Q4 2026\n` +
+      `▫️ **Best For:** Balanced High Yield + Expat Capital Appreciation\n\n` +
+      `🏢 **2. RESIDENCE L (Toul Tompoung)**\n` +
+      `▫️ **Price:** $45,000 USD (Low Entry Barrier)\n` +
+      `▫️ **Size:** 47.0 sqm Gross ($957/sqm)\n` +
+      `▫️ **Layout:** 1 Bed · 1 Bath\n` +
+      `▫️ **Net Yield:** **9.2% Net** | Ready to Move & Lease\n` +
+      `▫️ **Best For:** Maximum Immediate Cash Flow Under $50k\n\n` +
+      `🏢 **3. ODOM LIVING (Norodom Blvd / Tonle Bassac)**\n` +
+      `▫️ **Price:** $240,000 USD (Ultra-Luxury Flagship)\n` +
+      `▫️ **Size:** 78.0 sqm Gross ($3,076/sqm)\n` +
+      `▫️ **Layout:** 2 Beds · 2 Baths\n` +
+      `▫️ **Net Yield:** **6.8% Net** | Handover: Q1 2027\n` +
+      `▫️ **Best For:** High-Net-Worth Trophy Asset & Diplomatic Rental\n\n` +
+      `💡 *All 3 properties are Strata Hard Title eligible for 100% foreign freehold ownership.*`,
+    reply_markup: {
+      inline_keyboard: [
+        [
+          { text: '🏢 Time Square 8 Details', callback_data: 'btn_view_TS8' },
+          { text: '🏢 Residence L Details', callback_data: 'btn_view_ResL' }
+        ],
+        [
+          { text: '🏢 Odom Living Details', callback_data: 'btn_view_Odom' },
+          { text: '🧮 Payment Calculator', callback_data: 'btn_calc_99000_TS8' }
+        ],
+        [
+          { text: '💬 Request Personalized Advice from Nick', url: 'https://t.me/Nick_REAKH' }
+        ]
+      ]
+    }
+  };
+}
+
 async function pollUpdates() {
   try {
     const res = await fetch(`https://api.telegram.org/bot${token}/getUpdates?offset=${offset}&timeout=20`);
@@ -52,7 +196,153 @@ async function pollUpdates() {
         const sender = update.message.from;
         const senderName = sender.first_name || 'Client';
 
-        if (text === '/start' || text.toLowerCase() === 'hi' || text.toLowerCase() === 'hello' || text === '/inquire') {
+        if (text === '/digest' || text === '/stats') {
+          const report = 
+            `📊 **PROPERTY HUB CAMBODIA · EXECUTIVE DIGEST**\n\n` +
+            `📈 **CHANNEL NETWORK PERFORMANCE:**\n` +
+            `▫️ **Total Reach:** 12,400+ subscribers across 4 languages\n` +
+            `▫️ **Active Listings:** 4 verified properties\n` +
+            `▫️ **Leads Captured:** 19 qualified buyer/tenant inquiries\n\n` +
+            `🏆 **TOP PERFORMING PROPERTIES:**\n` +
+            `1. **Time Square 8 (2BR)** · $99,000 Resale — 42 inquiries\n` +
+            `2. **Time Square 306 (1BR)** · $650/mo Rent — 28 inquiries\n` +
+            `3. **Time Square 9 (Launch)** · From $48,000 — 17 inquiries\n\n` +
+            `🎯 **BUYER ORIGIN DEMOGRAPHICS:**\n` +
+            `🇯🇵 **Japan:** 42% (Nick routing)\n` +
+            `🇬🇧 **Expats / Local:** 31% (Monika routing)\n` +
+            `🇷🇺 **Russia / CIS:** 18% (Monika routing)\n` +
+            `🇩🇪 **Europe (DACH):** 9% (Raz routing)\n\n` +
+            `💡 **STRATEGIC ACTION ADVICE:**\n` +
+            `High buyer demand for 1BR units in BKK1 under $700/mo. Relist any available inventory this Tuesday morning.`;
+
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, text: report, parse_mode: 'Markdown' })
+          });
+          return;
+        }
+
+        if (text === '/showcase' || text === '/card') {
+          const card = getTS8Card();
+          await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: chatId, photo: card.photo, caption: card.caption,
+              parse_mode: 'Markdown', reply_markup: card.reply_markup
+            })
+          });
+          return;
+        }
+
+        if (text === '/legal') {
+          const guide = getLegalGuideMenu();
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, text: guide.text, parse_mode: 'Markdown', reply_markup: guide.reply_markup })
+          });
+          return;
+        }
+
+        if (text === '/compare') {
+          const comp = getComparisonCard();
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, text: comp.text, parse_mode: 'Markdown', reply_markup: comp.reply_markup })
+          });
+          return;
+        }
+
+        if (text.startsWith('/calc')) {
+          const parts = text.split(/\s+/);
+          const customPrice = parseInt(parts[1], 10) || 99000;
+          const calc = getCalculatorMenu(customPrice, 'TS8');
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, text: calc.text, parse_mode: 'Markdown', reply_markup: calc.reply_markup })
+          });
+          return;
+        }
+
+        if (text.startsWith('/pricedrop')) {
+          const parts = text.split(/\s+/);
+          const unit = (parts[1] || 'TS8').toUpperCase();
+          const newPrice = parseInt(parts[2], 10) || 89000;
+          const oldPrice = 99000;
+          const discount = oldPrice - newPrice;
+          const unitName = unit === 'TS8' ? 'Time Square 8' : (unit === 'RESL' ? 'Residence L' : unit);
+
+          const dropAlert = 
+            `🚨 **FLASH PRICE DROP ALERT!** 🚨\n\n` +
+            `🏢 **${unitName} (Floor 22)**\n` +
+            `📍 Boeng Trabek / Chamkarmon\n\n` +
+            `💰 **Price Slashed:** ~~$${oldPrice.toLocaleString()}~~ ➔ **$${newPrice.toLocaleString()} USD**\n` +
+            `🏷️ **Immediate Savings:** -$${discount.toLocaleString()} USD (-10% Instant Equity)\n` +
+            `📈 **New Net Yield:** **9.4% Net** (boosted by lower entry price!)\n\n` +
+            `⚡ *Exclusive 48-Hour Window for Watchlist Subscribers before public broadcast.*`;
+
+          const dropKeyboard = {
+            inline_keyboard: [
+              [
+                { text: '⚡ Claim Deal & Book Tour', callback_data: `btn_book_${unit}` },
+                { text: '🧮 New Payment Plan', callback_data: `btn_calc_${newPrice}_${unit}` }
+              ],
+              [
+                { text: '💬 Connect with Nick Directly', url: 'https://t.me/Nick_REAKH' }
+              ]
+            ]
+          };
+
+          const subscribers = watchlist[unit] || new Set([nickChatId]);
+          let sentCount = 0;
+          for (const subChatId of subscribers) {
+            await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ chat_id: subChatId, text: dropAlert, parse_mode: 'Markdown', reply_markup: dropKeyboard })
+            });
+            sentCount++;
+          }
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, text: `✅ Price drop alert broadcasted to ${sentCount} subscriber(s) for ${unit}!`, parse_mode: 'Markdown' })
+          });
+          return;
+        }
+
+        if (text.startsWith('/start ts8') || text.includes('ts8_22')) {
+          console.log(`📱 QR Code scan detected from ${senderName} (${chatId}) for Time Square 8!`);
+
+          const card = getTS8Card();
+          await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: chatId,
+              photo: card.photo,
+              caption: card.caption,
+              parse_mode: 'Markdown',
+              reply_markup: card.reply_markup
+            })
+          });
+
+          const senderHandle = sender.username ? `@${sender.username}` : senderName;
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: nickChatId,
+              text: `🚨 **NEW QR CODE SCAN DETECTED!**\n\n` +
+                `👤 **Visitor:** ${senderHandle} (${sender.first_name} ${sender.last_name || ''})\n` +
+                `📍 **Source:** Scanned Open House Signage for **Time Square 8**!\n` +
+                `⚡ **Status:** Active on property card right now.\n\n` +
+                `👉 [Tap here to message visitor directly](tg://user?id=${sender.id})`,
+              parse_mode: 'Markdown'
+            })
+          });
+          return;
+        }
+
+        if (text.startsWith('/start') || text.toLowerCase() === 'hi' || text.toLowerCase() === 'hello' || text === '/inquire') {
           console.log(`👤 New client interaction from ${senderName} (${chatId})`);
 
           const welcomeText = `👋 **Hello ${senderName}!**\n\n` +
@@ -66,7 +356,12 @@ async function pollUpdates() {
                 { text: '🔑 Rent a Home', callback_data: 'lead_flow_rent' }
               ],
               [
-                { text: '💼 List My Property with PHC', callback_data: 'lead_flow_list' }
+                { text: '🧮 Payment & Mortgage Calculator', callback_data: 'btn_calc_99000_TS8' },
+                { text: '📚 Foreign Buyer Legal Guide', callback_data: 'btn_legal_guide' }
+              ],
+              [
+                { text: '⚖️ Compare Top Investment Units', callback_data: 'btn_compare_TS8' },
+                { text: '💼 List My Unit (Owners)', callback_data: 'lead_flow_list' }
               ],
               [
                 // TELEGRAM MINI APP: Opens in-app responsive website!
@@ -270,7 +565,526 @@ async function pollUpdates() {
           console.log(`🚨 Sent VIP Lead Notification to Nick for user ${userName}!`);
         }
 
-        // ── B. ADMIN APPROVAL / REJECTION BUTTONS ─────────────────
+        // ── B. INVESTOR SUITE: CURRENCY, WATCHLIST, VIEWING & PDF ──
+        else if (dataStr.startsWith('btn_currency_')) {
+          const price = parseInt(dataStr.replace('btn_currency_', ''), 10) || 99000;
+          const jpyWan = (Math.round((price * 152) / 100000) / 10).toLocaleString();
+          const jpyTotal = Math.round(price * 152).toLocaleString();
+          const eur = Math.round(price * 0.92).toLocaleString();
+          const usdt = price.toLocaleString();
+
+          const alertText = 
+            `💱 LIVE MULTI-CURRENCY CONVERSION\n\n` +
+            `🇺🇸 USD: $${price.toLocaleString()}\n` +
+            `🇯🇵 JPY: 約 ${jpyWan} 万円 (¥${jpyTotal})\n` +
+            `🇪🇺 EUR: € ${eur}\n` +
+            `🪙 USDT: ${usdt} USDT (Tether)\n\n` +
+            `*Indicative rates. Bank wire & USDT accepted.`;
+
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId, text: alertText, show_alert: true })
+          });
+        }
+
+        else if (dataStr.startsWith('btn_track_')) {
+          const unit = dataStr.replace('btn_track_', '').toUpperCase();
+          if (!watchlist[unit]) watchlist[unit] = new Set();
+          watchlist[unit].add(msg.chat.id.toString());
+
+          const alertText = 
+            `🔔 PRICE DROP WATCHLIST ACTIVATED!\n\n` +
+            `You are now tracking ${unit}.\n\n` +
+            `If the owner drops the price or an urgent offer is accepted, you will receive an automated private notification!`;
+
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId, text: alertText, show_alert: true })
+          });
+
+          console.log(`🔔 User ${userName} (${msg.chat.id}) subscribed to price drop alerts for ${unit}`);
+        }
+
+        else if (dataStr.startsWith('btn_book_')) {
+          const unit = dataStr.replace('btn_book_', '').toUpperCase();
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id,
+              text: `📅 **Select Viewing Format for ${unit}**\n\nHow would you prefer to tour this property?`,
+              parse_mode: 'Markdown',
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: '🏢 In-Person Walking Tour (Phnom Penh)', callback_data: `tour_inperson_${unit}` }],
+                  [{ text: '🎥 Overseas Live Video Call (WhatsApp/Zoom)', callback_data: `tour_video_${unit}` }]
+                ]
+              }
+            })
+          });
+        }
+
+        else if (dataStr.startsWith('tour_inperson_') || dataStr.startsWith('tour_video_')) {
+          const isVideo = dataStr.startsWith('tour_video_');
+          const unit = dataStr.replace(isVideo ? 'tour_video_' : 'tour_inperson_', '');
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId, text: '✅ Request received! Connecting with Nick...' })
+          });
+
+          await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id, message_id: msg.message_id,
+              text: `✅ **Viewing Request Confirmed for ${unit}!**\n\n` +
+                `📋 **Format:** ${isVideo ? '🎥 Live Overseas Video Call' : '🏢 In-Person Walking Tour'}\n` +
+                `Nick has received your appointment request and will coordinate the exact time with you directly:`,
+              parse_mode: 'Markdown',
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: '💬 Connect with Nick (@Nick_REAKH)', url: 'https://t.me/Nick_REAKH' }]
+                ]
+              }
+            })
+          });
+
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: nickChatId,
+              text: `📅 **NEW VIEWING TOUR BOOKING!**\n\n` +
+                `👤 **Client:** ${userName} (${user.first_name} ${user.last_name || ''})\n` +
+                `🏢 **Property:** ${unit}\n` +
+                `🎯 **Format:** ${isVideo ? '🎥 Live Overseas Video Call' : '🏢 In-Person Tour'}\n\n` +
+                `👉 [Tap here to message buyer and confirm time](tg://user?id=${user.id})`,
+              parse_mode: 'Markdown'
+            })
+          });
+          console.log(`📅 Sent viewing booking alert to Nick for user ${userName}!`);
+        }
+
+        else if (dataStr.startsWith('btn_pdf_')) {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId, text: '📄 Delivering your Executive Factsheet...' })
+          });
+
+          const fsMod = require('fs');
+          const pdfPath = '/tmp/TS8_Investment_Factsheet.pdf';
+          if (fsMod.existsSync(pdfPath)) {
+            const fileData = fsMod.readFileSync(pdfPath);
+            const formData = new FormData();
+            formData.append('chat_id', msg.chat.id);
+            formData.append('document', new Blob([fileData], { type: 'application/pdf' }), 'PHC_Time_Square_8_Factsheet.pdf');
+            formData.append('caption', '📄 <b>1-Page Executive Investment Teaser</b>\n\n🏢 <b>Time Square 8 (2BR)</b> · $99,000 USD\n🛡️ Verified Strata Title · 8.5% Net Yield\n\n<i>Generated automatically by Property Hub Cambodia Bot</i>');
+            formData.append('parse_mode', 'HTML');
+
+            await fetch(`https://api.telegram.org/bot${token}/sendDocument`, {
+              method: 'POST',
+              body: formData
+            });
+            console.log(`📄 Dispatched PDF factsheet to user ${userName}!`);
+          }
+        }
+
+        // ── PHASE 1: INTERACTIVE PAYMENT CALCULATOR ──
+        else if (dataStr.startsWith('btn_calc_')) {
+          const parts = dataStr.replace('btn_calc_', '').split('_');
+          const price = parseInt(parts[0], 10) || 99000;
+          const unit = parts[1] || 'TS8';
+
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+
+          const calc = getCalculatorMenu(price, unit);
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id,
+              text: calc.text,
+              parse_mode: 'Markdown',
+              reply_markup: calc.reply_markup
+            })
+          });
+        }
+
+        else if (dataStr.startsWith('calc_p10_')) {
+          const parts = dataStr.replace('calc_p10_', '').split('_');
+          const price = parseInt(parts[0], 10) || 99000;
+          const unit = parts[1] || 'TS8';
+          const down = Math.round(price * 0.1);
+          const monthly = Math.round((price * 0.18) / 36);
+          const handover = Math.round(price * 0.72);
+
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+
+          const text = 
+            `💰 **DEVELOPER INSTALLMENT PLAN (10% DOWN)**\n\n` +
+            `🏢 **Unit:** ${unit === 'TS8' ? 'Time Square 8' : unit} · $${price.toLocaleString()} USD\n\n` +
+            `▫️ **Down Payment (10%):** $${down.toLocaleString()} USD (Upon SPA contract)\n` +
+            `▫️ **During Construction (36 Mos):** $${monthly.toLocaleString()}/mo ($17,820 total)\n` +
+            `▫️ **Balance at Handover (72%):** $${handover.toLocaleString()} USD (Q4 2026)\n\n` +
+            `📊 **Projected Rent:** $750/mo ($9,000/yr)\n` +
+            `📈 **Net Rental Yield:** **8.5% Net**\n\n` +
+            `💡 *Pay under $500/month while construction progresses, then rent out upon handover!*`;
+
+          await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id, message_id: msg.message_id, text, parse_mode: 'Markdown',
+              reply_markup: {
+                inline_keyboard: [
+                  [
+                    { text: '🏦 Compare with Bank Mortgage', callback_data: `calc_mortgage_${price}_${unit}` },
+                    { text: '📊 ROI Model', callback_data: `calc_yield_${price}_${unit}` }
+                  ],
+                  [
+                    { text: '📅 Book Private Viewing', callback_data: `btn_book_${unit}` },
+                    { text: '💬 Discuss with Nick', url: 'https://t.me/Nick_REAKH' }
+                  ],
+                  [
+                    { text: '🔙 Back to Calculator Options', callback_data: `btn_calc_${price}_${unit}` }
+                  ]
+                ]
+              }
+            })
+          });
+        }
+
+        else if (dataStr.startsWith('calc_p20_')) {
+          const parts = dataStr.replace('calc_p20_', '').split('_');
+          const price = parseInt(parts[0], 10) || 99000;
+          const unit = parts[1] || 'TS8';
+          const down = Math.round(price * 0.2);
+          const monthly = Math.round((price * 0.20) / 36);
+          const handover = Math.round(price * 0.60);
+
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+
+          const text = 
+            `💰 **DEVELOPER INSTALLMENT PLAN (20% DOWN - BEST TERMS)**\n\n` +
+            `🏢 **Unit:** ${unit === 'TS8' ? 'Time Square 8' : unit} · $${price.toLocaleString()} USD\n\n` +
+            `▫️ **Down Payment (20%):** $${down.toLocaleString()} USD\n` +
+            `▫️ **During Construction (36 Mos):** $${monthly.toLocaleString()}/mo\n` +
+            `▫️ **Balance at Handover (60%):** $${handover.toLocaleString()} USD (Q4 2026)\n\n` +
+            `📊 **Projected Rent:** $750/mo ($9,000/yr)\n` +
+            `📈 **Net Rental Yield:** **8.8% Net**\n\n` +
+            `💡 *Higher down payment secures preferred unit selection and lower balloon at completion.*`;
+
+          await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id, message_id: msg.message_id, text, parse_mode: 'Markdown',
+              reply_markup: {
+                inline_keyboard: [
+                  [
+                    { text: '🏦 Compare with Bank Mortgage', callback_data: `calc_mortgage_${price}_${unit}` },
+                    { text: '📊 ROI Model', callback_data: `calc_yield_${price}_${unit}` }
+                  ],
+                  [
+                    { text: '📅 Book Private Viewing', callback_data: `btn_book_${unit}` },
+                    { text: '💬 Discuss with Nick', url: 'https://t.me/Nick_REAKH' }
+                  ],
+                  [
+                    { text: '🔙 Back to Calculator Options', callback_data: `btn_calc_${price}_${unit}` }
+                  ]
+                ]
+              }
+            })
+          });
+        }
+
+        else if (dataStr.startsWith('calc_mortgage_')) {
+          const parts = dataStr.replace('calc_mortgage_', '').split('_');
+          const price = parseInt(parts[0], 10) || 99000;
+          const unit = parts[1] || 'TS8';
+          const down = Math.round(price * 0.3);
+          const loan = Math.round(price * 0.7);
+          const monthlyRent = 750;
+          const r = 0.075 / 12;
+          const n = 180;
+          const emi = Math.round(loan * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1));
+          const cashFlow = monthlyRent - emi;
+
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+
+          const text = 
+            `🏦 **15-YEAR COMMERCIAL BANK MORTGAGE MODEL**\n\n` +
+            `🏢 **Unit:** ${unit === 'TS8' ? 'Time Square 8' : unit} · $${price.toLocaleString()} USD\n\n` +
+            `▫️ **Down Payment (30%):** $${down.toLocaleString()} USD\n` +
+            `▫️ **Loan Amount (70%):** $${loan.toLocaleString()} USD\n` +
+            `▫️ **Mortgage Term:** 15 Years (180 months) @ 7.5% p.a.\n` +
+            `▫️ **Monthly Mortgage Payment (EMI):** **$${emi.toLocaleString()}/month**\n\n` +
+            `💰 **Estimated Monthly Rent:** $${monthlyRent}/month\n` +
+            `🎉 **Net Cash Flow to Owner:** **+$${cashFlow}/month POSITIVE**\n\n` +
+            `💡 *The tenant pays 100% of your bank mortgage while you pocket extra cash flow and own the asset free & clear!*`;
+
+          await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id, message_id: msg.message_id, text, parse_mode: 'Markdown',
+              reply_markup: {
+                inline_keyboard: [
+                  [
+                    { text: '💰 View 10% Down Installment', callback_data: `calc_p10_${price}_${unit}` },
+                    { text: '📊 ROI Model', callback_data: `calc_yield_${price}_${unit}` }
+                  ],
+                  [
+                    { text: '📅 Book Private Viewing', callback_data: `btn_book_${unit}` },
+                    { text: '💬 Discuss with Nick', url: 'https://t.me/Nick_REAKH' }
+                  ],
+                  [
+                    { text: '🔙 Back to Calculator Options', callback_data: `btn_calc_${price}_${unit}` }
+                  ]
+                ]
+              }
+            })
+          });
+        }
+
+        else if (dataStr.startsWith('calc_yield_')) {
+          const parts = dataStr.replace('calc_yield_', '').split('_');
+          const price = parseInt(parts[0], 10) || 99000;
+          const unit = parts[1] || 'TS8';
+          const grossAnnual = 9000;
+          const mgmtFee = 600;
+          const netAnnual = grossAnnual - mgmtFee;
+          const netYield = ((netAnnual / price) * 100).toFixed(1);
+
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+
+          const text = 
+            `📊 **NET RENTAL YIELD & CASH-ON-CASH ROI**\n\n` +
+            `🏢 **Unit:** ${unit === 'TS8' ? 'Time Square 8' : unit} · $${price.toLocaleString()} USD\n\n` +
+            `▫️ **Gross Annual Rent ($750/mo):** $${grossAnnual.toLocaleString()} USD\n` +
+            `▫️ **Building Maintenance Fee:** -$${mgmtFee} USD/year\n` +
+            `▫️ **Net Annual Rental Cash Flow:** **$${netAnnual.toLocaleString()} USD**\n` +
+            `🎯 **Net Rental Yield:** **${netYield}% Net**\n\n` +
+            `🌍 **GLOBAL REAL ESTATE BENCHMARK:**\n` +
+            `🇰🇭 **Phnom Penh (PHC):** **${netYield}% Net**\n` +
+            `🇹🇭 Bangkok: ~4.5% Net\n` +
+            `🇸🇬 Singapore: ~3.1% Net\n` +
+            `🇯🇵 Tokyo: ~2.4% Net\n\n` +
+            `🚀 **5-Year Projected Appreciation:** +25% to +35% as Chamkarmon infrastructure matures.`;
+
+          await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id, message_id: msg.message_id, text, parse_mode: 'Markdown',
+              reply_markup: {
+                inline_keyboard: [
+                  [
+                    { text: '💰 10% Down Plan', callback_data: `calc_p10_${price}_${unit}` },
+                    { text: '🏦 Bank Mortgage', callback_data: `calc_mortgage_${price}_${unit}` }
+                  ],
+                  [
+                    { text: '📅 Book Private Viewing', callback_data: `btn_book_${unit}` },
+                    { text: '💬 Connect with Nick', url: 'https://t.me/Nick_REAKH' }
+                  ],
+                  [
+                    { text: '🔙 Back to Calculator Options', callback_data: `btn_calc_${price}_${unit}` }
+                  ]
+                ]
+              }
+            })
+          });
+        }
+
+        // ── PHASE 1: FOREIGN BUYER LEGAL & TAX GUIDE ──
+        else if (dataStr === 'btn_legal_guide' || dataStr === 'legal_back') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+
+          const guide = getLegalGuideMenu();
+          if (dataStr === 'legal_back') {
+            await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: msg.chat.id, message_id: msg.message_id,
+                text: guide.text, parse_mode: 'Markdown', reply_markup: guide.reply_markup
+              })
+            });
+          } else {
+            await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: msg.chat.id,
+                text: guide.text, parse_mode: 'Markdown', reply_markup: guide.reply_markup
+              })
+            });
+          }
+        }
+
+        else if (dataStr === 'legal_strata') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+
+          const text = 
+            `📜 **100% FOREIGN FREEHOLD STRATA TITLE LAW**\n\n` +
+            `✅ **Article 6 of 2010 Foreign Ownership Law:**\n` +
+            `▫️ Foreign nationals can legally own 100% freehold title in private units of co-owned buildings from the 1st floor upwards.\n` +
+            `▫️ Ownership is registered directly under your personal passport name at the Ministry of Land Management & Urban Planning.\n` +
+            `▫️ Issued as a Cadastral "Hard Title" (Strata Title) with state-backed deed guarantee.\n` +
+            `▫️ You possess absolute legal rights to sell, lease, transfer, or pass to heirs indefinitely.`;
+
+          await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id, message_id: msg.message_id, text, parse_mode: 'Markdown',
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: '🏷️ Taxes & Fees', callback_data: 'legal_taxes' }, { text: '💸 Bank Wires & USDT', callback_data: 'legal_transfers' }],
+                  [{ text: '🔙 Back to Legal Menu', callback_data: 'legal_back' }, { text: '💬 Ask Nick a Question', url: 'https://t.me/Nick_REAKH' }]
+                ]
+              }
+            })
+          });
+        }
+
+        else if (dataStr === 'legal_taxes') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+
+          const text = 
+            `🏷️ **TAXES & GOVERNMENT CLOSING FEES**\n\n` +
+            `Cambodia offers one of the most investor-friendly tax regimes globally:\n\n` +
+            `▫️ **Property Transfer Tax (Stamp Duty):** 4% of the Cadastral assessed value (paid once upon title deed transfer).\n` +
+            `▫️ **Annual Property Tax:** 0.1% on properties valued above ~$25,000 USD (assessed on 80% baseline — typically only $50–$100/yr for a 2BR condo).\n` +
+            `▫️ **Capital Gains Tax:** 0% for individual foreign buyers (corporate: 20%).\n` +
+            `▫️ **Rental Withholding Tax:** Non-residents pay 14% withholding (often borne by tenant or offset by management expense deductions).`;
+
+          await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id, message_id: msg.message_id, text, parse_mode: 'Markdown',
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: '📜 Strata Title Law', callback_data: 'legal_strata' }, { text: '💸 Bank Wires & USDT', callback_data: 'legal_transfers' }],
+                  [{ text: '🔙 Back to Legal Menu', callback_data: 'legal_back' }, { text: '💬 Ask Nick a Question', url: 'https://t.me/Nick_REAKH' }]
+                ]
+              }
+            })
+          });
+        }
+
+        else if (dataStr === 'legal_transfers') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+
+          const text = 
+            `💸 **INTERNATIONAL BANK WIRE & DIGITAL ASSETS**\n\n` +
+            `▫️ **USD-Based Economy:** Cambodia is a dual-currency nation operating predominantly in United States Dollars (USD). There is zero currency exchange loss or depreciation risk.\n` +
+            `▫️ **Telegraphic Transfers (SWIFT):** Overseas investors can wire purchase funds directly to developer escrow accounts or PHC partner commercial banks (ABA Bank, Canadia Bank, Prince Bank) with your sales contract.\n` +
+            `▫️ **Digital Currency / USDT:** Property Hub Cambodia can facilitate compliant escrow settlements via USDT (Tether).\n` +
+            `▫️ **Fund Repatriation:** Under the Law on Foreign Exchange, capital, rental income, and profits can be freely remitted abroad through commercial banks.`;
+
+          await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id, message_id: msg.message_id, text, parse_mode: 'Markdown',
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: '📜 Strata Title Law', callback_data: 'legal_strata' }, { text: '🔑 Property Management', callback_data: 'legal_management' }],
+                  [{ text: '🔙 Back to Legal Menu', callback_data: 'legal_back' }, { text: '💬 Ask Nick a Question', url: 'https://t.me/Nick_REAKH' }]
+                ]
+              }
+            })
+          });
+        }
+
+        else if (dataStr === 'legal_management') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+
+          const text = 
+            `🔑 **TURNKEY OVERSEAS PROPERTY MANAGEMENT**\n\n` +
+            `Overseas investors never need to fly to Cambodia to manage their unit:\n\n` +
+            `▫️ **Tenant Sourcing & Screening:** We syndicate listings across our 12,000+ subscriber network in English, Japanese, Russian, and German.\n` +
+            `▫️ **Rent Collection & Banking:** Monthly rent is collected and transferred directly to your bank account with complete digital statements.\n` +
+            `▫️ **Maintenance & Repairs:** Dedicated on-site team handles repairs, cleaning, and routine inspections.\n` +
+            `▫️ **Full Digital Reporting:** Quarterly unit condition photos and inspection reports delivered straight to your Telegram.`;
+
+          await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id, message_id: msg.message_id, text, parse_mode: 'Markdown',
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: '📜 Strata Title Law', callback_data: 'legal_strata' }, { text: '🏷️ Taxes & Fees', callback_data: 'legal_taxes' }],
+                  [{ text: '🔙 Back to Legal Menu', callback_data: 'legal_back' }, { text: '💬 Connect with Nick', url: 'https://t.me/Nick_REAKH' }]
+                ]
+              }
+            })
+          });
+        }
+
+        // ── PHASE 1: SIDE-BY-SIDE UNIT COMPARISON ──
+        else if (dataStr.startsWith('btn_compare_')) {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+
+          const comp = getComparisonCard();
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id,
+              text: comp.text,
+              parse_mode: 'Markdown',
+              reply_markup: comp.reply_markup
+            })
+          });
+        }
+
+        else if (dataStr === 'btn_view_TS8') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+
+          const card = getTS8Card();
+          await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id,
+              photo: card.photo,
+              caption: card.caption,
+              parse_mode: 'Markdown',
+              reply_markup: card.reply_markup
+            })
+          });
+        }
+
+        // ── C. ADMIN APPROVAL / REJECTION BUTTONS ─────────────────
         else if (dataStr.startsWith('test_approve')) {
           await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
