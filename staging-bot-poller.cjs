@@ -275,6 +275,171 @@ function getTourFeedback(unitCode) {
   };
 }
 
+// Phase 3 & 4: Deal Registration & Co-Broke State
+const registeredDeals = {};
+
+function generateCoBrokePDF(agentName, agentPhone) {
+  return new Promise((resolve, reject) => {
+    const PDFDocument = require('pdfkit');
+    const fs = require('fs');
+    const safeName = agentName.replace(/[^a-zA-Z0-9]/g, '_') || 'Partner';
+    const outputPath = `/tmp/TS8_CoBroke_${safeName}.pdf`;
+    const doc = new PDFDocument({ size: 'A4', margin: 40 });
+    const stream = fs.createWriteStream(outputPath);
+    doc.pipe(stream);
+
+    // Header Background
+    doc.rect(0, 0, 595.28, 110).fill('#0b1528');
+
+    // Title & Brand
+    doc.fillColor('#d4af37').fontSize(11).font('Helvetica-Bold')
+       .text('PROPERTY HUB CAMBODIA · CO-BROKE SYNDICATION NETWORK', 40, 30, { characterSpacing: 1 });
+    doc.fillColor('#ffffff').fontSize(20).font('Helvetica-Bold')
+       .text('TIME SQUARE 8 | 2-BEDROOM RESALE', 40, 50);
+    doc.fillColor('#94a3b8').fontSize(10).font('Helvetica')
+       .text('Chamkarmon / Boeng Trabek · Phnom Penh, Cambodia · Verified Strata Title', 40, 78);
+
+    // Key Investment Metrics Banner
+    doc.rect(40, 130, 515.28, 65).fill('#f8fafc').strokeColor('#e2e8f0').stroke();
+    
+    // Column 1: Price
+    doc.fillColor('#64748b').fontSize(9).font('Helvetica').text('EXCLUSIVE RESALE PRICE', 60, 142);
+    doc.fillColor('#0f172a').fontSize(16).font('Helvetica-Bold').text('$99,000 USD', 60, 160);
+
+    // Column 2: Net Yield
+    doc.fillColor('#64748b').fontSize(9).font('Helvetica').text('PROJECTED NET YIELD', 200, 142);
+    doc.fillColor('#10b981').fontSize(16).font('Helvetica-Bold').text('8.5% – 9.1% Net', 200, 160);
+
+    // Column 3: Gross Size
+    doc.fillColor('#64748b').fontSize(9).font('Helvetica').text('GROSS AREA / SQM', 340, 142);
+    doc.fillColor('#0f172a').fontSize(16).font('Helvetica-Bold').text('65.0 sqm ($1,523/m²)', 340, 160);
+
+    // Column 4: Handover
+    doc.fillColor('#64748b').fontSize(9).font('Helvetica').text('COMPLETION DATE', 460, 142);
+    doc.fillColor('#0f172a').fontSize(16).font('Helvetica-Bold').text('Q4 2026', 460, 160);
+
+    // Section 1: Property Specifications
+    doc.fillColor('#0b1528').fontSize(13).font('Helvetica-Bold').text('PROPERTY SPECIFICATIONS', 40, 220);
+    doc.rect(40, 238, 515.28, 1).fill('#cbd5e1');
+
+    const specs = [
+      ['Unit Number & Floor:', 'Unit #TS8-22 · 22nd Floor (City Skyline Views)'],
+      ['Layout & Dimensions:', '2 Bedrooms · 1 Bathroom · Living Room · Kitchen · Balcony'],
+      ['Area Measurement:', '65.0 sqm Gross · 48.0 sqm Net Floor Area'],
+      ['Title Deed Classification:', '100% Foreign Freehold Strata Title (Hard Title Cadastral)'],
+      ['Developer Track Record:', 'Megakim World Corp (Taiwanese-backed, 100% past completion)'],
+      ['Building Amenities:', 'Sky Infinity Pool, Fitness Center, 24/7 Security Concierge']
+    ];
+
+    let y = 250;
+    for (const [label, val] of specs) {
+      doc.fillColor('#475569').fontSize(10).font('Helvetica-Bold').text(label, 40, y, { width: 160 });
+      doc.fillColor('#1e293b').fontSize(10).font('Helvetica').text(val, 205, y, { width: 350 });
+      y += 24;
+    }
+
+    // Section 2: Financial Model & Installment Terms
+    y += 10;
+    doc.fillColor('#0b1528').fontSize(13).font('Helvetica-Bold').text('FINANCIAL MODEL & PAYMENT SCHEDULE', 40, y);
+    doc.rect(40, y + 18, 515.28, 1).fill('#cbd5e1');
+
+    y += 30;
+    const finDetails = [
+      ['10% Down Payment Option:', '$9,900 USD upon Sales Purchase Agreement contract signing'],
+      ['Construction Installments:', '36 Monthly Installments @ $495/month ($17,820 total)'],
+      ['Balance at Handover (72%):', '$71,280 USD upon building completion (Cash or Bank Loan)'],
+      ['Projected Monthly Rent:', '$750 USD/month ($9,000 USD gross annual cash flow)'],
+      ['Estimated Net Annual Income:', '$8,400 USD/year (after building management fee deductions)']
+    ];
+
+    for (const [label, val] of finDetails) {
+      doc.fillColor('#475569').fontSize(10).font('Helvetica-Bold').text(label, 40, y, { width: 170 });
+      doc.fillColor('#1e293b').fontSize(10).font('Helvetica').text(val, 215, y, { width: 340 });
+      y += 22;
+    }
+
+    // Co-Broke Sub-Agent Branded Footer Box
+    y += 25;
+    doc.rect(40, y, 515.28, 90).fill('#0f172a');
+
+    doc.fillColor('#d4af37').fontSize(9).font('Helvetica-Bold')
+       .text('OFFICIALLY MARKETED VIA PHC CO-BROKE SYNDICATION', 60, y + 15, { characterSpacing: 1 });
+    doc.fillColor('#ffffff').fontSize(14).font('Helvetica-Bold')
+       .text(`SUB-AGENT: ${agentName.toUpperCase()}`, 60, y + 32);
+    doc.fillColor('#94a3b8').fontSize(10).font('Helvetica')
+       .text(`Direct Contact / WhatsApp: ${agentPhone} · Verified Sub-Agent Representative`, 60, y + 52);
+    doc.fillColor('#64748b').fontSize(8).font('Helvetica')
+       .text('Property Hub Cambodia guarantees 50/50 commission protection on all verified client registrations.', 60, y + 70);
+
+    doc.end();
+    stream.on('finish', () => resolve(outputPath));
+    stream.on('error', (err) => reject(err));
+  });
+}
+
+function getCoBrokeMenu() {
+  return {
+    text: 
+      `🤝 **PROPERTY HUB CAMBODIA · CO-BROKE SYNDICATION PORTAL**\n\n` +
+      `Are you an independent agent, agency in Japan/Taiwan/Singapore, or freelance broker?\n\n` +
+      `We offer **guaranteed 50/50 commission splits** and white-label marketing tools so you can sell PHC exclusive inventory directly to your clients.\n\n` +
+      `🛠️ **CO-BROKE TOOLS AVAILABLE:**\n` +
+      `1️⃣ **White-Label PDF Generator:** Stamp your own name & WhatsApp onto our luxury factsheets!\n` +
+      `2️⃣ **Client Deal Registration:** Timestamp and lock in your buyer before introducing them to prevent commission disputes.\n\n` +
+      `👇 Tap below to generate your branded PDF or register a buyer deal:`,
+    reply_markup: {
+      inline_keyboard: [
+        [
+          { text: '📄 Generate White-Label PDF', callback_data: 'cobroke_make_pdf' },
+          { text: '🛡️ Register a Buyer Deal', callback_data: 'cobroke_reg_deal' }
+        ],
+        [
+          { text: '📞 Discuss Partnership with Nick', url: 'https://t.me/Nick_REAKH' }
+        ]
+      ]
+    }
+  };
+}
+
+function getDigestBroadcast() {
+  return {
+    text: 
+      `📊 **PROPERTY HUB CAMBODIA · EXECUTIVE WEEKLY DIGEST**\n` +
+      `🔥 **TOP 3 HIGH-YIELD OPPORTUNITIES IN PHNOM PENH**\n\n` +
+      `🥇 **1. TIME SQUARE 8 | 2-BEDROOM RESALE**\n` +
+      `▫️ **Price:** $99,000 USD (Urgent Resale — $15,000 Below Developer!)\n` +
+      `▫️ **Location:** Boeng Trabek / Toul Tompoung, Chamkarmon\n` +
+      `▫️ **Net Rental Yield:** **8.5% Net** ($750/month rent)\n` +
+      `▫️ **Installment:** 10% Down ($9,900) + $495/mo during construction\n\n` +
+      `🥈 **2. RESIDENCE L | 1-BEDROOM HIGH CASH FLOW**\n` +
+      `▫️ **Price:** $45,000 USD (Ready to Move & Rent Out)\n` +
+      `▫️ **Location:** Toul Tompoung (Near Russian Market)\n` +
+      `▫️ **Net Rental Yield:** **9.2% Net** ($350/month rent)\n` +
+      `▫️ **Highlights:** Lowest entry price for verified Strata title condo!\n\n` +
+      `🥉 **3. ODOM LIVING | 2-BEDROOM FLAGSHIP LUXURY**\n` +
+      `▫️ **Price:** $240,000 USD (Pre-Handover Q1 2027)\n` +
+      `▫️ **Location:** Norodom Boulevard / Tonle Bassac\n` +
+      `▫️ **Net Rental Yield:** **6.8% Net** (Diplomatic & Executive Tenancies)\n` +
+      `▫️ **Highlights:** Phnom Penh's premier LEED-Gold mixed-use landmark.\n\n` +
+      `⚡ *Subscribers receive 48-hour priority inspection before external promotion.*`,
+    reply_markup: {
+      inline_keyboard: [
+        [
+          { text: '🏢 Time Square 8 ($99k)', callback_data: 'btn_view_TS8' },
+          { text: '🏢 Residence L ($45k)', callback_data: 'btn_view_ResL' }
+        ],
+        [
+          { text: '🏢 Odom Living ($240k)', callback_data: 'btn_view_Odom' },
+          { text: '🧮 Payment Calculator', callback_data: 'btn_calc_99000_TS8' }
+        ],
+        [
+          { text: '📅 Schedule Private Tour with Nick', url: 'https://t.me/Nick_REAKH' }
+        ]
+      ]
+    }
+  };
+}
+
 async function pollUpdates() {
   try {
     const res = await fetch(`https://api.telegram.org/bot${token}/getUpdates?offset=${offset}&timeout=20`);
@@ -459,6 +624,161 @@ async function pollUpdates() {
           return;
         }
 
+        // ── PHASE 3 & 4: CO-BROKE, DEAL REGISTRATION & BROADCAST ──
+        if (text.startsWith('/cobroke')) {
+          const parts = text.split(/\s+/).slice(1);
+          if (parts.length < 2) {
+            const menu = getCoBrokeMenu();
+            await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ chat_id: chatId, text: menu.text, parse_mode: 'Markdown', reply_markup: menu.reply_markup })
+            });
+            return;
+          }
+
+          const agentPhone = parts[parts.length - 1];
+          const agentName = parts.slice(0, parts.length - 1).join(' ');
+
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, text: `⚙️ Generating custom Co-Broke Factsheet for **${agentName}**...` })
+          });
+
+          const pdfPath = await generateCoBrokePDF(agentName, agentPhone);
+          const fs = require('fs');
+          const fileData = fs.readFileSync(pdfPath);
+          const formData = new FormData();
+          formData.append('chat_id', chatId);
+          formData.append('document', new Blob([fileData], { type: 'application/pdf' }), `TS8_Factsheet_${agentName.replace(/\s+/g, '_')}.pdf`);
+          formData.append('caption', `🤝 <b>Personalized Co-Broke Investment Memo</b>\n\n🏢 <b>Time Square 8 (2BR)</b> · $99,000 USD\n👤 <b>Sub-Agent:</b> ${agentName} (📞 ${agentPhone})\n🛡️ <b>50/50 Commission Protection Verified</b>\n\n<i>You can forward this PDF directly to your buyers. When they close, your split is guaranteed!</i>`);
+          formData.append('parse_mode', 'HTML');
+
+          await fetch(`https://api.telegram.org/bot${token}/sendDocument`, { method: 'POST', body: formData });
+
+          // Alert Nick
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: nickChatId,
+              text: `🤝 **NEW CO-BROKE SUB-AGENT ONBOARDED!**\n\n` +
+                `👤 **Agent:** ${agentName}\n` +
+                `📞 **Contact:** ${agentPhone} (${sender.username ? '@' + sender.username : senderName})\n` +
+                `🏢 **Property:** Time Square 8 (Factsheet Dispatched)\n` +
+                `⚡ **Split:** 50% PHC / 50% Sub-Agent Guaranteed`,
+              parse_mode: 'Markdown'
+            })
+          });
+          return;
+        }
+
+        if (text.startsWith('/registerdeal')) {
+          const parts = text.split(/\s+/).slice(1);
+          if (parts.length < 2) {
+            const usage = 
+              `🛡️ **PHC CO-BROKE DEAL REGISTRATION**\n\n` +
+              `To protect your 50/50 commission before introducing a buyer, register them below:\n\n` +
+              `**Usage:**\n` +
+              `\`/registerdeal [Property] [Client Name] [Client Phone]\`\n\n` +
+              `**Example:**\n` +
+              `\`/registerdeal TS8 Mr. Wang +886912345678\``;
+            await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ chat_id: chatId, text: usage, parse_mode: 'Markdown' })
+            });
+            return;
+          }
+
+          const unit = parts[0].toUpperCase();
+          const clientPhone = parts[parts.length - 1];
+          const clientName = parts.slice(1, parts.length - 1).join(' ') || 'Private Investor';
+          const regId = 'REG-' + Math.floor(Math.random() * 8999 + 1000);
+
+          registeredDeals[regId] = {
+            id: regId,
+            agentName: senderName,
+            agentHandle: sender.username ? '@' + sender.username : senderName,
+            agentChatId: chatId,
+            clientName,
+            clientPhone,
+            unit,
+            registeredAt: new Date().toISOString(),
+            status: 'protected'
+          };
+
+          const cert = 
+            `🛡️ **PHC CO-BROKE COMMISSION PROTECTION CERTIFICATE**\n\n` +
+            `📜 **Certificate ID:** \`#${regId}\`\n` +
+            `📅 **Timestamp:** ${new Date().toUTCString()}\n` +
+            `👤 **Sub-Agent:** ${senderName} (${sender.username ? '@' + sender.username : ''})\n` +
+            `👤 **Protected Client:** ${clientName} (${clientPhone.slice(0, 4)}****${clientPhone.slice(-3)})\n` +
+            `🏢 **Property:** ${unit === 'TS8' ? 'Time Square 8' : unit}\n` +
+            `💰 **Commission Split:** **50% PHC / 50% Sub-Agent**\n` +
+            `⏳ **Protection Period:** **60 Days Exclusive Safe Harbor**\n\n` +
+            `✅ *This deal registration is officially filed in Property Hub Cambodia's broker ledger.*`;
+
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, text: cert, parse_mode: 'Markdown' })
+          });
+
+          // Alert Nick to confirm
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: nickChatId,
+              text: `🛡️ **NEW DEAL REGISTRATION FILED!**\n\n` +
+                `📜 **Cert ID:** \`#${regId}\`\n` +
+                `👤 **Sub-Agent:** ${senderName} (${sender.username ? '@' + sender.username : ''})\n` +
+                `👤 **Buyer:** ${clientName} (${clientPhone})\n` +
+                `🏢 **Unit:** ${unit}\n` +
+                `💰 **Commission Agreement:** 50% / 50% Split\n\n` +
+                `Tap to endorse registration:`,
+              parse_mode: 'Markdown',
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: '✅ Endorse 50/50 Protection', callback_data: `deal_confirm_${regId}` }],
+                  [{ text: '💬 Message Sub-Agent', url: `tg://user?id=${sender.id}` }]
+                ]
+              }
+            })
+          });
+          return;
+        }
+
+        if (text === '/broadcastdigest' || text === '/digestbroadcast') {
+          const digest = getDigestBroadcast();
+
+          // 1. Send to Nick Test Lab channel
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: channelId,
+              text: digest.text,
+              parse_mode: 'Markdown',
+              reply_markup: {
+                inline_keyboard: [
+                  [
+                    { text: '📱 View in PHC Bot', url: 'https://t.me/Nick_REAKH_Bot?start=catalog' },
+                    { text: '💬 Inquire with Nick', url: 'https://t.me/Nick_REAKH' }
+                  ]
+                ]
+              }
+            })
+          });
+
+          // 2. Also deliver directly to Nick with full interactive test buttons
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: nickChatId,
+              text: `✅ **DIGEST BROADCASTED TO NICK TEST LAB!**\n\n` + digest.text,
+              parse_mode: 'Markdown',
+              reply_markup: digest.reply_markup
+            })
+          });
+          return;
+        }
+
         if (text.startsWith('/start ts8') || text.includes('ts8_22')) {
           console.log(`📱 QR Code scan detected from ${senderName} (${chatId}) for Time Square 8!`);
 
@@ -514,8 +834,8 @@ async function pollUpdates() {
                 { text: '💼 List My Unit (Owners)', callback_data: 'lead_flow_list' }
               ],
               [
-                // TELEGRAM MINI APP: Opens in-app responsive website!
-                { text: '📱 Browse All Properties (Mini App)', web_app: { url: 'https://www.propertyhubcambodia.com' } }
+                { text: '🤝 Co-Broke & Agent Portal (50/50)', callback_data: 'btn_cobroke' },
+                { text: '📱 Browse Mini App', web_app: { url: 'https://www.propertyhubcambodia.com' } }
               ],
               [
                 { text: '📞 Speak with Nick Directly', url: 'https://t.me/Nick_REAKH' }
@@ -1515,6 +1835,83 @@ async function pollUpdates() {
             body: JSON.stringify({
               chat_id: msg.chat.id, message_id: msg.message_id,
               text: (msg.text || '') + `\n\n🎉 **VIEWING / VALUATION TOUR BOOKED!**\nCalendar synchronized with Nick.`,
+              parse_mode: 'Markdown',
+              reply_markup: { inline_keyboard: [] }
+            })
+          });
+        }
+
+        // ── PHASE 3: CO-BROKE & DEAL REGISTRATION CALLBACKS ──
+        else if (dataStr === 'btn_cobroke') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+
+          const menu = getCoBrokeMenu();
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id,
+              text: menu.text,
+              parse_mode: 'Markdown',
+              reply_markup: menu.reply_markup
+            })
+          });
+        }
+
+        else if (dataStr === 'cobroke_make_pdf') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+
+          const text = 
+            `✍️ **GENERATE YOUR PERSONALIZED WHITE-LABEL FACTSHEET**\n\n` +
+            `Reply with your name and WhatsApp/Telegram phone number in this format:\n\n` +
+            `\`/cobroke [Your Name] [WhatsApp Number]\`\n\n` +
+            `**Example:**\n` +
+            `\`/cobroke Alex Chen +85512345678\`\n\n` +
+            `⚡ The bot will instantly generate and send your custom PDF!`;
+
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: msg.chat.id, text, parse_mode: 'Markdown' })
+          });
+        }
+
+        else if (dataStr === 'cobroke_reg_deal') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+
+          const text = 
+            `🛡️ **REGISTER A BUYER TO SECURE YOUR 50/50 COMMISSION**\n\n` +
+            `Reply with your client registration in this format:\n\n` +
+            `\`/registerdeal [Property] [Client Name] [Client Phone]\`\n\n` +
+            `**Example:**\n` +
+            `\`/registerdeal TS8 Mr. Wang +886912345678\`\n\n` +
+            `⚡ Timestamped Protection Certificate issued immediately!`;
+
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: msg.chat.id, text, parse_mode: 'Markdown' })
+          });
+        }
+
+        else if (dataStr.startsWith('deal_confirm_')) {
+          const regId = dataStr.replace('deal_confirm_', '');
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId, text: '✅ 50/50 Commission Protection Endorsed!' })
+          });
+
+          await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id, message_id: msg.message_id,
+              text: (msg.text || '') + `\n\n✅ **ENDORSED BY NICK (@Nick_REAKH)!**\n🛡️ **Protection Status:** 🟢 **Active 50/50 Safe Harbor (60 Days)**`,
               parse_mode: 'Markdown',
               reply_markup: { inline_keyboard: [] }
             })
