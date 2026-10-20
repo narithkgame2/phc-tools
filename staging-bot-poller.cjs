@@ -206,7 +206,7 @@ function getTS8Card(lang = 'EN') {
             { text: '🌐 切换语言', callback_data: 'btn_change_lang' }
           ],
           [
-            { text: '💬 咨询 Nick', url: 'https://t.me/Nick_REAKH' }
+            { text: '咨询 Nick', url: 'https://t.me/Nick_REAKH' }
           ]
         ]
       }
@@ -270,23 +270,23 @@ function getTS8Card(lang = 'EN') {
     reply_markup: {
       inline_keyboard: [
         [
-          { text: '📅 Book Tour', callback_data: 'btn_book_TS8' },
-          { text: '📄 PDF Teaser', callback_data: 'btn_pdf_TS8' }
+          { text: 'Book Tour', callback_data: 'btn_book_TS8' },
+          { text: 'PDF Teaser', callback_data: 'btn_pdf_TS8' }
         ],
         [
-          { text: '🧮 Calculator', callback_data: 'btn_calc_99000_TS8' },
-          { text: '📚 Legal Guide', callback_data: 'btn_legal_guide' }
+          { text: 'Calculator', callback_data: 'btn_calc_99000_TS8' },
+          { text: 'Legal Guide', callback_data: 'btn_legal_guide' }
         ],
         [
-          { text: '💱 JPY / EUR', callback_data: 'btn_currency_99000' },
-          { text: '⚖️ Compare 3', callback_data: 'btn_compare_TS8' }
+          { text: 'JPY / EUR Rates', callback_data: 'btn_currency_99000' },
+          { text: 'Compare 3', callback_data: 'btn_compare_TS8' }
         ],
         [
-          { text: '🔔 Price Alerts', callback_data: 'btn_track_TS8' },
-          { text: '🌐 Language', callback_data: 'btn_change_lang' }
+          { text: 'Price Alerts', callback_data: 'btn_track_TS8' },
+          { text: 'Language', callback_data: 'btn_change_lang' }
         ],
         [
-          { text: '💬 Chat with Nick', url: 'https://t.me/Nick_REAKH' }
+          { text: 'Consult with Nick', url: 'https://t.me/Nick_REAKH' }
         ]
       ]
     }
@@ -298,22 +298,22 @@ function getCalculatorMenu(price, unit) {
   const p20 = Math.round(price * 0.2);
   const unitName = unit === 'TS8' ? 'Time Square 8' : unit;
   return {
-    text: `🧮 **INTERACTIVE PAYMENT & FINANCING CALCULATOR**\n\n` +
-      `🏢 **Property:** ${unitName}\n` +
-      `💰 **Purchase Price:** $${price.toLocaleString()} USD\n\n` +
-      `Select a financing structure below to see exact down payment, monthly installments, and cash-flow returns:`,
+    text: `<b>PAYMENT & CASH-FLOW MODEL · ${unitName.toUpperCase()}</b>\n\n` +
+      `▫️ <b>Asset:</b> ${unitName}\n` +
+      `▫️ <b>Purchase Price:</b> $${price.toLocaleString()} USD\n\n` +
+      `Select a financing structure below to inspect down payment terms, monthly installments, and net rental yields:`,
     reply_markup: {
       inline_keyboard: [
         [
-          { text: `💰 10% Down ($${Math.round(p10 / 1000)}k)`, callback_data: `calc_p10_${price}_${unit}` },
-          { text: `💰 20% Down ($${Math.round(p20 / 1000)}k)`, callback_data: `calc_p20_${price}_${unit}` }
+          { text: `10% Down ($${Math.round(p10 / 1000)}k)`, callback_data: `calc_p10_${price}_${unit}` },
+          { text: `20% Down ($${Math.round(p20 / 1000)}k)`, callback_data: `calc_p20_${price}_${unit}` }
         ],
         [
-          { text: `🏦 Bank Loan (7.5%)`, callback_data: `calc_mortgage_${price}_${unit}` },
-          { text: `📊 Net Yield & ROI`, callback_data: `calc_yield_${price}_${unit}` }
+          { text: `Bank Loan (7.5%)`, callback_data: `calc_mortgage_${price}_${unit}` },
+          { text: `Net Yield & ROI`, callback_data: `calc_yield_${price}_${unit}` }
         ],
         [
-          { text: `🔙 Back to Unit`, callback_data: `btn_view_${unit}` }
+          { text: `Back to Unit`, callback_data: `btn_view_${unit}` }
         ]
       ]
     }
@@ -322,22 +322,22 @@ function getCalculatorMenu(price, unit) {
 
 function getLegalGuideMenu() {
   return {
-    text: `📚 <b>FOREIGN BUYER LEGAL & TAX GUIDE</b>\n\n` +
+    text: `<b>FOREIGN BUYER LEGAL & TAX FRAMEWORK</b>\n\n` +
       `Official Legal Framework for International Real Estate Buyers in the Kingdom of Cambodia.\n\n` +
       `<blockquote>⚖️ <b>Constitutional Protection:</b> Foreign freehold ownership is codified under the 2010 Strata Title Law. Units are registered under the buyer's individual passport with identical freehold rights to domestic citizens.</blockquote>\n\n` +
       `Tap any topic below for verified legal facts:`,
     reply_markup: {
       inline_keyboard: [
         [
-          { text: '📜 Strata Law', callback_data: 'legal_strata' },
-          { text: '🏷️ Taxes & Fees', callback_data: 'legal_taxes' }
+          { text: 'Strata Title Law', callback_data: 'legal_strata' },
+          { text: 'Taxes & Fees', callback_data: 'legal_taxes' }
         ],
         [
-          { text: '💸 Wires & USDT', callback_data: 'legal_transfers' },
-          { text: '🔑 Management', callback_data: 'legal_management' }
+          { text: 'Wires & USDT', callback_data: 'legal_transfers' },
+          { text: 'Turnkey Management', callback_data: 'legal_management' }
         ],
         [
-          { text: '💬 Legal Q&A with Nick', url: 'https://t.me/Nick_REAKH' }
+          { text: 'Legal Consultation with Nick', url: 'https://t.me/Nick_REAKH' }
         ]
       ]
     }
@@ -372,11 +372,11 @@ function getComparisonCard(lang = 'EN') {
       reply_markup: {
         inline_keyboard: [
           [
-            { text: '🏢 Time Square 8', callback_data: 'btn_view_TS8' },
-            { text: '🏢 Residence L', callback_data: 'btn_view_ResL' }
+            { text: 'Time Square 8', callback_data: 'btn_view_TS8' },
+            { text: 'Residence L', callback_data: 'btn_view_ResL' }
           ],
           [
-            { text: '🏢 Odom Living', callback_data: 'btn_view_Odom' },
+            { text: 'Odom Living', callback_data: 'btn_view_Odom' },
             { text: '🧮 試算・ローン', callback_data: 'btn_calc_99000_TS8' }
           ],
           [
@@ -414,15 +414,15 @@ function getComparisonCard(lang = 'EN') {
       reply_markup: {
         inline_keyboard: [
           [
-            { text: '🏢 时代广场8期', callback_data: 'btn_view_TS8' },
-            { text: '🏢 住宅 L', callback_data: 'btn_view_ResL' }
+            { text: '时代广场8期', callback_data: 'btn_view_TS8' },
+            { text: '住宅 L', callback_data: 'btn_view_ResL' }
           ],
           [
-            { text: '🏢 傲多公馆', callback_data: 'btn_view_Odom' },
-            { text: '🧮 资金测算', callback_data: 'btn_calc_99000_TS8' }
+            { text: '傲多公馆', callback_data: 'btn_view_Odom' },
+            { text: '资金测算', callback_data: 'btn_calc_99000_TS8' }
           ],
           [
-            { text: '💬 咨询 Nick', url: 'https://t.me/Nick_REAKH' }
+            { text: '咨询 Nick', url: 'https://t.me/Nick_REAKH' }
           ]
         ]
       }
@@ -456,15 +456,15 @@ function getComparisonCard(lang = 'EN') {
     reply_markup: {
       inline_keyboard: [
         [
-          { text: '🏢 Time Square 8', callback_data: 'btn_view_TS8' },
-          { text: '🏢 Residence L', callback_data: 'btn_view_ResL' }
+          { text: 'Time Square 8', callback_data: 'btn_view_TS8' },
+          { text: 'Residence L', callback_data: 'btn_view_ResL' }
         ],
         [
-          { text: '🏢 Odom Living', callback_data: 'btn_view_Odom' },
-          { text: '🧮 Calculator', callback_data: 'btn_calc_99000_TS8' }
+          { text: 'Odom Living', callback_data: 'btn_view_Odom' },
+          { text: 'Payment Calculator', callback_data: 'btn_calc_99000_TS8' }
         ],
         [
-          { text: '💬 Consult with Nick', url: 'https://t.me/Nick_REAKH' }
+          { text: 'Consult with Nick', url: 'https://t.me/Nick_REAKH' }
         ]
       ]
     }
@@ -473,18 +473,17 @@ function getComparisonCard(lang = 'EN') {
 
 function getOwnerIntakeStart() {
   return {
-    text: `💼 **LIST YOUR PROPERTY WITH PROPERTY HUB CAMBODIA**\n\n` +
-      `We syndicate your listing across **4 languages** (English, Japanese, Russian, German) reaching thousands of qualified international buyers and high-budget expat tenants.\n\n` +
-      `⚡ **Complete our 60-second intake wizard** below to get your unit valued and published:\n\n` +
-      `**Step 1:** What is your goal for this property?`,
+    text: `<b>PROPERTY LISTING INTAKE WIZARD</b>\n\n` +
+      `Syndicate your property across 4 international channels (English, Japanese, Russian, German) reaching qualified overseas investors and vetted corporate tenants.\n\n` +
+      `<b>Step 1 of 4: Primary Listing Objective</b>`,
     reply_markup: {
       inline_keyboard: [
         [
-          { text: '🏢 Sell My Condo (Resale)', callback_data: 'owner_goal_sell' },
-          { text: '🔑 Rent Out My Condo', callback_data: 'owner_goal_rent' }
+          { text: 'Sell My Condo (Resale)', callback_data: 'owner_goal_sell' },
+          { text: 'Rent Out My Condo', callback_data: 'owner_goal_rent' }
         ],
         [
-          { text: '💬 Speak with Nick First', url: 'https://t.me/Nick_REAKH' }
+          { text: 'Consult Directly with Nick', url: 'https://t.me/Nick_REAKH' }
         ]
       ]
     }
@@ -501,34 +500,25 @@ function getLandlordDashboard(unitCode) {
 
   return {
     text: 
-      `🔑 **PROPERTY HUB CAMBODIA · LANDLORD DASHBOARD**\n\n` +
-      `🏢 **Property:** ${unitName}\n` +
-      `📍 **Location:** ${location}\n` +
-      `🛡️ **Agreement:** Exclusive PHC Marketing Mandate\n` +
-      `📅 **Period:** Active (Past 7 Days)\n\n` +
-      `📊 **MULTI-CHANNEL REACH & ENGAGEMENT:**\n` +
-      `▫️ **Total Verified Impressions:** **3,842 views**\n` +
-      `   🇬🇧 English Channel: 1,620 views\n` +
-      `   🇯🇵 Japanese Network: 1,240 views\n` +
-      `   🇷🇺 Russian Channel: 680 views\n` +
-      `   🇩🇪 German Channel: 302 views\n` +
-      `▫️ **Serious Watchlist Trackers:** **12 active investors**\n` +
-      `▫️ **Direct Inquiries Received:** **14 qualified leads**\n` +
-      `▫️ **Scheduled Property Tours:** **4 viewings** (2 in-person, 2 overseas video)\n\n` +
-      `📈 **PHC VALUATION & MARKET INTELLIGENCE:**\n` +
-      `▫️ **Your Asking Price:** ${price}\n` +
-      `▫️ **Developer Current List:** ${devPrice} *(Your unit is priced $15,000 below market!)*\n` +
-      `▫️ **Buyer Demand Rating:** 🔥 **High (Top 5% Engagement)**\n` +
-      `▫️ **Estimated Days on Market:** Under 25 days to offer\n\n` +
-      `💡 *Telemetry synced live with Telegram broadcasting nodes.*`,
+      `<b>LANDLORD PERFORMANCE DASHBOARD</b>\n` +
+      `<b>${unitName}</b> · ${location}\n\n` +
+      `▫️ <b>Mandate:</b> Exclusive PHC Representation\n` +
+      `▫️ <b>Asking Price:</b> ${price}\n` +
+      `▫️ <b>Developer Benchmark:</b> ${devPrice} (-$15,000 competitive edge)\n\n` +
+      `<b>SYNDICATION TELEMETRY (PAST 7 DAYS)</b>\n` +
+      `▫️ <b>Verified Impressions:</b> 3,842 views across 4 channels\n` +
+      `▫️ <b>Active Watchlist:</b> 12 private investors\n` +
+      `▫️ <b>Direct Inquiries:</b> 14 qualified leads\n` +
+      `▫️ <b>Scheduled Tours:</b> 4 viewings (2 private, 2 overseas video)\n\n` +
+      `<blockquote>Listing is active in top 5% buyer engagement cohort. Estimated time to offer: under 25 days.</blockquote>`,
     reply_markup: {
       inline_keyboard: [
         [
-          { text: '🔄 Refresh Live Metrics', callback_data: `owner_refresh_${code}` },
-          { text: '📋 View Buyer Tour Feedback', callback_data: `owner_feedback_${code}` }
+          { text: 'Refresh Telemetry', callback_data: `owner_refresh_${code}` },
+          { text: 'Buyer Tour Feedback', callback_data: `owner_feedback_${code}` }
         ],
         [
-          { text: '🏷️ Request Price Adjustment', callback_data: `owner_price_adj_${code}` },
+          { text: 'Adjust Asking Price', callback_data: `owner_price_adj_${code}` },
           { text: '💬 Strategy Call with Nick', url: 'https://t.me/Nick_REAKH' }
         ],
         [
@@ -786,21 +776,20 @@ function generateCoBrokePDF(agentName, agentPhone) {
 function getCoBrokeMenu() {
   return {
     text: 
-      `🤝 **PROPERTY HUB CAMBODIA · CO-BROKE SYNDICATION PORTAL**\n\n` +
-      `Are you an independent agent, agency in Japan/Taiwan/Singapore, or freelance broker?\n\n` +
-      `We offer **guaranteed 50/50 commission splits** and white-label marketing tools so you can sell PHC exclusive inventory directly to your clients.\n\n` +
-      `🛠️ **CO-BROKE TOOLS AVAILABLE:**\n` +
-      `1️⃣ **White-Label PDF Generator:** Stamp your own name & WhatsApp onto our luxury factsheets!\n` +
-      `2️⃣ **Client Deal Registration:** Timestamp and lock in your buyer before introducing them to prevent commission disputes.\n\n` +
-      `👇 Tap below to generate your branded PDF or register a buyer deal:`,
+      `<b>PROPERTY HUB CAMBODIA · CO-BROKE SYNDICATION</b>\n\n` +
+      `Global broker network for agencies and licensed representatives in Japan, Taiwan, Singapore, and Europe.\n\n` +
+      `▫️ <b>Commission Structure:</b> Guaranteed 50/50 Split\n` +
+      `▫️ <b>Safe Harbor:</b> 60-Day Exclusive Client Protection\n` +
+      `▫️ <b>Marketing Support:</b> White-Label Factsheets & Investment Memos\n\n` +
+      `<blockquote>Protect your client introduction and access off-market developer allocations.</blockquote>`,
     reply_markup: {
       inline_keyboard: [
         [
-          { text: '📄 Generate White-Label PDF', callback_data: 'cobroke_make_pdf' },
-          { text: '🛡️ Register a Buyer Deal', callback_data: 'cobroke_reg_deal' }
+          { text: 'White-Label Factsheet', callback_data: 'cobroke_make_pdf' },
+          { text: 'Register Buyer Deal', callback_data: 'cobroke_reg_deal' }
         ],
         [
-          { text: '📞 Discuss Partnership with Nick', url: 'https://t.me/Nick_REAKH' }
+          { text: 'Partnership Terms with Nick', url: 'https://t.me/Nick_REAKH' }
         ]
       ]
     }
@@ -810,36 +799,36 @@ function getCoBrokeMenu() {
 function getDigestBroadcast() {
   return {
     text: 
-      `📊 **PROPERTY HUB CAMBODIA · EXECUTIVE WEEKLY DIGEST**\n` +
-      `🔥 **TOP 3 HIGH-YIELD OPPORTUNITIES IN PHNOM PENH**\n\n` +
-      `🥇 **1. TIME SQUARE 8 | 2-BEDROOM RESALE**\n` +
-      `▫️ **Price:** $99,000 USD (Urgent Resale — $15,000 Below Developer!)\n` +
-      `▫️ **Location:** Boeng Trabek / Toul Tompoung, Chamkarmon\n` +
-      `▫️ **Net Rental Yield:** **8.5% Net** ($750/month rent)\n` +
-      `▫️ **Installment:** 10% Down ($9,900) + $495/mo during construction\n\n` +
-      `🥈 **2. RESIDENCE L | 1-BEDROOM HIGH CASH FLOW**\n` +
-      `▫️ **Price:** $45,000 USD (Ready to Move & Rent Out)\n` +
-      `▫️ **Location:** Toul Tompoung (Near Russian Market)\n` +
-      `▫️ **Net Rental Yield:** **9.2% Net** ($350/month rent)\n` +
-      `▫️ **Highlights:** Lowest entry price for verified Strata title condo!\n\n` +
-      `🥉 **3. ODOM LIVING | 2-BEDROOM FLAGSHIP LUXURY**\n` +
-      `▫️ **Price:** $240,000 USD (Pre-Handover Q1 2027)\n` +
-      `▫️ **Location:** Norodom Boulevard / Tonle Bassac\n` +
-      `▫️ **Net Rental Yield:** **6.8% Net** (Diplomatic & Executive Tenancies)\n` +
-      `▫️ **Highlights:** Phnom Penh's premier LEED-Gold mixed-use landmark.\n\n` +
-      `⚡ *Subscribers receive 48-hour priority inspection before external promotion.*`,
+      `<b>PROPERTY HUB CAMBODIA · WEEKLY INVESTMENT BRIEF</b>\n` +
+      `Top 3 High-Yield Opportunities · Phnom Penh\n\n` +
+      `<b>01 · TIME SQUARE 8 | 2-BEDROOM RESALE</b>\n` +
+      `▫️ <b>Price:</b> $99,000 USD (Urgent Resale — $15,000 Below Developer)\n` +
+      `▫️ <b>Location:</b> Boeng Trabek / Toul Tompoung, Chamkarmon\n` +
+      `▫️ <b>Net Rental Yield:</b> 8.5% Net ($750/month rent)\n` +
+      `▫️ <b>Installment:</b> 10% Down ($9,900) + $495/mo construction terms\n\n` +
+      `<b>02 · RESIDENCE L | HIGH CASH-FLOW ASSET</b>\n` +
+      `▫️ <b>Price:</b> $45,000 USD (Immediate Handover & Tenancy)\n` +
+      `▫️ <b>Location:</b> Toul Tompoung, Chamkarmon\n` +
+      `▫️ <b>Net Rental Yield:</b> 9.2% Net ($350/month rent)\n` +
+      `▫️ <b>Title:</b> 100% Foreign Freehold Strata Title\n\n` +
+      `<b>03 · ODOM LIVING | FLAGSHIP RESIDENTIAL TOWER</b>\n` +
+      `▫️ <b>Price:</b> $240,000 USD (Handover Q1 2027)\n` +
+      `▫️ <b>Location:</b> Norodom Boulevard, Tonle Bassac\n` +
+      `▫️ <b>Net Rental Yield:</b> 6.8% Net (Diplomatic & Executive Tenancies)\n` +
+      `▫️ <b>Architecture:</b> Phnom Penh's LEED-Gold landmark mixed-use\n\n` +
+      `<blockquote>Registered private subscribers receive 48-hour priority inspection window before public marketing.</blockquote>`,
     reply_markup: {
       inline_keyboard: [
         [
-          { text: '🏢 Time Square 8 ($99k)', callback_data: 'btn_view_TS8' },
-          { text: '🏢 Residence L ($45k)', callback_data: 'btn_view_ResL' }
+          { text: 'Time Square 8 ($99k)', callback_data: 'btn_view_TS8' },
+          { text: 'Residence L ($45k)', callback_data: 'btn_view_ResL' }
         ],
         [
-          { text: '🏢 Odom Living ($240k)', callback_data: 'btn_view_Odom' },
-          { text: '🧮 Payment Calculator', callback_data: 'btn_calc_99000_TS8' }
+          { text: 'Odom Living ($240k)', callback_data: 'btn_view_Odom' },
+          { text: 'Payment Calculator', callback_data: 'btn_calc_99000_TS8' }
         ],
         [
-          { text: '📅 Schedule Private Tour with Nick', url: 'https://t.me/Nick_REAKH' }
+          { text: 'Private Consultation with Nick', url: 'https://t.me/Nick_REAKH' }
         ]
       ]
     }
@@ -1241,12 +1230,12 @@ async function pollUpdates() {
           const formData = new FormData();
           formData.append('chat_id', chatId);
           formData.append('photo', new Blob([fileData], { type: 'image/jpeg' }), 'signage_poster.jpg');
-          formData.append('caption', `🖼️ <b>High-Resolution Branded Signage Poster</b>\n\n🏢 <b>${title}</b>\n💰 <b>Price:</b> ${price}\n📍 <b>Location:</b> ${loc}\n🔗 <b>Deep Link:</b> <code>${slug}</code>\n\n<i>Ready for A4/A3 physical printout, window displays, or site signage. When scanned by any smartphone, it opens the bot directly to this property!</i>`);
+          formData.append('caption', `<b>BRANDED SIGNAGE POSTER GENERATED</b>\n\n<b>${title}</b>\n▫️ <b>Pricing:</b> ${price}\n▫️ <b>Location:</b> ${loc}\n▫️ <b>Deep Link:</b> <code>${slug}</code>\n\n<blockquote>Print-ready 900×1200 high-resolution format with embedded gold QR. Direct smartphone scan routes visitors into Telegram portfolio.</blockquote>`);
           formData.append('parse_mode', 'HTML');
           formData.append('reply_markup', JSON.stringify({
             inline_keyboard: [
-              [{ text: '📱 Test Deep Link', url: slug.startsWith('http') ? slug : `https://t.me/Nick_REAKH_Bot?start=${slug}` }],
-              [{ text: '💬 Share with Nick', url: 'https://t.me/Nick_REAKH' }]
+              [{ text: 'Open Deep Link', url: slug.startsWith('http') ? slug : `https://t.me/Nick_REAKH_Bot?start=${slug}` }],
+              [{ text: 'Share with Nick', url: 'https://t.me/Nick_REAKH' }]
             ]
           }));
 
@@ -1263,22 +1252,22 @@ async function pollUpdates() {
           const unitName = unit === 'TS8' ? 'Time Square 8' : (unit === 'RESL' ? 'Residence L' : unit);
 
           const dropAlert = 
-            `🚨 **FLASH PRICE DROP ALERT!** 🚨\n\n` +
-            `🏢 **${unitName} (Floor 22)**\n` +
-            `📍 Boeng Trabek / Chamkarmon\n\n` +
-            `💰 **Price Slashed:** ~~$${oldPrice.toLocaleString()}~~ ➔ **$${newPrice.toLocaleString()} USD**\n` +
-            `🏷️ **Immediate Savings:** -$${discount.toLocaleString()} USD (-10% Instant Equity)\n` +
-            `📈 **New Net Yield:** **9.4% Net** (boosted by lower entry price!)\n\n` +
-            `⚡ *Exclusive 48-Hour Window for Watchlist Subscribers before public broadcast.*`;
+            `<b>PRICE REDUCTION NOTICE · ${unit}</b>\n\n` +
+            `<b>${unitName} · Floor 22</b>\n` +
+            `Chamkarmon / Boeng Trabek\n\n` +
+            `▫️ <b>Revised Price:</b> $${newPrice.toLocaleString()} USD (Previously <del>$${oldPrice.toLocaleString()}</del>)\n` +
+            `▫️ <b>Instant Equity:</b> -$${discount.toLocaleString()} USD below developer list\n` +
+            `▫️ <b>Adjusted Yield:</b> <b>9.4% Net</b>\n\n` +
+            `<blockquote>Exclusive 48-hour priority window for registered private clients prior to public release.</blockquote>`;
 
           const dropKeyboard = {
             inline_keyboard: [
               [
-                { text: '⚡ Claim Deal & Book Tour', callback_data: `btn_book_${unit}` },
-                { text: '🧮 New Payment Plan', callback_data: `btn_calc_${newPrice}_${unit}` }
+                { text: 'Claim Allocation', callback_data: `btn_book_${unit}` },
+                { text: 'Payment Schedule', callback_data: `btn_calc_${newPrice}_${unit}` }
               ],
               [
-                { text: '💬 Connect with Nick Directly', url: 'https://t.me/Nick_REAKH' }
+                { text: 'Advisory with Nick', url: 'https://t.me/Nick_REAKH' }
               ]
             ]
           };
@@ -1288,7 +1277,7 @@ async function pollUpdates() {
           for (const subChatId of subscribers) {
             await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
               method: 'POST', headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ chat_id: subChatId, text: dropAlert, parse_mode: 'Markdown', reply_markup: dropKeyboard })
+              body: JSON.stringify({ chat_id: subChatId, text: dropAlert, parse_mode: 'HTML', reply_markup: dropKeyboard })
             });
             sentCount++;
           }
@@ -1333,25 +1322,22 @@ async function pollUpdates() {
           };
           saveState();
           const urgentWarning = 
-            `⚠️ <b>SLA ESCALATION WARNING (15-MIN TARGET EXCEEDED!)</b> 🚨\n\n` +
-            `👤 <b>Client:</b> @Takahashi_Tokyo (Kenji Takahashi)\n` +
-            `🏢 <b>Property:</b> Time Square 8 (2BR Resale)\n` +
-            `💰 <b>Budget:</b> $99,000 USD (Cash / Installment)\n` +
-            `⏰ <b>Inquiry Time:</b> 17 minutes ago\n` +
-            `⚡ <b>Current Status:</b> 🔴 <b>UNANSWERED</b>\n\n` +
-            `<blockquote>💡 <b>SPEED-TO-LEAD BENCHMARK:</b>\n` +
-            `▫️ Leads contacted within 5 mins convert at <b>78%</b>.\n` +
-            `▫️ After 15 minutes, conversion drops to <b>under 12%</b>.</blockquote>\n\n` +
-            `👉 Tap below to message the buyer and mark as resolved:`;
+            `<b>SLA DISPATCH WATCHDOG · RESPONSE OVERDUE</b>\n\n` +
+            `▫️ <b>Client:</b> @Takahashi_Tokyo (Kenji Takahashi)\n` +
+            `▫️ <b>Asset:</b> Time Square 8 (2BR Resale)\n` +
+            `▫️ <b>Target Budget:</b> $99,000 USD\n` +
+            `▫️ <b>Elapsed:</b> 17 minutes (Benchmark: &lt; 15 mins)\n` +
+            `▫️ <b>Status:</b> Response Required\n\n` +
+            `<blockquote>Speed-to-lead benchmark: contacts initiated within 5 minutes convert at 78%. After 15 minutes, conversion drops below 12%.</blockquote>`;
 
           const urgentKeyboard = {
             inline_keyboard: [
               [
-                { text: '✅ Mark Contacted (Resolved)', callback_data: `sla_done_${testLeadId}` },
-                { text: '📅 Tour Booked', callback_data: `sla_booked_${testLeadId}` }
+                { text: 'Mark Contacted', callback_data: `sla_done_${testLeadId}` },
+                { text: 'Advance to Tour', callback_data: `sla_booked_${testLeadId}` }
               ],
               [
-                { text: '💬 Message Buyer Now (@Takahashi_Tokyo)', url: 'https://t.me/Nick_REAKH' }
+                { text: 'Direct Message (@Takahashi_Tokyo)', url: 'https://t.me/Nick_REAKH' }
               ]
             ]
           };
@@ -1391,7 +1377,7 @@ async function pollUpdates() {
           const formData = new FormData();
           formData.append('chat_id', chatId);
           formData.append('document', new Blob([fileData], { type: 'application/pdf' }), `TS8_Factsheet_${agentName.replace(/\s+/g, '_')}.pdf`);
-          formData.append('caption', `🤝 <b>Personalized Co-Broke Investment Memo</b>\n\n🏢 <b>Time Square 8 (2BR)</b> · $99,000 USD\n👤 <b>Sub-Agent:</b> ${agentName} (📞 ${agentPhone})\n🛡️ <b>50/50 Commission Protection Verified</b>\n\n<i>You can forward this PDF directly to your buyers. When they close, your split is guaranteed!</i>`);
+          formData.append('caption', `<b>CO-BROKE INVESTMENT MEMO</b>\n\n<b>Time Square 8 (2BR)</b> · $99,000 USD\n\n▫️ <b>Sub-Agent:</b> ${agentName} (${agentPhone})\n▫️ <b>Commission Structure:</b> 50/50 Protected Split\n\n<blockquote>Client-ready investment memo with your direct sub-agent contact credentials. Safe harbor protection active upon delivery.</blockquote>`);
           formData.append('parse_mode', 'HTML');
 
           await fetch(`https://api.telegram.org/bot${token}/sendDocument`, { method: 'POST', body: formData });
@@ -1448,19 +1434,18 @@ async function pollUpdates() {
           saveState();
 
           const cert = 
-            `🛡️ **PHC CO-BROKE COMMISSION PROTECTION CERTIFICATE**\n\n` +
-            `📜 **Certificate ID:** \`#${regId}\`\n` +
-            `📅 **Timestamp:** ${new Date().toUTCString()}\n` +
-            `👤 **Sub-Agent:** ${senderName} (${sender.username ? '@' + sender.username : ''})\n` +
-            `👤 **Protected Client:** ${clientName} (${clientPhone.slice(0, 4)}****${clientPhone.slice(-3)})\n` +
-            `🏢 **Property:** ${unit === 'TS8' ? 'Time Square 8' : unit}\n` +
-            `💰 **Commission Split:** **50% PHC / 50% Sub-Agent**\n` +
-            `⏳ **Protection Period:** **60 Days Exclusive Safe Harbor**\n\n` +
-            `✅ *This deal registration is officially filed in Property Hub Cambodia's broker ledger.*`;
+            `<b>PHC BROKER SAFE HARBOR CERTIFICATE</b>\n` +
+            `Reference: <code>#${regId}</code>\n\n` +
+            `▫️ <b>Sub-Agent:</b> ${senderName} (${sender.username ? '@' + sender.username : ''})\n` +
+            `▫️ <b>Protected Buyer:</b> ${clientName} (${clientPhone.slice(0, 4)}••••${clientPhone.slice(-3)})\n` +
+            `▫️ <b>Asset:</b> ${unit === 'TS8' ? 'Time Square 8' : unit}\n` +
+            `▫️ <b>Commission Split:</b> 50% PHC / 50% Sub-Agent\n` +
+            `▫️ <b>Protection Term:</b> 60 Days Exclusive Safe Harbor\n\n` +
+            `<blockquote>Official deal registration recorded in Property Hub Cambodia partner ledger. Non-circumvention guaranteed.</blockquote>`;
 
           await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: chatId, text: cert, parse_mode: 'Markdown' })
+            body: JSON.stringify({ chat_id: chatId, text: cert, parse_mode: 'HTML' })
           });
 
           // Alert Nick to confirm
@@ -1478,8 +1463,8 @@ async function pollUpdates() {
               parse_mode: 'Markdown',
               reply_markup: {
                 inline_keyboard: [
-                  [{ text: '✅ Endorse 50/50 Protection', callback_data: `deal_confirm_${regId}` }],
-                  [{ text: '💬 Message Sub-Agent', url: `tg://user?id=${sender.id}` }]
+                  [{ text: 'Endorse Safe Harbor', callback_data: `deal_confirm_${regId}` }],
+                  [{ text: 'Contact Broker', url: `tg://user?id=${sender.id}` }]
                 ]
               }
             })
@@ -1679,8 +1664,8 @@ async function pollUpdates() {
                 parse_mode: 'Markdown',
                 reply_markup: {
                   inline_keyboard: [
-                    [{ text: '🏢 Sell My Condo (Resale)', callback_data: 'owner_goal_sell' }],
-                    [{ text: '🔑 Rent Out My Condo', callback_data: 'owner_goal_rent' }],
+                    [{ text: 'Sell My Condo (Resale)', callback_data: 'owner_goal_sell' }],
+                    [{ text: 'Rent Out My Condo', callback_data: 'owner_goal_rent' }],
                     [{ text: '💬 Connect Directly with Nick', url: 'https://t.me/Nick_REAKH' }]
                   ]
                 }
@@ -2211,7 +2196,7 @@ async function pollUpdates() {
               chat_id: msg.chat.id, message_id: msg.message_id, text, parse_mode: 'HTML',
               reply_markup: {
                 inline_keyboard: [
-                  [{ text: '🏷️ Taxes & Fees', callback_data: 'legal_taxes' }, { text: '💸 Bank Wires & USDT', callback_data: 'legal_transfers' }],
+                  [{ text: 'Taxes & Fees', callback_data: 'legal_taxes' }, { text: '💸 Bank Wires & USDT', callback_data: 'legal_transfers' }],
                   [{ text: '🔙 Back to Legal Menu', callback_data: 'legal_back' }, { text: '💬 Ask Nick a Question', url: 'https://t.me/Nick_REAKH' }]
                 ]
               }
@@ -2298,7 +2283,7 @@ async function pollUpdates() {
               chat_id: msg.chat.id, message_id: msg.message_id, text, parse_mode: 'HTML',
               reply_markup: {
                 inline_keyboard: [
-                  [{ text: '📜 Strata Title Law', callback_data: 'legal_strata' }, { text: '🏷️ Taxes & Fees', callback_data: 'legal_taxes' }],
+                  [{ text: '📜 Strata Title Law', callback_data: 'legal_strata' }, { text: 'Taxes & Fees', callback_data: 'legal_taxes' }],
                   [{ text: '🔙 Back to Legal Menu', callback_data: 'legal_back' }, { text: '💬 Connect with Nick', url: 'https://t.me/Nick_REAKH' }]
                 ]
               }
@@ -2621,12 +2606,12 @@ async function pollUpdates() {
 
           const lead = leadSlaTracker[leadId] || { name: 'Client', unitRef: 'Time Square 8' };
           const resolvedCard = 
-            `✅ <b>LEAD CONTACTED & RESOLVED!</b> 🟢\n\n` +
-            `👤 <b>Client:</b> ${lead.name || 'Client'}\n` +
-            `🏢 <b>Property:</b> ${lead.unitRef || 'Time Square 8'}\n` +
-            `⏱️ <b>Response SLA:</b> 🟢 <b>EXCELLENT (&lt; 3 mins response)</b>\n` +
-            `⚡ <b>Status:</b> In active direct consultation with Nick.\n\n` +
-            `<blockquote>🎯 <b>Next Recommended Action:</b> Coordinate property viewing date or live video tour session.</blockquote>`;
+            `<b>LEAD CONTACT INITIATED · SLA RESOLVED</b>\n\n` +
+            `▫️ <b>Client:</b> ${lead.name || 'Client'}\n` +
+            `▫️ <b>Asset:</b> ${lead.unitRef || 'Time Square 8'}\n` +
+            `▫️ <b>Response SLA:</b> Benchmark Met (&lt; 3 mins)\n` +
+            `▫️ <b>Current Status:</b> In active advisory with Nick\n\n` +
+            `<blockquote>Next Milestone: Confirm private viewing itinerary or coordinate live video walk-through.</blockquote>`;
 
           const eRes = await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -2636,8 +2621,8 @@ async function pollUpdates() {
               parse_mode: 'HTML',
               reply_markup: {
                 inline_keyboard: [
-                  [{ text: '📅 Advance to: Tour Booked', callback_data: `sla_booked_${leadId}` }],
-                  [{ text: '💬 Re-Open Client Chat', url: lead.userId ? `tg://user?id=${lead.userId}` : 'https://t.me/Nick_REAKH' }]
+                  [{ text: 'Advance to Tour Scheduled', callback_data: `sla_booked_${leadId}` }],
+                  [{ text: 'Open Client Chat', url: lead.userId ? `tg://user?id=${lead.userId}` : 'https://t.me/Nick_REAKH' }]
                 ]
               }
             })
@@ -2659,11 +2644,11 @@ async function pollUpdates() {
 
           const lead = leadSlaTracker[leadId] || { name: 'Client', unitRef: 'Time Square 8' };
           const bookedCard = 
-            `🎉 <b>VIEWING TOUR OFFICIALLY BOOKED!</b> 📅\n\n` +
-            `👤 <b>Client:</b> ${lead.name || 'Client'}\n` +
-            `🏢 <b>Property:</b> ${lead.unitRef || 'Time Square 8'}\n` +
-            `⚡ <b>Lifecycle Stage:</b> 🟡 <b>Tour Scheduled (High Conversion Pipeline)</b>\n\n` +
-            `<blockquote>📆 <b>Calendar Event:</b> Synchronized with PHC inspection schedule. Client will receive automated reminder 2 hours prior to inspection.</blockquote>`;
+            `<b>INSPECTION TOUR CONFIRMED</b>\n\n` +
+            `▫️ <b>Client:</b> ${lead.name || 'Client'}\n` +
+            `▫️ <b>Asset:</b> ${lead.unitRef || 'Time Square 8'}\n` +
+            `▫️ <b>Pipeline Stage:</b> Tour Scheduled\n\n` +
+            `<blockquote>Synchronized with PHC inspection calendar. Automated calendar briefing will dispatch to client.</blockquote>`;
 
           const bRes = await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -2673,7 +2658,7 @@ async function pollUpdates() {
               parse_mode: 'HTML',
               reply_markup: {
                 inline_keyboard: [
-                  [{ text: '🔑 Open Landlord Dashboard', callback_data: 'owner_refresh_TS8-22' }]
+                  [{ text: 'Landlord Dashboard', callback_data: 'owner_refresh_TS8-22' }]
                 ]
               }
             })
