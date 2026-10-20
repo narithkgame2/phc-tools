@@ -106,25 +106,24 @@ saveState();
 
 function getLanguageMenu() {
   return {
-    text: `🌐 <b>SELECT YOUR PREFERRED LANGUAGE / 言語選択 / 语言选择 / Выберите язык</b>\n\n` +
-      `Choose how Property Hub Cambodia displays real estate inventory, financial models, and legal documentation:\n\n` +
-      `▫️ 🇬🇧 <b>English:</b> Global USD pricing, strata cadastral framework\n` +
-      `▫️ 🇯🇵 <b>日本語:</b> USD＋日本円（万円換算）・坪換算・日系投資家窓口直通\n` +
-      `▫️ 🇨🇳 <b>简体中文:</b> 美元避险资产・硬卡永久产权・中文顾问直通\n` +
-      `▫️ 🇷🇺 <b>Русский:</b> Расчет доходности в USD, ВНЖ, полное юридическое сопровождение`,
-    parse_mode: 'HTML',
+    text: `<b>SELECT LANGUAGE / 言語をお選びください</b>\n\n` +
+      `▫️ 🇯🇵 <b>日本語:</b> USD＋日本円換算（万円）・坪換算・日系窓口直通\n` +
+      `▫️ 🇬🇧 <b>English:</b> Global USD pricing, strata title framework\n` +
+      `▫️ 🇨🇳 <b>简体中文:</b> 美元避险资产・硬卡永久产权・中文顾问\n` +
+      `▫️ 🇷🇺 <b>Русский:</b> Расчет доходности в USD, фрихолд\n\n` +
+      `言語を選択してください / Select preferred language:`,
     reply_markup: {
       inline_keyboard: [
         [
-          { text: '🇬🇧 English (Global USD)', callback_data: 'set_lang_EN' },
-          { text: '🇯🇵 日本語 (JPY 万円/坪)', callback_data: 'set_lang_JP' }
+          { text: '🇯🇵 日本語 (Japanese)', callback_data: 'set_lang_JP' },
+          { text: '🇬🇧 English (USD)', callback_data: 'set_lang_EN' }
         ],
         [
-          { text: '🇨🇳 简体中文 (USD/人民币)', callback_data: 'set_lang_ZH' },
-          { text: '🇷🇺 Русский (USD/Фрихолд)', callback_data: 'set_lang_RU' }
+          { text: '🇨🇳 简体中文', callback_data: 'set_lang_ZH' },
+          { text: '🇷🇺 Русский', callback_data: 'set_lang_RU' }
         ],
         [
-          { text: '🔙 Back to Home Portal', callback_data: 'owner_back_main' }
+          { text: '🔙 メインメニュー / Main Menu', callback_data: 'menu_main' }
         ]
       ]
     }
@@ -282,23 +281,16 @@ function getTS8Card(lang = 'EN') {
       reply_markup: {
         inline_keyboard: [
           [
-            { text: '📅 内覧予約', callback_data: 'btn_book_TS8' },
-            { text: '📄 概要書PDF', callback_data: 'btn_pdf_TS8' }
+            { text: '内覧予約 / ビデオ案内', callback_data: 'btn_book_TS8' },
+            { text: '収支・ローン試算', callback_data: 'btn_calc_99000_TS8' }
           ],
           [
-            { text: '🧮 試算・ローン', callback_data: 'btn_calc_99000_TS8' },
-            { text: '📚 法律ガイド', callback_data: 'btn_legal_guide' }
+            { text: '外国人所有権ガイド', callback_data: 'btn_legal_guide' },
+            { text: '3大物件 比較', callback_data: 'btn_compare_TS8' }
           ],
           [
-            { text: '💱 円換算 (万円)', callback_data: 'btn_currency_99000' },
-            { text: '⚖️ 3物件比較', callback_data: 'btn_compare_TS8' }
-          ],
-          [
-            { text: '🔔 値下げ通知', callback_data: 'btn_track_TS8' },
-            { text: '🌐 言語切替', callback_data: 'btn_change_lang' }
-          ],
-          [
-            { text: '💬 Nickへ相談', url: 'https://t.me/Nick_REAKH' }
+            { text: 'Nickへ相談', url: 'https://t.me/Nick_REAKH' },
+            { text: '🔙 メインメニュー', callback_data: 'menu_main' }
           ]
         ]
       }
@@ -635,7 +627,27 @@ function getComparisonCard(lang = 'EN') {
   };
 }
 
-function getOwnerIntakeStart() {
+function getOwnerIntakeStart(lang = 'EN') {
+  if (lang === 'JP') {
+    return {
+      text: `<b>物件売却・賃貸掲載のお申し込み</b>\n\n` +
+        `プノンペンの優良コンドミニアムを、日系・欧米・中華圏の優良投資家および駐在員ネットワーク（4言語）に向けて無料掲載・売却仲介いたします。\n\n` +
+        `<b>ステップ 1/4： ご希望のご相談内容をお選びください</b>`,
+      reply_markup: {
+        inline_keyboard: [
+          [
+            { text: '🏢 コンドミニアム売却 (転売)', callback_data: 'owner_goal_sell' },
+            { text: '🔑 賃貸募集 (テナント付)', callback_data: 'owner_goal_rent' }
+          ],
+          [
+            { text: '💬 Nickへ直接相談', url: 'https://t.me/Nick_REAKH' },
+            { text: '🔙 メインメニュー', callback_data: 'menu_main' }
+          ]
+        ]
+      }
+    };
+  }
+
   return {
     text: `<b>PROPERTY LISTING INTAKE WIZARD</b>\n\n` +
       `Syndicate your property across 4 international channels (English, Japanese, Russian, German) reaching qualified overseas investors and vetted corporate tenants.\n\n` +
@@ -647,7 +659,8 @@ function getOwnerIntakeStart() {
           { text: 'Rent Out My Condo', callback_data: 'owner_goal_rent' }
         ],
         [
-          { text: 'Consult Directly with Nick', url: 'https://t.me/Nick_REAKH' }
+          { text: 'Consult with Nick', url: 'https://t.me/Nick_REAKH' },
+          { text: '🔙 Main Menu', callback_data: 'menu_main' }
         ]
       ]
     }
@@ -1183,7 +1196,7 @@ async function pollUpdates() {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               chat_id: chatId, photo: card.photo, caption: card.caption,
-              parse_mode: 'Markdown', reply_markup: card.reply_markup
+              parse_mode: 'HTML', reply_markup: card.reply_markup
             })
           });
           return;
@@ -1460,16 +1473,17 @@ async function pollUpdates() {
           const dash = getLandlordDashboard(unitRef);
           await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: chatId, text: dash.text, parse_mode: 'Markdown', reply_markup: dash.reply_markup })
+            body: JSON.stringify({ chat_id: chatId, text: dash.text, parse_mode: 'HTML', reply_markup: dash.reply_markup })
           });
           return;
         }
 
         if (text === '/list') {
-          const intake = getOwnerIntakeStart();
+          const userLang = userLanguages[chatId] || 'EN';
+          const intake = getOwnerIntakeStart(userLang);
           await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: chatId, text: intake.text, parse_mode: 'Markdown', reply_markup: intake.reply_markup })
+            body: JSON.stringify({ chat_id: chatId, text: intake.text, parse_mode: 'HTML', reply_markup: intake.reply_markup })
           });
           return;
         }
@@ -1524,7 +1538,7 @@ async function pollUpdates() {
             const menu = getCoBrokeMenu();
             await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
               method: 'POST', headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ chat_id: chatId, text: menu.text, parse_mode: 'Markdown', reply_markup: menu.reply_markup })
+              body: JSON.stringify({ chat_id: chatId, text: menu.text, parse_mode: 'HTML', reply_markup: menu.reply_markup })
             });
             return;
           }
@@ -1683,7 +1697,7 @@ async function pollUpdates() {
               chat_id: chatId,
               photo: card.photo,
               caption: card.caption,
-              parse_mode: 'Markdown',
+              parse_mode: 'HTML',
               reply_markup: card.reply_markup
             })
           });
@@ -2916,18 +2930,21 @@ async function pollUpdates() {
           });
         }
 
-        else if (dataStr === 'owner_back_main') {
+        else if (dataStr === 'owner_back_main' || dataStr === 'portal_home') {
           await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ callback_query_id: cbId })
           });
 
-          const card = getTS8Card();
+          const userLang = userLanguages[msg.chat.id] || 'EN';
+          const menu = getMainMenu(userLang, user.first_name);
           await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              chat_id: msg.chat.id, text: '👋 Returned to Property Hub Cambodia Master Portal.',
-              parse_mode: 'Markdown', reply_markup: card.reply_markup
+              chat_id: msg.chat.id,
+              text: menu.text,
+              parse_mode: 'HTML',
+              reply_markup: menu.reply_markup
             })
           });
         }
