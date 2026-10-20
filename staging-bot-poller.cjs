@@ -34,12 +34,64 @@ let offset = 0;
 // Temporary in-memory lead state tracker
 const leadState = {};
 
-// Watchlist storage: unit -> Set of chat IDs
+// Persistent State File
+const fs = require('fs');
+const path = require('path');
+const STATE_FILE = path.join(__dirname, 'data', 'bot-state.json');
+
+// Global Collections
 const watchlist = {
   'TS8': new Set(['353195979']),
   'RESL': new Set(['353195979']),
   'ODOM': new Set(['353195979'])
 };
+const ownerListingState = {};
+const leadSlaTracker = {};
+const registeredDeals = {};
+
+function loadState() {
+  try {
+    if (fs.existsSync(STATE_FILE)) {
+      const data = JSON.parse(fs.readFileSync(STATE_FILE, 'utf8'));
+      if (data.watchlist) {
+        for (const [unit, list] of Object.entries(data.watchlist)) {
+          watchlist[unit] = new Set(list);
+        }
+      }
+      if (data.registeredDeals) Object.assign(registeredDeals, data.registeredDeals);
+      if (data.leadSlaTracker) Object.assign(leadSlaTracker, data.leadSlaTracker);
+      console.log('💾 Loaded persistent bot state from disk successfully.');
+    }
+  } catch (err) {
+    console.error('⚠️ Could not load state from disk:', err.message);
+  }
+}
+
+function saveState() {
+  try {
+    const dir = path.dirname(STATE_FILE);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    
+    const serializableWatchlist = {};
+    for (const [unit, setObj] of Object.entries(watchlist)) {
+      serializableWatchlist[unit] = Array.from(setObj);
+    }
+
+    const payload = {
+      watchlist: serializableWatchlist,
+      registeredDeals,
+      leadSlaTracker,
+      updatedAt: new Date().toISOString()
+    };
+    fs.writeFileSync(STATE_FILE, JSON.stringify(payload, null, 2), 'utf8');
+  } catch (err) {
+    console.error('⚠️ Failed to save state to disk:', err.message);
+  }
+}
+
+// Initial state hydration
+loadState();
+saveState();
 
 function getTS8Card() {
   return {
@@ -111,8 +163,9 @@ function getCalculatorMenu(price, unit) {
 
 function getLegalGuideMenu() {
   return {
-    text: `📚 **FOREIGN BUYER LEGAL & TAX GUIDE**\n\n` +
+    text: `📚 <b>FOREIGN BUYER LEGAL & TAX GUIDE</b>\n\n` +
       `Official Legal Framework for International Real Estate Buyers in the Kingdom of Cambodia.\n\n` +
+      `<blockquote>⚖️ <b>Constitutional Protection:</b> Foreign freehold ownership is codified under the 2010 Strata Title Law. Units are registered under the buyer's individual passport with identical freehold rights to domestic citizens.</blockquote>\n\n` +
       `Tap any topic below for verified legal facts:`,
     reply_markup: {
       inline_keyboard: [
@@ -139,27 +192,27 @@ function getLegalGuideMenu() {
 function getComparisonCard() {
   return {
     text: 
-      `⚖️ **PHC HANDPICKED INVESTMENT COMPARISON MATRIX**\n\n` +
+      `⚖️ <b>PHC HANDPICKED INVESTMENT COMPARISON MATRIX</b>\n\n` +
       `Compare 3 top-tier investment opportunities in Phnom Penh side-by-side:\n\n` +
-      `🏢 **1. TIME SQUARE 8 (Chamkarmon)**\n` +
-      `▫️ **Price:** $99,000 USD (Urgent Resale)\n` +
-      `▫️ **Size:** 65.0 sqm Gross · 48 sqm Net ($1,523/sqm)\n` +
-      `▫️ **Layout:** 2 Beds · 1 Bath · City Views\n` +
-      `▫️ **Net Yield:** **8.5% Net** | Handover: Q4 2026\n` +
-      `▫️ **Best For:** Balanced High Yield + Expat Capital Appreciation\n\n` +
-      `🏢 **2. RESIDENCE L (Toul Tompoung)**\n` +
-      `▫️ **Price:** $45,000 USD (Low Entry Barrier)\n` +
-      `▫️ **Size:** 47.0 sqm Gross ($957/sqm)\n` +
-      `▫️ **Layout:** 1 Bed · 1 Bath\n` +
-      `▫️ **Net Yield:** **9.2% Net** | Ready to Move & Lease\n` +
-      `▫️ **Best For:** Maximum Immediate Cash Flow Under $50k\n\n` +
-      `🏢 **3. ODOM LIVING (Norodom Blvd / Tonle Bassac)**\n` +
-      `▫️ **Price:** $240,000 USD (Ultra-Luxury Flagship)\n` +
-      `▫️ **Size:** 78.0 sqm Gross ($3,076/sqm)\n` +
-      `▫️ **Layout:** 2 Beds · 2 Baths\n` +
-      `▫️ **Net Yield:** **6.8% Net** | Handover: Q1 2027\n` +
-      `▫️ **Best For:** High-Net-Worth Trophy Asset & Diplomatic Rental\n\n` +
-      `💡 *All 3 properties are Strata Hard Title eligible for 100% foreign freehold ownership.*`,
+      `<blockquote>🏢 <b>1. TIME SQUARE 8 (Chamkarmon)</b>\n` +
+      `▫️ <b>Price:</b> $99,000 USD (Urgent Resale)\n` +
+      `▫️ <b>Size:</b> 65.0 sqm Gross · 48 sqm Net ($1,523/sqm)\n` +
+      `▫️ <b>Layout:</b> 2 Beds · 1 Bath · City Views\n` +
+      `▫️ <b>Net Yield:</b> <b>8.5% Net</b> | Handover: Q4 2026\n` +
+      `▫️ <b>Best For:</b> High Yield + Expat Capital Appreciation</blockquote>\n\n` +
+      `<blockquote>🏢 <b>2. RESIDENCE L (Toul Tompoung)</b>\n` +
+      `▫️ <b>Price:</b> $45,000 USD (Low Entry Barrier)\n` +
+      `▫️ <b>Size:</b> 47.0 sqm Gross ($957/sqm)\n` +
+      `▫️ <b>Layout:</b> 1 Bed · 1 Bath\n` +
+      `▫️ <b>Net Yield:</b> <b>9.2% Net</b> | Ready to Move & Lease\n` +
+      `▫️ <b>Best For:</b> Maximum Immediate Cash Flow Under $50k</blockquote>\n\n` +
+      `<blockquote>🏢 <b>3. ODOM LIVING (Norodom Blvd / Tonle Bassac)</b>\n` +
+      `▫️ <b>Price:</b> $240,000 USD (Ultra-Luxury Flagship)\n` +
+      `▫️ <b>Size:</b> 78.0 sqm Gross ($3,076/sqm)\n` +
+      `▫️ <b>Layout:</b> 2 Beds · 2 Baths\n` +
+      `▫️ <b>Net Yield:</b> <b>6.8% Net</b> | Handover: Q1 2027\n` +
+      `▫️ <b>Best For:</b> High-Net-Worth Trophy Asset & Diplomatic Rental</blockquote>\n\n` +
+      `💡 <i>All 3 properties are Strata Hard Title eligible for 100% foreign freehold ownership.</i>`,
     reply_markup: {
       inline_keyboard: [
         [
@@ -177,10 +230,6 @@ function getComparisonCard() {
     }
   };
 }
-
-// Phase 2: Landlord & SLA state tracking
-const ownerListingState = {};
-const leadSlaTracker = {};
 
 function getOwnerIntakeStart() {
   return {
@@ -275,8 +324,125 @@ function getTourFeedback(unitCode) {
   };
 }
 
-// Phase 3 & 4: Deal Registration & Co-Broke State
-const registeredDeals = {};
+async function generateBrandedPoster({ urlOrSlug, title, subtitle, price, location, refCode }) {
+  const QRCode = require('qrcode');
+  const sharp = require('sharp');
+  
+  const deepLink = (urlOrSlug && urlOrSlug.startsWith('http'))
+    ? urlOrSlug 
+    : `https://t.me/Nick_REAKH_Bot?start=${urlOrSlug || 'ts8_22'}`;
+
+  const cleanTitle = (title || 'TIME SQUARE 8').toUpperCase();
+  const cleanSub = subtitle || `${cleanTitle} · VIP Presentation`;
+  const cleanPrice = price || '#ForSale $99,000';
+  const cleanLoc = location || 'Boeng Trabek / Toul Tompoung, Chamkarmon';
+  const cleanRef = (refCode || 'EXCLUSIVE SHOWCASE').toUpperCase();
+
+  // 1. Generate base high-res QR code (500x500)
+  const qrBuffer = await QRCode.toBuffer(deepLink, {
+    width: 500,
+    margin: 2,
+    color: {
+      dark: '#0b1528',
+      light: '#ffffff'
+    },
+    errorCorrectionLevel: 'H'
+  });
+
+  // 2. Create center logo badge (84x84)
+  const logoBadgeSvg = Buffer.from(`
+    <svg width="84" height="84" viewBox="0 0 84 84" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="goldG" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#f59e0b"/>
+          <stop offset="100%" stop-color="#d97706"/>
+        </linearGradient>
+      </defs>
+      <rect x="2" y="2" width="80" height="80" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+      <circle cx="42" cy="42" r="28" fill="url(#goldG)"/>
+      <text x="42" y="51" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="28" font-weight="900" fill="#000000" text-anchor="middle">P</text>
+    </svg>
+  `);
+
+  const brandedQr = await sharp(qrBuffer)
+    .composite([
+      {
+        input: logoBadgeSvg,
+        top: Math.round((500 - 84) / 2),
+        left: Math.round((500 - 84) / 2)
+      }
+    ])
+    .png()
+    .toBuffer();
+
+  // 3. Create full ready-to-print Signage Poster (900 x 1200)
+  const width = 900;
+  const height = 1200;
+
+  const posterSvg = Buffer.from(`
+    <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#0b1528"/>
+          <stop offset="50%" stop-color="#111d35"/>
+          <stop offset="100%" stop-color="#070c18"/>
+        </linearGradient>
+        <linearGradient id="goldAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#f59e0b"/>
+          <stop offset="100%" stop-color="#d97706"/>
+        </linearGradient>
+      </defs>
+
+      <!-- Background -->
+      <rect width="${width}" height="${height}" fill="url(#bgGrad)"/>
+      <rect x="24" y="24" width="${width - 48}" height="${height - 48}" rx="24" fill="none" stroke="url(#goldAccent)" stroke-width="3"/>
+
+      <!-- Header -->
+      <text x="${width / 2}" y="100" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="800" fill="#f59e0b" letter-spacing="4" text-anchor="middle">PROPERTY HUB CAMBODIA</text>
+      <text x="${width / 2}" y="130" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="600" fill="#94a3b8" letter-spacing="2" text-anchor="middle">VIP PROPERTY SHOWCASE · ${cleanRef}</text>
+
+      <!-- Divider -->
+      <line x1="120" y1="160" x2="${width - 120}" y2="160" stroke="rgba(245, 158, 11, 0.4)" stroke-width="1"/>
+
+      <!-- Property Headline -->
+      <text x="${width / 2}" y="220" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="36" font-weight="900" fill="#ffffff" letter-spacing="-0.5" text-anchor="middle">${cleanTitle}</text>
+      <text x="${width / 2}" y="265" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="22" font-weight="700" fill="#94a3b8" text-anchor="middle">${cleanSub}</text>
+      
+      <!-- Price Pill -->
+      <rect x="${width / 2 - 160}" y="300" width="320" height="52" rx="26" fill="rgba(239, 68, 68, 0.15)" stroke="#ef4444" stroke-width="2"/>
+      <text x="${width / 2}" y="335" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="24" font-weight="900" fill="#f87171" text-anchor="middle">${cleanPrice}</text>
+
+      <text x="${width / 2}" y="390" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="15" font-weight="600" fill="#cbd5e1" text-anchor="middle">📍 ${cleanLoc}</text>
+
+      <!-- QR Card Box Container -->
+      <rect x="${width / 2 - 275}" y="430" width="550" height="550" rx="30" fill="#ffffff" filter="drop-shadow(0 15px 30px rgba(0,0,0,0.5))"/>
+
+      <!-- Instructions Below QR -->
+      <text x="${width / 2}" y="1035" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="800" fill="#ffffff" text-anchor="middle">📱 POINT YOUR PHONE CAMERA TO SCAN</text>
+      <text x="${width / 2}" y="1068" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="500" fill="#94a3b8" text-anchor="middle">Instant access to HD Photo Gallery, Video Tour &amp; 1-Page Factsheet</text>
+
+      <!-- Footer Contacts -->
+      <rect x="40" y="1105" width="${width - 80}" height="60" rx="14" fill="rgba(255, 255, 255, 0.05)"/>
+      <text x="${width / 2}" y="1142" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="700" fill="#f59e0b" text-anchor="middle">📞 011 666 952  ·  💬 Telegram: @Nick_REAKH  ·  🌐 propertyhubcambodia.com</text>
+    </svg>
+  `);
+
+  const finalPoster = await sharp(posterSvg)
+    .composite([
+      {
+        input: brandedQr,
+        top: 455,
+        left: Math.round((width - 500) / 2)
+      }
+    ])
+    .jpeg({ quality: 95 })
+    .toBuffer();
+
+  const safeSlug = (urlOrSlug || 'poster').replace(/[^a-zA-Z0-9]/g, '_');
+  const outPath = `/tmp/Signage_Poster_${safeSlug}.jpg`;
+  fs.writeFileSync(outPath, finalPoster);
+  return outPath;
+}
 
 function generateCoBrokePDF(agentName, agentPhone) {
   return new Promise((resolve, reject) => {
@@ -440,6 +606,62 @@ function getDigestBroadcast() {
   };
 }
 
+async function checkSlaEscalations() {
+  const now = Date.now();
+  const SLA_LIMIT_MS = 15 * 60 * 1000; // 15-minute SLA benchmark
+
+  for (const [id, lead] of Object.entries(leadSlaTracker)) {
+    if (lead && lead.status === 'pending' && !lead.escalated && (now - lead.createdAt >= SLA_LIMIT_MS)) {
+      lead.escalated = true;
+      saveState();
+
+      const elapsedMins = Math.round((now - lead.createdAt) / 60000);
+      const alertMsg = 
+        `🚨 <b>AUTOMATED SLA ESCALATION WARNING (15-MIN TARGET EXCEEDED!)</b> 🚨\n\n` +
+        `👤 <b>Client:</b> ${lead.name || 'Anonymous Client'} (<code>${lead.userId || 'N/A'}</code>)\n` +
+        `🏢 <b>Property / Subject:</b> <code>${lead.unitRef || 'N/A'}</code>\n` +
+        `📋 <b>Inquiry Type:</b> ${lead.type || 'Property Submission / Tour Request'}\n` +
+        `⏰ <b>Pending Since:</b> ${elapsedMins} minutes ago\n` +
+        `⚡ <b>Current Status:</b> 🔴 <b>UNANSWERED</b>\n\n` +
+        `<blockquote>💡 <b>SPEED-TO-LEAD BENCHMARK:</b>\n` +
+        `▫️ Leads contacted within 5 mins convert at <b>78%</b>.\n` +
+        `▫️ After 15 minutes, conversion drops to <b>under 12%</b>.</blockquote>\n\n` +
+        `👉 Tap below to message the client and mark as resolved:`;
+
+      const keyboard = {
+        inline_keyboard: [
+          [
+            { text: '✅ Mark Contacted (Resolved)', callback_data: `sla_done_${id}` },
+            { text: '📅 Advance: Tour Booked', callback_data: `sla_booked_${id}` }
+          ],
+          [
+            { text: '💬 Message Client Now', url: lead.userId ? `tg://user?id=${lead.userId}` : 'https://t.me/Nick_REAKH' }
+          ]
+        ]
+      };
+
+      try {
+        await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: nickChatId,
+            text: alertMsg,
+            parse_mode: 'HTML',
+            reply_markup: keyboard
+          })
+        });
+        console.log(`🚨 Autonomous SLA Escalation alarm dispatched for lead ${id}!`);
+      } catch (err) {
+        console.error(`Failed to dispatch SLA escalation alarm for ${id}:`, err.message);
+      }
+    }
+  }
+}
+
+// Start autonomous background SLA watchdog (checks every 30 seconds)
+setInterval(checkSlaEscalations, 30000);
+
 async function pollUpdates() {
   try {
     const res = await fetch(`https://api.telegram.org/bot${token}/getUpdates?offset=${offset}&timeout=20`);
@@ -501,7 +723,7 @@ async function pollUpdates() {
           const guide = getLegalGuideMenu();
           await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: chatId, text: guide.text, parse_mode: 'Markdown', reply_markup: guide.reply_markup })
+            body: JSON.stringify({ chat_id: chatId, text: guide.text, parse_mode: 'HTML', reply_markup: guide.reply_markup })
           });
           return;
         }
@@ -510,7 +732,7 @@ async function pollUpdates() {
           const comp = getComparisonCard();
           await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: chatId, text: comp.text, parse_mode: 'Markdown', reply_markup: comp.reply_markup })
+            body: JSON.stringify({ chat_id: chatId, text: comp.text, parse_mode: 'HTML', reply_markup: comp.reply_markup })
           });
           return;
         }
@@ -523,6 +745,55 @@ async function pollUpdates() {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ chat_id: chatId, text: calc.text, parse_mode: 'Markdown', reply_markup: calc.reply_markup })
           });
+          return;
+        }
+
+        if (text.startsWith('/makeqr')) {
+          const raw = text.replace('/makeqr', '').trim();
+          let slug = 'ts8_22';
+          let title = 'Time Square 8 (2BR)';
+          let price = '#ForSale $99,000';
+          let loc = 'Boeng Trabek / Toul Tompoung';
+
+          if (raw) {
+            const match = raw.match(/"([^"]+)"|'([^']+)'|(\S+)/g);
+            if (match) {
+              const tokens = match.map(m => m.replace(/^["']|["']$/g, ''));
+              if (tokens[0]) slug = tokens[0];
+              if (tokens[1]) title = tokens[1];
+              if (tokens[2]) price = tokens[2];
+              if (tokens[3]) loc = tokens[3];
+            }
+          }
+
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, text: `🎨 Rendering High-Resolution Branded Signage Poster for **${title}**...`, parse_mode: 'Markdown' })
+          });
+
+          const posterPath = await generateBrandedPoster({
+            urlOrSlug: slug,
+            title,
+            subtitle: `${title} · VIP Presentation`,
+            price,
+            location: loc,
+            refCode: slug.toUpperCase()
+          });
+
+          const fileData = fs.readFileSync(posterPath);
+          const formData = new FormData();
+          formData.append('chat_id', chatId);
+          formData.append('photo', new Blob([fileData], { type: 'image/jpeg' }), 'signage_poster.jpg');
+          formData.append('caption', `🖼️ <b>High-Resolution Branded Signage Poster</b>\n\n🏢 <b>${title}</b>\n💰 <b>Price:</b> ${price}\n📍 <b>Location:</b> ${loc}\n🔗 <b>Deep Link:</b> <code>${slug}</code>\n\n<i>Ready for A4/A3 physical printout, window displays, or site signage. When scanned by any smartphone, it opens the bot directly to this property!</i>`);
+          formData.append('parse_mode', 'HTML');
+          formData.append('reply_markup', JSON.stringify({
+            inline_keyboard: [
+              [{ text: '📱 Test Deep Link', url: slug.startsWith('http') ? slug : `https://t.me/Nick_REAKH_Bot?start=${slug}` }],
+              [{ text: '💬 Share with Nick', url: 'https://t.me/Nick_REAKH' }]
+            ]
+          }));
+
+          await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, { method: 'POST', body: formData });
           return;
         }
 
@@ -593,6 +864,17 @@ async function pollUpdates() {
 
         if (text === '/testsla') {
           const testLeadId = 'lead_sim_' + Math.floor(Math.random() * 8999 + 1000);
+          leadSlaTracker[testLeadId] = {
+            id: testLeadId,
+            name: 'Kenji Takahashi (@Takahashi_Tokyo)',
+            userId: 353195979,
+            unitRef: 'TS8 (2BR Resale)',
+            type: 'Simulated High-Intent Lead',
+            createdAt: Date.now() - 17 * 60 * 1000,
+            status: 'pending',
+            escalated: true
+          };
+          saveState();
           const urgentWarning = 
             `⚠️ **SLA ESCALATION WARNING (15-MIN TARGET EXCEEDED!)** 🚨\n\n` +
             `👤 **Client:** @Takahashi_Tokyo (Kenji Takahashi)\n` +
@@ -704,6 +986,7 @@ async function pollUpdates() {
             registeredAt: new Date().toISOString(),
             status: 'protected'
           };
+          saveState();
 
           const cert = 
             `🛡️ **PHC CO-BROKE COMMISSION PROTECTION CERTIFICATE**\n\n` +
@@ -982,6 +1265,19 @@ async function pollUpdates() {
           const info = leadState[user.id] || { type: 'Property Search', budget: 'Selected' };
           info.location = loc;
 
+          const inquiryLeadId = 'inquiry_' + user.id + '_' + Date.now();
+          leadSlaTracker[inquiryLeadId] = {
+            id: inquiryLeadId,
+            name: userName,
+            userId: user.id,
+            type: `Buyer Inquiry (${info.type || 'Search'} · ${info.budget || 'General'})`,
+            unitRef: loc,
+            createdAt: Date.now(),
+            status: 'pending',
+            escalated: false
+          };
+          saveState();
+
           await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ callback_query_id: cbId, text: '✅ Profile matched! Sending recommendations...' })
@@ -1006,21 +1302,33 @@ async function pollUpdates() {
             })
           });
 
-          // 🚨 INSTANT VIP LEAD ALERT SENT DIRECTLY TO NICK!
+          // 🚨 INSTANT VIP LEAD ALERT SENT DIRECTLY TO NICK WITH SLA ACTIONS!
           await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               chat_id: nickChatId,
-              text: `🚨 **NEW QUALIFIED LEAD RECEIVED!**\n\n` +
+              text: `🚨 **NEW QUALIFIED LEAD RECEIVED!** 🚨\n\n` +
                 `👤 **Client:** ${userName} (${user.first_name} ${user.last_name || ''})\n` +
                 `🎯 **Goal:** ${info.type}\n` +
                 `💰 **Budget Category:** ${info.budget}\n` +
-                `📍 **Preferred Area:** ${loc}\n\n` +
-                `👉 [Tap here to message buyer directly](tg://user?id=${user.id})`,
-              parse_mode: 'Markdown'
+                `📍 **Preferred Area:** ${loc}\n` +
+                `⏰ **Inquiry Time:** Just now\n\n` +
+                `⚡ **Response SLA:** Respond within 15 minutes!`,
+              parse_mode: 'Markdown',
+              reply_markup: {
+                inline_keyboard: [
+                  [
+                    { text: '✅ Mark Contacted', callback_data: `sla_done_${inquiryLeadId}` },
+                    { text: '📅 Tour Booked', callback_data: `sla_booked_${inquiryLeadId}` }
+                  ],
+                  [
+                    { text: '💬 Message Buyer Directly', url: `tg://user?id=${user.id}` }
+                  ]
+                ]
+              }
             })
           });
-          console.log(`🚨 Sent VIP Lead Notification to Nick for user ${userName}!`);
+          console.log(`🚨 Sent VIP Lead Notification with SLA tracking to Nick for user ${userName}!`);
         }
 
         // ── B. INVESTOR SUITE: CURRENCY, WATCHLIST, VIEWING & PDF ──
@@ -1049,6 +1357,7 @@ async function pollUpdates() {
           const unit = dataStr.replace('btn_track_', '').toUpperCase();
           if (!watchlist[unit]) watchlist[unit] = new Set();
           watchlist[unit].add(msg.chat.id.toString());
+          saveState();
 
           const alertText = 
             `🔔 PRICE DROP WATCHLIST ACTIVATED!\n\n` +
@@ -1089,6 +1398,20 @@ async function pollUpdates() {
         else if (dataStr.startsWith('tour_inperson_') || dataStr.startsWith('tour_video_')) {
           const isVideo = dataStr.startsWith('tour_video_');
           const unit = dataStr.replace(isVideo ? 'tour_video_' : 'tour_inperson_', '');
+          const tourLeadId = 'tour_' + unit + '_' + user.id + '_' + Math.floor(Math.random() * 899 + 100);
+
+          leadSlaTracker[tourLeadId] = {
+            id: tourLeadId,
+            name: userName,
+            userId: user.id,
+            type: isVideo ? 'Live Video Tour Request' : 'In-Person Tour Request',
+            unitRef: unit,
+            createdAt: Date.now(),
+            status: 'pending',
+            escalated: false
+          };
+          saveState();
+
           await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ callback_query_id: cbId, text: '✅ Request received! Connecting with Nick...' })
@@ -1114,15 +1437,26 @@ async function pollUpdates() {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               chat_id: nickChatId,
-              text: `📅 **NEW VIEWING TOUR BOOKING!**\n\n` +
+              text: `📅 **NEW VIEWING TOUR BOOKING!** 🚨\n\n` +
                 `👤 **Client:** ${userName} (${user.first_name} ${user.last_name || ''})\n` +
                 `🏢 **Property:** ${unit}\n` +
-                `🎯 **Format:** ${isVideo ? '🎥 Live Overseas Video Call' : '🏢 In-Person Tour'}\n\n` +
-                `👉 [Tap here to message buyer and confirm time](tg://user?id=${user.id})`,
-              parse_mode: 'Markdown'
+                `🎯 **Format:** ${isVideo ? '🎥 Live Overseas Video Call' : '🏢 In-Person Tour'}\n` +
+                `⚡ **Response SLA:** Respond within 15 minutes!`,
+              parse_mode: 'Markdown',
+              reply_markup: {
+                inline_keyboard: [
+                  [
+                    { text: '✅ Mark Contacted', callback_data: `sla_done_${tourLeadId}` },
+                    { text: '📅 Tour Booked', callback_data: `sla_booked_${tourLeadId}` }
+                  ],
+                  [
+                    { text: '💬 Message Buyer Directly', url: `tg://user?id=${user.id}` }
+                  ]
+                ]
+              }
             })
           });
-          console.log(`📅 Sent viewing booking alert to Nick for user ${userName}!`);
+          console.log(`📅 Sent viewing booking alert with SLA tracking to Nick for user ${userName}!`);
         }
 
         else if (dataStr.startsWith('btn_pdf_')) {
@@ -1379,7 +1713,7 @@ async function pollUpdates() {
               method: 'POST', headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 chat_id: msg.chat.id, message_id: msg.message_id,
-                text: guide.text, parse_mode: 'Markdown', reply_markup: guide.reply_markup
+                text: guide.text, parse_mode: 'HTML', reply_markup: guide.reply_markup
               })
             });
           } else {
@@ -1387,7 +1721,7 @@ async function pollUpdates() {
               method: 'POST', headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 chat_id: msg.chat.id,
-                text: guide.text, parse_mode: 'Markdown', reply_markup: guide.reply_markup
+                text: guide.text, parse_mode: 'HTML', reply_markup: guide.reply_markup
               })
             });
           }
@@ -1400,17 +1734,22 @@ async function pollUpdates() {
           });
 
           const text = 
-            `📜 **100% FOREIGN FREEHOLD STRATA TITLE LAW**\n\n` +
-            `✅ **Article 6 of 2010 Foreign Ownership Law:**\n` +
+            `📜 <b>100% FOREIGN FREEHOLD STRATA TITLE LAW</b>\n\n` +
+            `<blockquote>✅ <b>Article 6 of 2010 Foreign Ownership Law:</b>\n` +
             `▫️ Foreign nationals can legally own 100% freehold title in private units of co-owned buildings from the 1st floor upwards.\n` +
             `▫️ Ownership is registered directly under your personal passport name at the Ministry of Land Management & Urban Planning.\n` +
-            `▫️ Issued as a Cadastral "Hard Title" (Strata Title) with state-backed deed guarantee.\n` +
-            `▫️ You possess absolute legal rights to sell, lease, transfer, or pass to heirs indefinitely.`;
+            `▫️ Issued as an unassailable Cadastral "Hard Title" (Strata Title) with state-backed deed guarantee.\n` +
+            `▫️ You possess absolute legal rights to sell, lease, transfer, or pass to heirs indefinitely.</blockquote>\n\n` +
+            `<blockquote>🛡️ <b>Foreign Ownership Quota Safeguards:</b>\n` +
+            `▫️ Up to 70% of total private unit floor area in a co-owned building can be foreign-owned.\n` +
+            `▫️ Ground floor and subterranean levels are reserved for Cambodian nationals.\n` +
+            `▫️ Land within 30km of international land borders is restricted.</blockquote>\n\n` +
+            `💡 <i>Property Hub Cambodia only lists developments with verified 100% strata title eligibility.</i>`;
 
           await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              chat_id: msg.chat.id, message_id: msg.message_id, text, parse_mode: 'Markdown',
+              chat_id: msg.chat.id, message_id: msg.message_id, text, parse_mode: 'HTML',
               reply_markup: {
                 inline_keyboard: [
                   [{ text: '🏷️ Taxes & Fees', callback_data: 'legal_taxes' }, { text: '💸 Bank Wires & USDT', callback_data: 'legal_transfers' }],
@@ -1428,17 +1767,19 @@ async function pollUpdates() {
           });
 
           const text = 
-            `🏷️ **TAXES & GOVERNMENT CLOSING FEES**\n\n` +
+            `🏷️ <b>TAXES & GOVERNMENT CLOSING FEES</b>\n\n` +
             `Cambodia offers one of the most investor-friendly tax regimes globally:\n\n` +
-            `▫️ **Property Transfer Tax (Stamp Duty):** 4% of the Cadastral assessed value (paid once upon title deed transfer).\n` +
-            `▫️ **Annual Property Tax:** 0.1% on properties valued above ~$25,000 USD (assessed on 80% baseline — typically only $50–$100/yr for a 2BR condo).\n` +
-            `▫️ **Capital Gains Tax:** 0% for individual foreign buyers (corporate: 20%).\n` +
-            `▫️ **Rental Withholding Tax:** Non-residents pay 14% withholding (often borne by tenant or offset by management expense deductions).`;
+            `<blockquote>💰 <b>Official Tax Schedule:</b>\n` +
+            `▫️ <b>Property Transfer Tax (Stamp Duty):</b> 4% of Cadastral assessed value (paid once upon hard title transfer).\n` +
+            `▫️ <b>Annual Property Tax:</b> 0.1% on properties valued above ~$25,000 USD (assessed on 80% baseline — typically only $50–$100/yr for a 2BR condo).\n` +
+            `▫️ <b>Capital Gains Tax:</b> 0% for individual foreign buyers (corporate: 20%).\n` +
+            `▫️ <b>Rental Withholding Tax:</b> Non-residents pay 14% withholding (often borne by tenant or offset by management expense deductions).</blockquote>\n\n` +
+            `💡 <i>Property Hub Cambodia prepares complete tax clearance paperwork on your behalf.</i>`;
 
           await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              chat_id: msg.chat.id, message_id: msg.message_id, text, parse_mode: 'Markdown',
+              chat_id: msg.chat.id, message_id: msg.message_id, text, parse_mode: 'HTML',
               reply_markup: {
                 inline_keyboard: [
                   [{ text: '📜 Strata Title Law', callback_data: 'legal_strata' }, { text: '💸 Bank Wires & USDT', callback_data: 'legal_transfers' }],
@@ -1456,16 +1797,17 @@ async function pollUpdates() {
           });
 
           const text = 
-            `💸 **INTERNATIONAL BANK WIRE & DIGITAL ASSETS**\n\n` +
-            `▫️ **USD-Based Economy:** Cambodia is a dual-currency nation operating predominantly in United States Dollars (USD). There is zero currency exchange loss or depreciation risk.\n` +
-            `▫️ **Telegraphic Transfers (SWIFT):** Overseas investors can wire purchase funds directly to developer escrow accounts or PHC partner commercial banks (ABA Bank, Canadia Bank, Prince Bank) with your sales contract.\n` +
-            `▫️ **Digital Currency / USDT:** Property Hub Cambodia can facilitate compliant escrow settlements via USDT (Tether).\n` +
-            `▫️ **Fund Repatriation:** Under the Law on Foreign Exchange, capital, rental income, and profits can be freely remitted abroad through commercial banks.`;
+            `💸 <b>INTERNATIONAL BANK WIRE & DIGITAL ASSETS</b>\n\n` +
+            `<blockquote>🌐 <b>Remittance & Currency Framework:</b>\n` +
+            `▫️ <b>USD-Based Economy:</b> Cambodia is a dual-currency nation operating predominantly in United States Dollars (USD). There is zero currency exchange loss or depreciation risk.\n` +
+            `▫️ <b>Telegraphic Transfers (SWIFT):</b> Overseas investors can wire purchase funds directly to developer escrow accounts or PHC partner commercial banks (ABA Bank, Canadia Bank, Prince Bank) with your sales contract.\n` +
+            `▫️ <b>Digital Currency / USDT:</b> Property Hub Cambodia can facilitate compliant escrow settlements via USDT (Tether).\n` +
+            `▫️ <b>Fund Repatriation:</b> Under the Law on Foreign Exchange, capital, rental income, and profits can be freely remitted abroad through commercial banks.</blockquote>`;
 
           await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              chat_id: msg.chat.id, message_id: msg.message_id, text, parse_mode: 'Markdown',
+              chat_id: msg.chat.id, message_id: msg.message_id, text, parse_mode: 'HTML',
               reply_markup: {
                 inline_keyboard: [
                   [{ text: '📜 Strata Title Law', callback_data: 'legal_strata' }, { text: '🔑 Property Management', callback_data: 'legal_management' }],
@@ -1483,17 +1825,18 @@ async function pollUpdates() {
           });
 
           const text = 
-            `🔑 **TURNKEY OVERSEAS PROPERTY MANAGEMENT**\n\n` +
+            `🔑 <b>TURNKEY OVERSEAS PROPERTY MANAGEMENT</b>\n\n` +
             `Overseas investors never need to fly to Cambodia to manage their unit:\n\n` +
-            `▫️ **Tenant Sourcing & Screening:** We syndicate listings across our 12,000+ subscriber network in English, Japanese, Russian, and German.\n` +
-            `▫️ **Rent Collection & Banking:** Monthly rent is collected and transferred directly to your bank account with complete digital statements.\n` +
-            `▫️ **Maintenance & Repairs:** Dedicated on-site team handles repairs, cleaning, and routine inspections.\n` +
-            `▫️ **Full Digital Reporting:** Quarterly unit condition photos and inspection reports delivered straight to your Telegram.`;
+            `<blockquote>🤝 <b>Full-Lifecycle Passive Landlord Service:</b>\n` +
+            `▫️ <b>Tenant Sourcing & Screening:</b> We syndicate listings across our 12,000+ subscriber network in English, Japanese, Russian, and German.\n` +
+            `▫️ <b>Rent Collection & Banking:</b> Monthly rent is collected and transferred directly to your bank account with complete digital statements.\n` +
+            `▫️ <b>Maintenance & Repairs:</b> Dedicated on-site team handles repairs, cleaning, and routine inspections.\n` +
+            `▫️ <b>Full Digital Reporting:</b> Quarterly unit condition photos and inspection reports delivered straight to your Telegram.</blockquote>`;
 
           await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              chat_id: msg.chat.id, message_id: msg.message_id, text, parse_mode: 'Markdown',
+              chat_id: msg.chat.id, message_id: msg.message_id, text, parse_mode: 'HTML',
               reply_markup: {
                 inline_keyboard: [
                   [{ text: '📜 Strata Title Law', callback_data: 'legal_strata' }, { text: '🏷️ Taxes & Fees', callback_data: 'legal_taxes' }],
@@ -1517,7 +1860,7 @@ async function pollUpdates() {
             body: JSON.stringify({
               chat_id: msg.chat.id,
               text: comp.text,
-              parse_mode: 'Markdown',
+              parse_mode: 'HTML',
               reply_markup: comp.reply_markup
             })
           });
@@ -1674,9 +2017,12 @@ async function pollUpdates() {
             name: userName,
             userId: user.id,
             unitRef: unitRef,
+            type: `Owner Property Listing (${info.goal || 'Resale'})`,
             createdAt: Date.now(),
-            status: 'pending'
+            status: 'pending',
+            escalated: false
           };
+          saveState();
 
           await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -1803,6 +2149,10 @@ async function pollUpdates() {
         // ── PHASE 2: SLA RESPONSE TRACKER ──
         else if (dataStr.startsWith('sla_done_')) {
           const leadId = dataStr.replace('sla_done_', '');
+          if (leadSlaTracker[leadId]) {
+            leadSlaTracker[leadId].status = 'resolved';
+            saveState();
+          }
           await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ callback_query_id: cbId, text: '🟢 SLA Passed! Lead marked as Contacted.' })
@@ -1825,6 +2175,10 @@ async function pollUpdates() {
 
         else if (dataStr.startsWith('sla_booked_')) {
           const leadId = dataStr.replace('sla_booked_', '');
+          if (leadSlaTracker[leadId]) {
+            leadSlaTracker[leadId].status = 'booked';
+            saveState();
+          }
           await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ callback_query_id: cbId, text: '📅 Scheduled in PHC Calendar!' })
