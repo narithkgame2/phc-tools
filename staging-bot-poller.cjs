@@ -2161,19 +2161,31 @@ async function pollUpdates() {
             body: JSON.stringify({ callback_query_id: cbId, text: '🟢 SLA Passed! Lead marked as Contacted.' })
           });
 
-          await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+          const lead = leadSlaTracker[leadId] || { name: 'Client', unitRef: 'Time Square 8' };
+          const resolvedCard = 
+            `✅ <b>LEAD CONTACTED & RESOLVED!</b> 🟢\n\n` +
+            `👤 <b>Client:</b> ${lead.name || 'Client'}\n` +
+            `🏢 <b>Property:</b> ${lead.unitRef || 'Time Square 8'}\n` +
+            `⏱️ <b>Response SLA:</b> 🟢 <b>EXCELLENT (&lt; 3 mins response)</b>\n` +
+            `⚡ <b>Status:</b> In active direct consultation with Nick.\n\n` +
+            `<blockquote>🎯 <b>Next Recommended Action:</b> Coordinate property viewing date or live video tour session.</blockquote>`;
+
+          const eRes = await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               chat_id: msg.chat.id, message_id: msg.message_id,
-              text: (msg.text || '') + `\n\n✅ **LEAD CONTACTED BY NICK!**\n⏱️ **Response SLA:** 🟢 **EXCELLENT (< 3 mins)**\nStatus: In direct consultation.`,
-              parse_mode: 'Markdown',
+              text: resolvedCard,
+              parse_mode: 'HTML',
               reply_markup: {
                 inline_keyboard: [
-                  [{ text: '📅 Advance to: Tour Booked', callback_data: `sla_booked_${leadId}` }]
+                  [{ text: '📅 Advance to: Tour Booked', callback_data: `sla_booked_${leadId}` }],
+                  [{ text: '💬 Re-Open Client Chat', url: lead.userId ? `tg://user?id=${lead.userId}` : 'https://t.me/Nick_REAKH' }]
                 ]
               }
             })
           });
+          const eData = await eRes.json();
+          if (!eData.ok) console.error('⚠️ sla_done editMessageText error:', eData);
         }
 
         else if (dataStr.startsWith('sla_booked_')) {
@@ -2187,15 +2199,29 @@ async function pollUpdates() {
             body: JSON.stringify({ callback_query_id: cbId, text: '📅 Scheduled in PHC Calendar!' })
           });
 
-          await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+          const lead = leadSlaTracker[leadId] || { name: 'Client', unitRef: 'Time Square 8' };
+          const bookedCard = 
+            `🎉 <b>VIEWING TOUR OFFICIALLY BOOKED!</b> 📅\n\n` +
+            `👤 <b>Client:</b> ${lead.name || 'Client'}\n` +
+            `🏢 <b>Property:</b> ${lead.unitRef || 'Time Square 8'}\n` +
+            `⚡ <b>Lifecycle Stage:</b> 🟡 <b>Tour Scheduled (High Conversion Pipeline)</b>\n\n` +
+            `<blockquote>📆 <b>Calendar Event:</b> Synchronized with PHC inspection schedule. Client will receive automated reminder 2 hours prior to inspection.</blockquote>`;
+
+          const bRes = await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               chat_id: msg.chat.id, message_id: msg.message_id,
-              text: (msg.text || '') + `\n\n🎉 **VIEWING / VALUATION TOUR BOOKED!**\nCalendar synchronized with Nick.`,
-              parse_mode: 'Markdown',
-              reply_markup: { inline_keyboard: [] }
+              text: bookedCard,
+              parse_mode: 'HTML',
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: '🔑 Open Landlord Dashboard', callback_data: 'owner_refresh_TS8-22' }]
+                ]
+              }
             })
           });
+          const bData = await bRes.json();
+          if (!bData.ok) console.error('⚠️ sla_booked editMessageText error:', bData);
         }
 
         // ── PHASE 3: CO-BROKE & DEAL REGISTRATION CALLBACKS ──
