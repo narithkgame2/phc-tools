@@ -48,6 +48,13 @@ const watchlist = {
 const ownerListingState = {};
 const leadSlaTracker = {};
 const registeredDeals = {};
+const userLanguages = {};
+const digestSchedule = {
+  autoBroadcast: true,
+  lastBroadcastWeek: null,
+  targetDayOfWeek: 1, // Monday
+  targetHourPhnomPenh: 9 // 09:00 AM (UTC+7)
+};
 
 function loadState() {
   try {
@@ -60,6 +67,8 @@ function loadState() {
       }
       if (data.registeredDeals) Object.assign(registeredDeals, data.registeredDeals);
       if (data.leadSlaTracker) Object.assign(leadSlaTracker, data.leadSlaTracker);
+      if (data.userLanguages) Object.assign(userLanguages, data.userLanguages);
+      if (data.digestSchedule) Object.assign(digestSchedule, data.digestSchedule);
       console.log('💾 Loaded persistent bot state from disk successfully.');
     }
   } catch (err) {
@@ -81,6 +90,8 @@ function saveState() {
       watchlist: serializableWatchlist,
       registeredDeals,
       leadSlaTracker,
+      userLanguages,
+      digestSchedule,
       updatedAt: new Date().toISOString()
     };
     fs.writeFileSync(STATE_FILE, JSON.stringify(payload, null, 2), 'utf8');
@@ -93,7 +104,156 @@ function saveState() {
 loadState();
 saveState();
 
-function getTS8Card() {
+function getLanguageMenu() {
+  return {
+    text: `🌐 <b>SELECT YOUR PREFERRED LANGUAGE / 言語選択 / 语言选择 / Выберите язык</b>\n\n` +
+      `Choose how Property Hub Cambodia displays real estate inventory, financial models, and legal documentation:\n\n` +
+      `▫️ 🇬🇧 <b>English:</b> Global USD pricing, strata cadastral framework\n` +
+      `▫️ 🇯🇵 <b>日本語:</b> USD＋日本円（万円換算）・坪換算・日系投資家窓口直通\n` +
+      `▫️ 🇨🇳 <b>简体中文:</b> 美元避险资产・硬卡永久产权・中文顾问直通\n` +
+      `▫️ 🇷🇺 <b>Русский:</b> Расчет доходности в USD, ВНЖ, полное юридическое сопровождение`,
+    parse_mode: 'HTML',
+    reply_markup: {
+      inline_keyboard: [
+        [
+          { text: '🇬🇧 English (Global USD)', callback_data: 'set_lang_EN' },
+          { text: '🇯🇵 日本語 (JPY 万円/坪)', callback_data: 'set_lang_JP' }
+        ],
+        [
+          { text: '🇨🇳 简体中文 (USD/人民币)', callback_data: 'set_lang_ZH' },
+          { text: '🇷🇺 Русский (USD/Фрихолд)', callback_data: 'set_lang_RU' }
+        ],
+        [
+          { text: '🔙 Back to Home Portal', callback_data: 'owner_back_main' }
+        ]
+      ]
+    }
+  };
+}
+
+function getTS8Card(lang = 'EN') {
+  if (lang === 'JP') {
+    return {
+      photo: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80',
+      caption: 
+        `🎯 **【タイムズスクエア8 | 2ベッドルーム緊急転売】**\n\n` +
+        `#売出価格 $99,000 USD（約1,504万円）\n` +
+        `※ デベロッパー公表価格より約15,000ドル割安のオーナー緊急転売枠！\n\n` +
+        `📍 プノンペン・Chamkarmon / Boeng Trabek\n` +
+        `▫️ **階数:** 22階（市街地パノラマビュー）\n` +
+        `▫️ **面積:** 壁芯 65.0㎡（約19.66坪） / 内法 48.0㎡\n` +
+        `▫️ **間取り:** 2LDK（2寝室・1浴室・専用バルコニー付）\n` +
+        `▫️ **純利回り:** **8.5% Net**（想定月額家賃 $750 USD）\n` +
+        `▫️ **竣工予定:** 2026年第4四半期\n` +
+        `▫️ **権利形態:** 外国人100%自己名義・永久所有権（ハードタイトル）\n\n` +
+        `下記のボタンより各種シミュレーションや現地・オンライン内覧をご利用いただけます:`,
+      reply_markup: {
+        inline_keyboard: [
+          [
+            { text: '📅 内覧予約', callback_data: 'btn_book_TS8' },
+            { text: '📄 概要書PDF', callback_data: 'btn_pdf_TS8' }
+          ],
+          [
+            { text: '🧮 試算・ローン', callback_data: 'btn_calc_99000_TS8' },
+            { text: '📚 法律ガイド', callback_data: 'btn_legal_guide' }
+          ],
+          [
+            { text: '💱 円換算 (万円)', callback_data: 'btn_currency_99000' },
+            { text: '⚖️ 3物件比較', callback_data: 'btn_compare_TS8' }
+          ],
+          [
+            { text: '🔔 値下げ通知', callback_data: 'btn_track_TS8' },
+            { text: '🌐 言語切替', callback_data: 'btn_change_lang' }
+          ],
+          [
+            { text: '💬 Nickへ相談', url: 'https://t.me/Nick_REAKH' }
+          ]
+        ]
+      }
+    };
+  }
+
+  if (lang === 'ZH') {
+    return {
+      photo: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80',
+      caption: 
+        `🎯 **【时代广场8期（Time Square 8）两房紧急转售】**\n\n` +
+        `#售价 $99,000 美元（直降1.5万美元，远低于开发商公开发售价！）\n\n` +
+        `📍 金边·桑园区·万景岗南侧（Chamkarmon / Boeng Trabek）\n` +
+        `▫️ **楼层:** 22层（城市天际线高层开阔全景）\n` +
+        `▫️ **面积:** 建筑面积 65.0 ㎡ / 套内 48.0 ㎡\n` +
+        `▫️ **户型:** 两室一厅一卫（带景观阳台）\n` +
+        `▫️ **净租金回报率:** **8.5% ~ 9.1% Net**（月租约 $750 美元）\n` +
+        `▫️ **交房时间:** 2026年第4季度\n` +
+        `▫️ **产权性质:** 100% 外国人永久分层产权（硬卡 Cadastral Hard Title）\n\n` +
+        `点击下方按钮即可模拟分期付款、查看法律过户流程或预约看房：`,
+      reply_markup: {
+        inline_keyboard: [
+          [
+            { text: '📅 预约看房', callback_data: 'btn_book_TS8' },
+            { text: '📄 项目说明书', callback_data: 'btn_pdf_TS8' }
+          ],
+          [
+            { text: '🧮 贷款计算', callback_data: 'btn_calc_99000_TS8' },
+            { text: '📚 产权税法', callback_data: 'btn_legal_guide' }
+          ],
+          [
+            { text: '💱 汇率/USDT', callback_data: 'btn_currency_99000' },
+            { text: '⚖️ 3盘对比', callback_data: 'btn_compare_TS8' }
+          ],
+          [
+            { text: '🔔 降价提醒', callback_data: 'btn_track_TS8' },
+            { text: '🌐 切换语言', callback_data: 'btn_change_lang' }
+          ],
+          [
+            { text: '💬 咨询 Nick', url: 'https://t.me/Nick_REAKH' }
+          ]
+        ]
+      }
+    };
+  }
+
+  if (lang === 'RU') {
+    return {
+      photo: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80',
+      caption: 
+        `🎯 **TIME SQUARE 8 | 2-КОМНАТНЫЙ ПЕНТХАУС-ВИД**\n\n` +
+        `#Цена $99,000 USD (Срочная перепродажа — на $15,000 ниже застройщика!)\n\n` +
+        `📍 Пномпень · Чамкармон / Боенг Трабек\n` +
+        `▫️ **Этаж:** 22 этаж (Панорамный вид на город)\n` +
+        `▫️ **Площадь:** 65.0 кв.м брутто / 48.0 кв.м нетто\n` +
+        `▫️ **Планировка:** 2 спальни · 1 санузел · балкон\n` +
+        `▫️ **Чистая доходность:** **8.5% – 9.1% Net** ($750/мес аренда)\n` +
+        `▫️ **Срок сдачи:** Q4 2026\n` +
+        `▫️ **Право собственности:** 100% фрихолд (Hard Title на имя иностранца)\n\n` +
+        `Выберите действие ниже для расчета доходности, проверки законов или бронирования тура:`,
+      reply_markup: {
+        inline_keyboard: [
+          [
+            { text: '📅 Тур/Видео', callback_data: 'btn_book_TS8' },
+            { text: '📄 PDF Буклет', callback_data: 'btn_pdf_TS8' }
+          ],
+          [
+            { text: '🧮 Калькулятор', callback_data: 'btn_calc_99000_TS8' },
+            { text: '📚 Законы/ВНЖ', callback_data: 'btn_legal_guide' }
+          ],
+          [
+            { text: '💱 Валюты/USDT', callback_data: 'btn_currency_99000' },
+            { text: '⚖️ Сравнить 3', callback_data: 'btn_compare_TS8' }
+          ],
+          [
+            { text: '🔔 Отслеживать', callback_data: 'btn_track_TS8' },
+            { text: '🌐 Язык', callback_data: 'btn_change_lang' }
+          ],
+          [
+            { text: '💬 Связь с Ником', url: 'https://t.me/Nick_REAKH' }
+          ]
+        ]
+      }
+    };
+  }
+
+  // Default: EN
   return {
     photo: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80',
     caption: 
@@ -110,20 +270,23 @@ function getTS8Card() {
     reply_markup: {
       inline_keyboard: [
         [
-          { text: '📅 Book Private Viewing', callback_data: 'btn_book_TS8' },
-          { text: '📄 1-Page PDF Teaser', callback_data: 'btn_pdf_TS8' }
+          { text: '📅 Book Tour', callback_data: 'btn_book_TS8' },
+          { text: '📄 PDF Teaser', callback_data: 'btn_pdf_TS8' }
         ],
         [
-          { text: '🧮 Payment Calculator', callback_data: 'btn_calc_99000_TS8' },
-          { text: '📚 Foreign Legal Guide', callback_data: 'btn_legal_guide' }
+          { text: '🧮 Calculator', callback_data: 'btn_calc_99000_TS8' },
+          { text: '📚 Legal Guide', callback_data: 'btn_legal_guide' }
         ],
         [
-          { text: '💱 Currency (JPY / EUR / USDT)', callback_data: 'btn_currency_99000' },
-          { text: '⚖️ Compare 3 Units', callback_data: 'btn_compare_TS8' }
+          { text: '💱 JPY / EUR', callback_data: 'btn_currency_99000' },
+          { text: '⚖️ Compare 3', callback_data: 'btn_compare_TS8' }
         ],
         [
-          { text: '🔔 Track Price Drop', callback_data: 'btn_track_TS8' },
-          { text: '💬 Connect with Nick (@Nick_REAKH)', url: 'https://t.me/Nick_REAKH' }
+          { text: '🔔 Price Alerts', callback_data: 'btn_track_TS8' },
+          { text: '🌐 Language', callback_data: 'btn_change_lang' }
+        ],
+        [
+          { text: '💬 Chat with Nick', url: 'https://t.me/Nick_REAKH' }
         ]
       ]
     }
@@ -142,19 +305,15 @@ function getCalculatorMenu(price, unit) {
     reply_markup: {
       inline_keyboard: [
         [
-          { text: `💰 10% Down ($${p10.toLocaleString()}) - Installment`, callback_data: `calc_p10_${price}_${unit}` }
+          { text: `💰 10% Down ($${Math.round(p10 / 1000)}k)`, callback_data: `calc_p10_${price}_${unit}` },
+          { text: `💰 20% Down ($${Math.round(p20 / 1000)}k)`, callback_data: `calc_p20_${price}_${unit}` }
         ],
         [
-          { text: `💰 20% Down ($${p20.toLocaleString()}) - Installment`, callback_data: `calc_p20_${price}_${unit}` }
+          { text: `🏦 Bank Loan (7.5%)`, callback_data: `calc_mortgage_${price}_${unit}` },
+          { text: `📊 Net Yield & ROI`, callback_data: `calc_yield_${price}_${unit}` }
         ],
         [
-          { text: `🏦 15-Year Bank Mortgage (7.5%)`, callback_data: `calc_mortgage_${price}_${unit}` }
-        ],
-        [
-          { text: `📊 Net Rental Yield & ROI Model`, callback_data: `calc_yield_${price}_${unit}` }
-        ],
-        [
-          { text: `🔙 Back to Property Card`, callback_data: `btn_view_${unit}` }
+          { text: `🔙 Back to Unit`, callback_data: `btn_view_${unit}` }
         ]
       ]
     }
@@ -170,26 +329,107 @@ function getLegalGuideMenu() {
     reply_markup: {
       inline_keyboard: [
         [
-          { text: '📜 100% Freehold Strata Title Law', callback_data: 'legal_strata' }
+          { text: '📜 Strata Law', callback_data: 'legal_strata' },
+          { text: '🏷️ Taxes & Fees', callback_data: 'legal_taxes' }
         ],
         [
-          { text: '🏷️ Taxes & Government Closing Fees', callback_data: 'legal_taxes' }
+          { text: '💸 Wires & USDT', callback_data: 'legal_transfers' },
+          { text: '🔑 Management', callback_data: 'legal_management' }
         ],
         [
-          { text: '💸 International Bank Wire & USDT', callback_data: 'legal_transfers' }
-        ],
-        [
-          { text: '🔑 Overseas Turnkey Property Management', callback_data: 'legal_management' }
-        ],
-        [
-          { text: '💬 Ask Nick a Legal Question', url: 'https://t.me/Nick_REAKH' }
+          { text: '💬 Legal Q&A with Nick', url: 'https://t.me/Nick_REAKH' }
         ]
       ]
     }
   };
 }
 
-function getComparisonCard() {
+function getComparisonCard(lang = 'EN') {
+  if (lang === 'JP') {
+    return {
+      text: 
+        `⚖️ <b>プノンペン主要投資物件 比較マトリクス</b>\n\n` +
+        `プノンペン中心部の厳選3大高利回りコンドミニアムを徹底比較：\n\n` +
+        `<blockquote>🏢 <b>1. タイムズスクエア8（Chamkarmon）</b>\n` +
+        `▫️ <b>価格：</b> $99,000 USD（約1,504万円・割安緊急転売枠）\n` +
+        `▫️ <b>面積：</b> 壁芯 65.0㎡ / 約19.66坪（$1,523/㎡）\n` +
+        `▫️ <b>間取り：</b> 2LDK（2寝室・1浴室・市街地ビュー）\n` +
+        `▫️ <b>純利回り：</b> <b>8.5% Net</b> | 竣工予定：2026年第4四半期\n` +
+        `▫️ <b>おすすめ：</b> 高利回りインカムゲイン ＋ 日系・欧米駐在員賃貸需要</blockquote>\n\n` +
+        `<blockquote>🏢 <b>2. レジデンス L（Toul Tompoung / ロシアンマーケット近接）</b>\n` +
+        `▫️ <b>価格：</b> $45,000 USD（約684万円・小口エントリー）\n` +
+        `▫️ <b>面積：</b> 47.0㎡ / 約14.21坪（$957/㎡）\n` +
+        `▫️ <b>間取り：</b> 1LDK（即入居・賃貸運用可能）\n` +
+        `▫️ <b>純利回り：</b> <b>9.2% Net</b>（月額 $350 USDで稼働中）\n` +
+        `▫️ <b>おすすめ：</b> 5万ドル以下で即キャッシュフローを得たい投資家向け</blockquote>\n\n` +
+        `<blockquote>🏢 <b>3. オドム・リビング（Norodom Blvd / Tonle Bassac）</b>\n` +
+        `▫️ <b>価格：</b> $240,000 USD（約3,648万円・最高峰フラッグシップ）\n` +
+        `▫️ <b>面積：</b> 78.0㎡ / 約23.59坪（$3,076/㎡）\n` +
+        `▫️ <b>間取り：</b> 2LDK・2浴室・LEEDゴールド認証\n` +
+        `▫️ <b>純利回り：</b> <b>6.8% Net</b> | 竣工：2027年第1四半期\n` +
+        `▫️ <b>おすすめ：</b> 外交官・多国籍企業エグゼクティブ向けプレステージ資産</blockquote>\n\n` +
+        `💡 <i>全物件、2010年外国人所有法に基づく100%自己名義ハードタイトル（分層所有権）対象です。</i>`,
+      reply_markup: {
+        inline_keyboard: [
+          [
+            { text: '🏢 Time Square 8', callback_data: 'btn_view_TS8' },
+            { text: '🏢 Residence L', callback_data: 'btn_view_ResL' }
+          ],
+          [
+            { text: '🏢 Odom Living', callback_data: 'btn_view_Odom' },
+            { text: '🧮 試算・ローン', callback_data: 'btn_calc_99000_TS8' }
+          ],
+          [
+            { text: '💬 Nickへ相談', url: 'https://t.me/Nick_REAKH' }
+          ]
+        ]
+      }
+    };
+  }
+
+  if (lang === 'ZH') {
+    return {
+      text: 
+        `⚖️ <b>金边三大核心热销投资项目 对比矩阵</b>\n\n` +
+        `为您精选金边当前最具投资价值与现金流回报的3处优质物业：\n\n` +
+        `<blockquote>🏢 <b>1. 时代广场8期 Time Square 8（桑园区）</b>\n` +
+        `▫️ <b>价格：</b> $99,000 美元（直降1.5万美元，业主急售转让）\n` +
+        `▫️ <b>面积：</b> 建筑 65.0 ㎡ · 套内 48.0 ㎡（$1,523/㎡）\n` +
+        `▫️ <b>户型：</b> 两室一厅一卫 · 全景城市天际线\n` +
+        `▫️ <b>净回报率：</b> <b>8.5% ~ 9.1% Net</b> | 交房时间：2026年Q4\n` +
+        `▫️ <b>投资定位：</b> 稳健高租金回报 ＋ 外籍租客密集核心区</blockquote>\n\n` +
+        `<blockquote>🏢 <b>2. 住宅 L Residence L（俄罗斯市场区）</b>\n` +
+        `▫️ <b>价格：</b> $45,000 美元（超低投资门槛，现房即买即出租）\n` +
+        `▫️ <b>面积：</b> 建筑 47.0 ㎡（$957/㎡ 单价极低）\n` +
+        `▫️ <b>户型：</b> 一室一厅一卫\n` +
+        `▫️ <b>净回报率：</b> <b>9.2% Net</b>（月租约 $350 美元，高出租率）\n` +
+        `▫️ <b>投资定位：</b> 5万美元以内、追求即时充沛美元现金流</blockquote>\n\n` +
+        `<blockquote>🏢 <b>3. 傲多公馆 ODOM Living（诺罗敦大道 / 桑园区）</b>\n` +
+        `▫️ <b>价格：</b> $240,000 美元（金边顶奢地标、LEED金级绿色建筑）\n` +
+        `▫️ <b>面积：</b> 建筑 78.0 ㎡（$3,076/㎡）\n` +
+        `▫️ <b>户型：</b> 两室两厅两卫\n` +
+        `▫️ <b>净回报率：</b> <b>6.8% Net</b> | 交房时间：2027年Q1\n` +
+        `▫️ <b>投资定位：</b> 跨国使馆与企业高管聚居区、家族信托传承级资产</blockquote>\n\n` +
+        `💡 <i>以上全部项目均具备100%合法外国人永久硬卡分层产权资格。</i>`,
+      reply_markup: {
+        inline_keyboard: [
+          [
+            { text: '🏢 时代广场8期', callback_data: 'btn_view_TS8' },
+            { text: '🏢 住宅 L', callback_data: 'btn_view_ResL' }
+          ],
+          [
+            { text: '🏢 傲多公馆', callback_data: 'btn_view_Odom' },
+            { text: '🧮 资金测算', callback_data: 'btn_calc_99000_TS8' }
+          ],
+          [
+            { text: '💬 咨询 Nick', url: 'https://t.me/Nick_REAKH' }
+          ]
+        ]
+      }
+    };
+  }
+
+  // Default: EN
   return {
     text: 
       `⚖️ <b>PHC HANDPICKED INVESTMENT COMPARISON MATRIX</b>\n\n` +
@@ -216,15 +456,15 @@ function getComparisonCard() {
     reply_markup: {
       inline_keyboard: [
         [
-          { text: '🏢 Time Square 8 Details', callback_data: 'btn_view_TS8' },
-          { text: '🏢 Residence L Details', callback_data: 'btn_view_ResL' }
+          { text: '🏢 Time Square 8', callback_data: 'btn_view_TS8' },
+          { text: '🏢 Residence L', callback_data: 'btn_view_ResL' }
         ],
         [
-          { text: '🏢 Odom Living Details', callback_data: 'btn_view_Odom' },
-          { text: '🧮 Payment Calculator', callback_data: 'btn_calc_99000_TS8' }
+          { text: '🏢 Odom Living', callback_data: 'btn_view_Odom' },
+          { text: '🧮 Calculator', callback_data: 'btn_calc_99000_TS8' }
         ],
         [
-          { text: '💬 Request Personalized Advice from Nick', url: 'https://t.me/Nick_REAKH' }
+          { text: '💬 Consult with Nick', url: 'https://t.me/Nick_REAKH' }
         ]
       ]
     }
@@ -662,6 +902,81 @@ async function checkSlaEscalations() {
 // Start autonomous background SLA watchdog (checks every 30 seconds)
 setInterval(checkSlaEscalations, 30000);
 
+async function checkWeeklyDigestScheduler() {
+  if (!digestSchedule.autoBroadcast) return;
+
+  const now = new Date();
+  const utcHour = now.getUTCHours();
+  const phnomPenhHour = (utcHour + 7) % 24;
+  const dayOfWeek = now.getUTCDay(); // 0 is Sunday, 1 is Monday
+
+  // Calculate current week identifier (e.g. "2026-W43")
+  const year = now.getUTCFullYear();
+  const oneJan = new Date(Date.UTC(year, 0, 1));
+  const numberOfDays = Math.floor((now - oneJan) / (24 * 60 * 60 * 1000));
+  const weekNumber = Math.ceil((now.getDay() + 1 + numberOfDays) / 7);
+  const currentWeekId = `${year}-W${weekNumber}`;
+
+  // Check if it is Monday 09:00 AM Phnom Penh time and hasn't broadcasted yet this week
+  if (dayOfWeek === digestSchedule.targetDayOfWeek && 
+      phnomPenhHour === digestSchedule.targetHourPhnomPenh && 
+      digestSchedule.lastBroadcastWeek !== currentWeekId) {
+    
+    console.log(`⏰ Autonomous Weekly Digest triggering for week ${currentWeekId}...`);
+    digestSchedule.lastBroadcastWeek = currentWeekId;
+    saveState();
+
+    const digest = getDigestBroadcast();
+
+    try {
+      // 1. Channel Broadcast
+      await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: channelId,
+          text: digest.text,
+          parse_mode: 'Markdown',
+          reply_markup: {
+            inline_keyboard: [
+              [
+                { text: '📱 View in PHC Bot', url: 'https://t.me/Nick_REAKH_Bot?start=catalog' },
+                { text: '💬 Inquire with Nick', url: 'https://t.me/Nick_REAKH' }
+              ]
+            ]
+          }
+        })
+      });
+
+      // 2. Alert Nick
+      await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: nickChatId,
+          text: `📰 <b>AUTONOMOUS MONDAY INVESTOR DIGEST BROADCASTED!</b> 🚀\n\n` +
+            `▫️ <b>Channel:</b> Nick Test Lab\n` +
+            `▫️ <b>Week Identifier:</b> <code>${currentWeekId}</code>\n` +
+            `▫️ <b>Timestamp:</b> Monday 09:00 AM Phnom Penh Time\n` +
+            `▫️ <b>Status:</b> ✅ Successfully delivered\n\n` +
+            `💡 <i>Autonomous scheduler is active. Next blast scheduled for next Monday 09:00 AM.</i>`,
+          parse_mode: 'HTML',
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: '📱 Open Nick Test Lab', url: 'https://t.me/+olPZyfkgtcQxOTA9' }],
+              [{ text: '⚙️ Scheduler Settings', callback_data: 'sched_status' }]
+            ]
+          }
+        })
+      });
+      console.log(`✅ Autonomous weekly digest successfully dispatched!`);
+    } catch (err) {
+      console.error('⚠️ Failed to dispatch autonomous digest:', err.message);
+    }
+  }
+}
+
+// Start autonomous weekly digest watchdog (checks every 60 seconds)
+setInterval(checkWeeklyDigestScheduler, 60000);
+
 async function pollUpdates() {
   try {
     const res = await fetch(`https://api.telegram.org/bot${token}/getUpdates?offset=${offset}&timeout=20`);
@@ -709,12 +1024,152 @@ async function pollUpdates() {
         }
 
         if (text === '/showcase' || text === '/card') {
-          const card = getTS8Card();
+          const userLang = userLanguages[chatId] || 'EN';
+          const card = getTS8Card(userLang);
           await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               chat_id: chatId, photo: card.photo, caption: card.caption,
               parse_mode: 'Markdown', reply_markup: card.reply_markup
+            })
+          });
+          return;
+        }
+
+        if (text === '/lang' || text === '/language') {
+          const menu = getLanguageMenu();
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, text: menu.text, parse_mode: 'HTML', reply_markup: menu.reply_markup })
+          });
+          return;
+        }
+
+        if (text === '/catalog' || text === '/miniapp') {
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: chatId,
+              text: `📱 <b>PROPERTY HUB CAMBODIA · VISUAL CATALOG (MINI APP)</b>\n\n` +
+                `Experience our full interactive property portal directly inside Telegram:\n` +
+                `▫️ Instant filter by status (#Urgent, #ForSale, #ForRent, #Projects)\n` +
+                `▫️ HD Photo Carousels, Net Yield calculations, and verified developer records\n` +
+                `▫️ Smooth native app-like experience with zero app store download needed!`,
+              parse_mode: 'HTML',
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: '🚀 Open Interactive Mini App', web_app: { url: 'https://propertyhubcambodia.com/telegram-catalog.html' } }],
+                  [{ text: '💬 Connect with Nick Directly', url: 'https://t.me/Nick_REAKH' }]
+                ]
+              }
+            })
+          });
+          return;
+        }
+
+        if (text.startsWith('/scheduledigest')) {
+          const parts = text.split(/\s+/);
+          const subCmd = (parts[1] || 'status').toLowerCase();
+
+          const now = new Date();
+          const phnomPenhHour = (now.getUTCHours() + 7) % 24;
+          const phnomPenhMin = now.getUTCMinutes();
+          const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+          const currentDayName = days[now.getUTCDay()];
+
+          if (subCmd === 'now') {
+            const digest = getDigestBroadcast();
+            await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: channelId,
+                text: digest.text,
+                parse_mode: 'Markdown',
+                reply_markup: {
+                  inline_keyboard: [
+                    [
+                      { text: '📱 View in PHC Bot', url: 'https://t.me/Nick_REAKH_Bot?start=catalog' },
+                      { text: '💬 Inquire with Nick', url: 'https://t.me/Nick_REAKH' }
+                    ]
+                  ]
+                }
+              })
+            });
+
+            await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: chatId,
+                text: `✅ <b>WEEKLY DIGEST BROADCASTED IMMEDIATELY!</b>\n\nDispatched to <b>Nick Test Lab</b>.`,
+                parse_mode: 'HTML',
+                reply_markup: {
+                  inline_keyboard: [
+                    [{ text: '📱 View in Nick Test Lab', url: 'https://t.me/+olPZyfkgtcQxOTA9' }]
+                  ]
+                }
+              })
+            });
+            return;
+          }
+
+          if (subCmd === 'toggle') {
+            digestSchedule.autoBroadcast = !digestSchedule.autoBroadcast;
+            saveState();
+            await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: chatId,
+                text: `⚙️ <b>AUTOMATED DIGEST SCHEDULER:</b> ${digestSchedule.autoBroadcast ? '🟢 <b>ENABLED (Active)</b>' : '🔴 <b>DISABLED (Paused)</b>'}`,
+                parse_mode: 'HTML'
+              })
+            });
+            return;
+          }
+
+          if (subCmd === 'preview') {
+            const digest = getDigestBroadcast();
+            await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: chatId,
+                text: `📰 <b>EXECUTIVE DIGEST · PREVIEW DRAFT</b>\n\n` + digest.text,
+                parse_mode: 'Markdown',
+                reply_markup: {
+                  inline_keyboard: [
+                    [{ text: '🚀 Approve & Broadcast to Channel', callback_data: 'digest_broadcast_now' }],
+                    [{ text: '💬 Discuss with Team', url: 'https://t.me/Nick_REAKH' }]
+                  ]
+                }
+              })
+            });
+            return;
+          }
+
+          // Default: status
+          const statusMsg = 
+            `📅 <b>PHC WEEKLY DIGEST SCHEDULER STATUS</b>\n\n` +
+            `▫️ <b>Status:</b> ${digestSchedule.autoBroadcast ? '🟢 <b>ACTIVE (Autonomous Autopilot)</b>' : '🔴 <b>PAUSED</b>'}\n` +
+            `▫️ <b>Target Schedule:</b> Every Monday at 09:00 AM Phnom Penh Time (UTC+7)\n` +
+            `▫️ <b>Current Phnom Penh Time:</b> ${currentDayName}, ${String(phnomPenhHour).padStart(2, '0')}:${String(phnomPenhMin).padStart(2, '0')}\n` +
+            `▫️ <b>Last Broadcast Week:</b> <code>${digestSchedule.lastBroadcastWeek || 'None yet'}</code>\n` +
+            `▫️ <b>Target Channel:</b> Nick Test Lab (<code>-1004372846355</code>)\n\n` +
+            `<b>Commands:</b>\n` +
+            `▫️ <code>/scheduledigest preview</code> — Preview this week's draft\n` +
+            `▫️ <code>/scheduledigest now</code> — Force broadcast immediately\n` +
+            `▫️ <code>/scheduledigest toggle</code> — Enable/Disable autopilot`;
+
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: chatId,
+              text: statusMsg,
+              parse_mode: 'HTML',
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: '📰 Preview Draft', callback_data: 'sched_preview' }, { text: '🚀 Broadcast Now', callback_data: 'digest_broadcast_now' }],
+                  [{ text: digestSchedule.autoBroadcast ? '⏸️ Pause Autopilot' : '▶️ Enable Autopilot', callback_data: 'sched_toggle' }]
+                ]
+              }
             })
           });
           return;
@@ -730,7 +1185,8 @@ async function pollUpdates() {
         }
 
         if (text === '/compare') {
-          const comp = getComparisonCard();
+          const userLang = userLanguages[chatId] || 'EN';
+          const comp = getComparisonCard(userLang);
           await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ chat_id: chatId, text: comp.text, parse_mode: 'HTML', reply_markup: comp.reply_markup })
@@ -1857,7 +2313,8 @@ async function pollUpdates() {
             body: JSON.stringify({ callback_query_id: cbId })
           });
 
-          const comp = getComparisonCard();
+          const userLang = userLanguages[msg.chat.id] || 'EN';
+          const comp = getComparisonCard(userLang);
           await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -1875,7 +2332,8 @@ async function pollUpdates() {
             body: JSON.stringify({ callback_query_id: cbId })
           });
 
-          const card = getTS8Card();
+          const userLang = userLanguages[msg.chat.id] || 'EN';
+          const card = getTS8Card(userLang);
           await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -2297,6 +2755,171 @@ async function pollUpdates() {
               text: (msg.text || '') + `\n\n✅ **ENDORSED BY NICK (@Nick_REAKH)!**\n🛡️ **Protection Status:** 🟢 **Active 50/50 Safe Harbor (60 Days)**`,
               parse_mode: 'Markdown',
               reply_markup: { inline_keyboard: [] }
+            })
+          });
+        }
+
+        else if (dataStr.startsWith('set_lang_')) {
+          const chosenLang = dataStr.replace('set_lang_', '');
+          userLanguages[msg.chat.id] = chosenLang;
+          saveState();
+
+          const langNames = {
+            'EN': '🇬🇧 English',
+            'JP': '🇯🇵 日本語 (Japanese)',
+            'ZH': '🇨🇳 简体中文 (Chinese)',
+            'RU': '🇷🇺 Русский (Russian)'
+          };
+
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId, text: `✅ ${langNames[chosenLang] || chosenLang}!` })
+          });
+
+          const card = getTS8Card(chosenLang);
+          await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id,
+              photo: card.photo,
+              caption: card.caption,
+              parse_mode: 'Markdown',
+              reply_markup: card.reply_markup
+            })
+          });
+        }
+
+        else if (dataStr === 'btn_change_lang') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+
+          const menu = getLanguageMenu();
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: msg.chat.id, text: menu.text, parse_mode: 'HTML', reply_markup: menu.reply_markup })
+          });
+        }
+
+        else if (dataStr === 'sched_status') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+
+          const now = new Date();
+          const phnomPenhHour = (now.getUTCHours() + 7) % 24;
+          const phnomPenhMin = now.getUTCMinutes();
+          const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+          const currentDayName = days[now.getUTCDay()];
+
+          const statusMsg = 
+            `📅 <b>PHC WEEKLY DIGEST SCHEDULER STATUS</b>\n\n` +
+            `▫️ <b>Status:</b> ${digestSchedule.autoBroadcast ? '🟢 <b>ACTIVE (Autonomous Autopilot)</b>' : '🔴 <b>PAUSED</b>'}\n` +
+            `▫️ <b>Target Schedule:</b> Every Monday at 09:00 AM Phnom Penh Time (UTC+7)\n` +
+            `▫️ <b>Current Phnom Penh Time:</b> ${currentDayName}, ${String(phnomPenhHour).padStart(2, '0')}:${String(phnomPenhMin).padStart(2, '0')}\n` +
+            `▫️ <b>Last Broadcast Week:</b> <code>${digestSchedule.lastBroadcastWeek || 'None yet'}</code>\n` +
+            `▫️ <b>Target Channel:</b> Nick Test Lab (<code>-1004372846355</code>)`;
+
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id,
+              text: statusMsg,
+              parse_mode: 'HTML',
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: '📰 Preview Draft', callback_data: 'sched_preview' }, { text: '🚀 Broadcast Now', callback_data: 'digest_broadcast_now' }],
+                  [{ text: digestSchedule.autoBroadcast ? '⏸️ Pause Autopilot' : '▶️ Enable Autopilot', callback_data: 'sched_toggle' }]
+                ]
+              }
+            })
+          });
+        }
+
+        else if (dataStr === 'sched_toggle') {
+          digestSchedule.autoBroadcast = !digestSchedule.autoBroadcast;
+          saveState();
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              callback_query_id: cbId,
+              text: `Autopilot is now ${digestSchedule.autoBroadcast ? '🟢 ON' : '🔴 OFF'}`
+            })
+          });
+
+          await fetch(`https://api.telegram.org/bot${token}/editMessageReplyMarkup`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id, message_id: msg.message_id,
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: '📰 Preview Draft', callback_data: 'sched_preview' }, { text: '🚀 Broadcast Now', callback_data: 'digest_broadcast_now' }],
+                  [{ text: digestSchedule.autoBroadcast ? '⏸️ Pause Autopilot' : '▶️ Enable Autopilot', callback_data: 'sched_toggle' }]
+                ]
+              }
+            })
+          });
+        }
+
+        else if (dataStr === 'sched_preview') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+
+          const digest = getDigestBroadcast();
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id,
+              text: `📰 <b>EXECUTIVE DIGEST · PREVIEW DRAFT</b>\n\n` + digest.text,
+              parse_mode: 'Markdown',
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: '🚀 Approve & Broadcast to Channel', callback_data: 'digest_broadcast_now' }]
+                ]
+              }
+            })
+          });
+        }
+
+        else if (dataStr === 'digest_broadcast_now') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId, text: '🚀 Broadcasting digest to Nick Test Lab...' })
+          });
+
+          const digest = getDigestBroadcast();
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: channelId,
+              text: digest.text,
+              parse_mode: 'Markdown',
+              reply_markup: {
+                inline_keyboard: [
+                  [
+                    { text: '📱 View in PHC Bot', url: 'https://t.me/Nick_REAKH_Bot?start=catalog' },
+                    { text: '💬 Inquire with Nick', url: 'https://t.me/Nick_REAKH' }
+                  ]
+                ]
+              }
+            })
+          });
+
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id,
+              text: `✅ <b>WEEKLY DIGEST BROADCASTED!</b>\n\nLive on <b>Nick Test Lab</b> channel.`,
+              parse_mode: 'HTML',
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: '📱 View Channel Post', url: 'https://t.me/+olPZyfkgtcQxOTA9' }]
+                ]
+              }
             })
           });
         }

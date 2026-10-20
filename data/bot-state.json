@@ -21,7 +21,24 @@
       "createdAt": 1792457385264,
       "status": "pending",
       "escalated": true
+    },
+    "lead_sim_2783": {
+      "id": "lead_sim_2783",
+      "name": "Kenji Takahashi (@Takahashi_Tokyo)",
+      "userId": 353195979,
+      "unitRef": "TS8 (2BR Resale)",
+      "type": "Simulated High-Intent Lead",
+      "createdAt": 1792458381047,
+      "status": "pending",
+      "escalated": true
     }
   },
-  "updatedAt": "2026-10-20T01:21:14.604Z"
+  "userLanguages": {},
+  "digestSchedule": {
+    "autoBroadcast": true,
+    "lastBroadcastWeek": null,
+    "targetDayOfWeek": 1,
+    "targetHourPhnomPenh": 9
+  },
+  "updatedAt": "2026-10-20T01:40:43.697Z"
 }
