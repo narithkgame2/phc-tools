@@ -679,6 +679,7 @@ async function pollUpdates() {
         const chatId = update.message.chat.id;
         const sender = update.message.from;
         const senderName = sender.first_name || 'Client';
+        console.log(`💬 Message from ${senderName} (${chatId}): "${text}"`);
 
         if (text === '/digest' || text === '/stats') {
           const report = 
@@ -876,15 +877,15 @@ async function pollUpdates() {
           };
           saveState();
           const urgentWarning = 
-            `⚠️ **SLA ESCALATION WARNING (15-MIN TARGET EXCEEDED!)** 🚨\n\n` +
-            `👤 **Client:** @Takahashi_Tokyo (Kenji Takahashi)\n` +
-            `🏢 **Property:** Time Square 8 (2BR Resale)\n` +
-            `💰 **Budget:** $99,000 USD (Cash / Installment)\n` +
-            `⏰ **Inquiry Time:** 17 minutes ago\n` +
-            `⚡ **Current Status:** 🔴 **UNANSWERED**\n\n` +
-            `💡 **SPEED-TO-LEAD BENCHMARK:**\n` +
-            `▫️ Leads contacted within 5 mins convert at **78%**.\n` +
-            `▫️ After 15 minutes, conversion drops to **under 12%**.\n\n` +
+            `⚠️ <b>SLA ESCALATION WARNING (15-MIN TARGET EXCEEDED!)</b> 🚨\n\n` +
+            `👤 <b>Client:</b> @Takahashi_Tokyo (Kenji Takahashi)\n` +
+            `🏢 <b>Property:</b> Time Square 8 (2BR Resale)\n` +
+            `💰 <b>Budget:</b> $99,000 USD (Cash / Installment)\n` +
+            `⏰ <b>Inquiry Time:</b> 17 minutes ago\n` +
+            `⚡ <b>Current Status:</b> 🔴 <b>UNANSWERED</b>\n\n` +
+            `<blockquote>💡 <b>SPEED-TO-LEAD BENCHMARK:</b>\n` +
+            `▫️ Leads contacted within 5 mins convert at <b>78%</b>.\n` +
+            `▫️ After 15 minutes, conversion drops to <b>under 12%</b>.</blockquote>\n\n` +
             `👉 Tap below to message the buyer and mark as resolved:`;
 
           const urgentKeyboard = {
@@ -899,10 +900,12 @@ async function pollUpdates() {
             ]
           };
 
-          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+          const sRes = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: chatId, text: urgentWarning, parse_mode: 'Markdown', reply_markup: urgentKeyboard })
+            body: JSON.stringify({ chat_id: chatId, text: urgentWarning, parse_mode: 'HTML', reply_markup: urgentKeyboard })
           });
+          const sData = await sRes.json();
+          if (!sData.ok) console.error('⚠️ /testsla sendMessage error:', sData);
           return;
         }
 

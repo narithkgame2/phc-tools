@@ -11,6 +11,17 @@
     ]
   },
   "registeredDeals": {},
-  "leadSlaTracker": {},
-  "updatedAt": "2026-10-20T01:03:39.269Z"
+  "leadSlaTracker": {
+    "lead_sim_3595": {
+      "id": "lead_sim_3595",
+      "name": "Kenji Takahashi (@Takahashi_Tokyo)",
+      "userId": 353195979,
+      "unitRef": "TS8 (2BR Resale)",
+      "type": "Simulated High-Intent Lead",
+      "createdAt": 1792457385264,
+      "status": "pending",
+      "escalated": true
+    }
+  },
+  "updatedAt": "2026-10-20T01:17:15.967Z"
 }
