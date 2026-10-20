@@ -131,6 +131,117 @@ function getLanguageMenu() {
   };
 }
 
+
+function getResLCard(lang = 'EN') {
+  return {
+    photo: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80',
+    caption: 
+      `<b>RESIDENCE L · 1-BEDROOM HIGH CASH FLOW</b>\n` +
+      `<b>$45,000 USD</b> (Immediate Handover · Low Entry Barrier)\n\n` +
+      `📍 Toul Tompoung (Near Russian Market), Chamkarmon\n` +
+      `▫️ <b>Dimensions:</b> 47.0 sqm Gross ($957/sqm)\n` +
+      `▫️ <b>Layout:</b> 1 Bedroom · 1 Bathroom · Fully Furnished\n` +
+      `▫️ <b>Net Yield:</b> <b>9.2% Net</b> ($350/mo active rental tenancy)\n` +
+      `▫️ <b>Title:</b> 100% Foreign Freehold Strata Hard Title\n\n` +
+      `<blockquote>Highest rental yield per dollar in Phnom Penh. Ideal for investors seeking immediate monthly cash flow under $50,000 USD.</blockquote>`,
+    reply_markup: {
+      inline_keyboard: [
+        [
+          { text: 'Book Tour', callback_data: 'btn_book_ResL' },
+          { text: 'Payment Calculator', callback_data: 'btn_calc_45000_ResL' }
+        ],
+        [
+          { text: 'Compare 3 Units', callback_data: 'btn_compare_TS8' },
+          { text: 'Legal Guide', callback_data: 'btn_legal_guide' }
+        ],
+        [
+          { text: 'Main Menu', callback_data: 'menu_main' },
+          { text: 'Consult with Nick', url: 'https://t.me/Nick_REAKH' }
+        ]
+      ]
+    }
+  };
+}
+
+function getOdomCard(lang = 'EN') {
+  return {
+    photo: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+    caption: 
+      `<b>ODOM LIVING · FLAGSHIP RESIDENTIAL TOWER</b>\n` +
+      `<b>$240,000 USD</b> (Pre-Handover Q1 2027 · LEED-Gold Certified)\n\n` +
+      `📍 Norodom Boulevard, Tonle Bassac\n` +
+      `▫️ <b>Dimensions:</b> 78.0 sqm Gross ($3,076/sqm)\n` +
+      `▫️ <b>Layout:</b> 2 Bedrooms · 2 Bathrooms · Sky Balcony\n` +
+      `▫️ <b>Net Yield:</b> <b>6.8% Net</b> ($1,400/mo projected diplomatic rent)\n` +
+      `▫️ <b>Title:</b> 100% Foreign Freehold Strata Hard Title\n\n` +
+      `<blockquote>Phnom Penh's premier architectural landmark. Tailored for multinational corporate executives, embassies, and generational private wealth.</blockquote>`,
+    reply_markup: {
+      inline_keyboard: [
+        [
+          { text: 'Book Tour', callback_data: 'btn_book_Odom' },
+          { text: 'Payment Calculator', callback_data: 'btn_calc_240000_Odom' }
+        ],
+        [
+          { text: 'Compare 3 Units', callback_data: 'btn_compare_TS8' },
+          { text: 'Legal Guide', callback_data: 'btn_legal_guide' }
+        ],
+        [
+          { text: 'Main Menu', callback_data: 'menu_main' },
+          { text: 'Consult with Nick', url: 'https://t.me/Nick_REAKH' }
+        ]
+      ]
+    }
+  };
+}
+
+function getMainMenu(senderName = 'Valued Client') {
+  return {
+    text: `<b>PROPERTY HUB CAMBODIA · PRIVATE CLIENT PORTAL</b>\n\n` +
+      `Welcome <b>${senderName}</b>. Access verified prime inventory, investment financial models, and 100% foreign freehold legal verification:\n\n` +
+      `▫️ <b>Curated Inventory:</b> Handpicked off-market resales & developer allocations\n` +
+      `▫️ <b>Financial Modeling:</b> Installments, 15-year mortgages, net rental yields\n` +
+      `▫️ <b>Legal Security:</b> 2010 Strata Title Law & Cadastral hard title records\n\n` +
+      `Select a service below to begin:`,
+    reply_markup: {
+      inline_keyboard: [
+        [
+          { text: 'Buy a Condo', callback_data: 'lead_flow_buy' },
+          { text: 'Rent a Home', callback_data: 'lead_flow_rent' }
+        ],
+        [
+          { text: 'Time Square 8 ($99k)', callback_data: 'btn_view_TS8' },
+          { text: 'Residence L ($45k)', callback_data: 'btn_view_ResL' }
+        ],
+        [
+          { text: 'Payment Calculator', callback_data: 'btn_calc_99000_TS8' },
+          { text: 'Compare 3 Top Units', callback_data: 'btn_compare_TS8' }
+        ],
+        [
+          { text: 'Foreign Buyer Legal Guide', callback_data: 'btn_legal_guide' },
+          { text: 'List My Condo (Owners)', callback_data: 'lead_flow_list' }
+        ],
+        [
+          { text: 'Broker Co-Broke Portal', callback_data: 'btn_cobroke' },
+          { text: 'Language / 言語 / 语言', callback_data: 'btn_change_lang' }
+        ],
+        [
+          { text: 'Consult with Nick', url: 'https://t.me/Nick_REAKH' }
+        ]
+      ]
+    }
+  };
+}
+
+const persistentKeyboard = {
+  keyboard: [
+    [{ text: '🏢 Featured Properties' }, { text: '🧮 Payment Calculator' }],
+    [{ text: '⚖️ Compare Top Units' }, { text: '📚 Legal & Tax Guide' }],
+    [{ text: '💼 List My Property' }, { text: '💬 Consult with Nick' }]
+  ],
+  resize_keyboard: true,
+  is_persistent: true
+};
+
 function getTS8Card(lang = 'EN') {
   if (lang === 'JP') {
     return {
@@ -1539,6 +1650,87 @@ async function pollUpdates() {
           return;
         }
 
+        // Handle persistent reply keyboard taps
+        if (text.includes('Featured Properties') || text === '/properties') {
+          const card = getTS8Card();
+          await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: chatId, photo: card.photo, caption: card.caption,
+              parse_mode: 'HTML', reply_markup: card.reply_markup
+            })
+          });
+          return;
+        }
+
+        if (text.includes('Payment Calculator') || text === '/calculator') {
+          const calc = getCalculatorMenu(99000, 'TS8');
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, text: calc.text, parse_mode: 'HTML', reply_markup: calc.reply_markup })
+          });
+          return;
+        }
+
+        if (text.includes('Compare Top Units')) {
+          const comp = getComparisonCard();
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, text: comp.text, parse_mode: 'HTML', reply_markup: comp.reply_markup })
+          });
+          return;
+        }
+
+        if (text.includes('Legal & Tax Guide')) {
+          const guide = getLegalGuideMenu();
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, text: guide.text, parse_mode: 'HTML', reply_markup: guide.reply_markup })
+          });
+          return;
+        }
+
+        if (text.includes('List My Property') || text.includes('List My Condo')) {
+          const intake = getOwnerIntakeStart();
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, text: intake.text, parse_mode: 'HTML', reply_markup: intake.reply_markup })
+          });
+          return;
+        }
+
+        if (text.includes('Consult with Nick')) {
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: chatId,
+              text: `<b>DIRECT PRIVATE ADVISORY WITH NICK</b>\n\n` +
+                `▫️ <b>Advisor:</b> Nick (@Nick_REAKH)\n` +
+                `▫️ <b>Agency:</b> Property Hub Cambodia\n` +
+                `▫️ <b>Specialization:</b> Foreign Freehold Strata Title & High-Yield Resales\n\n` +
+                `<blockquote>Tap below to open a direct private consultation in Telegram:</blockquote>`,
+              parse_mode: 'HTML',
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: 'Start Chat with Nick', url: 'https://t.me/Nick_REAKH' }]
+                ]
+              }
+            })
+          });
+          return;
+        }
+
+        if (text === '/menu') {
+          const menu = getMainMenu(senderName);
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: chatId, text: menu.text, parse_mode: 'HTML', reply_markup: menu.reply_markup
+            })
+          });
+          return;
+        }
+
         if (text.startsWith('/start') || text.toLowerCase() === 'hi' || text.toLowerCase() === 'hello' || text === '/inquire') {
           console.log(`👤 New client interaction from ${senderName} (${chatId})`);
 
@@ -1570,6 +1762,7 @@ async function pollUpdates() {
             ]
           };
 
+          // Send welcome with inline buttons
           await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1578,6 +1771,18 @@ async function pollUpdates() {
               text: welcomeText,
               parse_mode: 'Markdown',
               reply_markup: welcomeKeyboard
+            })
+          });
+
+          // Also set persistent bottom navigation keyboard for mobile
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: chatId,
+              text: `👇 <i>Quick navigation buttons are docked below for instant access:</i>`,
+              parse_mode: 'HTML',
+              reply_markup: persistentKeyboard
             })
           });
         }
@@ -1727,20 +1932,34 @@ async function pollUpdates() {
             body: JSON.stringify({ callback_query_id: cbId, text: '✅ Profile matched! Sending recommendations...' })
           });
 
-          // Final response with matches
+          // Final response with rich matches and action buttons
           await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               chat_id: msg.chat.id, message_id: msg.message_id,
-              text: `✨ **We found verified units matching your criteria!**\n\n` +
-                `🏢 **Recommended:** Time Square 8 (2BR Resale) or Residence L (1BR)\n` +
-                `📍 **Area:** ${loc === 'TTP' ? 'Toul Tompoung' : (loc === 'BKK1' ? 'BKK1' : 'Phnom Penh Prime')}\n\n` +
-                `Nick has received your inquiry and can show you video tours or arrange a private viewing immediately:`,
-              parse_mode: 'Markdown',
+              text: `<b>VERIFIED UNITS MATCHING YOUR PREFERENCES</b>\n\n` +
+                `Based on your criteria (<b>${info.budget || 'Mid-High Yield'}</b> in <b>${loc === 'TTP' ? 'Toul Tompoung' : (loc === 'BKK1' ? 'BKK1' : 'Chamkarmon / Prime')}</b>), here are our top verified matches:\n\n` +
+                `▫️ <b>Time Square 8 (2BR Resale)</b> · $99,000 USD (8.5% Net)\n` +
+                `▫️ <b>Residence L (1BR Cash Flow)</b> · $45,000 USD (9.2% Net)\n\n` +
+                `<blockquote>Nick has received your inquiry. Select a unit below to review photos, financial installment schedules, and legal records:</blockquote>`,
+              parse_mode: 'HTML',
               reply_markup: {
                 inline_keyboard: [
-                  [{ text: '💬 Connect with Nick (@Nick_REAKH)', url: 'https://t.me/Nick_REAKH' }],
-                  [{ text: '📱 Open Mini App to View Photos', web_app: { url: 'https://www.propertyhubcambodia.com' } }]
+                  [
+                    { text: 'Time Square 8 ($99k)', callback_data: 'btn_view_TS8' },
+                    { text: 'Residence L ($45k)', callback_data: 'btn_view_ResL' }
+                  ],
+                  [
+                    { text: 'Payment Calculator', callback_data: 'btn_calc_99000_TS8' },
+                    { text: 'Compare 3 Units', callback_data: 'btn_compare_TS8' }
+                  ],
+                  [
+                    { text: 'Foreign Buyer Legal Guide', callback_data: 'btn_legal_guide' },
+                    { text: 'Main Menu', callback_data: 'menu_main' }
+                  ],
+                  [
+                    { text: 'Consult with Nick', url: 'https://t.me/Nick_REAKH' }
+                  ]
                 ]
               }
             })
@@ -2325,8 +2544,64 @@ async function pollUpdates() {
               chat_id: msg.chat.id,
               photo: card.photo,
               caption: card.caption,
-              parse_mode: 'Markdown',
+              parse_mode: 'HTML',
               reply_markup: card.reply_markup
+            })
+          });
+        }
+
+        else if (dataStr === 'btn_view_ResL') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+
+          const card = getResLCard();
+          await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id,
+              photo: card.photo,
+              caption: card.caption,
+              parse_mode: 'HTML',
+              reply_markup: card.reply_markup
+            })
+          });
+        }
+
+        else if (dataStr === 'btn_view_Odom') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+
+          const card = getOdomCard();
+          await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id,
+              photo: card.photo,
+              caption: card.caption,
+              parse_mode: 'HTML',
+              reply_markup: card.reply_markup
+            })
+          });
+        }
+
+        else if (dataStr === 'menu_main') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+
+          const menu = getMainMenu(user.first_name);
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id,
+              text: menu.text,
+              parse_mode: 'HTML',
+              reply_markup: menu.reply_markup
             })
           });
         }
