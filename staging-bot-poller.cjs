@@ -194,38 +194,59 @@ function getOdomCard(lang = 'EN') {
   };
 }
 
-function getMainMenu(senderName = 'Valued Client') {
+function getMainMenu(lang = 'EN', senderName = 'Valued Client') {
+  if (lang === 'JP') {
+    return {
+      text: `<b>プロパティ・ハブ・カンボジア</b>\n` +
+        `プノンペン不動産投資 · プライベートアドバイザリー\n\n` +
+        `${senderName}様、ようこそ。\n` +
+        `外国人100%自己名義ハードタイトル対象、プノンペン都心の厳選優良コンドミニアムをご案内いたします。\n\n` +
+        `▫️ <b>米ドル建て資産：</b> 通貨下落リスクのない強固なUSD経済圏\n` +
+        `▫️ <b>完全所有権：</b> 個人パスポート名義でのCadastral本登記\n` +
+        `▫️ <b>日系対応：</b> 代表Nickによる直接個別相談\n\n` +
+        `メニューをお選びください：`,
+      reply_markup: {
+        inline_keyboard: [
+          [
+            { text: '🏢 厳選物件一覧 (TS8他)', callback_data: 'btn_view_TS8' },
+            { text: '🧮 利回り・ローン試算', callback_data: 'btn_calc_99000_TS8' }
+          ],
+          [
+            { text: '📚 外国人所有権・税制ガイド', callback_data: 'btn_legal_guide' },
+            { text: '⚖️ 3大物件 比較マトリクス', callback_data: 'btn_compare_TS8' }
+          ],
+          [
+            { text: '💬 Nickへ個別相談', url: 'https://t.me/Nick_REAKH' },
+            { text: '🌐 言語切替 (Language)', callback_data: 'btn_change_lang' }
+          ]
+        ]
+      }
+    };
+  }
+
+  // Default: EN
   return {
-    text: `<b>PROPERTY HUB CAMBODIA · PRIVATE CLIENT PORTAL</b>\n\n` +
-      `Welcome <b>${senderName}</b>. Access verified prime inventory, investment financial models, and 100% foreign freehold legal verification:\n\n` +
-      `▫️ <b>Curated Inventory:</b> Handpicked off-market resales & developer allocations\n` +
-      `▫️ <b>Financial Modeling:</b> Installments, 15-year mortgages, net rental yields\n` +
-      `▫️ <b>Legal Security:</b> 2010 Strata Title Law & Cadastral hard title records\n\n` +
-      `Select a service below to begin:`,
+    text: `<b>PROPERTY HUB CAMBODIA</b>\n` +
+      `Private Client Real Estate Advisory · Phnom Penh\n\n` +
+      `Welcome <b>${senderName}</b>.\n` +
+      `Access verified prime freehold inventory, cash-flow models, and 100% foreign strata title documentation:\n\n` +
+      `▫️ <b>Curated High-Yield Resales:</b> Verified developer & owner units\n` +
+      `▫️ <b>100% Foreign Freehold:</b> Registered Strata Title under your passport\n` +
+      `▫️ <b>Direct Advisory:</b> Personal consultation with Nick (@Nick_REAKH)\n\n` +
+      `Select an option below:`,
     reply_markup: {
       inline_keyboard: [
         [
-          { text: 'Buy a Condo', callback_data: 'lead_flow_buy' },
-          { text: 'Rent a Home', callback_data: 'lead_flow_rent' }
+          { text: '🏢 Explore Properties', callback_data: 'btn_view_TS8' },
+          { text: '🧮 Payment Calculator', callback_data: 'btn_calc_99000_TS8' }
         ],
         [
-          { text: 'Time Square 8 ($99k)', callback_data: 'btn_view_TS8' },
-          { text: 'Residence L ($45k)', callback_data: 'btn_view_ResL' }
+          { text: '📚 Legal & Tax Guide', callback_data: 'btn_legal_guide' },
+          { text: '⚖️ Compare 3 Units', callback_data: 'btn_compare_TS8' }
         ],
         [
-          { text: 'Payment Calculator', callback_data: 'btn_calc_99000_TS8' },
-          { text: 'Compare 3 Top Units', callback_data: 'btn_compare_TS8' }
-        ],
-        [
-          { text: 'Foreign Buyer Legal Guide', callback_data: 'btn_legal_guide' },
-          { text: 'List My Condo (Owners)', callback_data: 'lead_flow_list' }
-        ],
-        [
-          { text: 'Broker Co-Broke Portal', callback_data: 'btn_cobroke' },
-          { text: 'Language / 言語 / 语言', callback_data: 'btn_change_lang' }
-        ],
-        [
-          { text: 'Consult with Nick', url: 'https://t.me/Nick_REAKH' }
+          { text: '💬 Consult with Nick', url: 'https://t.me/Nick_REAKH' },
+          { text: '🌐 Change Language', callback_data: 'btn_change_lang' }
         ]
       ]
     }
@@ -404,15 +425,46 @@ function getTS8Card(lang = 'EN') {
   };
 }
 
-function getCalculatorMenu(price, unit) {
+function getCalculatorMenu(price, unit, lang = 'EN') {
   const p10 = Math.round(price * 0.1);
   const p20 = Math.round(price * 0.2);
   const unitName = unit === 'TS8' ? 'Time Square 8' : unit;
+
+  if (lang === 'JP') {
+    const jpyPrice = Math.round(price * 152 / 10000);
+    return {
+      text: `<b>収支・利回り試算シミュレーション · タイムズスクエア8</b>\n\n` +
+        `▫️ <b>対象物件：</b> ${unitName}（2LDK · 壁芯65㎡）\n` +
+        `▫️ <b>販売価格：</b> $${price.toLocaleString()} USD（約${jpyPrice}万円）\n` +
+        `▫️ <b>想定家賃：</b> 月額 $750 USD（年額 $9,000 USD）\n` +
+        `▫️ <b>表面利回り：</b> 9.1% Gross / <b>実質純利回り： 8.5% Net</b>\n\n` +
+        `資金計画プランを選択してキャッシュフローをご確認ください：`,
+      reply_markup: {
+        inline_keyboard: [
+          [
+            { text: '10%頭金 分割プラン', callback_data: `calc_p10_${price}_${unit}` },
+            { text: '20%頭金 分割プラン', callback_data: `calc_p20_${price}_${unit}` }
+          ],
+          [
+            { text: '15年銀行ローン (年利7.5%)', callback_data: `calc_mortgage_${price}_${unit}` },
+            { text: '純利回り・ROI詳細', callback_data: `calc_yield_${price}_${unit}` }
+          ],
+          [
+            { text: '🔙 物件情報へ戻る', callback_data: `btn_view_${unit}` },
+            { text: 'メインメニュー', callback_data: 'menu_main' }
+          ]
+        ]
+      }
+    };
+  }
+
   return {
     text: `<b>PAYMENT & CASH-FLOW MODEL · ${unitName.toUpperCase()}</b>\n\n` +
       `▫️ <b>Asset:</b> ${unitName}\n` +
-      `▫️ <b>Purchase Price:</b> $${price.toLocaleString()} USD\n\n` +
-      `Select a financing structure below to inspect down payment terms, monthly installments, and net rental yields:`,
+      `▫️ <b>Purchase Price:</b> $${price.toLocaleString()} USD\n` +
+      `▫️ <b>Projected Rent:</b> $750/month ($9,000 USD/year)\n` +
+      `▫️ <b>Net Yield:</b> <b>8.5% Net</b>\n\n` +
+      `Select a financing structure below to inspect down payment terms and monthly cash flow:`,
     reply_markup: {
       inline_keyboard: [
         [
@@ -424,7 +476,8 @@ function getCalculatorMenu(price, unit) {
           { text: `Net Yield & ROI`, callback_data: `calc_yield_${price}_${unit}` }
         ],
         [
-          { text: `Back to Unit`, callback_data: `btn_view_${unit}` }
+          { text: `Back to Unit`, callback_data: `btn_view_${unit}` },
+          { text: `Main Menu`, callback_data: `menu_main` }
         ]
       ]
     }
@@ -1276,7 +1329,8 @@ async function pollUpdates() {
         }
 
         if (text === '/legal') {
-          const guide = getLegalGuideMenu();
+          const userLang = userLanguages[chatId] || 'EN';
+          const guide = getLegalGuideMenu(userLang);
           await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ chat_id: chatId, text: guide.text, parse_mode: 'HTML', reply_markup: guide.reply_markup })
@@ -1297,7 +1351,8 @@ async function pollUpdates() {
         if (text.startsWith('/calc')) {
           const parts = text.split(/\s+/);
           const customPrice = parseInt(parts[1], 10) || 99000;
-          const calc = getCalculatorMenu(customPrice, 'TS8');
+          const userLang = userLanguages[chatId] || 'EN';
+          const calc = getCalculatorMenu(customPrice, 'TS8', userLang);
           await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ chat_id: chatId, text: calc.text, parse_mode: 'Markdown', reply_markup: calc.reply_markup })
@@ -1592,7 +1647,7 @@ async function pollUpdates() {
             body: JSON.stringify({
               chat_id: channelId,
               text: digest.text,
-              parse_mode: 'Markdown',
+              parse_mode: 'HTML',
               reply_markup: {
                 inline_keyboard: [
                   [
@@ -1609,8 +1664,8 @@ async function pollUpdates() {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               chat_id: nickChatId,
-              text: `✅ **DIGEST BROADCASTED TO NICK TEST LAB!**\n\n` + digest.text,
-              parse_mode: 'Markdown',
+              text: `✅ <b>DIGEST BROADCASTED TO NICK TEST LAB!</b>\n\n` + digest.text,
+              parse_mode: 'HTML',
               reply_markup: digest.reply_markup
             })
           });
@@ -1673,7 +1728,8 @@ async function pollUpdates() {
         }
 
         if (text.includes('Compare Top Units')) {
-          const comp = getComparisonCard();
+          const userLang = userLanguages[chatId] || 'EN';
+          const comp = getComparisonCard(userLang);
           await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ chat_id: chatId, text: comp.text, parse_mode: 'HTML', reply_markup: comp.reply_markup })
@@ -1682,7 +1738,8 @@ async function pollUpdates() {
         }
 
         if (text.includes('Legal & Tax Guide')) {
-          const guide = getLegalGuideMenu();
+          const userLang = userLanguages[chatId] || 'EN';
+          const guide = getLegalGuideMenu(userLang);
           await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ chat_id: chatId, text: guide.text, parse_mode: 'HTML', reply_markup: guide.reply_markup })
@@ -1721,7 +1778,8 @@ async function pollUpdates() {
         }
 
         if (text === '/menu') {
-          const menu = getMainMenu(senderName);
+          const userLang = userLanguages[chatId] || 'EN';
+          const menu = getMainMenu(userLang, senderName);
           await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -1734,57 +1792,54 @@ async function pollUpdates() {
         if (text.startsWith('/start') || text.toLowerCase() === 'hi' || text.toLowerCase() === 'hello' || text === '/inquire') {
           console.log(`👤 New client interaction from ${senderName} (${chatId})`);
 
-          const welcomeText = `👋 **Hello ${senderName}!**\n\n` +
-            `Welcome to **Property Hub Cambodia** — Phnom Penh's premier condo & investment specialists.\n\n` +
-            `How can we assist you today? Select an option below to browse properties or speak directly with our team:`;
+          const existingLang = userLanguages[chatId];
+          if (existingLang) {
+            // User already chose a language: send clean 4-button Main Menu immediately
+            const menu = getMainMenu(existingLang, senderName);
+            await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: chatId,
+                text: menu.text,
+                parse_mode: 'HTML',
+                reply_markup: menu.reply_markup
+              })
+            });
+            return;
+          }
 
-          const welcomeKeyboard = {
+          // Brand New User: Show Calm, Clean Language Selection Gate First!
+          const langGateText = 
+            `<b>PROPERTY HUB CAMBODIA</b>\n` +
+            `プノンペン不動産投資 · プレミアム コンドミニアム仲介\n\n` +
+            `Welcome ${senderName} · ようこそ\n\n` +
+            `Please select your language / 言語をお選びください / 请选择语言：`;
+
+          const langGateKeyboard = {
             inline_keyboard: [
               [
-                { text: '🏠 Buy a Condo', callback_data: 'lead_flow_buy' },
-                { text: '🔑 Rent a Home', callback_data: 'lead_flow_rent' }
+                { text: '🇯🇵 日本語 (Japanese)', callback_data: 'set_lang_JP' },
+                { text: '🇬🇧 English (USD)', callback_data: 'set_lang_EN' }
               ],
               [
-                { text: '🧮 Payment & Mortgage Calculator', callback_data: 'btn_calc_99000_TS8' },
-                { text: '📚 Foreign Buyer Legal Guide', callback_data: 'btn_legal_guide' }
-              ],
-              [
-                { text: '⚖️ Compare Top Investment Units', callback_data: 'btn_compare_TS8' },
-                { text: '💼 List My Unit (Owners)', callback_data: 'lead_flow_list' }
-              ],
-              [
-                { text: '🤝 Co-Broke & Agent Portal (50/50)', callback_data: 'btn_cobroke' },
-                { text: '📱 Browse Mini App', web_app: { url: 'https://www.propertyhubcambodia.com' } }
-              ],
-              [
-                { text: '📞 Speak with Nick Directly', url: 'https://t.me/Nick_REAKH' }
+                { text: '🇨🇳 简体中文 (Chinese)', callback_data: 'set_lang_ZH' },
+                { text: '🇷🇺 Русский (Russian)', callback_data: 'set_lang_RU' }
               ]
             ]
           };
 
-          // Send welcome with inline buttons
           await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               chat_id: chatId,
-              text: welcomeText,
-              parse_mode: 'Markdown',
-              reply_markup: welcomeKeyboard
-            })
-          });
-
-          // Also set persistent bottom navigation keyboard for mobile
-          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              chat_id: chatId,
-              text: `👇 <i>Quick navigation buttons are docked below for instant access:</i>`,
+              text: langGateText,
               parse_mode: 'HTML',
-              reply_markup: persistentKeyboard
+              reply_markup: langGateKeyboard
             })
           });
+          return;
         }
       }
 
@@ -2370,7 +2425,8 @@ async function pollUpdates() {
             body: JSON.stringify({ callback_query_id: cbId })
           });
 
-          const guide = getLegalGuideMenu();
+          const userLang = userLanguages[chatId] || 'EN';
+          const guide = getLegalGuideMenu(userLang);
           if (dataStr === 'legal_back') {
             await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
               method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -2396,18 +2452,27 @@ async function pollUpdates() {
             body: JSON.stringify({ callback_query_id: cbId })
           });
 
-          const text = 
-            `📜 <b>100% FOREIGN FREEHOLD STRATA TITLE LAW</b>\n\n` +
-            `<blockquote>✅ <b>Article 6 of 2010 Foreign Ownership Law:</b>\n` +
-            `▫️ Foreign nationals can legally own 100% freehold title in private units of co-owned buildings from the 1st floor upwards.\n` +
-            `▫️ Ownership is registered directly under your personal passport name at the Ministry of Land Management & Urban Planning.\n` +
-            `▫️ Issued as an unassailable Cadastral "Hard Title" (Strata Title) with state-backed deed guarantee.\n` +
-            `▫️ You possess absolute legal rights to sell, lease, transfer, or pass to heirs indefinitely.</blockquote>\n\n` +
-            `<blockquote>🛡️ <b>Foreign Ownership Quota Safeguards:</b>\n` +
-            `▫️ Up to 70% of total private unit floor area in a co-owned building can be foreign-owned.\n` +
-            `▫️ Ground floor and subterranean levels are reserved for Cambodian nationals.\n` +
-            `▫️ Land within 30km of international land borders is restricted.</blockquote>\n\n` +
-            `💡 <i>Property Hub Cambodia only lists developments with verified 100% strata title eligibility.</i>`;
+          const userLang = userLanguages[msg.chat.id] || 'EN';
+          let text = '';
+          if (userLang === 'JP') {
+            text = 
+              `📜 <b>2010年外国人不動産所有権法（分層所有権・Strata Title）</b>\n\n` +
+              `<blockquote>✅ <b>第6条の規定（100%自己名義ハードタイトル）：</b>\n` +
+              `▫️ 外国人個人名義で、共同住宅の1階（日本基準の2階以上）の専有部分を100%完全所有（フリーホールド）可能。\n` +
+              `▫️ カンボジア国土整備・都市計画・建設省（Cadastral Office）にて個人パスポート番号で直接登記。\n` +
+              `▫️ カンボジア国民と同等の永代相続、賃貸運用、将来の転売権利が国家レベルで法的に保障されています。</blockquote>\n\n` +
+              `<blockquote>🛡️ <b>外国人保有比率の規定：</b>\n` +
+              `▫️ 共同住宅全体の私有専有面積の最大70%まで外国人名義での登記が認められています（PHCの掲載物件は全棟適格確認済み）。</blockquote>\n\n` +
+              `💡 <i>Property Hub Cambodiaは全物件について、登記官庁によるハードタイトル適格性を事前審査の上で仲介しています。</i>`;
+          } else {
+            text = 
+              `📜 <b>100% FOREIGN FREEHOLD STRATA TITLE LAW</b>\n\n` +
+              `<blockquote>✅ <b>Article 6 of 2010 Foreign Ownership Law:</b>\n` +
+              `▫️ Foreign nationals can legally own 100% freehold title in private units from 1st floor upwards.\n` +
+              `▫️ Registered directly under your personal passport at the Ministry of Land Management (Cadastral Hard Title).\n` +
+              `▫️ Perpetual inheritance, transfer, and leasing rights identical to domestic citizens.</blockquote>\n\n` +
+              `<blockquote>🛡️ <b>Foreign Quota Safeguards:</b> Up to 70% of private floor area in a co-owned building can be foreign-owned.</blockquote>`;
+          }
 
           await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -3026,25 +3091,25 @@ async function pollUpdates() {
 
           const langNames = {
             'EN': '🇬🇧 English',
-            'JP': '🇯🇵 日本語 (Japanese)',
-            'ZH': '🇨🇳 简体中文 (Chinese)',
-            'RU': '🇷🇺 Русский (Russian)'
+            'JP': '🇯🇵 日本語',
+            'ZH': '🇨🇳 简体中文',
+            'RU': '🇷🇺 Русский'
           };
 
           await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ callback_query_id: cbId, text: `✅ ${langNames[chosenLang] || chosenLang}!` })
+            body: JSON.stringify({ callback_query_id: cbId, text: `✅ ${langNames[chosenLang] || chosenLang}` })
           });
 
-          const card = getTS8Card(chosenLang);
-          await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+          // Send clean Main Menu in the chosen language!
+          const menu = getMainMenu(chosenLang, user.first_name);
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               chat_id: msg.chat.id,
-              photo: card.photo,
-              caption: card.caption,
-              parse_mode: 'Markdown',
-              reply_markup: card.reply_markup
+              text: menu.text,
+              parse_mode: 'HTML',
+              reply_markup: menu.reply_markup
             })
           });
         }
@@ -3135,7 +3200,7 @@ async function pollUpdates() {
             body: JSON.stringify({
               chat_id: msg.chat.id,
               text: `📰 <b>EXECUTIVE DIGEST · PREVIEW DRAFT</b>\n\n` + digest.text,
-              parse_mode: 'Markdown',
+              parse_mode: 'HTML',
               reply_markup: {
                 inline_keyboard: [
                   [{ text: '🚀 Approve & Broadcast to Channel', callback_data: 'digest_broadcast_now' }]
@@ -3157,7 +3222,7 @@ async function pollUpdates() {
             body: JSON.stringify({
               chat_id: channelId,
               text: digest.text,
-              parse_mode: 'Markdown',
+              parse_mode: 'HTML',
               reply_markup: {
                 inline_keyboard: [
                   [
