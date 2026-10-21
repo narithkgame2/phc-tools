@@ -320,9 +320,9 @@ function formatProposalCard(analysis) {
     `▫️ <b>Price / sqm:</b> $${calculation.pricePerSqmNet.toLocaleString()} / sqm Gross\n\n` +
     `💳 <b>36-MONTH DEVELOPER PAYMENT SCHEDULE:</b>\n` +
     `1. <b>Booking Deposit:</b> $${s.bookingDeposit.toLocaleString()} USD\n` +
-    `2. <b>Down Payment (10%):</b> $${s.downPaymentDue.toLocaleString()} USD (Contract signing within 14 days)\n` +
+    `2. <b>Down Payment (10%):</b> $${s.downPaymentDue.toLocaleString()} USD (Due upon SPA signing)\n` +
     `3. <b>Monthly Installments:</b> <b>$${s.monthlyInstallment.toLocaleString()} / month</b> (Months 1 – ${s.durationMonths})\n` +
-    `4. <b>Handover Balance (${s.handoverPercent}%):</b> $${s.handoverBalance.toLocaleString()} USD (Handover ${escapeHtml(project.projectDetails.handover)})\n\n` +
+    `4. <b>Handover Balance (${s.handoverPercent}%):</b> $${s.handoverBalance.toLocaleString()} USD (Completion ${escapeHtml(project.projectDetails.handover)})\n\n` +
     brokerInsight +
     provenanceNote
   );
