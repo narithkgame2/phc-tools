@@ -1,11 +1,11 @@
 {
-  "version": "1.0",
+  "version": "2.0",
   "lastUpdated": "2026-10-21",
   "steps": {
     "step1_objective": {
       "id": "step1_objective",
       "header": "SEARCH CONCIERGE",
-      "stepLabel": "Step 1 of 4 · Objective",
+      "stepLabel": "Step 1 of 5 · Objective",
       "prompt": "Are you looking to acquire or rent a property in Phnom Penh?",
       "layout": "1_per_row",
       "buttons": [
@@ -16,7 +16,7 @@
     "step2_buy_status": {
       "id": "step2_buy_status",
       "header": "SEARCH CONCIERGE",
-      "stepLabel": "Step 2 of 4 · Property Status (Buy)",
+      "stepLabel": "Step 2 of 5 · Property Status (Buy)",
       "prompt": "Select your preferred development status:",
       "layout": "1_per_row",
       "buttons": [
@@ -31,7 +31,7 @@
       "header": "SEARCH CONCIERGE",
       "stepLabel": "Step 2 of 4 · Property Type (Rent)",
       "prompt": "Which property type best fits your lifestyle?",
-      "layout": "2_per_row",
+      "layout": "1_per_row",
       "buttons": [
         { "label": "🏢 Modern Condo", "callback": "srch_type_condo" },
         { "label": "🛋️ Serviced Apt", "callback": "srch_type_apt" },
@@ -43,9 +43,9 @@
     "step3_buy_type": {
       "id": "step3_buy_type",
       "header": "SEARCH CONCIERGE",
-      "stepLabel": "Step 3 of 4 · Property Type",
+      "stepLabel": "Step 3 of 5 · Property Type",
       "prompt": "Which category do you want to invest in?",
-      "layout": "2_per_row",
+      "layout": "1_per_row",
       "buttons": [
         { "label": "🏢 Modern Condo", "callback": "srch_type_condo" },
         { "label": "🛋️ Serviced Apt", "callback_data": "srch_type_apt" },
@@ -57,18 +57,17 @@
     "location_districts": {
       "id": "location_districts",
       "header": "SEARCH CONCIERGE",
-      "stepLabel": "Prime District",
+      "stepLabel": "Step 4 of 5 · Prime District",
       "prompt": "Select your preferred location in Phnom Penh:",
-      "layout": "2_per_row",
+      "layout": "1_per_row",
       "buttons": [
         { "label": "📍 BKK1", "callback": "srch_loc_bkk1" },
         { "label": "📍 Tonle Bassac", "callback": "srch_loc_tb" },
         { "label": "📍 Toul Kork", "callback": "srch_loc_tk" },
         { "label": "📍 Chamkarmon", "callback": "srch_loc_ttp" },
-        { "label": "📍 Chroy Changvar", "callback": "srch_loc_ph" },
-        { "label": "📍 Peng Huoth", "callback": "srch_loc_ph" }
-      ],
-      "fullWidthButtons": [
+        { "label": "📍 Chroy Changvar", "callback": "srch_loc_cc" },
+        { "label": "📍 Peng Huoth", "callback": "srch_loc_ph" },
+        { "label": "📍 Sen Sok", "callback": "srch_loc_sensok" },
         { "label": "🌐 Any Prime District", "callback": "srch_loc_any" }
       ]
     },

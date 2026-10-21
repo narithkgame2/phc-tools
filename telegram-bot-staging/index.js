@@ -4,7 +4,7 @@
 // Features: Lead Capture, Telegram Mini App, GPS Pins, Trust Engine
 // ═══════════════════════════════════════════════════════════════
 
-const token = '8453711743:AAHj3SKU8orwO4ksev1z_xVvX0mNcm8_yq4';
+const token = process.env.TELEGRAM_BOT_TOKEN || '8453711743:AAHj3SKU8orwO4ksev1z_xVvX0mNcm8_yq4';
 const channelId = '-1004372846355'; // Nick Test Lab
 const nickChatId = '353195979';
 

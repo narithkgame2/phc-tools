@@ -25,7 +25,7 @@ function teardownSandbox() {
 }
 
 // Load engine
-const engine = require('../project-advisor-engine.cjs');
+const engine = require('../engines/project-advisor.js');
 
 let passedTests = 0;
 let totalTests = 0;
@@ -100,7 +100,9 @@ try {
       calculation: calc
     });
     
-    assert.ok(card.includes("internal courtyard atrium"), "Card must state inner courtyard");
+    assert.ok(card.includes("internal courtyard void"), "Card must state inner courtyard");
+    assert.ok(card.includes("moderate natural daylight"), "Card must explicitly state moderate natural daylight caveat");
+    assert.ok(card.includes("<blockquote>"), "Card must be wrapped in blockquote");
     assert.strictEqual(card.includes("unobstructed panoramic views"), false, "Inner unit must not claim panoramic outer views");
     assert.strictEqual(card.toLowerCase().includes("capital appreciation"), false, "Must never mention capital appreciation");
     assert.strictEqual(card.toLowerCase().includes("capital growth"), false, "Must never mention capital growth");

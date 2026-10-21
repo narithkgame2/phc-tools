@@ -295,7 +295,7 @@ function formatProposalCard(analysis) {
   if (isOuter) {
     brokerInsight = `▫️ <b>Advisor Insight:</b> Unit ${escapeHtml(bestUnit.unitCode)} is positioned on the outer perimeter, offering unobstructed city skyline views and maximum natural daylight.`;
   } else {
-    brokerInsight = `▫️ <b>Advisor Insight:</b> Unit ${escapeHtml(bestUnit.unitCode)} faces the internal courtyard atrium sky garden, offering a quiet, temperature-buffered residence.`;
+    brokerInsight = `▫️ <b>Advisor Insight:</b> Unit ${escapeHtml(bestUnit.unitCode)} overlooks the central internal courtyard void. Note: Provides courtyard views and moderate natural daylight compared to perimeter stacks, with an acoustic environment insulated from street noise.`;
   }
 
   let budgetWarning = '';
@@ -311,7 +311,7 @@ function formatProposalCard(analysis) {
     `🏢 <b>${escapeHtml(project.name.toUpperCase())} · ${escapeHtml(floorHeader)} DUPLEX PROPOSAL</b>\n` +
     `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
     budgetWarning +
-    `▫️ <b>Unit Number:</b> ${escapeHtml(bestUnit.unitCode)} (${escapeHtml(floorHeader)})\n` +
+    `<blockquote>▫️ <b>Unit Number:</b> ${escapeHtml(bestUnit.unitCode)} (${escapeHtml(floorHeader)})\n` +
     `▫️ <b>Layout:</b> 1-Bed Duplex Loft · Double-Height Void\n` +
     `▫️ <b>Size:</b> ${calculation.grossAreaSqm} sqm Gross Area\n` +
     `▫️ <b>Orientation:</b> ${escapeHtml(bestUnit.orientation)}\n` +
@@ -320,10 +320,10 @@ function formatProposalCard(analysis) {
     `▫️ <b>Price / sqm:</b> $${calculation.pricePerSqmNet.toLocaleString()} / sqm Gross\n\n` +
     `💳 <b>36-MONTH DEVELOPER PAYMENT SCHEDULE:</b>\n` +
     `1. <b>Booking Deposit:</b> $${s.bookingDeposit.toLocaleString()} USD\n` +
-    `2. <b>Down Payment (10%):</b> $${s.downPaymentDue.toLocaleString()} USD (Due upon SPA signing)\n` +
-    `3. <b>Monthly Installments:</b> <b>$${s.monthlyInstallment.toLocaleString()} / month</b> (Months 1 – ${s.durationMonths})\n` +
-    `4. <b>Handover Balance (${s.handoverPercent}%):</b> $${s.handoverBalance.toLocaleString()} USD (Completion ${escapeHtml(project.projectDetails.handover)})\n\n` +
-    brokerInsight +
+    `2. <b>Down Payment Balance:</b> $${s.downPaymentDue.toLocaleString()} USD (10% SPA total less deposit)\n` +
+    `3. <b>Monthly Installments:</b> <b>$${s.monthlyInstallment.toLocaleString()} / mo</b> (Months 1 – ${s.durationMonths})\n` +
+    `4. <b>Handover Balance (${s.handoverPercent}%):</b> $${s.handoverBalance.toLocaleString()} USD (Est. Completion ${escapeHtml(project.projectDetails.handover)})\n\n` +
+    brokerInsight + `</blockquote>` +
     provenanceNote
   );
 }

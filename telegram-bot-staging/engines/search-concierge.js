@@ -1,7 +1,8 @@
 // ═══════════════════════════════════════════════════════════════
-//  PHC LUXURY PROPERTY SEARCH CONCIERGE (v2.0)
+//  PHC LUXURY PROPERTY SEARCH CONCIERGE (v2.1)
 //  Minimal, Premium, Aligned with Website Filters
 //  Status (Off-Plan vs Resale) -> Type -> Location -> Budget
+//  Zero Truncation · Strict Grounding · No Silent Relaxation
 // ═══════════════════════════════════════════════════════════════
 
 const fs = require('fs');
@@ -10,6 +11,23 @@ const path = require('path');
 const INVENTORY_FILE = path.join(__dirname, '..', 'data', 'multi-channel-inventory.json');
 const CONFIG_FILE = path.join(__dirname, '..', 'config', 'chat-tree-config.json');
 const userSearchState = {};
+
+function escapeHtml(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function sanitizeUtf8(str) {
+  if (!str) return '';
+  const s = typeof str.toWellFormed === 'function' ? str.toWellFormed() : String(str);
+  return s
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\uFFFD\uD800-\uDFFF]/g, '')
+    .normalize('NFC')
+    .trim();
+}
 
 function getTreeConfig() {
   try {
@@ -42,6 +60,7 @@ function getStepDef(stepId, defaultDef) {
           inline_keyboard.push(row);
         }
       } else {
+        // 1_per_row (Full-width pill)
         for (const b of s.buttons) {
           inline_keyboard.push([{ text: b.label, callback_data: b.callback || b.callback_data }]);
         }
@@ -65,22 +84,6 @@ function getStepDef(stepId, defaultDef) {
   return defaultDef;
 }
 
-function escapeHtml(str) {
-  return String(str || '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-}
-
-function sanitizeUtf8(str) {
-  if (!str) return '';
-  const s = typeof str.toWellFormed === 'function' ? str.toWellFormed() : String(str);
-  return s
-    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\uFFFD]/g, '')
-    .normalize('NFC')
-    .trim();
-}
-
 function getInventory() {
   if (!fs.existsSync(INVENTORY_FILE)) return [];
   try {
@@ -97,9 +100,11 @@ function isSearchCallback(data) {
 }
 
 // ── STEP 1: BUY VS RENT ───────────────────────────────────────
-function renderStep1() {
+function renderStep1(state = {}) {
+  const isRent = state?.type === 'Rent';
+  const totalSteps = isRent ? 4 : 5;
   const defaultDef = {
-    stepLabel: 'Step 1 of 4 · Objective',
+    stepLabel: `Step 1 of ${totalSteps} · Objective`,
     prompt: 'Are you looking to acquire or rent a property in Phnom Penh?',
     reply_markup: {
       inline_keyboard: [
@@ -108,7 +113,11 @@ function renderStep1() {
       ]
     }
   };
-  return getStepDef('step1_objective', defaultDef);
+  const res = getStepDef('step1_objective', defaultDef);
+  if (isRent && res.text) {
+    res.text = res.text.replace(/Step 1 of \d+/i, 'Step 1 of 4');
+  }
+  return res;
 }
 
 // ── STEP 2: STATUS (FOR SALE) OR PROPERTY TYPE (FOR RENT) ─────
@@ -118,7 +127,7 @@ function renderStep2(state) {
   if (!isRent) {
     // Buy -> Choose Status (Full-width un-truncatable pills)
     const defaultDef = {
-      stepLabel: 'Step 2 of 4 · Property Status (Buy)',
+      stepLabel: 'Step 2 of 5 · Property Status (Buy)',
       prompt: 'Select your preferred development status:',
       reply_markup: {
         inline_keyboard: [
@@ -132,23 +141,17 @@ function renderStep2(state) {
     return getStepDef('step2_buy_status', defaultDef);
   }
 
-  // Rent -> Choose Property Type
+  // Rent -> Choose Property Type (Full-width pills to prevent truncation)
   const defaultDef = {
     stepLabel: 'Step 2 of 4 · Property Type (Rent)',
     prompt: 'Which property type best fits your lifestyle?',
     reply_markup: {
       inline_keyboard: [
-        [
-          { text: '🏢 Modern Condo', callback_data: 'srch_type_condo' },
-          { text: '🛋️ Serviced Apt', callback_data: 'srch_type_apt' }
-        ],
-        [
-          { text: '🏡 Villa / House', callback_data: 'srch_type_villa' },
-          { text: '🌐 Any Property Type', callback_data: 'srch_type_any' }
-        ],
-        [
-          { text: '⬅️ Back to Objective', callback_data: 'srch_step0_start' }
-        ]
+        [{ text: '🏢 Modern Condo', callback_data: 'srch_type_condo' }],
+        [{ text: '🛋️ Serviced Apt', callback_data: 'srch_type_apt' }],
+        [{ text: '🏡 Villa / House', callback_data: 'srch_type_villa' }],
+        [{ text: '🌐 Any Property Type', callback_data: 'srch_type_any' }],
+        [{ text: '⬅️ Back to Objective', callback_data: 'srch_step0_start' }]
       ]
     }
   };
@@ -162,21 +165,15 @@ function renderStep3(state) {
   if (!isRent) {
     // Buy Step 3: Property Type
     const defaultDef = {
-      stepLabel: 'Step 3 of 4 · Property Type',
+      stepLabel: 'Step 3 of 5 · Property Type',
       prompt: 'Which category do you want to invest in?',
       reply_markup: {
         inline_keyboard: [
-          [
-            { text: '🏢 Modern Condo', callback_data: 'srch_type_condo' },
-            { text: '🛋️ Serviced Apt', callback_data: 'srch_type_apt' }
-          ],
-          [
-            { text: '🏡 Villa / Borey', callback_data: 'srch_type_villa' },
-            { text: '🌐 Any Property Type', callback_data: 'srch_type_any' }
-          ],
-          [
-            { text: '⬅️ Back to Status', callback_data: 'srch_back_to_step2' }
-          ]
+          [{ text: '🏢 Modern Condo', callback_data: 'srch_type_condo' }],
+          [{ text: '🛋️ Serviced Apt', callback_data: 'srch_type_apt' }],
+          [{ text: '🏡 Villa / Borey', callback_data: 'srch_type_villa' }],
+          [{ text: '🌐 Any Property Type', callback_data: 'srch_type_any' }],
+          [{ text: '⬅️ Back to Status', callback_data: 'srch_back_to_step2' }]
         ]
       }
     };
@@ -205,37 +202,34 @@ function renderStep5(state) {
   return renderBudgetStep(state);
 }
 
-// ── HELPER: LOCATION SELECTOR (CLEAN BALANCED GRID) ───────────
-function renderLocationStep(state) {
-  const stepNum = state.type === 'Rent' ? '3 of 4' : '4 of 5';
+// ── HELPER: LOCATION SELECTOR ─────────────────────────────────
+function renderLocationStep(state = {}) {
+  const isRent = state?.type === 'Rent';
+  const stepNum = isRent ? '3 of 4' : '4 of 5';
+  const backCallback = isRent ? 'srch_back_to_step2' : 'srch_back_to_step3';
+
   const defaultDef = {
     stepLabel: `Step ${stepNum} · Prime District`,
     prompt: 'Select your preferred location in Phnom Penh:',
     reply_markup: {
       inline_keyboard: [
-        [
-          { text: '📍 BKK1', callback_data: 'srch_loc_bkk1' },
-          { text: '📍 Tonle Bassac', callback_data: 'srch_loc_tb' }
-        ],
-        [
-          { text: '📍 Toul Kork', callback_data: 'srch_loc_tk' },
-          { text: '📍 Chamkarmon', callback_data: 'srch_loc_ttp' }
-        ],
-        [
-          { text: '📍 Chroy Changvar', callback_data: 'srch_loc_ph' },
-          { text: '📍 Peng Huoth', callback_data: 'srch_loc_ph' }
-        ],
-        [
-          { text: '🌐 Any Prime District', callback_data: 'srch_loc_any' }
-        ],
-        [
-          { text: '⬅️ Back', callback_data: state.type === 'Rent' ? 'srch_back_to_step2' : 'srch_back_to_step3' }
-        ]
+        [{ text: '📍 BKK1', callback_data: 'srch_loc_bkk1' }],
+        [{ text: '📍 Tonle Bassac', callback_data: 'srch_loc_tb' }],
+        [{ text: '📍 Toul Kork', callback_data: 'srch_loc_tk' }],
+        [{ text: '📍 Chamkarmon', callback_data: 'srch_loc_ttp' }],
+        [{ text: '📍 Chroy Changvar', callback_data: 'srch_loc_cc' }],
+        [{ text: '📍 Peng Huoth', callback_data: 'srch_loc_ph' }],
+        [{ text: '📍 Sen Sok', callback_data: 'srch_loc_sensok' }],
+        [{ text: '🌐 Any Prime District', callback_data: 'srch_loc_any' }],
+        [{ text: '⬅️ Back', callback_data: backCallback }]
       ]
     }
   };
+
   const res = getStepDef('location_districts', defaultDef);
-  const backCallback = state.type === 'Rent' ? 'srch_back_to_step2' : 'srch_back_to_step3';
+  if (res.text) {
+    res.text = res.text.replace(/Step \d+ of \d+ · Prime District/i, `Step ${stepNum} · Prime District`);
+  }
   if (res.reply_markup?.inline_keyboard) {
     const lastRow = res.reply_markup.inline_keyboard[res.reply_markup.inline_keyboard.length - 1];
     if (lastRow && lastRow[0]?.text?.includes('Back')) {
@@ -291,7 +285,7 @@ function renderBudgetStep(state) {
   return res;
 }
 
-// ── FILTER INVENTORY ──────────────────────────────────────────
+// ── FILTER INVENTORY (STRICT MATCHING · NO SILENT DROPS) ───────
 function filterInventory(state) {
   const listings = getInventory();
   const isRent = state.type === 'Rent';
@@ -301,50 +295,43 @@ function filterInventory(state) {
   // 1. Status Filter (Off-Plan vs Resale for Buy)
   if (!isRent && state.status && state.status !== 'any') {
     const isOffPlanTarget = state.status === 'offplan';
-    const statusFiltered = matches.filter(l => {
+    matches = matches.filter(l => {
       const text = `${l.title} ${l.snippet}`.toLowerCase();
       const isOffPlan = /off-plan|under-construction|handover|completion|installment|payment plan|time square|j tower|odom|le conde|picasso|diamond bay/i.test(text);
       return isOffPlanTarget ? isOffPlan : !isOffPlan;
     });
-    if (statusFiltered.length > 0) {
-      matches = statusFiltered;
+  }
+
+  // 2. Property Type Filter (Strict)
+  if (state.propType && state.propType !== 'any') {
+    if (state.propType === 'apt') {
+      matches = matches.filter(l => /serviced|apartment|អាផាតមិន/i.test(`${l.title} ${l.snippet}`));
+    } else if (state.propType === 'villa') {
+      matches = matches.filter(l => /villa|borey|វីឡា|link house|shophouse|ផ្ទះអាជីវកម្ម/i.test(`${l.title} ${l.snippet}`));
+    } else if (state.propType === 'condo') {
+      matches = matches.filter(l => /condo|time square|tower|residence|ខុនដូ/i.test(`${l.title} ${l.snippet}`));
     }
   }
 
-  // 2. Location Filter
+  // 3. Location Filter (Strict)
   if (state.location && state.location !== 'any') {
     const locMap = {
       bkk1: ['bkk1', 'bkk 1', 'boeung keng kang 1', 'bkk'],
       tb: ['tonle bassac', 'bassac', 'aeon'],
       ttp: ['chamkarmon', 'toul tompoung', 'russian market', 'ttp', 'tumpun'],
-      tk: ['toul kork', 'boeng kak', 'sen sok'],
-      ph: ['peng huoth', 'beoung snor', 'boeung snor', 'chbar ampov', 'chroy changvar', 'national road 1']
+      tk: ['toul kork', 'boeng kak'],
+      sensok: ['sen sok', 'sensok', 'aeon 2'],
+      cc: ['chroy changvar', 'chroy changva'],
+      ph: ['peng huoth', 'boeung snor', 'beoung snor', 'chbar ampov', 'national road 1']
     };
     const keywords = locMap[state.location] || [state.location];
-    const locFiltered = matches.filter(l => {
+    matches = matches.filter(l => {
       const text = `${l.location} ${l.title} ${l.snippet}`.toLowerCase();
       return keywords.some(k => text.includes(k));
     });
-    if (locFiltered.length > 0) {
-      matches = locFiltered;
-    }
   }
 
-  // 3. Property Type Filter
-  if (state.propType && state.propType !== 'any') {
-    if (state.propType === 'apt') {
-      const aptFiltered = matches.filter(l => /serviced|apartment|អាផាតមិន/i.test(`${l.title} ${l.snippet}`));
-      if (aptFiltered.length > 0) matches = aptFiltered;
-    } else if (state.propType === 'villa') {
-      const villaFiltered = matches.filter(l => /villa|borey|វីឡា|link house|shophouse|ផ្ទះអាជីវកម្ម/i.test(`${l.title} ${l.snippet}`));
-      if (villaFiltered.length > 0) matches = villaFiltered;
-    } else if (state.propType === 'condo') {
-      const condoFiltered = matches.filter(l => /condo|time square|tower|residence|ខុនដូ/i.test(`${l.title} ${l.snippet}`));
-      if (condoFiltered.length > 0) matches = condoFiltered;
-    }
-  }
-
-  // 4. Budget Filter
+  // 4. Budget Filter (Strict: requires verified price within bracket)
   if (state.budget && state.budget !== 'any') {
     let minP = 0;
     let maxP = Infinity;
@@ -359,10 +346,8 @@ function filterInventory(state) {
       else if (state.budget === 'sale_3') { minP = 190000; maxP = 520000; }
       else if (state.budget === 'sale_4') { minP = 480000; maxP = 10000000; }
     }
-    const budgetFiltered = matches.filter(l => !l.price || (l.price >= minP && l.price <= maxP));
-    if (budgetFiltered.length > 0) {
-      matches = budgetFiltered;
-    }
+    // Only pass listings that have a price within bracket
+    matches = matches.filter(l => typeof l.price === 'number' && l.price >= minP && l.price <= maxP);
   }
 
   return matches;
@@ -372,13 +357,41 @@ function filterInventory(state) {
 function renderResultsCard(state, page = 1) {
   const allMatches = filterInventory(state);
   const pageSize = 3;
-  const startIndex = (page - 1) * pageSize;
-  const rawBatch = allMatches.slice(startIndex, startIndex + pageSize);
-  const totalCount = allMatches.length;
-
   const isRent = state.type === 'Rent';
   const statusStr = state.statusLabel ? `${state.statusLabel} · ` : '';
   const filterSummary = `${statusStr}${state.type} · ${state.propTypeLabel || 'All Types'} · ${state.locLabel || 'All Districts'}`;
+
+  // If 0 matches: Output honest notice without silent substitution
+  if (allMatches.length === 0) {
+    const text = 
+      `<b>SEARCH CONCIERGE</b>\n` +
+      `──────────\n` +
+      `<b>No Exact Matches (0)</b>\n` +
+      `<i>${escapeHtml(filterSummary)}</i>\n\n` +
+      `<blockquote>⚠️ <b>Portfolio Notice:</b> No verified listings in our active catalog currently match all criteria: ${escapeHtml(state.propTypeLabel || 'Property')} in ${escapeHtml(state.locLabel || 'selected district')} at your target budget.\n\n` +
+      `We maintain strict advisory integrity and do not substitute different categories without telling you. Contact Nick directly for unlisted private sales and off-market developer units.</blockquote>`;
+
+    const keyboard = [
+      [{ text: '💬 Inquire with Nick for Off-Market Units', url: 'https://t.me/Nick_REAKH' }],
+      [{ text: '🔄 Refine Filters', callback_data: 'srch_step0_start' }],
+      [{ text: '🌐 Website Catalog ↗', url: 'https://propertyhubcambodia.com/properties' }]
+    ];
+    return { text, reply_markup: { inline_keyboard: keyboard } };
+  }
+
+  // Sort: Priced listings first ascending, unpriced last
+  const sortedAll = [...allMatches].sort((a, b) => {
+    const pA = a.price || 0;
+    const pB = b.price || 0;
+    if (pA === 0 && pB === 0) return 0;
+    if (pA === 0) return 1;
+    if (pB === 0) return -1;
+    return pA - pB;
+  });
+
+  const startIndex = (page - 1) * pageSize;
+  const rawBatch = sortedAll.slice(startIndex, startIndex + pageSize);
+  const totalCount = sortedAll.length;
 
   let text = 
     `<b>SEARCH CONCIERGE</b>\n` +
@@ -386,121 +399,125 @@ function renderResultsCard(state, page = 1) {
     `<b>Comparative Portfolio (${totalCount} Matches)</b>\n` +
     `<i>${escapeHtml(filterSummary)}</i>\n\n`;
 
-  if (rawBatch.length === 0) {
-    text += `<blockquote>No exact listings match this filter combination in our active catalog right now. Contact Nick directly for off-market units.</blockquote>\n\n`;
+  const cfg = getTreeConfig();
+  const anchorCfg = cfg?.steps?.anchoring_framework;
+  let framedItems = [];
+
+  // Frame items based on verified pricing
+  const pricedBatch = rawBatch.filter(item => typeof item.price === 'number' && item.price > 0);
+  const hasOnlyPriced = pricedBatch.length === rawBatch.length;
+
+  if (rawBatch.length === 3 && hasOnlyPriced) {
+    framedItems = [
+      {
+        badge: anchorCfg?.sweetSpot?.badge || '⭐️ TOP RECOMMENDATION · Sweet Spot',
+        item: rawBatch[1], // middle price
+        rationale: `Optimal balance of space and accessible market pricing in ${rawBatch[1].location || 'Phnom Penh'}.`
+      },
+      {
+        badge: anchorCfg?.luxuryAnchor?.badge || '⚓ PREMIER BENCHMARK · Luxury Anchor',
+        item: rawBatch[2], // highest price
+        rationale: `Higher-tier specifications setting the quality standard for ${rawBatch[2].location || 'the area'}.`
+      },
+      {
+        badge: anchorCfg?.smartValue?.badge || '💡 SMART VALUE · Agile Alternative',
+        item: rawBatch[0], // lowest price
+        rationale: `Lowest entry price point for ${rawBatch[0].location || 'Phnom Penh'} at $${rawBatch[0].price.toLocaleString()}.`
+      }
+    ];
   } else {
-    // Apply PHC 3-Property Anchoring Framework
-    // If 3 items in batch, sort by price and frame as:
-    // 1. ⭐️ Top Recommendation (Sweet Spot)
-    // 2. ⚓ Premier Benchmark (Luxury Anchor)
-    // 3. 💡 Smart Value (Agile Alternative)
-    const cfg = getTreeConfig();
-    const anchorCfg = cfg?.steps?.anchoring_framework;
-    let framedItems = [];
-    if (rawBatch.length === 3) {
-      const sorted = [...rawBatch].sort((a, b) => (a.price || 0) - (b.price || 0));
-      framedItems = [
-        {
-          badge: anchorCfg?.sweetSpot?.badge || '⭐️ TOP RECOMMENDATION · Sweet Spot',
-          item: sorted[1],
-          rationale: anchorCfg?.sweetSpot?.rationale || 'Best value balance of layout, usable floor area, and pricing.'
-        },
-        {
-          badge: anchorCfg?.luxuryAnchor?.badge || '⚓ PREMIER BENCHMARK · Luxury Anchor',
-          item: sorted[2],
-          rationale: anchorCfg?.luxuryAnchor?.rationale || 'Higher-tier specification establishing the quality benchmark.'
-        },
-        {
-          badge: anchorCfg?.smartValue?.badge || '💡 SMART VALUE · Agile Alternative',
-          item: sorted[0],
-          rationale: anchorCfg?.smartValue?.rationale || 'Lowest entry price point while retaining prime location access.'
-        }
-      ];
-    } else {
-      framedItems = rawBatch.map((item, idx) => ({
-        badge: idx === 0 ? '⭐️ RECOMMENDED OPTION' : `💡 COMPARATIVE OPTION ${idx + 1}`,
-        item,
-        rationale: 'Matches your selected district, property type, and budget target.'
-      }));
-    }
+    framedItems = rawBatch.map((item, idx) => {
+      const isPriced = typeof item.price === 'number' && item.price > 0;
+      let badge = '';
+      let rationale = '';
 
-    framedItems.forEach((f) => {
-      const m = f.item;
-      const snippet = sanitizeUtf8(m.snippet || '');
-
-      // 1. Extract Real Building/Project Name from snippet or title
-      let building = '';
-      const bldgMatch = snippet.match(/📍\s*([^·|\n🏷]+)/);
-      if (bldgMatch) {
-        building = bldgMatch[1].trim();
+      if (!isPriced) {
+        badge = '🏢 VERIFIED DEVELOPER PROJECT';
+        rationale = `Official developer allocation in ${item.location || 'Phnom Penh'}. Inquire with Nick for live unit availability.`;
+      } else if (idx === 0) {
+        badge = '⭐️ PRIMARY RECOMMENDATION';
+        rationale = `Best verified fit for your criteria in ${item.location || 'Phnom Penh'}.`;
+      } else {
+        badge = `💡 COMPARATIVE OPTION ${idx + 1}`;
+        rationale = `Alternative property in ${item.location || 'Phnom Penh'} for direct comparison.`;
       }
 
-      if (!building || building.length < 3 || /phnom penh|chamkarmon|toul kork|bkk/i.test(building)) {
-        let t = (m.title || '').replace(/^(#Newlisting|#ForSale|#ForRent)\s*/iu, '').trim();
-        if (!/ខុនដូ|អាផាតមិន|វីឡា|condo for sale|for rent/i.test(t)) {
-          building = t.split('·')[0].split('|')[0].trim();
-        }
-      }
-
-      if (!building) {
-        building = m.location ? `${m.location} Residence` : 'Phnom Penh Property';
-      }
-
-      building = building.replace(/^[\p{Extended_Pictographic}\p{Emoji}\p{Symbol}\s]+/u, '').trim();
-
-      // 2. Extract Specs (Floor, Size, Bed, Bath)
-      const floorM = snippet.match(/(\d+(?:st|nd|rd|th)(?:\s*floor)?|Ground-Floor)/i);
-      const floor = floorM ? floorM[1] : '';
-
-      const sizeM = snippet.match(/(\d+(?:\.\d+)?\s*(?:m²|sqm))/i);
-      const size = sizeM ? sizeM[1].replace(/sqm/i, 'm²') : '';
-
-      const bedM = snippet.match(/(\d+)\s*🛏/);
-      const bathM = snippet.match(/(\d+)\s*🛁/);
-      const beds = bedM ? `${bedM[1]} Bed` : (m.beds || '');
-      const baths = bathM ? `${bathM[1]} Bath` : '';
-
-      const specsLine = [floor, size, beds, baths].filter(Boolean).join(' · ');
-
-      const priceClean = (m.priceFormatted && !m.priceFormatted.startsWith('/mo') && m.priceFormatted !== 'Inquire')
-        ? m.priceFormatted
-        : (m.price ? (isRent ? `$${m.price.toLocaleString()}/mo` : `$${m.price.toLocaleString()} USD`) : 'Inquire');
-
-      text += 
-        `<blockquote><b>${f.badge}</b>\n` +
-        `🏢 <b>${escapeHtml(building)}</b>\n` +
-        `▫️ <b>Price:</b> <b>${escapeHtml(priceClean)}</b>\n` +
-        (specsLine ? `▫️ <b>Specs:</b> ${escapeHtml(specsLine)}\n` : '') +
-        `📍 <i>${escapeHtml(m.location || 'Phnom Penh')}</i>\n` +
-        `💡 <i>Why this fits: ${f.rationale}</i>\n` +
-        `🔗 <a href="${escapeHtml(m.link)}">View Photos & Channel Post ↗</a></blockquote>\n\n`;
+      return { badge, item, rationale };
     });
   }
 
+  framedItems.forEach((f) => {
+    const m = f.item;
+    const snippet = sanitizeUtf8(m.snippet || '');
+
+    // 1. Extract Real Building/Project Name from snippet or title
+    let building = '';
+    const bldgMatch = snippet.match(/📍\s*([^·|\n🏷]+)/);
+    if (bldgMatch) {
+      building = bldgMatch[1].trim();
+    }
+
+    if (!building || building.length < 3 || /phnom penh|chamkarmon|toul kork|bkk/i.test(building)) {
+      let t = (m.title || '').replace(/^(#Newlisting|#ForSale|#ForRent)\s*/iu, '').trim();
+      if (!/ខុនដូ|អាផាតមិន|វីឡា|condo for sale|for rent/i.test(t)) {
+        building = t.split('·')[0].split('|')[0].trim();
+      }
+    }
+
+    // Never invent fake "{district} Residence"
+    if (!building) {
+      building = m.location ? `${m.location} Property` : 'Phnom Penh Property';
+    }
+
+    building = building.replace(/^[\p{Extended_Pictographic}\p{Emoji}\p{Symbol}\s]+/u, '').trim();
+
+    // 2. Extract Specs (Floor, Size, Bed, Bath)
+    const floorM = snippet.match(/(\d+(?:st|nd|rd|th)(?:\s*floor)?|Ground-Floor)/i);
+    const floor = floorM ? floorM[1] : '';
+
+    const sizeM = snippet.match(/(\d+(?:\.\d+)?\s*(?:m²|sqm))/i);
+    const size = sizeM ? sizeM[1].replace(/sqm/i, 'm²') : '';
+
+    const bedM = snippet.match(/(\d+)\s*🛏/);
+    const bathM = snippet.match(/(\d+)\s*🛁/);
+    const beds = bedM ? `${bedM[1]} Bed` : (m.beds || '');
+    const baths = bathM ? `${bathM[1]} Bath` : '';
+
+    const specsLine = [floor, size, beds, baths].filter(Boolean).join(' · ');
+
+    const priceClean = (m.priceFormatted && !m.priceFormatted.startsWith('/mo') && m.priceFormatted !== 'Inquire')
+      ? m.priceFormatted
+      : (m.price ? (isRent ? `$${m.price.toLocaleString()}/mo` : `$${m.price.toLocaleString()} USD`) : 'Inquire');
+
+    const cleanLink = escapeHtml(m.link || '').replace(/"/g, '&quot;');
+
+    text += 
+      `<blockquote><b>${f.badge}</b>\n` +
+      `🏢 <b>${escapeHtml(building)}</b>\n` +
+      `▫️ <b>Price:</b> <b>${escapeHtml(priceClean)}</b>\n` +
+      (specsLine ? `▫️ <b>Specs:</b> ${escapeHtml(specsLine)}\n` : '') +
+      `📍 <i>${escapeHtml(m.location || 'Phnom Penh')}</i>\n` +
+      `💡 <i>Why this fits: ${escapeHtml(f.rationale)}</i>\n` +
+      `🔗 <a href="${cleanLink}">View Photos & Channel Post ↗</a></blockquote>\n\n`;
+  });
+
   const keyboard = [];
 
-  // Pagination row (if > 3 matches)
+  // Pagination rows (strictly 1_per_row to avoid truncation)
   const hasNext = startIndex + pageSize < totalCount;
   const hasPrev = page > 1;
-  const navRow = [];
-  if (hasPrev) {
-    navRow.push({ text: '⬅️ Previous 3', callback_data: `srch_pg_${page - 1}` });
-  }
+
   if (hasNext) {
-    navRow.push({ text: '📂 Next 3 Listings ❯', callback_data: `srch_pg_${page + 1}` });
+    keyboard.push([{ text: '📂 Next 3 Listings ❯', callback_data: `srch_pg_${page + 1}` }]);
   }
-  if (navRow.length > 0) {
-    keyboard.push(navRow);
+  if (hasPrev) {
+    keyboard.push([{ text: '⬅️ Previous 3 Listings', callback_data: `srch_pg_${page - 1}` }]);
   }
 
-  // Action Buttons: Clean, minimal, non-confusing
-  keyboard.push([
-    { text: '💬 Inquire with Nick Directly', url: 'https://t.me/Nick_REAKH' }
-  ]);
-  keyboard.push([
-    { text: '🔄 Refine Filters', callback_data: 'srch_step0_start' },
-    { text: '🌐 Website Catalog ↗', url: 'https://propertyhubcambodia.com/properties' }
-  ]);
+  // Action Buttons: 1 per row for zero truncation
+  keyboard.push([{ text: '💬 Inquire with Nick Directly', url: 'https://t.me/Nick_REAKH' }]);
+  keyboard.push([{ text: '🔄 Refine Filters', callback_data: 'srch_step0_start' }]);
+  keyboard.push([{ text: '🌐 Website Catalog ↗', url: 'https://propertyhubcambodia.com/properties' }]);
 
   return { text, reply_markup: { inline_keyboard: keyboard } };
 }
@@ -552,79 +569,83 @@ async function handleSearchCallback(cb, botToken) {
   } else if (data.startsWith('srch_loc_')) {
     const loc = data.replace('srch_loc_', '');
     state.location = loc;
-    const locLabels = { bkk1: 'BKK1', tb: 'Tonle Bassac', tk: 'Toul Kork', ttp: 'Chamkarmon', ph: 'Peng Huoth / Chroy Changvar', any: 'All Districts' };
+    const locLabels = {
+      bkk1: 'BKK1',
+      tb: 'Tonle Bassac',
+      tk: 'Toul Kork',
+      ttp: 'Chamkarmon',
+      cc: 'Chroy Changvar',
+      ph: 'Peng Huoth',
+      sensok: 'Sen Sok',
+      any: 'All Districts'
+    };
     state.locLabel = locLabels[loc] || 'All Districts';
     card = state.type === 'Rent' ? renderStep4(state) : renderStep5(state);
   } else if (data === 'srch_back_to_loc') {
     card = state.type === 'Rent' ? renderStep3(state) : renderStep4(state);
   } else if (data.startsWith('srch_bg_')) {
-    const bg = data.replace('srch_bg_', '');
-    state.budget = bg;
+    state.budget = data.replace('srch_bg_rent_', 'rent_').replace('srch_bg_sale_', 'sale_');
     state.page = 1;
     card = renderResultsCard(state, 1);
   } else if (data.startsWith('srch_pg_')) {
-    const pg = parseInt(data.replace('srch_pg_', ''), 10) || 1;
-    state.page = pg;
-    card = renderResultsCard(state, pg);
+    const p = parseInt(data.replace('srch_pg_', ''), 10) || 1;
+    state.page = p;
+    card = renderResultsCard(state, p);
   }
 
   if (card) {
-    const res = await fetch(`https://api.telegram.org/bot${botToken}/editMessageText`, {
+    try {
+      await fetch(`https://api.telegram.org/bot${botToken}/editMessageText`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: chatId,
+          message_id: messageId,
+          text: card.text,
+          parse_mode: 'HTML',
+          disable_web_page_preview: true,
+          reply_markup: card.reply_markup
+        })
+      });
+    } catch (e) {
+      console.error('Failed to editMessageText:', e.message);
+    }
+  }
+}
+
+async function handleSearchCommand(chatId, botToken) {
+  userSearchState[chatId] = { type: 'Sale', page: 1 };
+  const card = renderStep1();
+  try {
+    await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         chat_id: chatId,
-        message_id: messageId,
         text: card.text,
         parse_mode: 'HTML',
         disable_web_page_preview: true,
         reply_markup: card.reply_markup
       })
     });
-
-    const resJson = await res.json().catch(() => ({}));
-    if (!resJson.ok) {
-      console.error('⚠️ [Telegram editMessageText Error]:', resJson.description);
-      // Fallback: Send new message without parse_mode if entity error
-      await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: card.text.replace(/<[^>]+>/g, ''), // strip tags if parse error
-          disable_web_page_preview: true,
-          reply_markup: card.reply_markup
-        })
-      });
-    }
+  } catch (e) {
+    console.error('Failed to send search command message:', e.message);
   }
 }
 
-function handleSearchCommand(chatId, botToken) {
-  const card = renderStep1();
-  userSearchState[chatId] = { type: 'Sale', page: 1 };
-  return fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      chat_id: chatId,
-      text: card.text,
-      parse_mode: 'HTML',
-      disable_web_page_preview: true,
-      reply_markup: card.reply_markup
-    })
-  });
-}
-
 module.exports = {
-  isSearchCallback,
-  handleSearchCallback,
-  handleSearchCommand,
   renderStep1,
   renderStep2,
   renderStep3,
   renderStep4,
   renderStep5,
+  renderLocationStep,
+  renderBudgetStep,
   renderResultsCard,
-  filterInventory
+  filterInventory,
+  handleSearchCallback,
+  handleSearchCommand,
+  isSearchCallback,
+  escapeHtml,
+  sanitizeUtf8
 };
