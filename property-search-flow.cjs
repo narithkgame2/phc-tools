@@ -353,65 +353,63 @@ function renderResultsCard(state, page = 1) {
     `<b>Verified Portfolio Matches (${totalCount})</b>\n` +
     `<i>${escapeHtml(filterSummary)}</i>\n\n`;
 
-  const optionLinksRow = [];
-
   if (displayed.length === 0) {
-    text += `<i>No exact listings match your filter combination in our active catalog right now. Contact Nick directly for off-market options:</i>\n\n`;
+    text += `<blockquote>No exact listings match this filter combination in our active catalog right now. Contact Nick directly for off-market units.</blockquote>\n\n`;
   } else {
     displayed.forEach((m, idx) => {
       const num = startIndex + idx + 1;
-      let rawTitle = m.title || `${m.location} ${m.beds}`;
-      let cleanTitle = sanitizeUtf8(rawTitle)
-        .replace(/^#Newlisting\s*/iu, '')
-        .replace(/^[\p{Extended_Pictographic}\p{Emoji}\p{Symbol}\s]+/u, '')
-        .replace(/\s*·\s*Features:[\s\S]*/iu, '')
-        .split('·')[0].trim();
-
       const snippet = sanitizeUtf8(m.snippet || '');
-      const floorM = snippet.match(/(\d+(?:st|nd|rd|th)(?:\s*floor)?)/i);
+
+      // 1. Extract Real Building/Project Name from snippet or title
+      let building = '';
+      const bldgMatch = snippet.match(/📍\s*([^·|\n🏷]+)/);
+      if (bldgMatch) {
+        building = bldgMatch[1].trim();
+      }
+
+      if (!building || building.length < 3 || /phnom penh|chamkarmon|toul kork|bkk/i.test(building)) {
+        let t = (m.title || '').replace(/^(#Newlisting|#ForSale|#ForRent)\s*/iu, '').trim();
+        if (!/ខុនដូ|អាផាតមិន|វីឡា|condo for sale|for rent/i.test(t)) {
+          building = t.split('·')[0].split('|')[0].trim();
+        }
+      }
+
+      if (!building) {
+        building = m.location ? `${m.location} Residence` : 'Phnom Penh Property';
+      }
+
+      building = building.replace(/^[\p{Extended_Pictographic}\p{Emoji}\p{Symbol}\s]+/u, '').trim();
+
+      // 2. Extract Specs (Floor, Size, Bed, Bath)
+      const floorM = snippet.match(/(\d+(?:st|nd|rd|th)(?:\s*floor)?|Ground-Floor)/i);
       const floor = floorM ? floorM[1] : '';
 
       const sizeM = snippet.match(/(\d+(?:\.\d+)?\s*(?:m²|sqm))/i);
-      const size = sizeM ? sizeM[1] : '';
+      const size = sizeM ? sizeM[1].replace(/sqm/i, 'm²') : '';
 
-      const bedBathM = snippet.match(/(\d+\s*🛏\s*\|\s*\d+\s*🛁|\d+\s*🛏)/i);
-      let layout = bedBathM ? bedBathM[1].replace(/\|/g, '·').replace(/\s+/g, ' ').trim() : m.beds;
-      if (!layout.includes('🛏') && m.beds) layout = `${m.beds}`;
+      const bedM = snippet.match(/(\d+)\s*🛏/);
+      const bathM = snippet.match(/(\d+)\s*🛁/);
+      const beds = bedM ? `${bedM[1]} Bed` : (m.beds || '');
+      const baths = bathM ? `${bathM[1]} Bath` : '';
 
-      const specsLine = [floor, size, layout].filter(Boolean).join(' | ');
+      const specsLine = [floor, size, beds, baths].filter(Boolean).join(' · ');
 
       const priceClean = (m.priceFormatted && !m.priceFormatted.startsWith('/mo') && m.priceFormatted !== 'Inquire')
         ? m.priceFormatted
         : (m.price ? (isRent ? `$${m.price.toLocaleString()}/mo` : `$${m.price.toLocaleString()} USD`) : 'Inquire');
 
-      let yieldLine = '';
-      if (!isRent && m.price) {
-        const estRent = Math.round(m.price * 0.0075);
-        const netRoi = ((estRent * 12 * 0.88) / m.price * 100).toFixed(1);
-        yieldLine = `▫️ <b>Est. Net Yield:</b> ~${netRoi}% Net\n`;
-      }
-
       text += 
-        `<b>Option ${num}</b>\n` +
-        `▫️ <b>Property:</b> ${escapeHtml(cleanTitle)}\n` +
+        `<blockquote><b>${num}. ${escapeHtml(building)}</b>\n` +
         `▫️ <b>Price:</b> <b>${escapeHtml(priceClean)}</b>\n` +
+        (specsLine ? `▫️ <b>Specs:</b> ${escapeHtml(specsLine)}\n` : '') +
         `📍 <i>${escapeHtml(m.location || 'Phnom Penh')}</i>\n` +
-        (specsLine ? `▫️ <i>${escapeHtml(specsLine)}</i>\n` : '') +
-        yieldLine +
-        `▫️ <a href="${escapeHtml(m.link)}">View Verified Post ↗</a>\n\n`;
-
-      optionLinksRow.push({ text: `Option ${num} ↗`, url: m.link });
+        `🔗 <a href="${escapeHtml(m.link)}">View Photos & Channel Post ↗</a></blockquote>\n\n`;
     });
   }
 
-  text += `<i>Tap an option button below to view full photos and verified developer details.</i>`;
-
   const keyboard = [];
-  if (optionLinksRow.length > 0) {
-    keyboard.push(optionLinksRow);
-  }
 
-  // Pagination row
+  // Pagination row (if > 3 matches)
   const hasNext = startIndex + pageSize < totalCount;
   const hasPrev = page > 1;
   const navRow = [];
@@ -419,18 +417,19 @@ function renderResultsCard(state, page = 1) {
     navRow.push({ text: '⬅️ Previous 3', callback_data: `srch_pg_${page - 1}` });
   }
   if (hasNext) {
-    navRow.push({ text: 'Next 3 Listings ❯', callback_data: `srch_pg_${page + 1}` });
+    navRow.push({ text: '📂 Next 3 Listings ❯', callback_data: `srch_pg_${page + 1}` });
   }
   if (navRow.length > 0) {
     keyboard.push(navRow);
   }
 
+  // Action Buttons: Clean, minimal, non-confusing
   keyboard.push([
-    { text: '💬 Inquire with Nick', url: 'https://t.me/Nick_REAKH' },
-    { text: '🌐 Browse Website ↗', url: 'https://propertyhubcambodia.com/properties' }
+    { text: '💬 Inquire with Nick Directly', url: 'https://t.me/Nick_REAKH' }
   ]);
   keyboard.push([
-    { text: '🔄 New Search', callback_data: 'srch_step0_start' }
+    { text: '🔄 Refine Filters', callback_data: 'srch_step0_start' },
+    { text: '🌐 Website Catalog ↗', url: 'https://propertyhubcambodia.com/properties' }
   ]);
 
   return { text, reply_markup: { inline_keyboard: keyboard } };
