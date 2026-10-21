@@ -636,3 +636,44 @@ Fonts: **DM Sans** (UI) · **DM Serif Display** (hero only) · **DM Mono** (labe
 | 2026-10-18 | The Content Bot became the single intake for website unit drafts as well as channel posts (menu first, `#unit` skips it). Test harness lives in `tests/content-bot-harness.cjs`, fakes copy real Apps Script quirks (Number chat ids go out as `3.5E8`, so every id is a String) | Built and verified live with Nick. A bot polls every minute, so while a draft session is open `checkForUpdates` long-polls for the rest of the run (fast mode). Full handoff in the website repo: `docs/handoff_telegram_unit_intake.md`. |
 | 2026-10-21 | Designed Agent Off-Plan Copilot (Developer price lists, live stacks & payment schedules). Piloted with Time Square 7 (TK) 1-Bed Duplex (65m²). Solves rapid availability changes & 'taken units' with instant alternate stack recommendations and 1-tap client quotation generation (Telegram text + PDF). Single source of truth for price history is Supabase `property_price_history` + dated raw files in `Price List/`. Strictly rejected synthetic numbers, unverified layout claims, and describing developer list price hikes as 'capital growth'. Hardened against 12 automated stress tests in `tests/offplan-engine.test.cjs` (100% pass): floor proximity ranking, explicit budget advisory on overrun, architectural column outer-view detection, zero capital appreciation text, dynamic gross area, lowercase unit codes, sold idempotency, and Telegram HTML entity escaping. Source sheets archived in `Property Listing/Time Square 7/Price List/2026-10-21_TS7_Duplex_Developer_PriceList.jpg`. | Full architectural spec in `docs/AGENT_OFFPLAN_COPILOT_PLAN.md`. Engine in `project-advisor-engine.cjs`, data model in `data/projects/time-square-7.json`, test suite in `tests/offplan-engine.test.cjs`. |
 | 2026-10-02 | Documented the `Partners` sheet tab (added earlier with the Partners referral tracking feature, commit `894f900`) in the GOOGLE SHEETS DATABASE and APPS SCRIPT API sections, and corrected the "4-tab schema is fixed" guardrail to 5 tabs | Routine audit found `PHC_AppsScript.gs` and three live tools (Lead Tracker, Client Manager, Commission Tracker) already reading/writing a `Partners` tab that CLAUDE.md never mentioned — documentation-only fix, no code changed. |
+
+---
+
+## 📱 NICK'S TELEGRAM BOT DESIGN & UX STANDARDS (PERMANENT)
+
+These standards are mandatory across all Telegram bots (@Nick_REAKH_Bot, @PHC_Content_Bot, @PHC_ClientCare_Bot):
+
+1. **Button Width & Sizing (Zero Truncation)**:
+   - On mobile screens, two buttons side-by-side with >14 characters get truncated with `...` (e.g. `💵 Unde...00 / mo`).
+   - If a button label is longer than 14 characters (e.g. budget ranges, status options), it MUST be placed on its own row (`1 button per row`) to span full screen width.
+   - 2-column buttons are ONLY allowed for very short, equal-length labels (e.g. `[ 📍 BKK1 ] [ 📍 Tonle Bassac ]`).
+   - Never allow any button label to truncate with an ellipsis.
+
+2. **Quote Style (`<blockquote>`) Mandatory for Options**:
+   - Every property listing / option must be cleanly wrapped in `<blockquote>...</blockquote>`.
+   - Never output naked unstyled text blocks for listings.
+
+3. **PHC 3-Property Anchoring Framework**:
+   - Every 3-option comparison must strictly follow Nick's comparative architecture:
+     - **Option 1:** `⭐️ TOP RECOMMENDATION · Sweet Spot` (Best balance of floor area, layout, and price)
+     - **Option 2:** `⚓ PREMIER BENCHMARK · Luxury Anchor` (Higher-tier unit setting the quality ceiling)
+     - **Option 3:** `💡 SMART VALUE · Agile Alternative` (Accessible entry point)
+   - Every option MUST include an honest `💡 Why this fits: ...` line explaining the broker rationale.
+
+4. **Zero Synthetic / Invented Numbers**:
+   - Never invent numbers (no made-up `~7.9% Net yield`, no invented launch prices, no fake dates).
+   - If yield or completion is not verified from the developer document, omit it.
+
+5. **Real Building & Project Names**:
+   - Extract the real project/building name from listings (e.g. `One Park`, `Residence L`, `Morgan EnMaison`, `Time Square 7`).
+   - Never output generic Khmer channel captions like `ខុនដូសម្រាប់លក់ $65,000` as a property name.
+
+6. **Minimal Concierge Header**:
+   - Keep search headers clean, compact, and luxury-styled:
+     ```
+     SEARCH CONCIERGE
+     ──────────
+     Step X of Y · ...
+     ```
+   - No long bulky borders or repetitive company titles.
+

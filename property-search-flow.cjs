@@ -51,10 +51,8 @@ function renderStep1() {
       `Are you looking to acquire or rent a property in Phnom Penh?`,
     reply_markup: {
       inline_keyboard: [
-        [
-          { text: '🏢 Buy Property', callback_data: 'srch_step1_sale' },
-          { text: '🔑 Rent a Home', callback_data: 'srch_step1_rent' }
-        ]
+        [{ text: '🏢 Buy Property', callback_data: 'srch_step1_sale' }],
+        [{ text: '🔑 Rent a Home', callback_data: 'srch_step1_rent' }]
       ]
     }
   };
@@ -65,7 +63,7 @@ function renderStep2(state) {
   const isRent = state.type === 'Rent';
 
   if (!isRent) {
-    // Buy -> Choose Status (Off-Plan vs Resale vs Any) matching website
+    // Buy -> Choose Status (Full-width un-truncatable pills)
     return {
       text: 
         `<b>SEARCH CONCIERGE</b>\n` +
@@ -74,16 +72,10 @@ function renderStep2(state) {
         `Select your preferred development status:`,
       reply_markup: {
         inline_keyboard: [
-          [
-            { text: '🏗️ Off-Plan / Developer', callback_data: 'srch_status_offplan' },
-            { text: '🔑 Resale / Ready', callback_data: 'srch_status_resale' }
-          ],
-          [
-            { text: '🌐 Any Status', callback_data: 'srch_status_any' }
-          ],
-          [
-            { text: '⬅️ Back', callback_data: 'srch_step0_start' }
-          ]
+          [{ text: '🏗️ Off-Plan (New Developments)', callback_data: 'srch_status_offplan' }],
+          [{ text: '🔑 Resale (Ready to Move-In)', callback_data: 'srch_status_resale' }],
+          [{ text: '🌐 Any Status (Show All)', callback_data: 'srch_status_any' }],
+          [{ text: '⬅️ Back to Objective', callback_data: 'srch_step0_start' }]
         ]
       }
     };
@@ -104,10 +96,10 @@ function renderStep2(state) {
         ],
         [
           { text: '🏡 Villa / House', callback_data: 'srch_type_villa' },
-          { text: '🌐 Any Type', callback_data: 'srch_type_any' }
+          { text: '🌐 Any Property Type', callback_data: 'srch_type_any' }
         ],
         [
-          { text: '⬅️ Back', callback_data: 'srch_step0_start' }
+          { text: '⬅️ Back to Objective', callback_data: 'srch_step0_start' }
         ]
       ]
     }
@@ -134,10 +126,10 @@ function renderStep3(state) {
           ],
           [
             { text: '🏡 Villa / Borey', callback_data: 'srch_type_villa' },
-            { text: '🌐 Any Type', callback_data: 'srch_type_any' }
+            { text: '🌐 Any Property Type', callback_data: 'srch_type_any' }
           ],
           [
-            { text: '⬅️ Back', callback_data: 'srch_back_to_step2' }
+            { text: '⬅️ Back to Status', callback_data: 'srch_back_to_step2' }
           ]
         ]
       }
@@ -166,7 +158,7 @@ function renderStep5(state) {
   return renderBudgetStep(state);
 }
 
-// ── HELPER: LOCATION SELECTOR ─────────────────────────────────
+// ── HELPER: LOCATION SELECTOR (CLEAN BALANCED GRID) ───────────
 function renderLocationStep(state) {
   const stepNum = state.type === 'Rent' ? '3 of 4' : '4 of 5';
   return {
@@ -183,11 +175,14 @@ function renderLocationStep(state) {
         ],
         [
           { text: '📍 Toul Kork', callback_data: 'srch_loc_tk' },
-          { text: '📍 Chamkarmon (TTP)', callback_data: 'srch_loc_ttp' }
+          { text: '📍 Chamkarmon', callback_data: 'srch_loc_ttp' }
         ],
         [
-          { text: '📍 Chroy Changvar / PH', callback_data: 'srch_loc_ph' },
-          { text: '🌐 Any Location', callback_data: 'srch_loc_any' }
+          { text: '📍 Chroy Changvar', callback_data: 'srch_loc_ph' },
+          { text: '📍 Peng Huoth', callback_data: 'srch_loc_ph' }
+        ],
+        [
+          { text: '🌐 Any Prime District', callback_data: 'srch_loc_any' }
         ],
         [
           { text: '⬅️ Back', callback_data: state.type === 'Rent' ? 'srch_back_to_step2' : 'srch_back_to_step3' }
