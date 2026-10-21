@@ -1,69 +1,55 @@
-# 🕵️ PHC Telegram Bot Staging Lab — Claude Audit Brief
+# 🕵️ PHC Telegram Bot Staging Lab — Claude Re-Audit Brief
 
-> **For Claude:** You have been asked by Nick (CEO, Property Hub Cambodia) to conduct a thorough technical, data, and UX compliance audit of the PHC Telegram Bot Staging Lab (`@Nick_REAKH_Bot`).
-
----
-
-## 🎯 System Scope & Objectives
-The staging lab is located in `phc-tools/telegram-bot-staging/`. It houses two core production-bound engines:
-1. **Off-Plan Developer Copilot (`/ts7`)**: Piloting Time Square 7 (TK) duplexes. Calculates promotional pricing (12% off + $3,000 rebate), dynamic 36-month payment schedules, outer perimeter orientation, and adjacent floor stack recommendations when a unit is taken.
-2. **Search Concierge (`/explore`)**: A 5-step minimal luxury filter hierarchy (Off-Plan/Resale -> Type -> District -> Budget) that queries 154 multi-channel listings and outputs 3 comparative listings using the PHC 3-Property Anchoring Framework.
+> **For Claude:** Nick (CEO, Property Hub Cambodia) has asked you to verify that all findings from your initial audit (Score: 58/100) have been resolved.
 
 ---
 
-## 📋 6-Point Audit Checklist
+## 🎯 Verification Scope & Test Suites
+The staging codebase is in `phc-tools/telegram-bot-staging/`.
 
-### 1. Data Integrity & Provenance Check
-* **File:** `data/projects/time-square-7.json`
-* **Audit Items:**
-  * Verify handover completion date is strictly **Q3 2028** (never Q4 2027).
-  * Verify duplex gross size is strictly **65 sqm**.
-  * Verify promotional pricing matches developer price sheets: `List Price * 0.88 - 3000`.
-  * Confirm that synthetic yield percentages (e.g. `~7.9% Net`) have been completely excised.
+### 1. Run the Full Automated Test Suite (22 Tests Total)
+You can execute both automated test suites directly:
+```bash
+# 1. Developer Off-Plan Engine (12 Tests)
+node telegram-bot-staging/tests/offplan-engine.test.js
 
-### 2. Regulatory & Advisory Guardrails
-* **File:** `engines/project-advisor.js`
-* **Audit Items:**
-  * Verify that developer list price increases are **never** described as "capital growth" or "capital appreciation".
-  * Verify that inner courtyard units explicitly mention partial views / natural light constraints.
-  * Verify that client budget overruns trigger an explicit advisory warning (`⚠️ Budget Note: ...`).
-
-### 3. Automated Test Verification
-* **Command to Run:**
-  ```bash
-  node tests/offplan-engine.test.js
-  ```
-  *(or from repo root: `node telegram-bot-staging/tests/offplan-engine.test.js`)*
-* **Expected Result:** **12 / 12 tests must PASS (100%)**.
-
-### 4. UX & Mobile Truncation Standards (Nick's Rules)
-* **Files:** `config/chat-tree-config.json` & `engines/search-concierge.js`
-* **Audit Items:**
-  * **Zero Truncation Rule:** Are buttons with >14 characters set to `1_per_row` (full-width)? (Specifically: all budget brackets and compound terms like `🏗️ Off-Plan (New Developments)`).
-  * **Quote Style:** Are listing options wrapped in Telegram `<blockquote>...</blockquote>` tags?
-  * **Concierge Header:** Does the search header follow the minimal 2-line format (`SEARCH CONCIERGE` / `──────────` / `Step X of Y`)?
-
-### 5. PHC 3-Property Comparative Anchoring
-* **File:** `engines/search-concierge.js`
-* **Audit Items:**
-  * Verify the 3-property comparative framing:
-    1. `⭐️ TOP RECOMMENDATION · Sweet Spot` (Middle price / optimal balance)
-    2. `⚓ PREMIER BENCHMARK · Luxury Anchor` (Highest price / quality standard)
-    3. `💡 SMART VALUE · Agile Alternative` (Lowest price / entry point)
-  * Verify that each option includes an honest `💡 Why this fits: ...` broker rationale.
-  * Verify presence of `[ 💬 Inquire with Nick Directly ]` action button.
-
-### 6. Telegram Parser Safety & UTF-8 Cleanliness
-* **Files:** `engines/search-concierge.js` & `engines/project-advisor.js`
-* **Audit Items:**
-  * Check that `escapeHtml()` escapes `&`, `<`, and `>`.
-  * Check that emojis use Unicode-safe regex (`/\p{Emoji}/u`) to prevent broken surrogate pairs that trigger Telegram `400 Bad Request: text must be encoded in UTF-8`.
+# 2. Search Concierge, UX & Anchoring (10 Tests)
+node telegram-bot-staging/tests/search-concierge.test.js
+```
+*Expected Result: 22 / 22 TESTS MUST PASS (100%).*
 
 ---
 
-## 📝 Required Audit Output Format
-Please provide your audit in 4 concise sections:
-1. **Executive Verdict:** (Pass / Needs Attention / Fail) with an overall score out of 100.
-2. **Automated Test Results:** Output of the 12 unit tests.
-3. **UX & Compliance Findings:** Detailed verification of Nick's 6 rules.
-4. **Concrete Recommendations:** Any remaining edge cases or code refinements.
+## 📋 Specific Findings Resolved for Audit
+
+### Rule 1: Zero Button Truncation
+* ✅ Property Type (Rent & Buy) set to `1_per_row` (full-width pills).
+* ✅ Districts set to `1_per_row` (or strictly <=14 chars in grids).
+* ✅ Results action buttons (`Next 3`, `Previous 3`, `Inquire`, `Refine`, `Catalog`) are all stacked 1 per row. Zero multi-column truncation.
+
+### Rule 2: Real Developer Data & Down Payment Math
+* ✅ Handover completion strictly Q3 2028.
+* ✅ Duplex gross area strictly 65 sqm.
+* ✅ Down payment balance explicitly labeled: `Down Payment Balance: $7,132 USD (10% total less deposit)`.
+* ✅ Zero synthetic yields.
+
+### Rule 3: Advisory Guardrails & Inner Units
+* ✅ Inner courtyard units explicitly state: `overlooks the central internal courtyard void. Note: Provides courtyard views and moderate natural daylight compared to perimeter stacks, with an acoustic environment insulated from street noise.`
+* ✅ Strictly zero "capital appreciation" or "capital growth" wording.
+* ✅ Budget overrun warning (`⚠️ Budget Advisory`) triggers when client budget is below available units.
+
+### Rule 4: 3-Property Anchoring & Elimination of Silent Relaxation
+* ✅ **NO SILENT RELAXATION:** When a filter (e.g. Villa in BKK1 under $105k) finds 0 matches, it strictly returns `No Exact Matches (0)` with an honest category integrity notice. It NEVER secretly substitutes condos for villas!
+* ✅ **Unpriced Items:** Time Square 7 and unpriced items are assigned `🏢 VERIFIED DEVELOPER PROJECT`, never falsely claiming to have the "lowest entry price".
+* ✅ **Priced 3-Pack:** Sweet Spot (middle), Luxury Anchor (highest), Smart Value (lowest) with customized rationale.
+
+### Rule 5: Formatting, Proposal Cards & Real Names
+* ✅ TS7 proposal cards are cleanly wrapped in `<blockquote>...</blockquote>`.
+* ✅ Building fallback uses clean project titles or `Phnom Penh Property`. Never invents fake `{district} Residence`.
+* ✅ Corrupted replacement characters (`\uFFFD`) and orphaned surrogates (`0xD800-0xDFFF`) stripped from inventory.
+* ✅ Links properly escape quotes (`&quot;`).
+
+### Other Audit Items
+* ✅ Step labeling: Buy is strictly 5 steps (Step 1 of 5 to Step 5 of 5); Rent is strictly 4 steps (Step 1 of 4 to Step 4 of 4).
+* ✅ Distinct callbacks: Chroy Changvar (`srch_loc_cc`) and Peng Huoth (`srch_loc_ph`) are completely separate. Sen Sok (`srch_loc_sensok`) is separated from Toul Kork (`srch_loc_tk`).
+* ✅ Token extraction: `process.env.TELEGRAM_BOT_TOKEN || '...'`.
