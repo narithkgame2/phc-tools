@@ -1,6 +1,7 @@
 // ═══════════════════════════════════════════════════════════════
-//  PHC 5-STEP INTERACTIVE PROPERTY SEARCH CONCIERGE
-//  Steps: Buy/Rent -> Property Type -> Location -> Budget -> Purpose -> Results
+//  PHC LUXURY PROPERTY SEARCH CONCIERGE (v2.0)
+//  Minimal, Premium, Aligned with Website Filters
+//  Status (Off-Plan vs Resale) -> Type -> Location -> Budget
 // ═══════════════════════════════════════════════════════════════
 
 const fs = require('fs');
@@ -8,6 +9,22 @@ const path = require('path');
 
 const INVENTORY_FILE = path.join(__dirname, 'data', 'multi-channel-inventory.json');
 const userSearchState = {};
+
+function escapeHtml(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function sanitizeUtf8(str) {
+  if (!str) return '';
+  const s = typeof str.toWellFormed === 'function' ? str.toWellFormed() : String(str);
+  return s
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\uFFFD]/g, '')
+    .normalize('NFC')
+    .trim();
+}
 
 function getInventory() {
   if (!fs.existsSync(INVENTORY_FILE)) return [];
@@ -28,14 +45,14 @@ function isSearchCallback(data) {
 function renderStep1() {
   return {
     text: 
-      '🏛️ <b>PROPERTY HUB CAMBODIA · SEARCH CONCIERGE</b>\n' +
-      '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n' +
-      '<b>Step 1 of 5 · Target Objective</b>\n\n' +
-      'Are you looking to purchase or rent a property in Phnom Penh?',
+      `<b>SEARCH CONCIERGE</b>\n` +
+      `──────────\n` +
+      `<b>Step 1 of 4 · Objective</b>\n\n` +
+      `Are you looking to acquire or rent a property in Phnom Penh?`,
     reply_markup: {
       inline_keyboard: [
         [
-          { text: '🏢 Buy a Property', callback_data: 'srch_step1_sale' },
+          { text: '🏢 Buy Property', callback_data: 'srch_step1_sale' },
           { text: '🔑 Rent a Home', callback_data: 'srch_step1_rent' }
         ]
       ]
@@ -43,170 +60,232 @@ function renderStep1() {
   };
 }
 
-// ── STEP 2: PROPERTY TYPE ─────────────────────────────────────
-function renderStep2(type) {
-  const isRent = type === 'Rent';
-  return {
-    text: 
-      `🏛️ <b>PROPERTY HUB CAMBODIA · SEARCH CONCIERGE</b>\n` +
-      `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-      `<b>Step 2 of 5 · Property Category (${isRent ? 'Rent' : 'Buy'})</b>\n\n` +
-      `Which property category best fits your lifestyle?`,
-    reply_markup: {
-      inline_keyboard: [
-        [
-          { text: '🏢 Modern Condo', callback_data: 'srch_step2_condo' },
-          { text: '🛋️ Serviced Apt', callback_data: 'srch_step2_apt' }
-        ],
-        [
-          { text: '🏡 Villa / Borey', callback_data: 'srch_step2_villa' },
-          { text: '🌐 Any Category', callback_data: 'srch_step2_any' }
-        ],
-        [
-          { text: '🔙 Back to Step 1', callback_data: 'srch_step0_start' }
-        ]
-      ]
-    }
-  };
-}
-
-// ── STEP 3: LOCATION ──────────────────────────────────────────
-function renderStep3(state) {
-  return {
-    text: 
-      `🏛️ <b>PROPERTY HUB CAMBODIA · SEARCH CONCIERGE</b>\n` +
-      `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-      `<b>Step 3 of 5 · Target Location</b>\n\n` +
-      `Select your preferred residential or investment district:`,
-    reply_markup: {
-      inline_keyboard: [
-        [
-          { text: '📍 BKK1', callback_data: 'srch_step3_bkk1' },
-          { text: '📍 Tonle Bassac', callback_data: 'srch_step3_tb' }
-        ],
-        [
-          { text: '📍 Chamkarmon (TTP)', callback_data: 'srch_step3_ttp' },
-          { text: '📍 Toul Kork', callback_data: 'srch_step3_tk' }
-        ],
-        [
-          { text: '🏡 Peng Huoth / Chbar Ampov', callback_data: 'srch_step3_ph' }
-        ],
-        [
-          { text: '🌐 Any Location', callback_data: 'srch_step3_any' },
-          { text: '🔙 Back', callback_data: 'srch_back_to_step2' }
-        ]
-      ]
-    }
-  };
-}
-
-// ── STEP 4: BUDGET ────────────────────────────────────────────
-function renderStep4(state) {
+// ── STEP 2: STATUS (FOR SALE) OR PROPERTY TYPE (FOR RENT) ─────
+function renderStep2(state) {
   const isRent = state.type === 'Rent';
-  if (isRent) {
+
+  if (!isRent) {
+    // Buy -> Choose Status (Off-Plan vs Resale vs Any) matching website
     return {
       text: 
-        `🏛️ <b>PROPERTY HUB CAMBODIA · SEARCH CONCIERGE</b>\n` +
-        `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-        `<b>Step 4 of 5 · Monthly Rental Budget</b>\n\n` +
-        `Select your target monthly budget range:`,
+        `<b>SEARCH CONCIERGE</b>\n` +
+        `──────────\n` +
+        `<b>Step 2 of 4 · Property Status (Buy)</b>\n\n` +
+        `Select your preferred development status:`,
       reply_markup: {
         inline_keyboard: [
           [
-            { text: '💵 Under $500 / mo', callback_data: 'srch_step4_rent_b1' },
-            { text: '💵 $500 – $800 / mo', callback_data: 'srch_step4_rent_b2' }
+            { text: '🏗️ Off-Plan / Developer', callback_data: 'srch_status_offplan' },
+            { text: '🔑 Resale / Ready', callback_data: 'srch_status_resale' }
           ],
           [
-            { text: '💵 $800 – $1,500 / mo', callback_data: 'srch_step4_rent_b3' },
-            { text: '💵 $1,500+ / mo', callback_data: 'srch_step4_rent_b4' }
+            { text: '🌐 Any Status', callback_data: 'srch_status_any' }
           ],
           [
-            { text: '🔙 Back to Location', callback_data: 'srch_back_to_step3' }
+            { text: '⬅️ Back', callback_data: 'srch_step0_start' }
           ]
         ]
       }
     };
   }
 
-  // Sale Budget
+  // Rent -> Choose Property Type
   return {
     text: 
-      `🏛️ <b>PROPERTY HUB CAMBODIA · SEARCH CONCIERGE</b>\n` +
-      `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-      `<b>Step 4 of 5 · Target Acquisition Budget</b>\n\n` +
-      `Select your target investment budget range:`,
+      `<b>SEARCH CONCIERGE</b>\n` +
+      `──────────\n` +
+      `<b>Step 2 of 4 · Property Type (Rent)</b>\n\n` +
+      `Which property type best fits your lifestyle?`,
     reply_markup: {
       inline_keyboard: [
         [
-          { text: '💰 Under $70,000 USD', callback_data: 'srch_step4_sale_b1' },
-          { text: '💰 $70k – $120,000 USD', callback_data: 'srch_step4_sale_b2' }
+          { text: '🏢 Modern Condo', callback_data: 'srch_type_condo' },
+          { text: '🛋️ Serviced Apt', callback_data: 'srch_type_apt' }
         ],
         [
-          { text: '💰 $120k – $250,000 USD', callback_data: 'srch_step4_sale_b3' },
-          { text: '💰 $250,000+ USD', callback_data: 'srch_step4_sale_b4' }
+          { text: '🏡 Villa / House', callback_data: 'srch_type_villa' },
+          { text: '🌐 Any Type', callback_data: 'srch_type_any' }
         ],
         [
-          { text: '🔙 Back to Location', callback_data: 'srch_back_to_step3' }
+          { text: '⬅️ Back', callback_data: 'srch_step0_start' }
         ]
       ]
     }
   };
 }
 
-// ── STEP 5: PURPOSE ───────────────────────────────────────────
-function renderStep5(state) {
+// ── STEP 3: TYPE (FOR BUY) OR LOCATION (FOR RENT) ─────────────
+function renderStep3(state) {
   const isRent = state.type === 'Rent';
-  if (isRent) {
+
+  if (!isRent) {
+    // Buy Step 3: Property Type
     return {
       text: 
-        `🏛️ <b>PROPERTY HUB CAMBODIA · SEARCH CONCIERGE</b>\n` +
-        `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-        `<b>Step 5 of 5 · Primary Living Priority</b>\n\n` +
-        `What is your main requirement for this rental?`,
+        `<b>SEARCH CONCIERGE</b>\n` +
+        `──────────\n` +
+        `<b>Step 3 of 4 · Property Type</b>\n\n` +
+        `Which category do you want to invest in?`,
       reply_markup: {
         inline_keyboard: [
-          [{ text: '💼 Work & Walkability to CBD', callback_data: 'srch_step5_rent_work' }],
-          [{ text: '🏊 Full Facilities (Pool & Sky Gym)', callback_data: 'srch_step5_rent_amen' }],
-          [{ text: '🧹 Serviced (Cleaning & Bills Included)', callback_data: 'srch_step5_rent_serv' }],
-          [{ text: '🔙 Back to Budget', callback_data: 'srch_back_to_step4' }]
+          [
+            { text: '🏢 Modern Condo', callback_data: 'srch_type_condo' },
+            { text: '🛋️ Serviced Apt', callback_data: 'srch_type_apt' }
+          ],
+          [
+            { text: '🏡 Villa / Borey', callback_data: 'srch_type_villa' },
+            { text: '🌐 Any Type', callback_data: 'srch_type_any' }
+          ],
+          [
+            { text: '⬅️ Back', callback_data: 'srch_back_to_step2' }
+          ]
         ]
       }
     };
   }
 
-  // Sale Purpose
+  // Rent Step 3: Location
+  return renderLocationStep(state);
+}
+
+// ── STEP 4: LOCATION (FOR BUY) OR BUDGET (FOR RENT) ───────────
+function renderStep4(state) {
+  const isRent = state.type === 'Rent';
+
+  if (!isRent) {
+    // Buy Step 4: Location
+    return renderLocationStep(state);
+  }
+
+  // Rent Step 4: Budget
+  return renderBudgetStep(state);
+}
+
+// ── STEP 5: BUDGET (FOR BUY) ──────────────────────────────────
+function renderStep5(state) {
+  return renderBudgetStep(state);
+}
+
+// ── HELPER: LOCATION SELECTOR ─────────────────────────────────
+function renderLocationStep(state) {
+  const stepNum = state.type === 'Rent' ? '3 of 4' : '4 of 5';
   return {
     text: 
-      `🏛️ <b>PROPERTY HUB CAMBODIA · SEARCH CONCIERGE</b>\n` +
-      `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-      `<b>Step 5 of 5 · Investment Objective</b>\n\n` +
-      `What is your primary investment goal?`,
+      `<b>SEARCH CONCIERGE</b>\n` +
+      `──────────\n` +
+      `<b>Step ${stepNum} · Prime District</b>\n\n` +
+      `Select your preferred location in Phnom Penh:`,
     reply_markup: {
       inline_keyboard: [
-        [{ text: '📈 High Rental Yield (8%+ Net ROI)', callback_data: 'srch_step5_sale_yield' }],
-        [{ text: '🚀 Capital Appreciation & Prime Growth', callback_data: 'srch_step5_sale_growth' }],
-        [{ text: '🏡 Personal Residence / Expat Living', callback_data: 'srch_step5_sale_home' }],
-        [{ text: '🔙 Back to Budget', callback_data: 'srch_back_to_step4' }]
+        [
+          { text: '📍 BKK1', callback_data: 'srch_loc_bkk1' },
+          { text: '📍 Tonle Bassac', callback_data: 'srch_loc_tb' }
+        ],
+        [
+          { text: '📍 Toul Kork', callback_data: 'srch_loc_tk' },
+          { text: '📍 Chamkarmon (TTP)', callback_data: 'srch_loc_ttp' }
+        ],
+        [
+          { text: '📍 Chroy Changvar / PH', callback_data: 'srch_loc_ph' },
+          { text: '🌐 Any Location', callback_data: 'srch_loc_any' }
+        ],
+        [
+          { text: '⬅️ Back', callback_data: state.type === 'Rent' ? 'srch_back_to_step2' : 'srch_back_to_step3' }
+        ]
       ]
     }
   };
 }
 
-// ── INVENTORY FILTERING & RESULT CARDS ────────────────────────
+// ── HELPER: BUDGET SELECTOR ───────────────────────────────────
+function renderBudgetStep(state) {
+  const isRent = state.type === 'Rent';
+  const stepNum = isRent ? '4 of 4' : '5 of 5';
+
+  if (isRent) {
+    return {
+      text: 
+        `<b>SEARCH CONCIERGE</b>\n` +
+        `──────────\n` +
+        `<b>Step ${stepNum} · Monthly Budget (Rent)</b>\n\n` +
+        `Select your target monthly budget:`,
+      reply_markup: {
+        inline_keyboard: [
+          [
+            { text: '💵 Under $600 / mo', callback_data: 'srch_bg_rent_1' },
+            { text: '💵 $600 – $1,200 / mo', callback_data: 'srch_bg_rent_2' }
+          ],
+          [
+            { text: '💵 $1,200 – $2,500 / mo', callback_data: 'srch_bg_rent_3' },
+            { text: '💵 $2,500+ / mo', callback_data: 'srch_bg_rent_4' }
+          ],
+          [
+            { text: '🌐 Any Budget', callback_data: 'srch_bg_rent_any' }
+          ],
+          [
+            { text: '⬅️ Back', callback_data: 'srch_back_to_loc' }
+          ]
+        ]
+      }
+    };
+  }
+
+  // Buy Budget
+  return {
+    text: 
+      `<b>SEARCH CONCIERGE</b>\n` +
+      `──────────\n` +
+      `<b>Step ${stepNum} · Target Budget (Buy)</b>\n\n` +
+      `Select your acquisition budget bracket:`,
+    reply_markup: {
+      inline_keyboard: [
+        [
+          { text: '💰 Under $100,000', callback_data: 'srch_bg_sale_1' },
+          { text: '💰 $100k – $200,000', callback_data: 'srch_bg_sale_2' }
+        ],
+        [
+          { text: '💰 $200k – $500,000', callback_data: 'srch_bg_sale_3' },
+          { text: '💰 $500,000+ USD', callback_data: 'srch_bg_sale_4' }
+        ],
+        [
+          { text: '🌐 Any Budget', callback_data: 'srch_bg_sale_any' }
+        ],
+        [
+          { text: '⬅️ Back', callback_data: 'srch_back_to_loc' }
+        ]
+      ]
+    }
+  };
+}
+
+// ── FILTER INVENTORY ──────────────────────────────────────────
 function filterInventory(state) {
   const listings = getInventory();
   const isRent = state.type === 'Rent';
 
   let matches = listings.filter(l => l.type.toLowerCase() === state.type.toLowerCase());
 
-  // Location filter
+  // 1. Status Filter (Off-Plan vs Resale for Buy)
+  if (!isRent && state.status && state.status !== 'any') {
+    const isOffPlanTarget = state.status === 'offplan';
+    const statusFiltered = matches.filter(l => {
+      const text = `${l.title} ${l.snippet}`.toLowerCase();
+      const isOffPlan = /off-plan|under-construction|handover|completion|installment|payment plan|time square|j tower|odom|le conde|picasso|diamond bay/i.test(text);
+      return isOffPlanTarget ? isOffPlan : !isOffPlan;
+    });
+    if (statusFiltered.length > 0) {
+      matches = statusFiltered;
+    }
+  }
+
+  // 2. Location Filter
   if (state.location && state.location !== 'any') {
     const locMap = {
       bkk1: ['bkk1', 'bkk 1', 'boeung keng kang 1', 'bkk'],
       tb: ['tonle bassac', 'bassac', 'aeon'],
       ttp: ['chamkarmon', 'toul tompoung', 'russian market', 'ttp', 'tumpun'],
       tk: ['toul kork', 'boeng kak', 'sen sok'],
-      ph: ['peng huoth', 'beoung snor', 'boeung snor', 'chbar ampov', 'national road 1']
+      ph: ['peng huoth', 'beoung snor', 'boeung snor', 'chbar ampov', 'chroy changvar', 'national road 1']
     };
     const keywords = locMap[state.location] || [state.location];
     const locFiltered = matches.filter(l => {
@@ -218,28 +297,7 @@ function filterInventory(state) {
     }
   }
 
-  // Budget filter
-  if (state.budget) {
-    let minP = 0;
-    let maxP = Infinity;
-    if (isRent) {
-      if (state.budget === 'rent_b1') { minP = 0; maxP = 500; }
-      else if (state.budget === 'rent_b2') { minP = 450; maxP = 850; }
-      else if (state.budget === 'rent_b3') { minP = 750; maxP = 1600; }
-      else if (state.budget === 'rent_b4') { minP = 1400; maxP = 15000; }
-    } else {
-      if (state.budget === 'sale_b1') { minP = 0; maxP = 75000; }
-      else if (state.budget === 'sale_b2') { minP = 65000; maxP = 130000; }
-      else if (state.budget === 'sale_b3') { minP = 120000; maxP = 270000; }
-      else if (state.budget === 'sale_b4') { minP = 240000; maxP = 2000000; }
-    }
-    const budgetFiltered = matches.filter(l => !l.price || (l.price >= minP && l.price <= maxP));
-    if (budgetFiltered.length > 0) {
-      matches = budgetFiltered;
-    }
-  }
-
-  // Property type filter
+  // 3. Property Type Filter
   if (state.propType && state.propType !== 'any') {
     if (state.propType === 'apt') {
       const aptFiltered = matches.filter(l => /serviced|apartment|អាផាតមិន/i.test(`${l.title} ${l.snippet}`));
@@ -253,9 +311,31 @@ function filterInventory(state) {
     }
   }
 
+  // 4. Budget Filter
+  if (state.budget && state.budget !== 'any') {
+    let minP = 0;
+    let maxP = Infinity;
+    if (isRent) {
+      if (state.budget === 'rent_1') { minP = 0; maxP = 600; }
+      else if (state.budget === 'rent_2') { minP = 550; maxP = 1250; }
+      else if (state.budget === 'rent_3') { minP = 1150; maxP = 2600; }
+      else if (state.budget === 'rent_4') { minP = 2400; maxP = 25000; }
+    } else {
+      if (state.budget === 'sale_1') { minP = 0; maxP = 105000; }
+      else if (state.budget === 'sale_2') { minP = 95000; maxP = 210000; }
+      else if (state.budget === 'sale_3') { minP = 190000; maxP = 520000; }
+      else if (state.budget === 'sale_4') { minP = 480000; maxP = 10000000; }
+    }
+    const budgetFiltered = matches.filter(l => !l.price || (l.price >= minP && l.price <= maxP));
+    if (budgetFiltered.length > 0) {
+      matches = budgetFiltered;
+    }
+  }
+
   return matches;
 }
 
+// ── RENDER RESULTS CARD ───────────────────────────────────────
 function renderResultsCard(state, page = 1) {
   const allMatches = filterInventory(state);
   const pageSize = 3;
@@ -264,35 +344,39 @@ function renderResultsCard(state, page = 1) {
   const totalCount = allMatches.length;
 
   const isRent = state.type === 'Rent';
-  const filterSummary = `${state.type} · ${state.propTypeLabel || 'Prime Property'} · ${state.locLabel || 'Phnom Penh'} · ${state.budgetLabel || 'Budget Profile'}`;
+  const statusStr = state.statusLabel ? `${state.statusLabel} · ` : '';
+  const filterSummary = `${statusStr}${state.type} · ${state.propTypeLabel || 'All Types'} · ${state.locLabel || 'All Districts'}`;
 
   let text = 
-    `⚖️ <b>PHC HANDPICKED ${isRent ? 'RENTAL' : 'INVESTMENT'} MATCHES</b>\n` +
-    `<i>Filtered by: ${filterSummary}</i>\n\n`;
+    `<b>SEARCH CONCIERGE</b>\n` +
+    `──────────\n` +
+    `<b>Verified Portfolio Matches (${totalCount})</b>\n` +
+    `<i>${escapeHtml(filterSummary)}</i>\n\n`;
 
-  const buttonsRow = [];
+  const optionLinksRow = [];
 
   if (displayed.length === 0) {
-    text += `<blockquote>No direct matches found for this exact combination in our active channel catalog right now. Nick will source off-market units for you:</blockquote>`;
+    text += `<i>No exact listings match your filter combination in our active catalog right now. Contact Nick directly for off-market options:</i>\n\n`;
   } else {
     displayed.forEach((m, idx) => {
       const num = startIndex + idx + 1;
-      const cleanTitle = (m.title || `${m.location} ${m.beds}`)
-        .replace(/^#Newlisting\s*/i, '')
-        .replace(/^[📍🏢✨🍃💫\s]+/, '')
-        .replace(/\s*·\s*Features:[\s\S]*/i, '')
+      let rawTitle = m.title || `${m.location} ${m.beds}`;
+      let cleanTitle = sanitizeUtf8(rawTitle)
+        .replace(/^#Newlisting\s*/iu, '')
+        .replace(/^[\p{Extended_Pictographic}\p{Emoji}\p{Symbol}\s]+/u, '')
+        .replace(/\s*·\s*Features:[\s\S]*/iu, '')
         .split('·')[0].trim();
 
-      const snippet = m.snippet || '';
+      const snippet = sanitizeUtf8(m.snippet || '');
       const floorM = snippet.match(/(\d+(?:st|nd|rd|th)(?:\s*floor)?)/i);
       const floor = floorM ? floorM[1] : '';
 
       const sizeM = snippet.match(/(\d+(?:\.\d+)?\s*(?:m²|sqm))/i);
-      const size = sizeM ? sizeM[1].replace(/m²/i, 'm²') : '';
+      const size = sizeM ? sizeM[1] : '';
 
       const bedBathM = snippet.match(/(\d+\s*🛏\s*\|\s*\d+\s*🛁|\d+\s*🛏)/i);
       let layout = bedBathM ? bedBathM[1].replace(/\|/g, '·').replace(/\s+/g, ' ').trim() : m.beds;
-      if (!layout.includes('🛏') && m.beds) layout = `${m.beds} (1🛁)`;
+      if (!layout.includes('🛏') && m.beds) layout = `${m.beds}`;
 
       const specsLine = [floor, size, layout].filter(Boolean).join(' | ');
 
@@ -302,31 +386,29 @@ function renderResultsCard(state, page = 1) {
 
       let yieldLine = '';
       if (!isRent && m.price) {
-        // Calculate realistic net yield
-        const estMonthlyRent = Math.round(m.price * 0.0075);
-        const netYieldVal = ((estMonthlyRent * 12 * 0.88) / m.price * 100).toFixed(1);
-        yieldLine = `▫️ <b>Est. Net Yield:</b> ~${netYieldVal}% Net\n`;
+        const estRent = Math.round(m.price * 0.0075);
+        const netRoi = ((estRent * 12 * 0.88) / m.price * 100).toFixed(1);
+        yieldLine = `▫️ <b>Est. Net Yield:</b> ~${netRoi}% Net\n`;
       }
 
       text += 
-        `<blockquote>✨ <b>OPTION ${num}</b>\n` +
-        `▫️ <b>Property:</b> ${cleanTitle}\n` +
-        `▫️ <b>Pricing:</b> ${priceClean}\n` +
-        `▫️ <b>Specs:</b> ${m.beds}\n` +
-        `📍 <i>${m.location}</i>\n` +
-        `${specsLine}\n` +
+        `<b>Option ${num}</b>\n` +
+        `▫️ <b>Property:</b> ${escapeHtml(cleanTitle)}\n` +
+        `▫️ <b>Price:</b> <b>${escapeHtml(priceClean)}</b>\n` +
+        `📍 <i>${escapeHtml(m.location || 'Phnom Penh')}</i>\n` +
+        (specsLine ? `▫️ <i>${escapeHtml(specsLine)}</i>\n` : '') +
         yieldLine +
-        `▫️ <b>Listing Photos:</b> <a href="${m.link}">View Details ↗</a></blockquote>\n\n`;
+        `▫️ <a href="${escapeHtml(m.link)}">View Verified Post ↗</a>\n\n`;
 
-      buttonsRow.push({ text: `✨ Option ${num} ↗`, url: m.link });
+      optionLinksRow.push({ text: `Option ${num} ↗`, url: m.link });
     });
   }
 
-  text += `💡 <i>Tap any option button below to inspect full photos, floor plans & details directly in the verified channel post.</i>`;
+  text += `<i>Tap an option button below to view full photos and verified developer details.</i>`;
 
   const keyboard = [];
-  if (buttonsRow.length > 0) {
-    keyboard.push(buttonsRow);
+  if (optionLinksRow.length > 0) {
+    keyboard.push(optionLinksRow);
   }
 
   // Pagination row
@@ -334,21 +416,21 @@ function renderResultsCard(state, page = 1) {
   const hasPrev = page > 1;
   const navRow = [];
   if (hasPrev) {
-    navRow.push({ text: '🔙 Previous 3', callback_data: `srch_page_${page - 1}` });
+    navRow.push({ text: '⬅️ Previous 3', callback_data: `srch_pg_${page - 1}` });
   }
   if (hasNext) {
-    navRow.push({ text: '📂 View Next 3 Matches ❯', callback_data: `srch_page_${page + 1}` });
+    navRow.push({ text: 'Next 3 Listings ❯', callback_data: `srch_pg_${page + 1}` });
   }
   if (navRow.length > 0) {
     keyboard.push(navRow);
   }
 
   keyboard.push([
-    { text: '🎯 Request Custom Sourcing from Nick', callback_data: 'btn_custom_search' },
-    { text: '💬 Chat with Nick Directly ↗', url: 'https://t.me/Nick_REAKH' }
+    { text: '💬 Inquire with Nick', url: 'https://t.me/Nick_REAKH' },
+    { text: '🌐 Browse Website ↗', url: 'https://propertyhubcambodia.com/properties' }
   ]);
   keyboard.push([
-    { text: '🔄 Start New Search', callback_data: 'srch_step0_start' }
+    { text: '🔄 New Search', callback_data: 'srch_step0_start' }
   ]);
 
   return { text, reply_markup: { inline_keyboard: keyboard } };
@@ -365,7 +447,6 @@ async function handleSearchCallback(cb, botToken) {
   }
   const state = userSearchState[chatId];
 
-  // Acknowledge callback immediately
   await fetch(`https://api.telegram.org/bot${botToken}/answerCallbackQuery`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -379,50 +460,47 @@ async function handleSearchCallback(cb, botToken) {
     card = renderStep1();
   } else if (data === 'srch_step1_sale' || data === 'lead_flow_buy') {
     state.type = 'Sale';
-    card = renderStep2('Sale');
+    card = renderStep2(state);
   } else if (data === 'srch_step1_rent' || data === 'lead_flow_rent') {
     state.type = 'Rent';
-    card = renderStep2('Rent');
-  } else if (data.startsWith('srch_step2_')) {
-    const pType = data.replace('srch_step2_', '');
-    state.propType = pType;
-    const pTypeNames = { condo: 'Modern Condo', apt: 'Serviced Apartment', villa: 'Villa / Borey', any: 'Any Type' };
-    state.propTypeLabel = pTypeNames[pType] || 'All Types';
+    card = renderStep2(state);
+  } else if (data.startsWith('srch_status_')) {
+    const st = data.replace('srch_status_', '');
+    state.status = st;
+    const stLabels = { offplan: 'Off-Plan', resale: 'Resale', any: 'All' };
+    state.statusLabel = stLabels[st] || 'All';
     card = renderStep3(state);
   } else if (data === 'srch_back_to_step2') {
-    card = renderStep2(state.type);
-  } else if (data.startsWith('srch_step3_')) {
-    const loc = data.replace('srch_step3_', '');
-    state.location = loc;
-    const locNames = { bkk1: 'BKK1', tb: 'Tonle Bassac', ttp: 'Chamkarmon / TTP', tk: 'Toul Kork', ph: 'Peng Huoth / Chbar Ampov', any: 'Any Prime District' };
-    state.locLabel = locNames[loc] || 'Phnom Penh';
-    card = renderStep4(state);
+    card = renderStep2(state);
+  } else if (data.startsWith('srch_type_')) {
+    const pt = data.replace('srch_type_', '');
+    state.propType = pt;
+    const ptLabels = { condo: 'Condo', apt: 'Serviced Apt', villa: 'Villa / Borey', any: 'All Types' };
+    state.propTypeLabel = ptLabels[pt] || 'All Types';
+    card = state.type === 'Rent' ? renderStep3(state) : renderStep4(state);
   } else if (data === 'srch_back_to_step3') {
     card = renderStep3(state);
-  } else if (data.startsWith('srch_step4_')) {
-    const bgKey = data.replace('srch_step4_', '');
-    state.budget = bgKey;
-    const bgLabels = {
-      rent_b1: 'Under $500/mo', rent_b2: '$500–$800/mo', rent_b3: '$800–$1,500/mo', rent_b4: '$1,500+/mo',
-      sale_b1: 'Under $70k USD', sale_b2: '$70k–$120k USD', sale_b3: '$120k–$250k USD', sale_b4: '$250k+ USD'
-    };
-    state.budgetLabel = bgLabels[bgKey] || 'Budget Profile';
-    card = renderStep5(state);
-  } else if (data === 'srch_back_to_step4') {
-    card = renderStep4(state);
-  } else if (data.startsWith('srch_step5_')) {
-    const pur = data.replace('srch_step5_', '');
-    state.purpose = pur;
+  } else if (data.startsWith('srch_loc_')) {
+    const loc = data.replace('srch_loc_', '');
+    state.location = loc;
+    const locLabels = { bkk1: 'BKK1', tb: 'Tonle Bassac', tk: 'Toul Kork', ttp: 'Chamkarmon', ph: 'Peng Huoth / Chroy Changvar', any: 'All Districts' };
+    state.locLabel = locLabels[loc] || 'All Districts';
+    card = state.type === 'Rent' ? renderStep4(state) : renderStep5(state);
+  } else if (data === 'srch_back_to_loc') {
+    card = state.type === 'Rent' ? renderStep3(state) : renderStep4(state);
+  } else if (data.startsWith('srch_bg_')) {
+    const bg = data.replace('srch_bg_', '');
+    state.budget = bg;
     state.page = 1;
     card = renderResultsCard(state, 1);
-  } else if (data.startsWith('srch_page_')) {
-    const pg = parseInt(data.replace('srch_page_', ''), 10) || 1;
+  } else if (data.startsWith('srch_pg_')) {
+    const pg = parseInt(data.replace('srch_pg_', ''), 10) || 1;
     state.page = pg;
     card = renderResultsCard(state, pg);
   }
 
   if (card) {
-    await fetch(`https://api.telegram.org/bot${botToken}/editMessageText`, {
+    const res = await fetch(`https://api.telegram.org/bot${botToken}/editMessageText`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -433,20 +511,23 @@ async function handleSearchCallback(cb, botToken) {
         disable_web_page_preview: true,
         reply_markup: card.reply_markup
       })
-    }).catch(async () => {
-      // If edit fails (e.g. text identical), send new message
+    });
+
+    const resJson = await res.json().catch(() => ({}));
+    if (!resJson.ok) {
+      console.error('⚠️ [Telegram editMessageText Error]:', resJson.description);
+      // Fallback: Send new message without parse_mode if entity error
       await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           chat_id: chatId,
-          text: card.text,
-          parse_mode: 'HTML',
+          text: card.text.replace(/<[^>]+>/g, ''), // strip tags if parse error
           disable_web_page_preview: true,
           reply_markup: card.reply_markup
         })
       });
-    });
+    }
   }
 }
 
