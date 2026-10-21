@@ -64,20 +64,15 @@ When a unit (e.g. 38C1) is reserved by another agent:
 
 ---
 
-## 6. HISTORICAL MEMORY & EVOLUTION TRACKING (THE BROKER ADVANTAGE)
-Average agents have zero memory. PHC retains permanent historical versioning across all developments:
+## 6. PRICE LIST VERSIONING & COMPLIANCE RULES
 
-### 1. Dual Storage Architecture
-- **Local Storage (`phc-tools/data/projects/{projectId}/`):**
-  - `project-master.json`: Current live availability & active promotion.
-  - `price-lists/`: Versioned raw developer files (`2024-05_v1.0_Launch.pdf`, `2026-10_v2.0_Duplex_Promo.jpg`).
-  - `history/pricing-evolution.json`: Timestamped price changes per stack.
-  - `history/layout-changelog.md`: Architectural layout revisions between phases.
-- **Google Drive Sync:**
-  - Dedicated Google Drive intake folder (`PHC Property Database / {Project}`) for seamless mobile uploads from Telegram broker chats.
+### 1. Storage & Single Source of Truth
+- **Raw File Archival:** Save every developer price list with its exact date in `phc-website/Property Listing/{Project}/Price List/` (e.g. `2026-10-21_TS7_Duplex_Promo.jpg`). Never overwrite or replace an old file.
+- **Database of Record:** Use the existing Supabase `public.property_price_history` table (migrated 2026-10-18) via `update_unit_price()`. Do not create parallel JSON history files.
 
-### 2. High-Value Client Advisory Metrics
-- **Launch Arbitrage Metric:** Automatically calculates Current Net Price vs. Phase 1 Launch Baseline (e.g. *"7.6% Below Original Launch Price"*).
-- **Layout Revision Protection:** Tracks subtle developer plan modifications (net area shrinkage, AC ledge shifts, column intrusions) to protect buyer interests.
-- **Below-Launch VIP Resale Alerts:** Automatically triggers alerts when an urgent resale unit drops below the developer's original launch price.
+### 2. Strict Advisory Rules (Charter Addition)
+- **Cite Dated Documents:** Historical or comparative price claims must cite two real, dated developer documents (e.g., "Compared to developer price list dated June 2025...").
+- **Like-for-Like Only:** Comparisons must be like-for-like (net price vs net price, same unit and floor tier). Never compare a promotional net price against a list/rack price.
+- **No False "Capital Growth" Claims:** Developer list price increases describe an asking price adjustment by the developer, not secondary market capital growth or resale value. State facts neutrally: e.g. *"Developer list price increased by X% on [date]"* or *"Developer list price unchanged since [date]"*.
+- **No Speculative Layout Claims:** Do not speculate on undocumented structural or layout alterations to buyers. Only cite developer-stamped architectural revisions.
 
