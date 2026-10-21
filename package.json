@@ -1,4 +1,9 @@
 {
+  "name": "phc-tools",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node staging-bot-poller.cjs"
+  },
   "dependencies": {
     "pdfkit": "^0.20.2",
     "qrcode": "^1.5.4",
