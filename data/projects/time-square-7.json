@@ -1,0 +1,175 @@
+{
+  "projectId": "time-square-7",
+  "name": "Time Square 7",
+  "developer": "Megakim World Corp",
+  "location": {
+    "district": "Toul Kork",
+    "street": "Street 315 / Boeng Kak 1",
+    "city": "Phnom Penh",
+    "landmark": "Near TK Avenue & Eden Garden"
+  },
+  "projectDetails": {
+    "handover": "Q4 2027",
+    "floors": 49,
+    "titleType": "Foreign Freehold Strata Hard Title (100% foreign ownership)",
+    "buildingType": "Mixed-Use Residential High-Rise",
+    "facilities": [
+      "Rooftop Infinity Swimming Pool (49th Floor)",
+      "Sky Fitness Gym & Yoga Studio",
+      "Sky Lounge & Co-Working Space",
+      "Grand Hotel-Style Entrance Lobby",
+      "High-Speed Passenger & Fire Elevators",
+      "Multi-Level Car Parking",
+      "24/7 Security & CCTV Surveillance"
+    ]
+  },
+  "activePromotion": {
+    "description": "Exclusive Developer Launch Promotion",
+    "discountPercent": 12,
+    "cashRebateUsd": 3000,
+    "standardPaymentPlan": {
+      "bookingDepositUsd": 1000,
+      "downPaymentPercent": 10,
+      "constructionInstallmentPercentPerMonth": 1,
+      "constructionDurationMonths": 36,
+      "handoverBalancePercent": 54
+    }
+  },
+  "unitTypes": [
+    {
+      "typeName": "1-Bedroom Duplex Loft",
+      "grossAreaSqm": 65,
+      "bedrooms": 1,
+      "bathrooms": 1,
+      "description": "Double-height duplex loft featuring a 3.0m wide double-height living room void, linear kitchenette with dining counter, private balcony, and upper mezzanine master suite.",
+      "orientationGuide": {
+        "outerUnits": [
+          "B1",
+          "C1",
+          "D1",
+          "E1"
+        ],
+        "outerDescription": "Outer perimeter wall — unobstructed panoramic open city skyline views, maximum natural lighting, superior view equity.",
+        "innerUnits": [
+          "B2",
+          "C2",
+          "D2",
+          "E2"
+        ],
+        "innerDescription": "Central atrium / inner lightwell facing neighboring units across corridor."
+      },
+      "availableUnits": [
+        {
+          "unitCode": "38C1",
+          "floor": 38,
+          "column": "C1",
+          "orientation": "Outer City View (Recommended)",
+          "listPrice": 95813,
+          "netPrice": 81315,
+          "pricePerSqmNet": 1251,
+          "status": "available"
+        },
+        {
+          "unitCode": "38D1",
+          "floor": 38,
+          "column": "D1",
+          "orientation": "Outer City View (Recommended)",
+          "listPrice": 95813,
+          "netPrice": 81315,
+          "pricePerSqmNet": 1251,
+          "status": "available"
+        },
+        {
+          "unitCode": "38E1",
+          "floor": 38,
+          "column": "E1",
+          "orientation": "Outer City View",
+          "listPrice": 95813,
+          "netPrice": 81315,
+          "pricePerSqmNet": 1251,
+          "status": "available"
+        },
+        {
+          "unitCode": "38C2",
+          "floor": 38,
+          "column": "C2",
+          "orientation": "Inner Courtyard",
+          "listPrice": 95813,
+          "netPrice": 81315,
+          "pricePerSqmNet": 1251,
+          "status": "available"
+        },
+        {
+          "unitCode": "39C1",
+          "floor": 39,
+          "column": "C1",
+          "orientation": "Outer City View",
+          "listPrice": 97125,
+          "netPrice": 82470,
+          "pricePerSqmNet": 1268,
+          "status": "available"
+        },
+        {
+          "unitCode": "39D1",
+          "floor": 39,
+          "column": "D1",
+          "orientation": "Outer City View",
+          "listPrice": 97125,
+          "netPrice": 82470,
+          "pricePerSqmNet": 1268,
+          "status": "available"
+        },
+        {
+          "unitCode": "40C1",
+          "floor": 40,
+          "column": "C1",
+          "orientation": "Outer City View",
+          "listPrice": 98437,
+          "netPrice": 83625,
+          "pricePerSqmNet": 1286,
+          "status": "available"
+        },
+        {
+          "unitCode": "41B1",
+          "floor": 41,
+          "column": "B1",
+          "orientation": "Outer City View",
+          "listPrice": 99750,
+          "netPrice": 84780,
+          "pricePerSqmNet": 1304,
+          "status": "available"
+        },
+        {
+          "unitCode": "41D1",
+          "floor": 41,
+          "column": "D1",
+          "orientation": "Outer City View",
+          "listPrice": 99750,
+          "netPrice": 84780,
+          "pricePerSqmNet": 1304,
+          "status": "available"
+        },
+        {
+          "unitCode": "42C1",
+          "floor": 42,
+          "column": "C1",
+          "orientation": "Outer City View",
+          "listPrice": 101062,
+          "netPrice": 85935,
+          "pricePerSqmNet": 1322,
+          "status": "available"
+        },
+        {
+          "unitCode": "45AC1",
+          "floor": 45,
+          "column": "C1",
+          "orientation": "Top Floor Penthouse Duplex (City View)",
+          "listPrice": 103688,
+          "netPrice": 88245,
+          "pricePerSqmNet": 1357,
+          "status": "available"
+        }
+      ]
+    }
+  ]
+}

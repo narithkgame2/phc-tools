@@ -40,6 +40,8 @@ const fs = require('fs');
 const path = require('path');
 const STATE_FILE = path.join(__dirname, 'data', 'bot-state.json');
 const { syncAllChannels, searchInventory } = require('./channel-syncer.cjs');
+const { handleSearchCallback, handleSearchCommand, isSearchCallback } = require('./property-search-flow.cjs');
+const projectEngine = require('./project-advisor-engine.cjs');
 
 // Periodic Multi-Channel Sync (every 30 minutes)
 setInterval(() => {
@@ -2052,6 +2054,37 @@ async function pollUpdates() {
           return;
         }
 
+        // ── DEVELOPER PROJECT INTELLIGENCE ENGINE (PILOT: TS7) ──
+        if (text === '/ts7' || text.toLowerCase() === 'ts7' || text.toLowerCase().includes('time square 7') || text.toLowerCase().includes('ts7 duplex')) {
+          console.log(`🏢 Project Intelligence query for Time Square 7 from ${senderName} (${chatId})`);
+          const result = projectEngine.findBestUnit('time-square-7', { maxBudget: 85000 });
+          const cardText = projectEngine.formatProposalCard(result);
+          const bestUnit = result.bestUnit;
+
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: chatId,
+              text: cardText,
+              parse_mode: 'HTML',
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: `❌ Mark ${bestUnit.unitCode} as Sold`, callback_data: `admin_sold_ts7_${bestUnit.unitCode}` }],
+                  [{ text: '🔄 Reset All TS7 Units to Available', callback_data: 'admin_reset_ts7' }]
+                ]
+              }
+            })
+          });
+          return;
+        }
+
+        if (text === '/search' || text === '/explore' || text === '/rent' || text === '/sale' || text === '/buy' || text === '🏢 Explore Condos (Buy / Rent)' || text === '🏢 Explore Property') {
+          console.log(`🔍 5-Step Property Search started by ${senderName} (${chatId})`);
+          await handleSearchCommand(chatId, token);
+          return;
+        }
+
         if (text.startsWith('/start') || text.toLowerCase() === 'hi' || text.toLowerCase() === 'hello' || text === '/inquire') {
           console.log(`👤 New client interaction from ${senderName} (${chatId})`);
 
@@ -2513,6 +2546,77 @@ async function pollUpdates() {
         const userName = user.username ? `@${user.username}` : user.first_name;
 
         console.log(`\n👉 Tap received: ${dataStr} from user ${userName} (${user.id})`);
+
+        // ── 5-STEP INTERACTIVE SEARCH CONCIERGE ───────────────────
+        if (isSearchCallback(dataStr)) {
+          await handleSearchCallback(cb, token);
+          return;
+        }
+
+        // ── DEVELOPER PROJECT INTELLIGENCE CALLBACKS ─────────────
+        if (dataStr.startsWith('admin_sold_ts7_')) {
+          const unitCode = dataStr.replace('admin_sold_ts7_', '');
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId, text: `Unit ${unitCode} marked as SOLD!` })
+          });
+
+          const soldResult = projectEngine.markUnitSold('time-square-7', unitCode);
+          const nextResult = soldResult.nextBestRecommendation;
+          const nextUnit = nextResult.bestUnit;
+
+          const updatedText = `⚠️ <b>UPDATE: Unit ${unitCode} is SOLD!</b>\n` +
+            `<i>Live database updated. Here is the next best available outer-view duplex:</i>\n\n` +
+            projectEngine.formatProposalCard(nextResult);
+
+          await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id,
+              message_id: msg.message_id,
+              text: updatedText,
+              parse_mode: 'HTML',
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: `❌ Mark ${nextUnit.unitCode} as Sold`, callback_data: `admin_sold_ts7_${nextUnit.unitCode}` }],
+                  [{ text: '🔄 Reset All TS7 Units to Available', callback_data: 'admin_reset_ts7' }]
+                ]
+              }
+            })
+          });
+          return;
+        }
+
+        if (dataStr === 'admin_reset_ts7') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId, text: 'All units reset to Available!' })
+          });
+
+          const project = projectEngine.loadProject('time-square-7');
+          project.unitTypes[0].availableUnits.forEach(u => u.status = 'available');
+          projectEngine.saveProject(project);
+
+          const resetResult = projectEngine.findBestUnit('time-square-7');
+          const resetUnit = resetResult.bestUnit;
+
+          await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id,
+              message_id: msg.message_id,
+              text: `✅ <b>DATABASE RESET: All TS7 Duplexes are now Available!</b>\n\n` + projectEngine.formatProposalCard(resetResult),
+              parse_mode: 'HTML',
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: `❌ Mark ${resetUnit.unitCode} as Sold`, callback_data: `admin_sold_ts7_${resetUnit.unitCode}` }],
+                  [{ text: '🔄 Reset All TS7 Units to Available', callback_data: 'admin_reset_ts7' }]
+                ]
+              }
+            })
+          });
+          return;
+        }
 
         // ── A. LEAD CAPTURE CONVERSATION FLOW ─────────────────────
         if (dataStr.startsWith('lead_flow_')) {
