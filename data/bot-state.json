@@ -31,14 +31,407 @@
       "createdAt": 1792458381047,
       "status": "pending",
       "escalated": true
+    },
+    "inquiry_5712964982_1792463851067": {
+      "id": "inquiry_5712964982_1792463851067",
+      "name": "Narith (ナレット)",
+      "userId": 5712964982,
+      "type": "Buyer Inquiry (Buy · < K)",
+      "unitRef": "Any Prime District",
+      "createdAt": 1792463851067,
+      "status": "pending",
+      "escalated": true
+    },
+    "inquiry_5712964982_1792463913714": {
+      "id": "inquiry_5712964982_1792463913714",
+      "name": "Narith (ナレット)",
+      "userId": 5712964982,
+      "type": "Buyer Inquiry (Rent ·  ~ /mo)",
+      "unitRef": "Chamkarmon / Toul Tompoung",
+      "createdAt": 1792463913714,
+      "status": "pending",
+      "escalated": true
+    },
+    "inquiry_353195979_1792477821949": {
+      "id": "inquiry_353195979_1792477821949",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "type": "Buyer Inquiry (Buy · K ~ K)",
+      "unitRef": "Chamkarmon / Toul Tompoung",
+      "createdAt": 1792477821949,
+      "status": "booked",
+      "escalated": true
+    },
+    "inquiry_353195979_1792478940046": {
+      "id": "inquiry_353195979_1792478940046",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "type": "Buyer Inquiry (Buy · K ~ K)",
+      "unitRef": "Any Prime District",
+      "createdAt": 1792478940047,
+      "status": "pending",
+      "escalated": true
+    },
+    "tour_RESL_353195979_123": {
+      "id": "tour_RESL_353195979_123",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "type": "In-Person Tour Request",
+      "unitRef": "RESL",
+      "createdAt": 1792479038117,
+      "status": "booked",
+      "escalated": true
+    },
+    "inquiry_353195979_1792482436094": {
+      "id": "inquiry_353195979_1792482436094",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "type": "Tenant Inquiry (Rent · $1,500+/mo)",
+      "unitRef": "BKK1 (Embassy & Expat Hub)",
+      "createdAt": 1792482436094,
+      "status": "pending",
+      "escalated": true
+    },
+    "inquiry_353195979_1792482514747": {
+      "id": "inquiry_353195979_1792482514747",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "type": "Buyer Inquiry (Buy · < $50K USD)",
+      "unitRef": "Any Prime District",
+      "createdAt": 1792482514747,
+      "status": "pending",
+      "escalated": true
+    },
+    "owner_REAKH-210": {
+      "id": "owner_REAKH-210",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "unitRef": "REAKH-210",
+      "type": "Owner Property Listing (Resale (For Sale))",
+      "createdAt": 1792482617389,
+      "status": "pending",
+      "escalated": true
+    },
+    "inquiry_353195979_1792483627365": {
+      "id": "inquiry_353195979_1792483627365",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "type": "Buyer Inquiry (Buy · $200K+ USD)",
+      "unitRef": "Any Prime District",
+      "createdAt": 1792483627365,
+      "status": "pending",
+      "escalated": true
+    },
+    "inquiry_353195979_1792483693291": {
+      "id": "inquiry_353195979_1792483693291",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "type": "Tenant Inquiry (Rent · $1,500+/mo)",
+      "unitRef": "Any Prime District",
+      "createdAt": 1792483693291,
+      "status": "pending",
+      "escalated": true
+    },
+    "inquiry_5712964982_1792485514941": {
+      "id": "inquiry_5712964982_1792485514941",
+      "name": "Narith (ナレット)",
+      "userId": 5712964982,
+      "type": "Buyer Inquiry (Buy · < $50K USD)",
+      "unitRef": "Any Prime District",
+      "createdAt": 1792485514941,
+      "status": "pending",
+      "escalated": true
+    },
+    "inquiry_5712964982_1792485914943": {
+      "id": "inquiry_5712964982_1792485914943",
+      "name": "Narith (ナレット)",
+      "userId": 5712964982,
+      "type": "Buyer Inquiry (Buy · < $50K USD)",
+      "unitRef": "Any Prime District",
+      "createdAt": 1792485914943,
+      "status": "pending",
+      "escalated": true
+    },
+    "inquiry_5712964982_1792486093234": {
+      "id": "inquiry_5712964982_1792486093234",
+      "name": "Narith (ナレット)",
+      "userId": 5712964982,
+      "type": "Tenant Inquiry (Rent · $400 ~ $650/mo)",
+      "unitRef": "Any Prime District",
+      "createdAt": 1792486093234,
+      "status": "pending",
+      "escalated": true
+    },
+    "inquiry_5712964982_1792486261940": {
+      "id": "inquiry_5712964982_1792486261940",
+      "name": "Narith (ナレット)",
+      "userId": 5712964982,
+      "type": "Buyer Inquiry (Buy · $100K ~ $200K USD)",
+      "unitRef": "Any Prime District",
+      "createdAt": 1792486261940,
+      "status": "pending",
+      "escalated": true
+    },
+    "inquiry_353195979_1792486367925": {
+      "id": "inquiry_353195979_1792486367925",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "type": "Buyer Inquiry (Buy · $100K ~ $200K USD)",
+      "unitRef": "Any Prime District",
+      "createdAt": 1792486367925,
+      "status": "pending",
+      "escalated": true
+    },
+    "inquiry_353195979_1792486403212": {
+      "id": "inquiry_353195979_1792486403212",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "type": "Tenant Inquiry (Rent · $1,500+/mo)",
+      "unitRef": "Any Prime District",
+      "createdAt": 1792486403212,
+      "status": "pending",
+      "escalated": true
+    },
+    "tour_TS8_353195979_119": {
+      "id": "tour_TS8_353195979_119",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "type": "Live Video Tour Request",
+      "unitRef": "TS8",
+      "createdAt": 1792486430109,
+      "status": "booked",
+      "escalated": false
+    },
+    "inquiry_353195979_1792486470265": {
+      "id": "inquiry_353195979_1792486470265",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "type": "Tenant Inquiry (Rent · $400 ~ $650/mo)",
+      "unitRef": "Any Prime District",
+      "createdAt": 1792486470265,
+      "status": "pending",
+      "escalated": true
+    },
+    "inquiry_353195979_1792486716880": {
+      "id": "inquiry_353195979_1792486716880",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "type": "Tenant Inquiry (Rent · $700 ~ $1,200/mo)",
+      "unitRef": "Any Prime District",
+      "createdAt": 1792486716880,
+      "status": "pending",
+      "escalated": true
+    },
+    "inquiry_353195979_1792487737501": {
+      "id": "inquiry_353195979_1792487737501",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "type": "Tenant Inquiry (Rent · $1,500+/mo)",
+      "unitRef": "Any Prime District",
+      "createdAt": 1792487737501,
+      "status": "booked",
+      "escalated": false
+    },
+    "inquiry_5712964982_1792488298594": {
+      "id": "inquiry_5712964982_1792488298594",
+      "name": "Narith (ナレット)",
+      "userId": 5712964982,
+      "type": "Buyer Inquiry (Buy · < $50K USD)",
+      "unitRef": "Any Prime District",
+      "createdAt": 1792488298594,
+      "status": "pending",
+      "escalated": true
+    },
+    "inquiry_5712964982_1792488342691": {
+      "id": "inquiry_5712964982_1792488342691",
+      "name": "Narith (ナレット)",
+      "userId": 5712964982,
+      "type": "Tenant Inquiry (Rent · $400 ~ $650/mo)",
+      "unitRef": "Any Prime District",
+      "createdAt": 1792488342691,
+      "status": "pending",
+      "escalated": true
+    },
+    "inquiry_5712964982_1792488417786": {
+      "id": "inquiry_5712964982_1792488417786",
+      "name": "Narith (ナレット)",
+      "userId": 5712964982,
+      "type": "Tenant Inquiry (Rent · $1,500+/mo)",
+      "unitRef": "BKK1 (Embassy & Expat Hub)",
+      "createdAt": 1792488417786,
+      "status": "pending",
+      "escalated": true
+    },
+    "inquiry_353195979_1792491857789": {
+      "id": "inquiry_353195979_1792491857789",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "type": "Buyer Inquiry (Buy · $100K ~ $200K USD)",
+      "unitRef": "Any Prime District",
+      "createdAt": 1792491857789,
+      "status": "resolved",
+      "escalated": true
+    },
+    "inquiry_353195979_1792491950781": {
+      "id": "inquiry_353195979_1792491950781",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "type": "Tenant Inquiry (Rent · $400 ~ $650/mo)",
+      "unitRef": "Any Prime District",
+      "createdAt": 1792491950781,
+      "status": "pending",
+      "escalated": true
+    },
+    "inquiry_353195979_1792495016694": {
+      "id": "inquiry_353195979_1792495016694",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "type": "Buyer Inquiry (Buy · $100K ~ $200K USD)",
+      "unitRef": "Any Prime District",
+      "createdAt": 1792495016694,
+      "status": "pending",
+      "escalated": true
+    },
+    "inquiry_353195979_1792495201888": {
+      "id": "inquiry_353195979_1792495201888",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "type": "Tenant Inquiry (Rent · $700 ~ $1,200/mo)",
+      "unitRef": "Any Prime District",
+      "createdAt": 1792495201888,
+      "status": "pending",
+      "escalated": true
+    },
+    "tour_PORTFOLIO_353195979_752": {
+      "id": "tour_PORTFOLIO_353195979_752",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "type": "Live Video Tour Request",
+      "unitRef": "Curated Portfolio Units",
+      "createdAt": 1792500155830,
+      "status": "pending",
+      "escalated": true
+    },
+    "tour_PORTFOLIO_353195979_112": {
+      "id": "tour_PORTFOLIO_353195979_112",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "type": "In-Person Tour Request",
+      "unitRef": "Curated Portfolio Units",
+      "createdAt": 1792500159574,
+      "status": "pending",
+      "escalated": true
+    },
+    "inquiry_353195979_1792500231591": {
+      "id": "inquiry_353195979_1792500231591",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "type": "Buyer Inquiry (Buy · $200K+ USD)",
+      "unitRef": "Any Prime District",
+      "createdAt": 1792500231591,
+      "status": "booked",
+      "escalated": false
+    },
+    "inquiry_353195979_1792500393774": {
+      "id": "inquiry_353195979_1792500393774",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "type": "Tenant Inquiry (Rent · $700 ~ $1,200/mo)",
+      "unitRef": "Any Prime District",
+      "createdAt": 1792500393774,
+      "status": "pending",
+      "escalated": true
+    },
+    "owner_REAKH-247": {
+      "id": "owner_REAKH-247",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "unitRef": "REAKH-247",
+      "type": "Owner Property Listing (Resale (For Sale))",
+      "createdAt": 1792500499856,
+      "status": "pending",
+      "escalated": true
+    },
+    "inquiry_353195979_1792502341230": {
+      "id": "inquiry_353195979_1792502341230",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "type": "Buyer Inquiry (Buy · $200K+ USD)",
+      "unitRef": "BKK1 (Embassy & Expat Hub)",
+      "createdAt": 1792502341230,
+      "status": "pending",
+      "escalated": true
+    },
+    "owner_REAKH-869": {
+      "id": "owner_REAKH-869",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "unitRef": "REAKH-869",
+      "type": "Owner Property Listing (Rental (For Rent))",
+      "createdAt": 1792502436950,
+      "status": "pending",
+      "escalated": true
+    },
+    "inquiry_353195979_1792502483922": {
+      "id": "inquiry_353195979_1792502483922",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "type": "Tenant Inquiry (Rent · $400 ~ $650/mo)",
+      "unitRef": "Any Prime District",
+      "createdAt": 1792502483922,
+      "status": "pending",
+      "escalated": true
+    },
+    "inquiry_353195979_1792507088710": {
+      "id": "inquiry_353195979_1792507088710",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "type": "Buyer Inquiry (Buy · $200K+ USD)",
+      "unitRef": "Any Prime District",
+      "createdAt": 1792507088710,
+      "status": "pending",
+      "escalated": true
+    },
+    "inquiry_353195979_1792507170457": {
+      "id": "inquiry_353195979_1792507170457",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "type": "Tenant Inquiry (Rent · $700 ~ $1,200/mo)",
+      "unitRef": "Any Prime District",
+      "createdAt": 1792507170457,
+      "status": "pending",
+      "escalated": true
+    },
+    "inquiry_353195979_1792549614050": {
+      "id": "inquiry_353195979_1792549614050",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "type": "Buyer Inquiry (Buy · $200K+ USD)",
+      "unitRef": "Any Prime District",
+      "createdAt": 1792549614050,
+      "status": "pending",
+      "escalated": true
+    },
+    "inquiry_353195979_1792549639576": {
+      "id": "inquiry_353195979_1792549639576",
+      "name": "@Nick_REAKH",
+      "userId": 353195979,
+      "type": "Buyer Inquiry (Buy · $100K ~ $200K USD)",
+      "unitRef": "Any Prime District",
+      "createdAt": 1792549639576,
+      "status": "pending",
+      "escalated": true
     }
   },
-  "userLanguages": {},
+  "userLanguages": {
+    "353195979": "EN",
+    "5712964982": "EN"
+  },
   "digestSchedule": {
     "autoBroadcast": true,
     "lastBroadcastWeek": null,
     "targetDayOfWeek": 1,
     "targetHourPhnomPenh": 9
   },
-  "updatedAt": "2026-10-20T01:40:43.697Z"
+  "updatedAt": "2026-10-21T13:55:30.480Z"
 }

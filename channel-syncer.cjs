@@ -3,8 +3,14 @@ const fs = require('fs');
 const path = require('path');
 
 const INVENTORY_FILE = path.join(__dirname, 'data', 'multi-channel-inventory.json');
-const TARGET_CHANNELS = ['NickREAKH', 'malaynopsale', 'malaynoprental'];
-const MAX_AGE_DAYS = 60;
+const TARGET_CHANNELS = [
+  'NickREAKH',
+  'malaynopsale',
+  'malaynoprental',
+  'RealEstateInformationSharing',
+  'penghuothproperty'
+];
+const MAX_AGE_DAYS = 90;
 
 function fetchUrl(url) {
   return new Promise((resolve, reject) => {
@@ -30,7 +36,7 @@ function parseListingFromChunk(channel, chunk, now) {
 
   if (ageDays > MAX_AGE_DAYS) return null;
 
-  const linkMatch = chunk.match(new RegExp(`href="(https://t\\.me/${channel}/\\d+)"`));
+  const linkMatch = chunk.match(new RegExp(`href="(https://t\\.me/${channel}/\\d+)"`, 'i'));
   const link = linkMatch ? linkMatch[1] : `https://t.me/${channel}`;
   const postId = link.split('/').pop() || String(Date.now());
 
@@ -50,14 +56,16 @@ function parseListingFromChunk(channel, chunk, now) {
     return null; // Skip non-available units to protect clients from dead options
   }
 
-  // Price Extraction
-  const priceMatch = clean.match(/\$([0-9,]+)/);
+  // Price Extraction (handles both "$700" and "$ 700" or "$ 1,050,000")
+  const priceMatch = clean.match(/\$\s*([0-9,]+)/);
   const priceVal = priceMatch ? parseInt(priceMatch[1].replace(/,/g, ''), 10) : null;
 
   // Determine Type: Sale vs Rent
   let type = 'Sale';
-  if (channel.toLowerCase().includes('rental') || clean.toLowerCase().includes('/month') || clean.toLowerCase().includes('for rent') || clean.includes('ជួល')) {
+  if (channel.toLowerCase().includes('rental') || clean.toLowerCase().includes('/month') || clean.toLowerCase().includes('for rent') || clean.toLowerCase().includes('forrent') || clean.includes('ជួល')) {
     type = 'Rent';
+  } else if (clean.toLowerCase().includes('forsale') || clean.toLowerCase().includes('for sale') || clean.includes('លក់')) {
+    type = 'Sale';
   }
 
   // Location Normalization
@@ -66,10 +74,15 @@ function parseListingFromChunk(channel, chunk, now) {
   else if (/bkk1|bkk\s*1|boeung\s*keng\s*kang\s*1/i.test(clean)) location = 'BKK1';
   else if (/toul\s*kork|boeng\s*kak/i.test(clean)) location = 'Toul Kork';
   else if (/chamkar\s*mon|toul\s*tompoung|russian\s*market|boeung\s*tumpun/i.test(clean)) location = 'Chamkarmon';
+  else if (/peng\s*huoth|beoung\s*snor|boeung\s*snor|chbar\s*ampov|national\s*road\s*1/i.test(clean)) location = 'Peng Huoth (Chbar Ampov)';
+  else if (/sen\s*sok/i.test(clean)) location = 'Sen Sok';
+  else if (/chroy\s*changvar/i.test(clean)) location = 'Chroy Changvar';
 
   // Bedrooms Extraction
   let beds = '1BR';
   if (/studio/i.test(clean)) beds = 'Studio';
+  else if (/6\s*🛏|\b6\s*br\b|\b6\s*bedroom\b/i.test(clean)) beds = '6BR';
+  else if (/5\s*🛏|\b5\s*br\b|\b5\s*bedroom\b/i.test(clean)) beds = '5BR';
   else if (/4\s*🛏|\b4\s*br\b|\b4\s*bedroom\b/i.test(clean)) beds = '4BR';
   else if (/3\s*🛏|\b3\s*br\b|\b3\s*bedroom\b/i.test(clean)) beds = '3BR';
   else if (/2\s*🛏|\b2\s*br\b|\b2\s*bedroom\b/i.test(clean)) beds = '2BR';
@@ -78,8 +91,11 @@ function parseListingFromChunk(channel, chunk, now) {
   // Title Extraction
   const lines = clean.split('\n').map(l => l.trim()).filter(Boolean);
   let title = lines[0] || `${location} ${beds}`;
-  if (lines.length > 1 && (title.startsWith('#') || title.startsWith('ខុនដូ') || title.startsWith('អាផាតមិន'))) {
-    title = lines[1].replace(/^[📍🏢\s]+/, '').trim() || title;
+  if (lines.length > 1 && (title.startsWith('#') || title.startsWith('ខុនដូ') || title.startsWith('អាផាតមិន') || title.includes('✨') || title.includes('💫'))) {
+    const candidate = lines.find(l => !l.startsWith('#') && l.length > 5);
+    if (candidate) {
+      title = candidate.replace(/^[📍🏢✨🍃💫🏡\s]+/, '').trim();
+    }
   }
 
   return {
