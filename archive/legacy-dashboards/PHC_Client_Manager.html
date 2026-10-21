@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>PHC CRM · Clients</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Sidebar uses the live site's actual dark theme tokens (propertyhubcambodia.com),
+     converted from its --navy/--gold/--foreground HSL values in src/index.css */
+  --sb:#0F192E;--sb-deep:#091120;--sb-hover:rgba(255,255,255,.06);--sb-active:rgba(192,154,89,.16);
+  --sb-text:rgba(245,243,240,.65);--sb-text-s:#F5F3F0;--sb-icon:rgba(245,243,240,.4);--sb-border:rgba(255,255,255,.08);
+  --sb-gold:#C09A59;--sb-gold-light:#D9BD8C;
+  --navy:#083467;--gold:#cc9d4d;--gold-pale:#fdf3e3;
+  --purple:#083467;--purple-l:#1a5dad;--purple-pale:#edf2fb;--purple-btn:#083467;
+  --bg:#f5f6f8;--card:#ffffff;--white:#ffffff;
+  --border:#e3e5ea;--border-h:#c0c4d0;
+  --text:#1a1d23;--text-s:#5a5f72;--text-m:#9498aa;
+  --urgent:#d63031;--urgent-pale:#fff0f0;--urgent-t:#991b1b;
+  --high:#e17055;--high-pale:#fff5f0;
+  --green:#00b894;--red:#d63031;--orange:#e17055;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden}
+a{text-decoration:none;color:inherit}
+
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* ── SIDEBAR ── */
+.sidebar{width:248px;flex-shrink:0;background:var(--sb);display:flex;flex-direction:column;border-right:1px solid var(--sb-border);overflow:hidden;transition:width .2s ease}
+.ws-header{display:flex;align-items:center;gap:9px;padding:14px 12px 12px;border-bottom:1px solid var(--sb-border);flex-shrink:0}
+.ws-logo{width:28px;height:28px;object-fit:contain;flex-shrink:0;}
+.ws-info{flex:1;min-width:0}
+.ws-name{font-size:13px;font-weight:700;color:var(--sb-text-s);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ws-sub{font-size:10px;color:var(--sb-icon);margin-top:1px}
+.collapse-btn{background:none;border:none;color:var(--sb-icon);cursor:pointer;font-size:13px;padding:4px;border-radius:4px;flex-shrink:0;line-height:1}
+.collapse-btn:hover{background:var(--sb-hover);color:var(--sb-text-s)}
+.sidebar.collapsed{width:52px}
+.sidebar.collapsed .sb-label,.sidebar.collapsed .ws-info,.sidebar.collapsed .sb-section-label,.sidebar.collapsed .sb-count,.sidebar.collapsed .sb-badge{display:none}
+.sidebar.collapsed .ws-header{padding:14px 0;justify-content:center}
+.sidebar.collapsed .ws-logo{display:none}
+.sidebar.collapsed .collapse-btn{transform:rotate(180deg)}
+.sb-nav{flex:1;overflow-y:auto;padding:8px 0;scrollbar-width:none}
+.sb-nav::-webkit-scrollbar{display:none}
+.sb-section-label{font-size:9px;font-weight:600;color:var(--sb-icon);text-transform:uppercase;letter-spacing:.1em;padding:10px 14px 4px}
+.sb-item{display:flex;align-items:center;gap:8px;padding:6px 10px;margin:1px 6px;border-radius:6px;color:var(--sb-text);font-size:12px;font-weight:400;transition:all .15s;cursor:pointer;user-select:none}
+.sb-item:hover{background:var(--sb-hover);color:var(--sb-text-s)}
+.sb-item.active{background:var(--sb-active);color:var(--sb-gold-light);font-weight:600}
+.sb-icon{width:18px;height:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--sb-icon)}
+.sb-item.active .sb-icon{color:var(--sb-gold-light)}
+.sb-item:hover .sb-icon{color:var(--sb-text-s)}
+.sb-label{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-badge{background:var(--urgent);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:8px;min-width:16px;text-align:center;flex-shrink:0}
+.sb-badge.zero{background:var(--sb-hover);color:var(--sb-icon)}
+.sb-count{font-size:10px;color:var(--sb-icon);margin-left:auto;font-weight:500}
+.sb-footer{border-top:1px solid var(--sb-border);padding:6px 0}
+.av-ring{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;flex-shrink:0}
+.api-dot{width:6px;height:6px;border-radius:50%;background:var(--border);flex-shrink:0}
+.api-dot.live{background:var(--green)}
+.api-dot.err{background:var(--red)}
+.api-status-txt{font-size:11px;color:var(--text-m)}
+.setup-bar{background:var(--white);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.setup-bar.hidden{display:none}
+.setup-bar label{font-size:11px;font-weight:600;color:var(--text-s);white-space:nowrap}
+.setup-bar input{flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--white);color:var(--text);font-size:12px;font-family:'DM Sans',sans-serif;outline:none}
+.setup-bar input:focus{border-color:var(--navy)}
+.setup-save{padding:6px 14px;border:none;border-radius:6px;background:var(--navy);color:#fff;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap}
+.setup-save:hover{background:#0a4080}
+
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);height:44px;display:flex;align-items:center;padding:0 16px;gap:8px;flex-shrink:0}
+.breadcrumb{font-size:12px;color:var(--text-s)}
+.bc-sep{font-size:12px;color:var(--text-m);margin:0 2px}
+.bc-active{font-size:12px;font-weight:600;color:var(--text)}
+.topbar-right{display:flex;align-items:center;gap:8px;margin-left:auto}
+.tb-btn{background:none;border:1px solid var(--border);border-radius:6px;padding:5px 10px;cursor:pointer;color:var(--text-s);font-size:11px;font-family:'DM Sans',sans-serif;transition:all .15s}
+.tb-btn:hover{border-color:var(--border-h);color:var(--text)}
+.add-btn{padding:5px 14px;border:none;border-radius:6px;background:var(--navy);font-size:11px;font-weight:600;font-family:'DM Sans',sans-serif;color:#fff;cursor:pointer;transition:all .15s}
+.add-btn:hover{background:#0a4080}
+
+.view-toolbar{background:var(--white);border-bottom:1px solid var(--border);height:40px;display:flex;align-items:center;padding:0 14px;gap:6px;flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+.view-toolbar.hidden{display:none}
+.filter-wrap{display:flex;align-items:center;gap:7px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:4px 9px}
+.filter-wrap input{border:none;background:transparent;font-size:11px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;width:160px}
+.filter-wrap input::placeholder{color:var(--text-m)}
+.vt-sel{padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);font-family:'DM Sans',sans-serif;font-size:11px;color:var(--text-s);cursor:pointer;outline:none}
+.vt-right{margin-left:auto;display:flex;align-items:center;gap:6px}
+
+/* ── CONTENT ── */
+.content-area{flex:1;overflow:hidden;display:flex;flex-direction:column}
+
+/* dashboard */
+.dash-wrap{flex:1;overflow:auto;padding:16px}
+.dash-wrap.hidden{display:none}
+.dash-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:20px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px;position:relative;overflow:hidden}
+.stat-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px}
+.sc-total::before{background:linear-gradient(90deg,var(--purple),var(--purple-l))}
+.sc-due::before{background:linear-gradient(90deg,var(--urgent),var(--high))}
+.sc-money::before{background:linear-gradient(90deg,var(--green),#34d399)}
+.sc-proj::before{background:linear-gradient(90deg,var(--high),var(--orange))}
+.stat-label{font-size:10px;font-weight:600;color:var(--text-m);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.stat-val{font-size:28px;font-weight:700;color:var(--text);line-height:1}
+.stat-sub{font-size:10px;color:var(--text-m);margin-top:4px}
+.section-title{font-size:11px;font-weight:600;color:var(--text-s);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:"";flex:1;height:1px;background:var(--border)}
+.alert-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px;margin-bottom:24px}
+.alert-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;border-left:4px solid var(--border)}
+.alert-card.today{border-left-color:var(--urgent)}
+.alert-card.week{border-left-color:var(--high)}
+.alert-card.soon{border-left-color:#f9a825}
+.alert-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px}
+.alert-name{font-size:14px;font-weight:600;color:var(--text)}
+.alert-sub{font-size:11px;color:var(--text-s);margin-top:2px}
+.due-badge{font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.due-badge.today{background:var(--urgent-pale);color:var(--urgent)}
+.due-badge.week{background:var(--high-pale);color:var(--high)}
+.due-badge.soon{background:#fffde7;color:#f57f17}
+.alert-amount{font-size:20px;font-weight:700;color:var(--text);margin:8px 0 3px}
+.alert-bank{font-size:11px;color:var(--text-s);margin-bottom:10px}
+.copy-btn{width:100%;padding:7px;background:var(--gold-pale);border:1px solid rgba(204,157,77,.25);border-radius:6px;color:#a07a2e;font-size:11px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
+.copy-btn:hover{background:rgba(204,157,77,.15);border-color:rgba(204,157,77,.5)}
+.copy-btn.copied{background:#f0fdf4;border-color:rgba(16,185,129,.3);color:var(--green)}
+
+/* client list */
+.list-wrap{flex:1;overflow:auto;padding:14px 16px}
+.list-wrap.hidden{display:none}
+.l-table{width:100%;border-collapse:collapse;background:var(--card);border-radius:10px;border:1px solid var(--border);overflow:hidden}
+.l-table thead th{background:#f9fafb;color:var(--text-s);padding:8px 13px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;border-bottom:1px solid var(--border)}
+.l-table tbody tr{border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s}
+.l-table tbody tr:hover{background:#f9fafb}
+.l-table tbody tr:last-child{border-bottom:none}
+.l-table td{padding:9px 13px;font-size:12px;vertical-align:middle}
+.client-name{font-size:13px;font-weight:600;color:var(--text)}
+.client-sub{font-size:11px;color:var(--text-m);margin-top:1px}
+.prog-wrap{min-width:110px}
+.prog-bar{height:5px;background:var(--border);border-radius:3px;margin-bottom:3px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(to right,var(--purple),var(--purple-l));border-radius:3px}
+.prog-text{font-size:10px;color:var(--text-m)}
+.days-chip{font-size:10px;padding:2px 7px;border-radius:8px;font-weight:500;display:inline-block;margin-top:2px}
+.days-chip.today{background:var(--urgent-pale);color:var(--urgent)}
+.days-chip.week{background:var(--high-pale);color:var(--high)}
+.days-chip.soon{background:#fffde7;color:#f57f17}
+.days-chip.ok{background:var(--bg);color:var(--text-m)}
+.spa-chip{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500}
+.spa-chip.done{background:#f0fdf4;color:var(--green)}
+.spa-chip.pend{background:var(--high-pale);color:var(--high)}
+.status-chip{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500}
+.status-chip.Active{background:#f0fdf4;color:var(--green)}
+.status-chip.Handover{background:var(--high-pale);color:var(--high)}
+.status-chip.Complete{background:var(--purple-pale);color:var(--purple)}
+.row-del{background:none;border:none;color:var(--text-m);cursor:pointer;padding:3px 7px;border-radius:4px;font-size:14px;line-height:1;transition:.15s}
+.row-del:hover{color:var(--urgent);background:var(--urgent-pale)}
+
+/* generator */
+.gen-wrap{flex:1;overflow:auto;padding:16px}
+.gen-wrap.hidden{display:none}
+.gen-layout{display:grid;grid-template-columns:300px 1fr;gap:14px;align-items:start}
+.gen-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px}
+.gen-card-title{font-size:10px;font-weight:600;color:var(--text-s);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px}
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:11px}
+.fl{font-size:10px;font-weight:600;color:var(--text-m);text-transform:uppercase;letter-spacing:.04em}
+.fi,.fs,.fta{padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);background:var(--bg);outline:none;width:100%;transition:border .15s}
+.fi:focus,.fs:focus,.fta:focus{border-color:var(--purple);background:#fff}
+.fta{resize:vertical;min-height:80px}
+.gen-btn{width:100%;padding:9px;border:none;border-radius:6px;background:var(--purple-btn);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:4px;transition:.15s}
+.gen-btn:hover{background:var(--purple-l)}
+.gen-output{display:flex;flex-direction:column;gap:10px}
+.gen-empty{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:48px;text-align:center;color:var(--text-m);font-size:12px}
+.gen-empty .ei{font-size:32px;margin-bottom:10px}
+.msg-card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.msg-hdr{padding:10px 14px;display:flex;align-items:center;justify-content:space-between;background:#f9fafb;border-bottom:1px solid var(--border)}
+.msg-name{font-size:13px;font-weight:600;color:var(--text)}
+.msg-meta{font-size:10px;color:var(--text-m)}
+.msg-body{padding:12px 14px;font-size:11px;line-height:1.8;color:var(--text-s);white-space:pre-wrap;background:var(--bg);border-bottom:1px solid var(--border);max-height:180px;overflow-y:auto}
+.copy-sm{padding:5px 12px;border:1px solid var(--border);border-radius:6px;background:transparent;font-size:11px;font-family:'DM Sans',sans-serif;color:var(--text-s);cursor:pointer;transition:all .15s;white-space:nowrap}
+.copy-sm:hover{border-color:var(--navy);color:var(--navy)}
+.copy-sm.copied{border-color:var(--green);color:var(--green)}
+
+/* templates */
+.tpl-wrap{flex:1;overflow:auto;padding:16px}
+.tpl-wrap.hidden{display:none}
+.tpl-intro{font-size:12px;color:var(--text-s);line-height:1.6;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:16px}
+.tpl-proj-group{margin-bottom:24px}
+.tpl-proj-label{font-size:12px;font-weight:600;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.tpl-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.tpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:10px}
+.tpl-card{background:var(--card);border:1px solid var(--border);border-left:3px solid;border-radius:10px;overflow:hidden}
+.tpl-hdr{padding:10px 14px;display:flex;align-items:center;justify-content:space-between;background:#f9fafb;border-bottom:1px solid var(--border)}
+.tpl-title{font-size:12px;font-weight:600;color:var(--text)}
+.tpl-sub{font-size:10px;color:var(--text-m)}
+.tpl-body{padding:12px 14px;font-size:11px;line-height:1.9;color:var(--text-s);white-space:pre-wrap;background:var(--bg);max-height:190px;overflow-y:auto}
+.tpl-var{color:var(--gold);font-weight:600}
+.tpl-ftr{padding:8px 14px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.tpl-note{font-size:10px;color:var(--text-m)}
+
+/* drawer */
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.25);backdrop-filter:blur(2px);z-index:200;display:flex;justify-content:flex-end}
+.drawer-overlay.hidden{display:none}
+.drawer{width:520px;max-width:100vw;height:100%;background:var(--white);display:flex;flex-direction:column;box-shadow:-8px 0 40px rgba(0,0,0,.12);animation:slideIn .22s ease}
+@keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+.dr-hdr{padding:14px 18px 10px;border-bottom:1px solid var(--border);flex-shrink:0}
+.dr-hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.dr-name{font-size:18px;font-weight:700;color:var(--text);flex:1;margin-right:10px;line-height:1.3}
+.dr-close{background:none;border:1px solid var(--border);border-radius:6px;color:var(--text-s);font-size:14px;width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.dr-close:hover{background:var(--bg);border-color:var(--border-h)}
+.dr-status-row{display:flex;gap:4px}
+.dr-st-btn{padding:3px 10px;border-radius:12px;border:1px solid var(--border);background:var(--bg);font-size:10px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:all .15s;color:var(--text-s)}
+.dr-st-btn[data-s="Active"].on{background:#f0fdf4;border-color:rgba(16,185,129,.3);color:var(--green);font-weight:700}
+.dr-st-btn[data-s="Handover"].on{background:var(--high-pale);border-color:rgba(230,126,34,.3);color:var(--high);font-weight:700}
+.dr-st-btn[data-s="Complete"].on{background:var(--purple-pale);border-color:rgba(8,52,103,.2);color:var(--navy);font-weight:700}
+.dr-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
+.dr-tab{padding:9px 16px;border:none;background:transparent;font-size:12px;font-weight:500;cursor:pointer;color:var(--text-s);border-bottom:2px solid transparent;font-family:'DM Sans',sans-serif;transition:all .15s}
+.dr-tab.on{color:var(--purple);border-bottom-color:var(--purple);font-weight:600}
+.dr-body{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.dr-sect{font-size:10px;font-weight:600;color:var(--text-m);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
+.edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.eg{display:flex;flex-direction:column;gap:3px}
+.eg.full{grid-column:1/-1}
+.el{font-size:10px;color:var(--text-m);font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+.ei,.es,.eta{padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);background:var(--bg);outline:none;width:100%;transition:border .15s}
+.ei:focus,.es:focus,.eta:focus{border-color:var(--purple);background:#fff}
+.eta{resize:vertical;min-height:80px}
+.prog-big-wrap{margin-bottom:10px}
+.prog-big-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--text-s);margin-bottom:5px}
+.prog-big{background:var(--border);border-radius:6px;height:8px;overflow:hidden}
+.prog-big-fill{height:100%;background:linear-gradient(to right,var(--purple),var(--purple-l));border-radius:6px;transition:.4s}
+.dr-footer{padding:10px 18px;border-top:1px solid var(--border);display:flex;gap:7px;flex-shrink:0}
+.dr-save{flex:1;background:var(--purple-btn);color:#fff;border:none;border-radius:7px;padding:9px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s}
+.dr-save:hover{background:var(--purple-l)}
+.dr-del{background:transparent;border:1px solid var(--border);color:var(--text-s);border-radius:7px;padding:9px 14px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s}
+.dr-del:hover{border-color:var(--urgent);color:var(--urgent)}
+
+/* modal */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(4px);z-index:300;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal-ov.hidden{display:none}
+.modal{background:var(--white);border-radius:12px;width:100%;max-width:500px;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);border:1px solid var(--border)}
+.modal-hdr{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--white);z-index:1;border-radius:12px 12px 0 0}
+.modal-hdr h2{font-size:15px;font-weight:700;color:var(--text)}
+.modal-x{background:none;border:1px solid var(--border);border-radius:6px;color:var(--text-s);font-size:14px;width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.modal-body{padding:18px}
+.m-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.m-group{display:flex;flex-direction:column;gap:4px}
+.m-group.full{grid-column:1/-1}
+.m-lbl{font-size:10px;font-weight:600;color:var(--text-m);text-transform:uppercase;letter-spacing:.04em}
+.m-inp,.m-sel,.m-ta{padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);background:var(--bg);outline:none;width:100%;transition:border .15s}
+.m-inp:focus,.m-sel:focus,.m-ta:focus{border-color:var(--purple);background:#fff}
+.m-ta{resize:vertical;min-height:55px}
+.modal-ftr{padding:12px 18px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:7px;background:#fafafa;border-radius:0 0 12px 12px;position:sticky;bottom:0}
+.btn-cancel{padding:7px 16px;border-radius:6px;border:1px solid var(--border);background:#fff;color:var(--text-s);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer}
+.btn-cancel:hover{background:var(--bg)}
+.btn-primary{padding:7px 20px;border-radius:6px;border:none;background:var(--purple-btn);color:#fff;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer}
+.btn-primary:hover{background:var(--purple-l)}
+
+/* utils */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--navy);color:#fff;padding:9px 16px;border-radius:8px;font-size:12px;font-weight:500;box-shadow:0 6px 20px rgba(0,0,0,.2);z-index:600;transform:translateY(60px);transition:transform .25s;border-left:3px solid var(--gold)}
+.toast.show{transform:translateY(0)}
+.toast.err{border-left-color:var(--urgent)}
+.empty{text-align:center;padding:32px;color:var(--text-m);font-size:12px}
+.empty .ei{font-size:28px;margin-bottom:8px}
+
+@media(max-width:768px){
+  .sidebar{width:52px}
+  .ws-info,.sb-label,.sb-count,.sb-badge{display:none}
+  .gen-layout{grid-template-columns:1fr}
+  .tpl-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div id="phc-gate" style="display:none;position:fixed;inset:0;background:#083467;z-index:99999;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,sans-serif;"><div style="background:#fff;border-radius:16px;padding:40px 36px;width:320px;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.35);"><div style="font-family:Georgia,serif;font-size:22px;font-weight:700;color:#083467;margin-bottom:6px;">PHC Director</div><div style="font-size:13px;color:#7a8799;margin-bottom:8px;">Property Hub Cambodia</div><div style="width:40px;height:2px;background:#cc9d4d;margin:0 auto 24px;"></div><input id="phc-gate-pw" type="password" placeholder="Director password" autocomplete="current-password" style="width:100%;border:1.5px solid #e8ecf2;border-radius:9px;padding:11px 14px;font-size:14px;text-align:center;letter-spacing:.12em;outline:none;margin-bottom:12px;" onfocus="this.style.borderColor='#083467'" onblur="this.style.borderColor='#e8ecf2'" onkeydown="if(event.key==='Enter')phcCheck();"><button onclick="phcCheck()" style="width:100%;background:#083467;color:#fff;border:none;border-radius:9px;padding:12px;font-size:13px;font-weight:600;cursor:pointer;">Continue →</button><div id="phc-gate-err" style="display:none;color:#d63031;font-size:12px;margin-top:12px;">Incorrect password. Try again.</div></div></div>
+<script>(function(){var g=document.getElementById('phc-gate');if(sessionStorage.getItem('phc_ceo_auth')==='1'){g.style.display='none';}else{g.style.display='flex';setTimeout(function(){document.getElementById('phc-gate-pw').focus();},50);}window.phcCheck=function(){var v=document.getElementById('phc-gate-pw').value;if(v==='Nick@PHC2026'){sessionStorage.setItem('phc_ceo_auth','1');sessionStorage.setItem('phc_agent_auth','1');g.style.display='none';}else{document.getElementById('phc-gate-err').style.display='block';document.getElementById('phc-gate-pw').value='';document.getElementById('phc-gate-pw').focus();}};})();</script>
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="ws-header">
+    <img class="ws-logo" src="data:image/png;base64,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" alt="PHC">
+    <div class="ws-info">
+      <div class="ws-name">PHC CRM</div>
+      <div class="ws-sub">Client Manager</div>
+    </div>
+    <button class="collapse-btn" onclick="toggleSidebar()" title="Toggle sidebar"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="10,3 5,8 10,13"/></svg></button>
+  </div>
+
+  <div class="sb-nav">
+    <div class="sb-section-label">Views</div>
+    <div class="sb-item active" id="sbi-dashboard" onclick="switchView('dashboard',this)">
+      <div class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg></div>
+      <span class="sb-label">Dashboard</span>
+      <span class="sb-badge zero" id="sb-due-badge">0</span>
+    </div>
+    <div class="sb-item" id="sbi-clients" onclick="switchView('clients',this)">
+      <div class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="5" r="2.5"/><path d="M1 13c0-2.76 2.24-5 5-5s5 2.24 5 5"/><circle cx="12.5" cy="5" r="2"/><path d="M15 13c0-2.21-1.34-4-3-4.5"/></svg></div>
+      <span class="sb-label">All Clients</span>
+      <span class="sb-count" id="sb-count">0</span>
+    </div>
+    <div class="sb-item" id="sbi-generator" onclick="switchView('generator',this)">
+      <div class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 2H2a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h4l2 2 2-2h4a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1z"/><path d="M5 7h6M5 10h4"/></svg></div>
+      <span class="sb-label">Update Generator</span>
+    </div>
+    <div class="sb-item" id="sbi-templates" onclick="switchView('templates',this)">
+      <div class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41"/></svg></div>
+      <span class="sb-label">Make.com Templates</span>
+    </div>
+
+    <div class="sb-section-label" style="margin-top:6px">Other Tools</div>
+    <a class="sb-item" href="PHC_Lead_Tracker.html">
+      <div class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="1" width="14" height="14" rx="2"/><path d="M4 8h8M4 5h8M4 11h5"/></svg></div>
+      <span class="sb-label">Lead Tracker</span>
+    </a>
+    <a class="sb-item" href="PHC_Task_Manager_v4.html">
+      <div class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 4h12M2 8h12M2 12h7"/></svg></div>
+      <span class="sb-label">Task Manager</span>
+    </a>
+    <a class="sb-item" href="index.html">
+      <div class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9L8 4l5 5"/><path d="M5 14V9h6v5"/></svg></div>
+      <span class="sb-label">← Back to Hub</span>
+    </a>
+  </div>
+
+  <div class="sb-footer">
+    <div class="sb-item" onclick="toggleSetup()" style="cursor:pointer">
+      <div class="sb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+      <span class="sb-label">Setup Sheets</span>
+      <div class="api-dot" id="apiDot"></div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <span class="breadcrumb">PHC CRM</span>
+    <span class="bc-sep">/</span>
+    <span class="bc-active" id="topbar-title">Dashboard</span>
+    <div class="topbar-right">
+      <span class="api-status-txt" id="apiTxt">Local mode</span>
+      <button class="tb-btn" onclick="exportCSV()">Export CSV</button>
+      <button class="add-btn" onclick="openAddModal()">+ Add Client</button>
+    </div>
+  </div>
+
+  <!-- SETUP BAR -->
+  <div class="setup-bar hidden" id="setupBar">
+    <label>Apps Script URL</label>
+    <input id="apiInput" type="url" placeholder="https://script.google.com/macros/s/.../exec"/>
+    <button class="setup-save" onclick="saveApiUrl()">Connect</button>
+  </div>
+
+  <div class="view-toolbar hidden" id="clients-toolbar">
+    <div class="filter-wrap">
+      <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="#9498aa" stroke-width="1.8"><circle cx="7" cy="7" r="5"/><path d="m11 11 2.5 2.5"/></svg>
+      <input type="text" placeholder="Search by name, unit, telegram…" id="search-input" oninput="renderClients()">
+    </div>
+    <select class="vt-sel" id="f-project" onchange="renderClients()">
+      <option value="">All Projects</option>
+      <option>Time Square 7</option><option>Time Square 8</option>
+      <option>Time Square 9</option><option>Time Square 10</option>
+      <option>Kingston Royale</option><option>Le Conde BKK1</option>
+      <option>J Tower 3</option><option>Odom Tower</option><option>Odom Living</option>
+      <option>UC88 Wyndham Garden</option><option>Diamond Bay Garden</option>
+      <option>Angkor Grace</option><option>LZ Sea View Premium</option>
+      <option>Picasso Sky Gemme</option><option>GATO Tower</option>
+    </select>
+    <select class="vt-sel" id="f-nat" onchange="renderClients()">
+      <option value="">All Nationalities</option>
+      <option value="JP">Japanese</option><option value="DE">German / European</option>
+      <option value="EN">English / Western</option><option value="RU">Russian</option>
+      <option value="KH">Cambodian</option><option value="CN">Chinese</option>
+    </select>
+    <select class="vt-sel" id="f-status" onchange="renderClients()">
+      <option value="">All Status</option>
+      <option>Active</option><option>Handover</option><option>Complete</option>
+    </select>
+  </div>
+
+  <div class="content-area">
+
+    <!-- DASHBOARD -->
+    <div class="dash-wrap" id="view-dashboard">
+      <div class="dash-stats">
+        <div class="stat-card sc-total"><div class="stat-label">Total Clients</div><div class="stat-val" id="s-total">0</div><div class="stat-sub">All projects</div></div>
+        <div class="stat-card sc-due"><div class="stat-label">Due This Week</div><div class="stat-val" id="s-due">0</div><div class="stat-sub">Need reminders</div></div>
+        <div class="stat-card sc-money"><div class="stat-label">Monthly Collection</div><div class="stat-val" id="s-monthly">$0</div><div class="stat-sub">Active clients</div></div>
+        <div class="stat-card sc-proj"><div class="stat-label">Active Projects</div><div class="stat-val" id="s-projects">0</div><div class="stat-sub">With clients</div></div>
+      </div>
+      <div class="section-title">Due This Week</div>
+      <div class="alert-grid" id="due-grid"></div>
+      <div class="section-title">Coming Up This Month</div>
+      <div class="alert-grid" id="soon-grid"></div>
+    </div>
+
+    <!-- ALL CLIENTS -->
+    <div class="list-wrap hidden" id="view-clients">
+      <table class="l-table">
+        <thead><tr>
+          <th>Client</th><th>Project / Unit</th><th>Progress</th>
+          <th>Next Payment</th><th>Amount</th><th>SPA</th>
+          <th>Status</th><th>Seg.</th><th></th>
+        </tr></thead>
+        <tbody id="client-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- UPDATE GENERATOR -->
+    <div class="gen-wrap hidden" id="view-generator">
+      <div class="gen-layout">
+        <div class="gen-card">
+          <div class="gen-card-title">Update Details</div>
+          <div class="fg"><div class="fl">Project</div>
+            <select class="fs" id="gen-project">
+              <option value="">— Select project —</option>
+              <option>Time Square 7</option><option>Time Square 8</option>
+              <option>Time Square 9</option><option>Time Square 10</option>
+              <option>Kingston Royale</option><option>Le Conde BKK1</option>
+              <option>J Tower 3</option><option>Odom Tower</option><option>Odom Living</option>
+              <option>UC88 Wyndham Garden</option><option>Diamond Bay Garden</option>
+              <option>Angkor Grace</option><option>LZ Sea View Premium</option>
+              <option>Picasso Sky Gemme</option><option>GATO Tower</option>
+            </select>
+          </div>
+          <div class="fg"><div class="fl">Update Title</div><input class="fi" id="gen-title" placeholder="e.g. Structure now at Level 8"></div>
+          <div class="fg"><div class="fl">Update Body</div><textarea class="fta" id="gen-body" placeholder="Describe the construction progress…"></textarea></div>
+          <div class="fg"><div class="fl">Photo Album Link (optional)</div><input class="fi" id="gen-photo" placeholder="https://drive.google.com/…"></div>
+          <div class="fg"><div class="fl">Est. Handover (optional)</div><input class="fi" id="gen-handover" placeholder="e.g. Q3 2028"></div>
+          <button class="gen-btn" onclick="generateMessages()">Generate Messages</button>
+        </div>
+        <div id="gen-output">
+          <div class="gen-empty"><div class="ei">📢</div>Select a project and fill in the update details, then click Generate to create personalised messages for every client on that project.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEMPLATES -->
+    <div class="tpl-wrap hidden" id="view-templates">
+      <div class="tpl-intro">Paste these templates into <strong>Make.com → Telegram Bot → Send Message → Text</strong>. Replace <span style="color:var(--gold);font-weight:600">{{VARIABLE}}</span> with the mapped Google Sheet column in Make.com's visual editor.</div>
+      <div id="templates-container"></div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- DRAWER -->
+<div class="drawer-overlay hidden" id="drawer-overlay" onclick="closeDrawerBg(event)">
+  <div class="drawer">
+    <div class="dr-hdr">
+      <div class="dr-hdr-top">
+        <div class="dr-name" id="dr-name">Client</div>
+        <button class="dr-close" onclick="closeDrawer()">✕</button>
+      </div>
+      <div class="dr-status-row">
+        <button class="dr-st-btn" data-s="Active" onclick="setDrStatus('Active')">Active</button>
+        <button class="dr-st-btn" data-s="Handover" onclick="setDrStatus('Handover')">Handover</button>
+        <button class="dr-st-btn" data-s="Complete" onclick="setDrStatus('Complete')">Complete</button>
+      </div>
+    </div>
+    <div class="dr-tabs">
+      <button class="dr-tab on" id="drtab-info" onclick="switchDrTab('info')">Details</button>
+      <button class="dr-tab" id="drtab-payment" onclick="switchDrTab('payment')">Payment</button>
+      <button class="dr-tab" id="drtab-notes" onclick="switchDrTab('notes')">Notes</button>
+    </div>
+    <div class="dr-body">
+      <div id="drp-info">
+        <div class="dr-sect">Contact</div>
+        <div class="edit-grid">
+          <div class="eg"><div class="el">Full Name</div><input class="ei" id="dr-name-inp"></div>
+          <div class="eg"><div class="el">Telegram</div><input class="ei" id="dr-telegram" placeholder="@username"></div>
+          <div class="eg"><div class="el">Phone</div><input class="ei" id="dr-phone" placeholder="+855…"></div>
+          <div class="eg"><div class="el">Nationality</div>
+            <select class="es" id="dr-nat">
+              <option value="JP">Japanese</option><option value="DE">German / European</option>
+              <option value="EN">English / Western</option><option value="RU">Russian</option>
+              <option value="KH">Cambodian</option><option value="CN">Chinese</option>
+            </select>
+          </div>
+          <div class="eg"><div class="el">Referred By</div>
+            <select class="es" id="dr-referral"><option value="">Not a referral</option></select>
+          </div>
+        </div>
+        <div class="dr-sect" style="margin-top:10px">Property</div>
+        <div class="edit-grid">
+          <div class="eg"><div class="el">Project</div>
+            <select class="es" id="dr-proj">
+              <option>Time Square 7</option><option>Time Square 8</option>
+              <option>Time Square 9</option><option>Time Square 10</option>
+              <option>Kingston Royale</option><option>Le Conde BKK1</option>
+              <option>J Tower 3</option><option>Odom Tower</option><option>Odom Living</option>
+              <option>UC88 Wyndham Garden</option><option>Diamond Bay Garden</option>
+              <option>Angkor Grace</option><option>LZ Sea View Premium</option>
+              <option>Picasso Sky Gemme</option><option>GATO Tower</option>
+            </select>
+          </div>
+          <div class="eg"><div class="el">Unit</div><input class="ei" id="dr-unit" placeholder="12A"></div>
+          <div class="eg"><div class="el">Floor</div><input class="ei" id="dr-floor" type="number"></div>
+          <div class="eg"><div class="el">Booking Date</div><input class="ei" id="dr-booking" type="date"></div>
+          <div class="eg"><div class="el">SPA Signed</div>
+            <select class="es" id="dr-spa"><option value="true">Yes — Signed</option><option value="false">No — Pending</option></select>
+          </div>
+          <div class="eg"><div class="el">Title Status</div>
+            <select class="es" id="dr-title"><option>Pending</option><option>Issued</option><option>Transferred</option></select>
+          </div>
+        </div>
+      </div>
+      <div id="drp-payment" style="display:none">
+        <div class="dr-sect">Payment Progress</div>
+        <div class="prog-big-wrap">
+          <div class="prog-big-labels"><span id="dr-prog-label">0 of 0 paid</span><span id="dr-prog-pct">0%</span></div>
+          <div class="prog-big"><div class="prog-big-fill" id="dr-prog-fill" style="width:0%"></div></div>
+        </div>
+        <div class="edit-grid">
+          <div class="eg"><div class="el">Payment Day (1–28)</div><input class="ei" id="dr-pday" type="number" min="1" max="28" oninput="updateDrProgress()"></div>
+          <div class="eg"><div class="el">Monthly Amount (USD)</div><input class="ei" id="dr-pamount" type="number"></div>
+          <div class="eg"><div class="el">Total Payments</div><input class="ei" id="dr-ptotal" type="number" oninput="updateDrProgress()"></div>
+          <div class="eg"><div class="el">Payments Made</div><input class="ei" id="dr-pmade" type="number" oninput="updateDrProgress()"></div>
+          <div class="eg full"><div class="el">Developer Bank Account</div><input class="ei" id="dr-bank" placeholder="ABA Bank — Acc … — Developer Name"></div>
+        </div>
+      </div>
+      <div id="drp-notes" style="display:none">
+        <div class="dr-sect">Notes</div>
+        <textarea class="eta" id="dr-notes" placeholder="Any notes about this client…" style="min-height:120px;width:100%"></textarea>
+      </div>
+    </div>
+    <div class="dr-footer">
+      <button class="dr-del" onclick="deleteFromDrawer()">Delete</button>
+      <button class="dr-save" onclick="saveFromDrawer()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD CLIENT MODAL -->
+<div class="modal-ov hidden" id="modal-ov" onclick="closeModalBg(event)">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h2>Add New Client</h2>
+      <button class="modal-x" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="m-grid">
+        <div class="m-group full"><div class="m-lbl">Full Name *</div><input class="m-inp" id="m-name" placeholder="e.g. Kenji Tanaka"></div>
+        <div class="m-group"><div class="m-lbl">Project *</div>
+          <select class="m-sel" id="m-proj">
+            <option>Time Square 7</option><option>Time Square 8</option>
+            <option>Time Square 9</option><option>Time Square 10</option>
+            <option>Kingston Royale</option><option>Le Conde BKK1</option>
+            <option>J Tower 3</option><option>Odom Tower</option><option>Odom Living</option>
+            <option>UC88 Wyndham Garden</option><option>Diamond Bay Garden</option>
+            <option>Angkor Grace</option><option>LZ Sea View Premium</option>
+            <option>Picasso Sky Gemme</option><option>GATO Tower</option>
+          </select>
+        </div>
+        <div class="m-group"><div class="m-lbl">Unit *</div><input class="m-inp" id="m-unit" placeholder="12A"></div>
+        <div class="m-group"><div class="m-lbl">Floor</div><input class="m-inp" id="m-floor" type="number" placeholder="12"></div>
+        <div class="m-group"><div class="m-lbl">Nationality</div>
+          <select class="m-sel" id="m-nat">
+            <option value="JP">Japanese</option><option value="DE">German / European</option>
+            <option value="EN">English / Western</option><option value="RU">Russian</option>
+            <option value="KH">Cambodian</option><option value="CN">Chinese</option>
+          </select>
+        </div>
+        <div class="m-group"><div class="m-lbl">Telegram</div><input class="m-inp" id="m-telegram" placeholder="@username"></div>
+        <div class="m-group"><div class="m-lbl">Referred By</div>
+          <select class="m-sel" id="m-referral"><option value="">Not a referral</option></select>
+        </div>
+        <div class="m-group"><div class="m-lbl">Payment Day</div><input class="m-inp" id="m-pday" type="number" min="1" max="28" placeholder="7"></div>
+        <div class="m-group"><div class="m-lbl">Monthly Amount ($)</div><input class="m-inp" id="m-pamount" type="number" placeholder="1715"></div>
+        <div class="m-group"><div class="m-lbl">Total Payments</div><input class="m-inp" id="m-ptotal" type="number" value="45"></div>
+        <div class="m-group"><div class="m-lbl">Payments Made</div><input class="m-inp" id="m-pmade" type="number" value="0"></div>
+        <div class="m-group"><div class="m-lbl">SPA Signed?</div>
+          <select class="m-sel" id="m-spa"><option value="false">No — Pending</option><option value="true">Yes — Signed</option></select>
+        </div>
+        <div class="m-group"><div class="m-lbl">Booking Date</div><input class="m-inp" id="m-booking" type="date"></div>
+        <div class="m-group full"><div class="m-lbl">Developer Bank Account</div><input class="m-inp" id="m-bank" placeholder="ABA Bank — Acc 001234567 — Developer Name"></div>
+        <div class="m-group full"><div class="m-lbl">Notes</div><textarea class="m-ta" id="m-notes" placeholder="Any notes…"></textarea></div>
+      </div>
+    </div>
+    <div class="modal-ftr">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveNewClient()">Add Client</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── API / SYNC ──
+const LS_API = 'phc_clients_api';
+const DEFAULT_API = 'https://script.google.com/macros/s/AKfycbyCd3r8sX18YONWUf98_eB_B3uuXbn3ALq8A7ataIysQfUPU9y43DvZUe-OoRIticXBzg/exec';
+let API_URL = localStorage.getItem(LS_API) || DEFAULT_API;
+const API_KEY = '4fa0044f8132a04af7a24bface7613efe2152f97d9dcd432';
+
+async function apiGET(params){
+  if(!API_URL) return null;
+  try{const r=await fetch(API_URL+'?'+new URLSearchParams(Object.assign({key:API_KEY},params)));return await r.json();}catch{return null;}
+}
+
+let partners=[];
+async function loadPartners(){
+  const res=await apiGET({action:'getAll',sheet:'Partners'});
+  partners=Array.isArray(res)?res.filter(p=>p.status==='Approved'):[];
+  const opts='<option value="">Not a referral</option>'+partners.map(p=>`<option value="${p.slug}">${p.displayName}</option>`).join('');
+  const mSel=document.getElementById('m-referral'); if(mSel) mSel.innerHTML=opts;
+  const drSel=document.getElementById('dr-referral'); if(drSel) drSel.innerHTML=opts;
+}
+async function apiPOST(body){
+  if(!API_URL) return null;
+  try{await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(Object.assign({key:API_KEY},body)),mode:'no-cors'});return {ok:true};}catch{return null;}
+}
+
+function rowToClient(row){
+  return Object.assign({},row,{
+    floor:Number(row.floor)||0,
+    spa:row.spa==='true'||row.spa===true,
+    payDay:Number(row.payDay)||1,
+    payAmount:Number(row.payAmount)||0,
+    payTotal:Number(row.payTotal)||45,
+    payMade:Number(row.payMade)||0,
+  });
+}
+
+async function loadFromSheets(){
+  setApiStatus(null);
+  const res=await apiGET({action:'getAll',sheet:'Clients'});
+  if(Array.isArray(res)){
+    clients=res.filter(r=>r.id).map(rowToClient);
+    saveClients();
+    setApiStatus(true);
+    renderAll();updateStats();
+  } else {
+    setApiStatus(false);
+  }
+}
+
+function syncInsert(c){
+  if(!API_URL) return;
+  const now=new Date().toISOString();
+  apiPOST({action:'insert',sheet:'Clients',data:Object.assign({},c,{createdAt:c.createdAt||now,updatedAt:now})});
+}
+function syncUpdate(c){
+  if(!API_URL) return;
+  apiPOST({action:'update',sheet:'Clients',id:c.id,data:Object.assign({},c,{updatedAt:new Date().toISOString()})});
+}
+function syncDelete(id){
+  if(!API_URL) return;
+  apiPOST({action:'delete',sheet:'Clients',id});
+}
+
+function setApiStatus(ok){
+  const dot=document.getElementById('apiDot');
+  const txt=document.getElementById('apiTxt');
+  if(!dot||!txt) return;
+  if(ok===null){dot.className='api-dot';txt.textContent='Syncing...';}
+  else if(ok){dot.className='api-dot live';txt.textContent='Sheets live';}
+  else{dot.className='api-dot err';txt.textContent='Local mode';}
+}
+function toggleSetup(){
+  const b=document.getElementById('setupBar');
+  b.classList.toggle('hidden');
+  if(!b.classList.contains('hidden')) document.getElementById('apiInput').value=API_URL;
+}
+function toggleSidebar(){
+  document.querySelector('.sidebar').classList.toggle('collapsed');
+}
+function saveApiUrl(){
+  const u=document.getElementById('apiInput').value.trim();
+  if(!u) return;
+  API_URL=u;localStorage.setItem(LS_API,u);
+  document.getElementById('setupBar').classList.add('hidden');
+  toast('Connecting to Sheets...');
+  loadFromSheets();
+}
+
+const PROJ_COLORS={'Time Square 7':'#c084fc','Time Square 8':'#3b82f6','Time Square 9':'#7c5cbf','Time Square 10':'#10b981','Kingston Royale':'#f9a825','Le Conde BKK1':'#8b5cf6','J Tower 3':'#e67e22','Odom Tower':'#ef4444','Odom Living':'#f97316','UC88 Wyndham Garden':'#06b6d4','Diamond Bay Garden':'#84cc16','Angkor Grace':'#14b8a6','LZ Sea View Premium':'#0ea5e9','Picasso Sky Gemme':'#ec4899','GATO Tower':'#a3e635'};
+const PROJECTS=Object.keys(PROJ_COLORS);
+const NATS={JP:{label:'Japanese',flag:'🇯🇵'},DE:{label:'German/European',flag:'🇩🇪'},EN:{label:'English/Western',flag:'🇬🇧'},RU:{label:'Russian',flag:'🇷🇺'},KH:{label:'Cambodian',flag:'🇰🇭'},CN:{label:'Chinese',flag:'🇨🇳'}};
+
+const SAMPLE=[
+  {id:'C1',name:'Kenji Tanaka',project:'Time Square 9',unit:'08A',floor:8,nat:'JP',telegram:'@kenjitanaka',phone:'',bookingDate:'2025-11-01',spa:true,titleStatus:'Pending',payDay:7,payAmount:1715,payTotal:45,payMade:6,bank:'ABA Bank — Acc 001234567 — MegaKim Realty',status:'Active',notes:'Japanese investor, English OK'},
+  {id:'C2',name:'Sarah Mitchell',project:'Time Square 10',unit:'15B',floor:15,nat:'EN',telegram:'@sarahmphc',phone:'',bookingDate:'2025-12-15',spa:true,titleStatus:'Pending',payDay:15,payAmount:1910,payTotal:45,payMade:5,bank:'ABA Bank — Acc 001234568 — MegaKim Realty',status:'Active',notes:'UK investor'},
+  {id:'C3',name:'Hans Mueller',project:'Le Conde BKK1',unit:'03A',floor:3,nat:'DE',telegram:'@hansm',phone:'',bookingDate:'2026-02-01',spa:false,titleStatus:'Pending',payDay:12,payAmount:1800,payTotal:45,payMade:3,bank:'ABA Bank — Acc 001234570 — Le Conde Dev',status:'Active',notes:'German investor, SPA pending'},
+  {id:'C4',name:'Sopheap Chan',project:'Kingston Royale',unit:'07B',floor:7,nat:'KH',telegram:'@sopheapphc',phone:'',bookingDate:'2025-08-01',spa:true,titleStatus:'Issued',payDay:5,payAmount:1596,payTotal:45,payMade:9,bank:'ABA Bank — Acc 001234571 — Kingston Dev',status:'Active',notes:'Local Cambodian buyer'},
+  {id:'C5',name:'Yuki Sato',project:'J Tower 3',unit:'10B',floor:10,nat:'JP',telegram:'@yukisato',phone:'',bookingDate:'2025-12-01',spa:true,titleStatus:'Pending',payDay:1,payAmount:1715,payTotal:45,payMade:5,bank:'ABA Bank — Acc 001234572 — J Tower Dev',status:'Active',notes:'Japanese investor'},
+  {id:'C6',name:'Emma Thompson',project:'UC88 Wyndham Garden',unit:'20A',floor:20,nat:'EN',telegram:'@emmaphc',phone:'',bookingDate:'2026-01-20',spa:true,titleStatus:'Pending',payDay:20,payAmount:2200,payTotal:45,payMade:3,bank:'ABA Bank — Acc 001234573 — UC88 Dev',status:'Active',notes:'UK/Australian investor'},
+];
+
+const LS_KEY='phc_clients_v2';
+function loadClients(){try{const d=localStorage.getItem(LS_KEY);if(d)return JSON.parse(d);}catch(e){}return SAMPLE.map(c=>({...c}));}
+function saveClients(){localStorage.setItem(LS_KEY,JSON.stringify(clients));}
+let clients=loadClients();
+let currentView='dashboard';
+let drawerClientId=null;
+
+// ── UTILS ──
+function todayD(){const d=new Date();d.setHours(0,0,0,0);return d;}
+function clampPayDay(y,m,d){return Math.min(d,new Date(y,m+1,0).getDate());}
+function daysUntil(payDay){
+  const t=todayD(),cd=t.getDate(),cm=t.getMonth(),cy=t.getFullYear();
+  const thisM=clampPayDay(cy,cm,payDay);
+  const due=thisM>=cd?new Date(cy,cm,thisM):new Date(cy,cm+1,clampPayDay(cy,cm+1,payDay));
+  return Math.ceil((due-t)/86400000);
+}
+function dueDateStr(payDay){
+  const t=todayD(),cd=t.getDate(),cm=t.getMonth(),cy=t.getFullYear();
+  const thisM=clampPayDay(cy,cm,payDay);
+  const due=thisM>=cd?new Date(cy,cm,thisM):new Date(cy,cm+1,clampPayDay(cy,cm+1,payDay));
+  return due.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+}
+function dueInfo(days){
+  if(days===0)return{cls:'today',txt:'Due TODAY'};
+  if(days<=7) return{cls:'week', txt:`Due in ${days} day${days>1?'s':''}`};
+  if(days<=25)return{cls:'soon', txt:`In ${days} days`};
+  return{cls:'ok',txt:`In ${days} days`};
+}
+function fmt(n){return'$'+Number(n).toLocaleString();}
+function pct(m,t){return t>0?Math.round(m/t*100):0;}
+function pc(p){return PROJ_COLORS[p]||'#9498aa';}
+function flag(n){return(NATS[n]||{flag:'?'}).flag;}
+function nextId(){return'C'+Date.now();}
+function toast(msg,err){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.className='toast show'+(err?' err':'');
+  setTimeout(()=>el.classList.remove('show'),2500);
+}
+function copyText(text){navigator.clipboard.writeText(text).then(()=>toast('Copied ✓'));}
+
+// ── VIEW SWITCH ──
+function switchView(v,el){
+  currentView=v;
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
+  if(el)el.classList.add('active');
+  const titles={dashboard:'Dashboard',clients:'All Clients',generator:'Update Generator',templates:'Make.com Templates'};
+  document.getElementById('topbar-title').textContent=titles[v]||v;
+  document.getElementById('clients-toolbar').classList.toggle('hidden',v!=='clients');
+  ['dashboard','clients','generator','templates'].forEach(k=>{
+    const p=document.getElementById('view-'+k);
+    if(p)p.classList.toggle('hidden',k!==v);
+  });
+  if(v==='templates')renderTemplates();
+  if(v==='clients')renderClients();
+  if(v==='dashboard')renderDashboard();
+}
+
+// ── STATS ──
+function updateStats(){
+  const active=clients.filter(c=>c.status==='Active');
+  const due=active.filter(c=>daysUntil(c.payDay)<=7);
+  document.getElementById('s-total').textContent=clients.length;
+  document.getElementById('s-due').textContent=due.length;
+  document.getElementById('s-monthly').textContent='$'+active.reduce((s,c)=>s+Number(c.payAmount),0).toLocaleString();
+  document.getElementById('s-projects').textContent=new Set(active.map(c=>c.project)).size;
+  const badge=document.getElementById('sb-due-badge');
+  badge.textContent=due.length||'0';badge.className='sb-badge'+(due.length?'':' zero');
+  document.getElementById('sb-count').textContent=clients.length;
+}
+
+// ── DASHBOARD ──
+function buildReminder(c){
+  return`Hi ${c.name.split(' ')[0]} 👋\n\nYour monthly payment reminder for ${c.project} — Unit ${c.unit}.\n\n💳 Amount due: ${fmt(c.payAmount)}\n📅 Due date: ${dueDateStr(c.payDay)}\n🏦 Transfer to: ${c.bank||'Contact your PHC advisor for bank details'}\n\nPlease send your transfer receipt to your PHC advisor once payment is made.\n\nQuestions? Reply here anytime.\n\nProperty Hub Cambodia\n📞 011 666 952`;
+}
+function alertCardHTML(c,di){
+  const color=pc(c.project);
+  return`<div class="alert-card ${di.cls}">
+    <div class="alert-top">
+      <div>
+        <div class="alert-name">${c.name}</div>
+        <div class="alert-sub"><span style="font-size:10px;padding:1px 7px;border-radius:8px;background:${color}18;color:${color};font-weight:600;margin-right:4px">${c.project}</span>Unit ${c.unit} · ${flag(c.nat)}</div>
+      </div>
+      <div class="due-badge ${di.cls}">${di.txt}</div>
+    </div>
+    <div class="alert-amount">${fmt(c.payAmount)}</div>
+    <div class="alert-bank">🏦 ${c.bank||'—'}</div>
+    <div class="alert-bank" style="margin-bottom:10px">📅 Due: ${dueDateStr(c.payDay)}</div>
+    <button class="copy-btn" onclick="copyReminder(this,'${c.id}')">Copy Payment Reminder</button>
+  </div>`;
+}
+function renderDashboard(){
+  const active=clients.filter(c=>c.status==='Active');
+  const dueList=active.filter(c=>daysUntil(c.payDay)<=7).sort((a,b)=>daysUntil(a.payDay)-daysUntil(b.payDay));
+  const soonList=active.filter(c=>{const d=daysUntil(c.payDay);return d>7&&d<=25;}).sort((a,b)=>daysUntil(a.payDay)-daysUntil(b.payDay));
+  document.getElementById('due-grid').innerHTML=dueList.length?dueList.map(c=>alertCardHTML(c,dueInfo(daysUntil(c.payDay)))).join(''):'<div class="empty"><div class="ei">✅</div>No payments due in the next 7 days</div>';
+  document.getElementById('soon-grid').innerHTML=soonList.length?soonList.map(c=>alertCardHTML(c,dueInfo(daysUntil(c.payDay)))).join(''):'<div class="empty"><div class="ei">📆</div>No payments coming up in the next 25 days</div>';
+}
+function copyReminder(btn,id){
+  const c=clients.find(x=>x.id===id);if(!c)return;
+  copyText(buildReminder(c));
+  btn.textContent='✓ Copied!';btn.classList.add('copied');
+  setTimeout(()=>{btn.textContent='Copy Payment Reminder';btn.classList.remove('copied');},2000);
+}
+
+// ── CLIENTS TABLE ──
+function renderClients(){
+  const q=(document.getElementById('search-input')?.value||'').toLowerCase();
+  const fp=document.getElementById('f-project')?.value||'';
+  const fn=document.getElementById('f-nat')?.value||'';
+  const fs=document.getElementById('f-status')?.value||'';
+  const list=clients.filter(c=>{
+    if(fp&&c.project!==fp)return false;
+    if(fn&&c.nat!==fn)return false;
+    if(fs&&c.status!==fs)return false;
+    if(q&&!c.name.toLowerCase().includes(q)&&!(c.unit||'').toLowerCase().includes(q)&&!(c.telegram||'').toLowerCase().includes(q))return false;
+    return true;
+  });
+  const tb=document.getElementById('client-tbody');
+  if(!list.length){tb.innerHTML='<tr><td colspan="9" class="empty">No clients match the current filters.</td></tr>';return;}
+  tb.innerHTML=list.map(c=>{
+    const d=daysUntil(c.payDay),di=dueInfo(d),p=pct(c.payMade,c.payTotal),color=pc(c.project);
+    return`<tr onclick="openDrawer('${c.id}')">
+      <td><div class="client-name">${c.name}</div><div class="client-sub">${c.telegram||''}${c.phone?' · '+c.phone:''}</div></td>
+      <td><span style="display:inline-block;font-size:10px;padding:2px 8px;border-radius:10px;background:${color}18;color:${color};font-weight:600">${c.project}</span><div class="client-sub" style="margin-top:3px">Unit ${c.unit}${c.floor?' · Fl.'+c.floor:''}</div></td>
+      <td><div class="prog-wrap"><div class="prog-bar"><div class="prog-fill" style="width:${p}%"></div></div><div class="prog-text">${c.payMade}/${c.payTotal} (${p}%)</div></div></td>
+      <td><div style="font-size:12px">${dueDateStr(c.payDay)}</div><span class="days-chip ${di.cls}">${di.txt}</span></td>
+      <td style="font-size:13px;font-weight:600">${fmt(c.payAmount)}</td>
+      <td><span class="spa-chip ${c.spa?'done':'pend'}">${c.spa?'✓ Signed':'Pending'}</span></td>
+      <td><span class="status-chip ${c.status}">${c.status}</span></td>
+      <td title="${(NATS[c.nat]||{}).label||c.nat}">${flag(c.nat)}</td>
+      <td><button class="row-del" onclick="event.stopPropagation();deleteClient('${c.id}')" title="Remove">✕</button></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── DRAWER ──
+function openDrawer(id){
+  const c=clients.find(x=>x.id===id);if(!c)return;
+  drawerClientId=id;
+  document.getElementById('dr-name').textContent=c.name;
+  document.querySelectorAll('.dr-st-btn').forEach(b=>b.classList.toggle('on',b.dataset.s===c.status));
+  document.getElementById('dr-name-inp').value=c.name||'';
+  document.getElementById('dr-telegram').value=c.telegram||'';
+  document.getElementById('dr-phone').value=c.phone||'';
+  document.getElementById('dr-nat').value=c.nat||'JP';
+  document.getElementById('dr-referral').value=c.referralPartner||'';
+  document.getElementById('dr-proj').value=c.project||PROJECTS[0];
+  document.getElementById('dr-unit').value=c.unit||'';
+  document.getElementById('dr-floor').value=c.floor||'';
+  document.getElementById('dr-booking').value=c.bookingDate||'';
+  document.getElementById('dr-spa').value=c.spa?'true':'false';
+  document.getElementById('dr-title').value=c.titleStatus||'Pending';
+  document.getElementById('dr-pday').value=c.payDay||'';
+  document.getElementById('dr-pamount').value=c.payAmount||'';
+  document.getElementById('dr-ptotal').value=c.payTotal||45;
+  document.getElementById('dr-pmade').value=c.payMade||0;
+  document.getElementById('dr-bank').value=c.bank||'';
+  document.getElementById('dr-notes').value=c.notes||'';
+  updateDrProgress();
+  switchDrTab('info');
+  document.getElementById('drawer-overlay').classList.remove('hidden');
+}
+function closeDrawer(){document.getElementById('drawer-overlay').classList.add('hidden');drawerClientId=null;}
+function closeDrawerBg(e){if(e.target===document.getElementById('drawer-overlay'))closeDrawer();}
+function switchDrTab(tab){
+  ['info','payment','notes'].forEach(t=>{
+    document.getElementById('drtab-'+t).classList.toggle('on',t===tab);
+    document.getElementById('drp-'+t).style.display=t===tab?'':'none';
+  });
+}
+function setDrStatus(s){document.querySelectorAll('.dr-st-btn').forEach(b=>b.classList.toggle('on',b.dataset.s===s));}
+function getDrStatus(){const b=document.querySelector('.dr-st-btn.on');return b?b.dataset.s:'Active';}
+function updateDrProgress(){
+  const made=Number(document.getElementById('dr-pmade').value)||0;
+  const total=Number(document.getElementById('dr-ptotal').value)||1;
+  const p=Math.round(made/total*100);
+  document.getElementById('dr-prog-label').textContent=`${made} of ${total} paid`;
+  document.getElementById('dr-prog-pct').textContent=p+'%';
+  document.getElementById('dr-prog-fill').style.width=Math.min(p,100)+'%';
+}
+function saveFromDrawer(){
+  if(!drawerClientId)return;
+  const idx=clients.findIndex(x=>x.id===drawerClientId);if(idx<0)return;
+  clients[idx]={...clients[idx],
+    name:document.getElementById('dr-name-inp').value.trim()||clients[idx].name,
+    telegram:document.getElementById('dr-telegram').value.trim(),
+    phone:document.getElementById('dr-phone').value.trim(),
+    nat:document.getElementById('dr-nat').value,
+    referralPartner:document.getElementById('dr-referral').value,
+    project:document.getElementById('dr-proj').value,
+    unit:document.getElementById('dr-unit').value.trim(),
+    floor:Number(document.getElementById('dr-floor').value)||0,
+    bookingDate:document.getElementById('dr-booking').value,
+    spa:document.getElementById('dr-spa').value==='true',
+    titleStatus:document.getElementById('dr-title').value,
+    payDay:Number(document.getElementById('dr-pday').value)||1,
+    payAmount:Number(document.getElementById('dr-pamount').value)||0,
+    payTotal:Number(document.getElementById('dr-ptotal').value)||45,
+    payMade:Number(document.getElementById('dr-pmade').value)||0,
+    bank:document.getElementById('dr-bank').value.trim(),
+    notes:document.getElementById('dr-notes').value.trim(),
+    status:getDrStatus(),
+  };
+  syncUpdate(clients[idx]);
+  saveClients();closeDrawer();renderAll();toast('Client updated ✓');
+}
+function deleteFromDrawer(){
+  if(!drawerClientId)return;
+  const c=clients.find(x=>x.id===drawerClientId);if(!c)return;
+  if(!confirm(`Remove ${c.name} from the client list?`))return;
+  syncDelete(c.id);
+  clients=clients.filter(x=>x.id!==drawerClientId);
+  saveClients();closeDrawer();renderAll();toast('Client removed');
+}
+
+// ── ADD MODAL ──
+function openAddModal(){
+  ['m-name','m-unit','m-floor','m-telegram','m-bank','m-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('m-ptotal').value='45';
+  document.getElementById('m-pmade').value='0';
+  document.getElementById('m-spa').value='false';
+  document.getElementById('m-booking').value='';
+  document.getElementById('m-referral').value='';
+  document.getElementById('modal-ov').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('m-name').focus(),80);
+}
+function closeModal(){document.getElementById('modal-ov').classList.add('hidden');}
+function closeModalBg(e){if(e.target===document.getElementById('modal-ov'))closeModal();}
+function saveNewClient(){
+  const name=document.getElementById('m-name').value.trim();
+  if(!name){toast('Name is required','err');return;}
+  const unit=document.getElementById('m-unit').value.trim();
+  if(!unit){toast('Unit number is required','err');return;}
+  const newClient={
+    id:nextId(),name,unit,
+    project:document.getElementById('m-proj').value,
+    floor:Number(document.getElementById('m-floor').value)||0,
+    nat:document.getElementById('m-nat').value,
+    telegram:document.getElementById('m-telegram').value.trim(),
+    phone:'',
+    referralPartner:document.getElementById('m-referral').value,
+    bookingDate:document.getElementById('m-booking').value,
+    spa:document.getElementById('m-spa').value==='true',
+    titleStatus:'Pending',
+    payDay:Number(document.getElementById('m-pday').value)||1,
+    payAmount:Number(document.getElementById('m-pamount').value)||0,
+    payTotal:Number(document.getElementById('m-ptotal').value)||45,
+    payMade:Number(document.getElementById('m-pmade').value)||0,
+    bank:document.getElementById('m-bank').value.trim(),
+    status:'Active',
+    notes:document.getElementById('m-notes').value.trim(),
+    createdAt:new Date().toISOString(),
+  };
+  clients.push(newClient);
+  syncInsert(newClient);
+  saveClients();closeModal();renderAll();toast('Client added ✓');
+}
+function deleteClient(id){
+  const c=clients.find(x=>x.id===id);if(!c)return;
+  if(!confirm(`Remove ${c.name}?`))return;
+  syncDelete(id);
+  clients=clients.filter(x=>x.id!==id);
+  saveClients();renderAll();toast('Client removed');
+}
+
+// ── GENERATOR ──
+function generateMessages(){
+  const proj=document.getElementById('gen-project').value;
+  const title=document.getElementById('gen-title').value.trim();
+  const body=document.getElementById('gen-body').value.trim();
+  const photo=document.getElementById('gen-photo').value.trim();
+  const handover=document.getElementById('gen-handover').value.trim();
+  if(!proj){toast('Please select a project','err');return;}
+  if(!title){toast('Please enter an update title','err');return;}
+  if(!body){toast('Please enter the update body','err');return;}
+  const list=clients.filter(c=>c.project===proj&&c.status==='Active');
+  if(!list.length){document.getElementById('gen-output').innerHTML='<div class="gen-empty"><div class="ei">🤷</div>No active clients for this project. Add clients first.</div>';return;}
+  const cards=list.map(c=>{
+    const fn=c.name.split(' ')[0];
+    let msg=`Hi ${fn} 👋 — ${proj} Update\n\n📍 Your unit: ${c.unit}${c.floor?` — Floor ${c.floor}`:''}\n\n${title}\n\n${body}`;
+    if(photo)msg+=`\n\n📸 Full photo update:\n${photo}`;
+    if(handover)msg+=`\n\n🗓️ Estimated handover: ${handover}`;
+    msg+=`\n\nQuestions? Reply here anytime.\n\nProperty Hub Cambodia\n📞 011 666 952`;
+    const esc=msg.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return`<div class="msg-card">
+      <div class="msg-hdr">
+        <div><div class="msg-name">${c.name}</div><div class="msg-meta">Unit ${c.unit} · ${flag(c.nat)} · ${c.telegram||'no handle'}</div></div>
+        <button class="copy-sm" onclick="flashCopy(this,decodeURIComponent('${encodeURIComponent(msg)}'))">Copy</button>
+      </div>
+      <div class="msg-body">${esc}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('gen-output').innerHTML=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px"><span style="font-size:13px;font-weight:600;color:var(--text)">${list.length} message${list.length>1?'s':''} ready</span><button class="copy-sm" onclick="copyAll()">Copy All</button></div><div style="display:flex;flex-direction:column;gap:10px">${cards}</div>`;
+}
+function flashCopy(btn,text){
+  copyText(text);btn.textContent='✓ Copied';btn.classList.add('copied');
+  setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},1800);
+}
+function copyAll(){
+  const proj=document.getElementById('gen-project').value;
+  const title=document.getElementById('gen-title').value.trim();
+  const body=document.getElementById('gen-body').value.trim();
+  const photo=document.getElementById('gen-photo').value.trim();
+  const handover=document.getElementById('gen-handover').value.trim();
+  const list=clients.filter(c=>c.project===proj&&c.status==='Active');
+  const all=list.map(c=>{
+    const fn=c.name.split(' ')[0];
+    let msg=`─── ${c.name} (Unit ${c.unit}) ───\nHi ${fn} 👋 — ${proj} Update\n\n📍 Your unit: ${c.unit}${c.floor?` — Floor ${c.floor}`:''}\n\n${title}\n\n${body}`;
+    if(photo)msg+=`\n\n📸 Full photo update:\n${photo}`;
+    if(handover)msg+=`\n\n🗓️ Estimated handover: ${handover}`;
+    msg+=`\n\nQuestions? Reply here anytime.\n\nProperty Hub Cambodia\n📞 011 666 952`;
+    return msg;
+  }).join('\n\n\n');
+  copyText(all);toast(`All ${list.length} messages copied ✓`);
+}
+
+// ── TEMPLATES ──
+function fmtVars(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\{\{([^}]+)\}\}/g,'<span class="tpl-var">{{$1}}</span>');}
+function renderTemplates(){
+  document.getElementById('templates-container').innerHTML=PROJECTS.map(proj=>{
+    const color=pc(proj);
+    const payTpl=`Hi {{CLIENT_FIRST_NAME}} 👋\n\nYour monthly payment reminder for ${proj} — Unit {{UNIT}}.\n\n💳 Amount due: ${{PAYMENT_AMOUNT}}\n📅 Due date: {{DUE_DATE}}\n🏦 Transfer to: {{DEVELOPER_BANK}}\n\nPlease send your transfer receipt to your PHC advisor once payment is made.\n\nQuestions? Reply here anytime.\n\nProperty Hub Cambodia\n📞 011 666 952`;
+    const updTpl=`Hi {{CLIENT_FIRST_NAME}} 👋 — ${proj} Update\n\n📍 Your unit: {{UNIT}}{{FLOOR_LINE}}\n\n{{UPDATE_TITLE}}\n\n{{UPDATE_BODY}}\n\n📸 Full photo update:\n{{PHOTO_LINK}}\n\n🗓️ Estimated handover: {{HANDOVER_DATE}}\n\nQuestions? Reply here anytime.\n\nProperty Hub Cambodia\n📞 011 666 952`;
+    return`<div class="tpl-proj-group">
+      <div class="tpl-proj-label"><div class="tpl-dot" style="background:${color}"></div>${proj}</div>
+      <div class="tpl-grid">
+        <div class="tpl-card" style="border-left-color:${color}">
+          <div class="tpl-hdr"><div><div class="tpl-title">Monthly Payment Reminder</div><div class="tpl-sub">Runs automatically each month via Make.com</div></div></div>
+          <div class="tpl-body">${fmtVars(payTpl)}</div>
+          <div class="tpl-ftr"><div class="tpl-note">Map: CLIENT_FIRST_NAME · UNIT · PAYMENT_AMOUNT · DUE_DATE · DEVELOPER_BANK</div><button class="copy-sm" onclick="copyText(decodeURIComponent('${encodeURIComponent(payTpl)}'))">Copy</button></div>
+        </div>
+        <div class="tpl-card" style="border-left-color:${color}">
+          <div class="tpl-hdr"><div><div class="tpl-title">Project Update Broadcast</div><div class="tpl-sub">Triggered when you submit the Update Generator</div></div></div>
+          <div class="tpl-body">${fmtVars(updTpl)}</div>
+          <div class="tpl-ftr"><div class="tpl-note">Map: CLIENT_FIRST_NAME · UNIT · FLOOR_LINE · UPDATE_TITLE · UPDATE_BODY · PHOTO_LINK · HANDOVER_DATE</div><button class="copy-sm" onclick="copyText(decodeURIComponent('${encodeURIComponent(updTpl)}'))">Copy</button></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── CSV EXPORT ──
+function exportCSV(){
+  const cols=['Name','Telegram','Phone','Project','Unit','Floor','Nationality','Booking Date','SPA Signed','Title Status','Payment Day','Payment Amount','Total Payments','Payments Made','Progress %','Developer Bank','Status','Notes'];
+  const rows=clients.map(c=>[c.name,c.telegram||'',c.phone||'',c.project,c.unit,c.floor||'',(NATS[c.nat]||{}).label||c.nat,c.bookingDate||'',c.spa?'Yes':'No',c.titleStatus||'Pending',c.payDay,c.payAmount,c.payTotal,c.payMade,pct(c.payMade,c.payTotal)+'%',c.bank||'',c.status,c.notes||''].map(v=>`"${String(v).replace(/"/g,'""')}"`));
+  const csv=[cols.map(c=>`"${c}"`).join(','),...rows.map(r=>r.join(','))].join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,﻿'+encodeURIComponent(csv);
+  a.download='PHC_Clients_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();toast('CSV exported ✓');
+}
+
+// ── INIT ──
+function renderAll(){updateStats();renderDashboard();if(currentView==='clients')renderClients();}
+
+document.addEventListener('DOMContentLoaded',async function(){
+  renderAll();
+  await loadPartners();
+  if(API_URL){
+    setApiStatus(null);
+    loadFromSheets();
+  }
+  // Receive converted lead from Lead Tracker
+  const pending=localStorage.getItem('phc_convert_pending');
+  if(pending){
+    try{
+      const d=JSON.parse(pending);
+      localStorage.removeItem('phc_convert_pending');
+      openAddModal();
+      setTimeout(function(){
+        document.getElementById('m-name').value=d.name||'';
+        if(d.nat) document.getElementById('m-nat').value=d.nat;
+        if(d.project) document.getElementById('m-proj').value=d.project;
+        document.getElementById('m-notes').value=d.notes||'';
+        document.getElementById('m-referral').value=d.referralPartner||'';
+        document.getElementById('m-unit').focus();
+      },120);
+    }catch(e){}
+  }
+});
+</script>
+</body>
+</html>

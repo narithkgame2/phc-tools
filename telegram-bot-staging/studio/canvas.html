@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PHC Bot System Architecture & Chat Tree (Figma/Canva Interactive Map)</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    code, pre { font-family: 'JetBrains Mono', monospace; }
+    .canvas-grid {
+      background-size: 24px 24px;
+      background-image: radial-gradient(circle, rgba(204, 157, 77, 0.12) 1px, transparent 1px);
+    }
+    .gold-glow {
+      box-shadow: 0 0 25px -5px rgba(204, 157, 77, 0.3);
+    }
+    .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #cc9d4d; border-radius: 4px; }
+    .custom-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); }
+  </style>
+</head>
+<body class="bg-[#0b1329] text-slate-100 min-h-screen antialiased custom-scroll">
+
+  <!-- Topbar / Figma Toolbar -->
+  <header class="border-b border-slate-800 bg-[#070d1e]/90 backdrop-blur sticky top-0 z-50 px-6 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-[#cc9d4d] to-[#996e27] flex items-center justify-center font-bold text-slate-950 shadow-md">
+        🏛️
+      </div>
+      <div>
+        <h1 class="text-sm font-bold tracking-wide text-white flex items-center gap-2">
+          PROPERTY HUB CAMBODIA <span class="text-xs px-2 py-0.5 rounded bg-[#cc9d4d]/20 text-[#e8c47a] border border-[#cc9d4d]/30 font-mono">FIGMA / CANVA CANVAS</span>
+        </h1>
+        <p class="text-xs text-slate-400">Complete Telegram Bot Operating System & State-Tree Visualizer</p>
+      </div>
+    </div>
+
+    <!-- Mode Selector Tabs -->
+    <div class="flex items-center gap-1 bg-slate-900/80 p-1 rounded-xl border border-slate-800">
+      <button onclick="switchTab('editor')" id="tab-editor" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#cc9d4d] text-slate-950 transition-all shadow-sm flex items-center gap-1.5">
+        ✏️ Canva Step Studio (Editor)
+      </button>
+      <button onclick="switchTab('tree')" id="tab-tree" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white transition-all">
+        🌳 Visual Chat Tree Map
+      </button>
+      <button onclick="switchTab('simulator')" id="tab-simulator" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white transition-all">
+        📱 Live Mobile Simulator
+      </button>
+      <button onclick="switchTab('architecture')" id="tab-architecture" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white transition-all">
+        ⚙️ Backend Data Pipelines
+      </button>
+    </div>
+
+    <div class="flex items-center gap-3 text-xs text-slate-400 font-mono">
+      <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Bot Live: @Nick_REAKH_Bot</span>
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER -->
+  <main class="p-6 max-w-[1700px] mx-auto">
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- VIEW 0: CANVA STEP & BUTTON STUDIO (LIVE EDITABLE DESIGNER) -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div id="view-editor" class="space-y-6">
+      
+      <!-- Studio Header & Action Bar -->
+      <div class="flex flex-wrap items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-r from-slate-900 via-slate-900/90 to-amber-950/30 border border-amber-500/30">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10px] font-black uppercase tracking-wider">Interactive Studio</span>
+            <h2 class="text-base font-bold text-white">Canva Step Studio · Live Telegram Chat Tree Editor</h2>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">
+            Click any step to edit question texts, button wording, or row layouts. Changes preview live on the iPhone and save directly to your live Telegram bot!
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div id="save-status" class="text-xs font-mono text-emerald-400 hidden flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            Saved to bot live!
+          </div>
+          <button onclick="revertConfig()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition-all">
+            🔄 Reload Config
+          </button>
+          <button onclick="saveConfigToServer()" class="px-5 py-2 rounded-xl bg-gradient-to-r from-[#cc9d4d] to-[#e8c47a] hover:from-[#d8a957] hover:to-[#f3d492] text-slate-950 font-bold text-xs shadow-lg shadow-amber-500/20 flex items-center gap-2 transition-all">
+            💾 Save Changes to Bot
+          </button>
+        </div>
+      </div>
+
+      <!-- Studio Main Layout: Left = Step Navigation + Editor Form, Right = Real-Time Mobile Preview -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- Column 1: Step Navigator (3 cols) -->
+        <div class="lg:col-span-3 space-y-2">
+          <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-1">Select Step to Edit</div>
+          
+          <div id="step-selector-list" class="space-y-1.5 font-mono text-xs">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Column 2: Step Editor Form (5 cols) -->
+        <div class="lg:col-span-5 p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-5">
+          
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+            <div>
+              <span id="editor-step-id-badge" class="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-400/20 text-amber-300 font-bold uppercase">STEP CONFIG</span>
+              <h3 id="editor-step-title" class="text-sm font-bold text-white mt-1">Editing Step</h3>
+            </div>
+            <span class="text-[11px] text-slate-400 font-mono">Live Sync</span>
+          </div>
+
+          <!-- Fields Container -->
+          <div id="editor-fields-box" class="space-y-4 text-xs">
+            <!-- Dynamically rendered based on selected step -->
+          </div>
+
+        </div>
+
+        <!-- Column 3: Live iPhone Mockup (4 cols) -->
+        <div class="lg:col-span-4 sticky top-20">
+          <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-1 mb-2 flex items-center justify-between">
+            <span>Live Telegram Screen</span>
+            <span class="text-emerald-400 font-mono text-[10px] flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Real-Time</span>
+          </div>
+
+          <!-- Phone Frame -->
+          <div class="w-full max-w-[340px] mx-auto bg-slate-950 rounded-[40px] p-4 border-4 border-slate-800 shadow-2xl relative">
+            <!-- Dynamic Island -->
+            <div class="w-28 h-4 bg-slate-900 rounded-full mx-auto mb-3 border border-slate-800 flex items-center justify-center">
+              <div class="w-2 h-2 rounded-full bg-slate-800 ml-10"></div>
+            </div>
+
+            <!-- Bot Bar -->
+            <div class="flex items-center gap-2.5 pb-2.5 border-b border-slate-800/80 px-1 text-white">
+              <div class="w-7 h-7 rounded-full bg-emerald-600 flex items-center justify-center font-bold text-[10px]">
+                NR
+              </div>
+              <div>
+                <div class="text-xs font-bold leading-tight">Nick_REAKH_Bot</div>
+                <div class="text-[9px] text-slate-400">Property Concierge</div>
+              </div>
+            </div>
+
+            <!-- Chat Preview Box -->
+            <div id="editor-sim-screen" class="py-3 space-y-2.5 min-h-[460px] max-h-[500px] overflow-y-auto custom-scroll text-xs">
+              <!-- Dynamically populated -->
+            </div>
+
+            <!-- Home indicator -->
+            <div class="w-28 h-1 bg-slate-700 rounded-full mx-auto mt-3"></div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- VIEW 1: FIGMA/CANVA VISUAL CHAT TREE MAP -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div id="view-tree" class="space-y-6 hidden">
+
+      <!-- Legend & Control Bar -->
+      <div class="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
+        <div class="flex items-center gap-3">
+          <span class="text-xs font-bold text-slate-300 uppercase tracking-wider">Node Legend:</span>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
+            🔵 Root / Entry Command
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">
+            🟡 Decision Screen (Category / District)
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            🟢 Anchored Results Card (3 Quotes)
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20">
+            🟣 Off-Plan Copilot (/ts7)
+          </span>
+        </div>
+        <p class="text-xs text-slate-400">💡 Click any card below to launch its exact screen in the simulator!</p>
+      </div>
+
+      <!-- CANVAS BOARD -->
+      <div class="canvas-grid p-8 rounded-3xl border border-slate-800 bg-[#091024] overflow-x-auto custom-scroll min-w-[1200px]">
+
+        <!-- ROOT ROW -->
+        <div class="flex flex-col items-center">
+          <div onclick="launchSim('start')" class="cursor-pointer group p-4 w-80 rounded-2xl bg-gradient-to-b from-blue-900/40 to-slate-900 border-2 border-blue-500/40 hover:border-blue-400 transition-all shadow-xl hover:scale-105">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-blue-500/20 text-blue-300">TRIGGER: /start or /search</span>
+              <span class="text-base">🏛️</span>
+            </div>
+            <h3 class="text-sm font-bold text-white mb-1">SEARCH CONCIERGE</h3>
+            <p class="text-xs text-slate-300 mb-3">Step 1 of 4 · Objective Selection</p>
+            <div class="space-y-1.5 font-mono text-[11px]">
+              <div class="p-1.5 rounded bg-slate-800/80 border border-slate-700/60 text-slate-200 flex items-center justify-between">
+                <span>🏢 Buy Property</span>
+                <span class="text-[10px] text-blue-400">➔ Branch A</span>
+              </div>
+              <div class="p-1.5 rounded bg-slate-800/80 border border-slate-700/60 text-slate-200 flex items-center justify-between">
+                <span>🔑 Rent a Home</span>
+                <span class="text-[10px] text-emerald-400">➔ Branch B</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONNECTOR STEM -->
+          <div class="w-0.5 h-10 bg-slate-700 my-1 relative">
+            <div class="absolute -bottom-1 -left-1 w-2.5 h-2.5 rounded-full bg-slate-500"></div>
+          </div>
+          <!-- SPLIT BAR -->
+          <div class="w-[850px] h-0.5 bg-slate-700 relative mb-8">
+            <div class="absolute -top-1 left-0 w-2.5 h-2.5 rounded-full bg-blue-400"></div>
+            <div class="absolute -top-1 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
+          </div>
+        </div>
+
+        <!-- 2 MAIN BRANCHES GRID (BUY vs RENT) -->
+        <div class="grid grid-cols-2 gap-12 max-w-[1400px] mx-auto">
+
+          <!-- ════ BRANCH A: BUY FLOW (4 STEPS) ════ -->
+          <div class="space-y-6">
+            <div class="flex items-center gap-2 pb-2 border-b border-blue-500/30">
+              <span class="w-3 h-3 rounded-full bg-blue-400"></span>
+              <h2 class="text-sm font-bold text-blue-300 tracking-wider uppercase">Branch A · Acquisition / Purchase (Buy)</h2>
+            </div>
+
+            <!-- Step 2: Status (Website Filter Aligned) -->
+            <div onclick="launchSim('buy_status')" class="cursor-pointer group p-4 rounded-2xl bg-slate-900/90 border border-amber-500/40 hover:border-amber-400 transition-all shadow-lg hover:scale-102">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">STEP 2 OF 4 · STATUS</span>
+                <span class="text-xs text-slate-400">Website Filter: Any Status</span>
+              </div>
+              <h4 class="text-xs font-semibold text-white mb-2">Select Development Status (1 Button / Row)</h4>
+              <div class="space-y-1.5 font-mono text-[11px]">
+                <div class="p-1.5 rounded bg-amber-950/30 border border-amber-500/30 text-amber-200">🏗️ Off-Plan (New Developments)</div>
+                <div class="p-1.5 rounded bg-amber-950/30 border border-amber-500/30 text-amber-200">🔑 Resale (Ready to Move-In)</div>
+                <div class="p-1.5 rounded bg-slate-800 border border-slate-700 text-slate-300">🌐 Any Status (Show All)</div>
+              </div>
+            </div>
+
+            <!-- Down Arrow -->
+            <div class="flex justify-center text-slate-500 text-xs font-mono">↓ callback: srch_status_*</div>
+
+            <!-- Step 3: Property Type -->
+            <div onclick="launchSim('buy_type')" class="cursor-pointer group p-4 rounded-2xl bg-slate-900/90 border border-amber-500/40 hover:border-amber-400 transition-all shadow-lg hover:scale-102">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">STEP 3 OF 4 · PROPERTY TYPE</span>
+                <span class="text-xs text-slate-400">Balanced 2-Col Grid</span>
+              </div>
+              <h4 class="text-xs font-semibold text-white mb-2">Which category do you want to invest in?</h4>
+              <div class="grid grid-cols-2 gap-1.5 font-mono text-[11px]">
+                <div class="p-1.5 rounded bg-slate-800 border border-slate-700 text-slate-200 text-center">🏢 Modern Condo</div>
+                <div class="p-1.5 rounded bg-slate-800 border border-slate-700 text-slate-200 text-center">🛋️ Serviced Apt</div>
+                <div class="p-1.5 rounded bg-slate-800 border border-slate-700 text-slate-200 text-center">🏡 Villa / Borey</div>
+                <div class="p-1.5 rounded bg-slate-800 border border-slate-700 text-slate-200 text-center">🌐 Any Type</div>
+              </div>
+            </div>
+
+            <!-- Down Arrow -->
+            <div class="flex justify-center text-slate-500 text-xs font-mono">↓ callback: srch_type_*</div>
+
+            <!-- Step 4: District -->
+            <div onclick="launchSim('buy_loc')" class="cursor-pointer group p-4 rounded-2xl bg-slate-900/90 border border-amber-500/40 hover:border-amber-400 transition-all shadow-lg hover:scale-102">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">STEP 4 OF 4 · PRIME DISTRICT</span>
+                <span class="text-xs text-slate-400">Balanced Equal-Char Grid</span>
+              </div>
+              <h4 class="text-xs font-semibold text-white mb-2">Select Prime Residential District:</h4>
+              <div class="grid grid-cols-2 gap-1.5 font-mono text-[11px]">
+                <div class="p-1.5 rounded bg-slate-800 border border-slate-700 text-slate-200 text-center">📍 BKK1</div>
+                <div class="p-1.5 rounded bg-slate-800 border border-slate-700 text-slate-200 text-center">📍 Tonle Bassac</div>
+                <div class="p-1.5 rounded bg-slate-800 border border-slate-700 text-slate-200 text-center">📍 Toul Kork</div>
+                <div class="p-1.5 rounded bg-slate-800 border border-slate-700 text-slate-200 text-center">📍 Chamkarmon</div>
+                <div class="p-1.5 rounded bg-slate-800 border border-slate-700 text-slate-200 text-center">📍 Chroy Changvar</div>
+                <div class="p-1.5 rounded bg-slate-800 border border-slate-700 text-slate-200 text-center">📍 Peng Huoth</div>
+              </div>
+              <div class="mt-1.5 p-1.5 rounded bg-slate-800 border border-slate-700 text-slate-200 text-center font-mono text-[11px]">🌐 Any Prime District</div>
+            </div>
+
+            <!-- Down Arrow -->
+            <div class="flex justify-center text-slate-500 text-xs font-mono">↓ callback: srch_loc_*</div>
+
+            <!-- Step 5: Acquisition Budget -->
+            <div onclick="launchSim('buy_budget')" class="cursor-pointer group p-4 rounded-2xl bg-slate-900/90 border border-amber-500/40 hover:border-amber-400 transition-all shadow-lg hover:scale-102">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">STEP 5 OF 5 · ACQUISITION BUDGET</span>
+                <span class="text-xs text-emerald-400">Full-Width Readable</span>
+              </div>
+              <h4 class="text-xs font-semibold text-white mb-2">Select Target Budget Bracket:</h4>
+              <div class="space-y-1.5 font-mono text-[11px]">
+                <div class="p-1.5 rounded bg-emerald-950/30 border border-emerald-500/30 text-emerald-200">💰 Under $100,000 USD</div>
+                <div class="p-1.5 rounded bg-emerald-950/30 border border-emerald-500/30 text-emerald-200">💰 $100,000 – $200,000 USD</div>
+                <div class="p-1.5 rounded bg-emerald-950/30 border border-emerald-500/30 text-emerald-200">💰 $200,000 – $500,000 USD</div>
+                <div class="p-1.5 rounded bg-emerald-950/30 border border-emerald-500/30 text-emerald-200">💰 $500,000+ USD (Prime Luxury)</div>
+              </div>
+            </div>
+
+            <!-- Final Result Box -->
+            <div class="flex justify-center text-emerald-500 text-xs font-mono">↓ query matches & apply anchoring</div>
+
+            <div onclick="launchSim('results_buy')" class="cursor-pointer group p-5 rounded-2xl bg-gradient-to-br from-emerald-950/50 to-slate-900 border-2 border-emerald-500/50 hover:border-emerald-400 transition-all shadow-xl gold-glow hover:scale-102">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono">FINAL STEP: 3-PROPERTY ANCHORING CARD</span>
+                <span class="text-xs text-amber-400">Nick's Sales Method</span>
+              </div>
+              <div class="space-y-2 text-xs text-slate-300">
+                <div class="p-2.5 rounded-lg bg-slate-800/90 border-l-4 border-amber-400">
+                  <div class="font-bold text-amber-300">⭐️ TOP RECOMMENDATION · Sweet Spot</div>
+                  <div>Best value per m² matching target budget & floor area.</div>
+                </div>
+                <div class="p-2.5 rounded-lg bg-slate-800/90 border-l-4 border-blue-400">
+                  <div class="font-bold text-blue-300">⚓ PREMIER BENCHMARK · Luxury Anchor</div>
+                  <div>Higher floor / penthouse establishing quality ceiling.</div>
+                </div>
+                <div class="p-2.5 rounded-lg bg-slate-800/90 border-l-4 border-emerald-400">
+                  <div class="font-bold text-emerald-300">💡 SMART VALUE · Agile Alternative</div>
+                  <div>Lowest entry capital with prime rental appeal.</div>
+                </div>
+              </div>
+              <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400 font-mono">
+                <span>Direct Verified Channel Posts ↗</span>
+                <span class="text-emerald-400">Zero Synthetic Numbers</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ════ BRANCH B: RENT FLOW (4 STEPS) ════ -->
+          <div class="space-y-6">
+            <div class="flex items-center gap-2 pb-2 border-b border-emerald-500/30">
+              <span class="w-3 h-3 rounded-full bg-emerald-400"></span>
+              <h2 class="text-sm font-bold text-emerald-300 tracking-wider uppercase">Branch B · Expat & Executive Leasing (Rent)</h2>
+            </div>
+
+            <!-- Step 2: Property Type -->
+            <div onclick="launchSim('rent_type')" class="cursor-pointer group p-4 rounded-2xl bg-slate-900/90 border border-amber-500/40 hover:border-amber-400 transition-all shadow-lg hover:scale-102">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">STEP 2 OF 4 · PROPERTY TYPE</span>
+                <span class="text-xs text-slate-400">Direct to Type</span>
+              </div>
+              <h4 class="text-xs font-semibold text-white mb-2">Which property type best fits your lifestyle?</h4>
+              <div class="grid grid-cols-2 gap-1.5 font-mono text-[11px]">
+                <div class="p-1.5 rounded bg-slate-800 border border-slate-700 text-slate-200 text-center">🏢 Modern Condo</div>
+                <div class="p-1.5 rounded bg-slate-800 border border-slate-700 text-slate-200 text-center">🛋️ Serviced Apt</div>
+                <div class="p-1.5 rounded bg-slate-800 border border-slate-700 text-slate-200 text-center">🏡 Villa / House</div>
+                <div class="p-1.5 rounded bg-slate-800 border border-slate-700 text-slate-200 text-center">🌐 Any Type</div>
+              </div>
+            </div>
+
+            <!-- Down Arrow -->
+            <div class="flex justify-center text-slate-500 text-xs font-mono">↓ callback: srch_type_*</div>
+
+            <!-- Step 3: District -->
+            <div onclick="launchSim('rent_loc')" class="cursor-pointer group p-4 rounded-2xl bg-slate-900/90 border border-amber-500/40 hover:border-amber-400 transition-all shadow-lg hover:scale-102">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">STEP 3 OF 4 · PRIME DISTRICT</span>
+                <span class="text-xs text-slate-400">Balanced Equal-Char Grid</span>
+              </div>
+              <h4 class="text-xs font-semibold text-white mb-2">Select Prime Residential District:</h4>
+              <div class="grid grid-cols-2 gap-1.5 font-mono text-[11px]">
+                <div class="p-1.5 rounded bg-slate-800 border border-slate-700 text-slate-200 text-center">📍 BKK1</div>
+                <div class="p-1.5 rounded bg-slate-800 border border-slate-700 text-slate-200 text-center">📍 Tonle Bassac</div>
+                <div class="p-1.5 rounded bg-slate-800 border border-slate-700 text-slate-200 text-center">📍 Toul Kork</div>
+                <div class="p-1.5 rounded bg-slate-800 border border-slate-700 text-slate-200 text-center">📍 Chamkarmon</div>
+              </div>
+              <div class="mt-1.5 p-1.5 rounded bg-slate-800 border border-slate-700 text-slate-200 text-center font-mono text-[11px]">🌐 Any Prime District</div>
+            </div>
+
+            <!-- Down Arrow -->
+            <div class="flex justify-center text-slate-500 text-xs font-mono">↓ callback: srch_loc_*</div>
+
+            <!-- Step 4: Monthly Budget -->
+            <div onclick="launchSim('rent_budget')" class="cursor-pointer group p-4 rounded-2xl bg-slate-900/90 border border-amber-500/40 hover:border-amber-400 transition-all shadow-lg hover:scale-102">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">STEP 4 OF 4 · MONTHLY RENTAL BUDGET</span>
+                <span class="text-xs text-emerald-400">Full-Width Readable</span>
+              </div>
+              <h4 class="text-xs font-semibold text-white mb-2">Select Monthly Rental Budget:</h4>
+              <div class="space-y-1.5 font-mono text-[11px]">
+                <div class="p-1.5 rounded bg-emerald-950/30 border border-emerald-500/30 text-emerald-200">💵 Under $600 / month</div>
+                <div class="p-1.5 rounded bg-emerald-950/30 border border-emerald-500/30 text-emerald-200">💵 $600 – $1,200 / month</div>
+                <div class="p-1.5 rounded bg-emerald-950/30 border border-emerald-500/30 text-emerald-200">💵 $1,200 – $2,500 / month</div>
+                <div class="p-1.5 rounded bg-emerald-950/30 border border-emerald-500/30 text-emerald-200">💵 $2,500+ / month (Luxury)</div>
+              </div>
+            </div>
+
+            <!-- Final Result Box -->
+            <div class="flex justify-center text-emerald-500 text-xs font-mono">↓ query matches & apply anchoring</div>
+
+            <div onclick="launchSim('results_rent')" class="cursor-pointer group p-5 rounded-2xl bg-gradient-to-br from-emerald-950/50 to-slate-900 border-2 border-emerald-500/50 hover:border-emerald-400 transition-all shadow-xl gold-glow hover:scale-102">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono">FINAL STEP: 3-PROPERTY ANCHORING CARD</span>
+                <span class="text-xs text-amber-400">Rent Anchoring</span>
+              </div>
+              <div class="space-y-2 text-xs text-slate-300">
+                <div class="p-2.5 rounded-lg bg-slate-800/90 border-l-4 border-amber-400">
+                  <div class="font-bold text-amber-300">⭐️ TOP RECOMMENDATION · Sweet Spot</div>
+                  <div>One Park or BKK1 with high walkability & best layout.</div>
+                </div>
+                <div class="p-2.5 rounded-lg bg-slate-800/90 border-l-4 border-blue-400">
+                  <div class="font-bold text-blue-300">⚓ PREMIER BENCHMARK · Luxury Anchor</div>
+                  <div>Full luxury serviced facility with cleaning & pool.</div>
+                </div>
+                <div class="p-2.5 rounded-lg bg-slate-800/90 border-l-4 border-emerald-400">
+                  <div class="font-bold text-emerald-300">💡 SMART VALUE · Agile Alternative</div>
+                  <div>Cozy modern 1BR under $600/mo.</div>
+                </div>
+              </div>
+              <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400 font-mono">
+                <span>Verified Channel Posts ↗</span>
+                <span class="text-emerald-400">Real Project Names</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ════ SEPARATE BRANCH C: DEVELOPER OFF-PLAN PILOT (/ts7) ════ -->
+        <div class="mt-12 pt-8 border-t border-slate-800/80 max-w-[1400px] mx-auto">
+          <div class="flex items-center gap-2 pb-4">
+            <span class="w-3 h-3 rounded-full bg-purple-400"></span>
+            <h2 class="text-sm font-bold text-purple-300 tracking-wider uppercase">Branch C · Agent Off-Plan Copilot (/ts7 Developer Engine)</h2>
+            <span class="text-xs font-mono px-2 py-0.5 rounded bg-purple-500/20 text-purple-300">Pilot: Time Square 7 (TK)</span>
+          </div>
+
+          <div class="grid grid-cols-3 gap-6">
+            <div onclick="launchSim('ts7_command')" class="cursor-pointer p-4 rounded-2xl bg-purple-950/20 border border-purple-500/40 hover:border-purple-400 transition-all">
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 font-bold">1. QUERY /ts7</span>
+              <h4 class="text-xs font-bold text-white mt-2 mb-1">Developer Duplex Proposal</h4>
+              <p class="text-xs text-slate-300">Calculates 12% discount + $3k rebate, 10% down, $813/mo, and verifies outer vs inner view.</p>
+            </div>
+
+            <div onclick="launchSim('ts7_sold')" class="cursor-pointer p-4 rounded-2xl bg-purple-950/20 border border-purple-500/40 hover:border-purple-400 transition-all">
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 font-bold">2. TAP [❌ MARK SOLD]</span>
+              <h4 class="text-xs font-bold text-white mt-2 mb-1">Proximity Alternative Engine</h4>
+              <p class="text-xs text-slate-300">Finds adjacent stack on floor 42 or distance 1 floor away. Zero jumping 4 floors down.</p>
+            </div>
+
+            <div onclick="launchSim('ts7_reset')" class="cursor-pointer p-4 rounded-2xl bg-purple-950/20 border border-purple-500/40 hover:border-purple-400 transition-all">
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 font-bold">3. TAP [🔄 RESET TS7]</span>
+              <h4 class="text-xs font-bold text-white mt-2 mb-1">Live Inventory State Reload</h4>
+              <p class="text-xs text-slate-300">Resets all 48 duplex units to verified developer price sheet state instantly.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- VIEW 2: LIVE INTERACTIVE MOBILE SIMULATOR -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div id="view-simulator" class="hidden">
+      <div class="max-w-4xl mx-auto flex flex-col md:flex-row gap-8 items-start">
+        
+        <!-- Controls & State Inspector (Left) -->
+        <div class="flex-1 space-y-4">
+          <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800">
+            <h3 class="text-sm font-bold text-[#e8c47a] mb-2 flex items-center gap-2">
+              📱 Interactive Telegram Simulator
+            </h3>
+            <p class="text-xs text-slate-300 mb-4">
+              Tap any button inside the phone frame on the right to test transitions, full-width button responsiveness, and anchored proposal cards!
+            </p>
+
+            <div class="space-y-2">
+              <label class="text-xs font-bold text-slate-400 uppercase">Jump Directly to Step:</label>
+              <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+                <button onclick="launchSim('start')" class="p-2 rounded bg-slate-800 hover:bg-slate-700 text-left">1. /start Objective</button>
+                <button onclick="launchSim('buy_status')" class="p-2 rounded bg-slate-800 hover:bg-slate-700 text-left">2. Buy Status</button>
+                <button onclick="launchSim('buy_type')" class="p-2 rounded bg-slate-800 hover:bg-slate-700 text-left">3. Property Type</button>
+                <button onclick="launchSim('buy_loc')" class="p-2 rounded bg-slate-800 hover:bg-slate-700 text-left">4. District Grid</button>
+                <button onclick="launchSim('buy_budget')" class="p-2 rounded bg-slate-800 hover:bg-slate-700 text-left">5. Full-Width Budget</button>
+                <button onclick="launchSim('results_buy')" class="p-2 rounded bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-left">6. Anchored Results</button>
+                <button onclick="launchSim('ts7_command')" class="p-2 rounded bg-purple-950/60 border border-purple-500/40 text-purple-300 col-span-2 text-left">7. /ts7 Developer Copilot</button>
+              </div>
+            </div>
+
+            <!-- Current Session State Tracker -->
+            <div class="mt-6 pt-4 border-t border-slate-800 font-mono text-[11px] text-slate-400">
+              <span class="text-amber-400 font-bold block mb-1">State Machine Context:</span>
+              <pre id="sim-state-display" class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-emerald-400 overflow-x-auto">{
+  "type": "Sale",
+  "status": "offplan",
+  "location": "tk",
+  "budget": "sale_1"
+}</pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phone Frame (Right) -->
+        <div class="w-[390px] mx-auto bg-[#000000] p-4 rounded-[48px] border-4 border-slate-800 shadow-2xl gold-glow relative">
+          <!-- Dynamic Island / Speaker Notch -->
+          <div class="w-32 h-5 bg-slate-950 rounded-full mx-auto mb-4 border border-slate-800 flex items-center justify-center">
+            <div class="w-2.5 h-2.5 rounded-full bg-slate-800 ml-12"></div>
+          </div>
+
+          <!-- Telegram Chat Header -->
+          <div class="flex items-center gap-3 pb-3 border-b border-slate-800 px-2 text-white">
+            <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center font-bold text-xs">
+              NR
+            </div>
+            <div>
+              <div class="text-xs font-bold flex items-center gap-1">NICK_REAKH <span class="text-[10px] text-emerald-400">bot</span></div>
+              <div class="text-[10px] text-slate-400">Property Hub Cambodia</div>
+            </div>
+          </div>
+
+          <!-- Telegram Message Body -->
+          <div id="sim-screen" class="py-4 space-y-3 min-h-[520px] max-h-[580px] overflow-y-auto custom-scroll text-xs">
+            <!-- Screen content dynamically injected via JS -->
+          </div>
+
+          <!-- Phone Bottom Bar -->
+          <div class="w-32 h-1 bg-slate-700 rounded-full mx-auto mt-4"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- VIEW 3: BACKEND ARCHITECTURE & DATA PIPELINES -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div id="view-architecture" class="hidden space-y-6 max-w-5xl mx-auto">
+      <div class="p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-4">
+        <h3 class="text-base font-bold text-[#e8c47a] flex items-center gap-2">
+          ⚙️ PHC Bot System Architecture & Multi-Channel Synchronization
+        </h3>
+        <p class="text-xs text-slate-300 leading-relaxed">
+          The bot operates on a 3-layer architecture: multi-channel intake from verified Telegram channels, structured JSON project registries, and the mathematical payment plan & proximity engine.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+          <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+            <span class="text-[11px] font-mono text-blue-400 font-bold">LAYER 1 · INTAKE</span>
+            <h4 class="text-xs font-bold text-white">5 Telegram Channels</h4>
+            <ul class="text-[11px] text-slate-400 space-y-1 font-mono">
+              <li>• @malaynopsale (Sale)</li>
+              <li>• @malaynoprental (Rent)</li>
+              <li>• @penghuothproperty</li>
+              <li>• @RealEstateInformation</li>
+              <li>• @NickREAKH (VIP)</li>
+            </ul>
+            <div class="text-[10px] text-emerald-400 pt-1">Syncs every 30 mins</div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+            <span class="text-[11px] font-mono text-amber-400 font-bold">LAYER 2 · REGISTRY</span>
+            <h4 class="text-xs font-bold text-white">Verified Data Layer</h4>
+            <ul class="text-[11px] text-slate-400 space-y-1 font-mono">
+              <li>• multi-channel-inventory.json (154 listings)</li>
+              <li>• time-square-7.json (48 duplex units)</li>
+              <li>• Provenance image archiving in Property Listing/</li>
+            </ul>
+            <div class="text-[10px] text-amber-400 pt-1">Dated source document proof</div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+            <span class="text-[11px] font-mono text-emerald-400 font-bold">LAYER 3 · INTELLIGENCE</span>
+            <h4 class="text-xs font-bold text-white">Engines & Guardrails</h4>
+            <ul class="text-[11px] text-slate-400 space-y-1 font-mono">
+              <li>• project-advisor-engine.cjs</li>
+              <li>• property-search-flow.cjs</li>
+              <li>• 12 stress tests passing (100%)</li>
+              <li>• PHC 3-Property Anchoring</li>
+            </ul>
+            <div class="text-[10px] text-purple-400 pt-1">Zero synthetic numbers</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- JAVASCRIPT ENGINE FOR SIMULATOR & TABS -->
+  <script>
+    let treeConfig = null;
+    let currentSelectedStepId = 'step1_objective';
+
+    async function loadTreeConfig() {
+      try {
+        const res = await fetch('/api/tree-config');
+        if (res.ok) {
+          treeConfig = await res.json();
+          renderStepSelectorList();
+          selectStepToEdit(currentSelectedStepId);
+        }
+      } catch (e) {
+        console.warn('Could not load /api/tree-config:', e);
+      }
+    }
+
+    function renderStepSelectorList() {
+      if (!treeConfig || !treeConfig.steps) return;
+      const list = document.getElementById('step-selector-list');
+      list.innerHTML = '';
+
+      const stepMeta = [
+        { id: 'step1_objective', name: 'Step 1 · Objective', desc: 'Buy vs Rent', icon: '🏢' },
+        { id: 'step2_buy_status', name: 'Step 2 · Buy Status', desc: 'Off-Plan vs Resale', icon: '🏗️' },
+        { id: 'step2_rent_type', name: 'Step 2 · Rent Type', desc: 'Condo / Apt / Villa', icon: '🛋️' },
+        { id: 'step3_buy_type', name: 'Step 3 · Buy Type', desc: 'Property Category', icon: '🏢' },
+        { id: 'location_districts', name: 'Step 4 · Districts', desc: 'BKK1, TK, etc.', icon: '📍' },
+        { id: 'budget_buy', name: 'Step 5 · Buy Budget', desc: 'Under $100k - $500k+', icon: '💰' },
+        { id: 'budget_rent', name: 'Step 4 · Rent Budget', desc: 'Under $600 - $2,500+', icon: '💵' },
+        { id: 'anchoring_framework', name: 'Anchoring Framework', desc: 'Sweet Spot / Luxury / Agile', icon: '⚓' }
+      ];
+
+      stepMeta.forEach(m => {
+        const isActive = m.id === currentSelectedStepId;
+        const btn = document.createElement('button');
+        btn.onclick = () => selectStepToEdit(m.id);
+        btn.className = `w-full p-2.5 rounded-xl text-left border transition-all flex items-center justify-between ${
+          isActive 
+            ? 'bg-amber-400/10 border-amber-400/40 text-amber-200' 
+            : 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-800'
+        }`;
+        btn.innerHTML = `
+          <div>
+            <div class="font-bold flex items-center gap-1.5">${m.icon} ${m.name}</div>
+            <div class="text-[10px] text-slate-400">${m.desc}</div>
+          </div>
+          <span class="text-xs text-slate-500">❯</span>
+        `;
+        list.appendChild(btn);
+      });
+    }
+
+    function selectStepToEdit(stepId) {
+      currentSelectedStepId = stepId;
+      renderStepSelectorList();
+      renderStepEditorForm(stepId);
+      renderEditorSimScreen(stepId);
+    }
+
+    function renderStepEditorForm(stepId) {
+      const box = document.getElementById('editor-fields-box');
+      if (!treeConfig || !treeConfig.steps || !treeConfig.steps[stepId]) {
+        box.innerHTML = `<div class="text-slate-400 italic">No configuration found for this step.</div>`;
+        return;
+      }
+
+      const s = treeConfig.steps[stepId];
+      document.getElementById('editor-step-id-badge').innerText = stepId.toUpperCase();
+      document.getElementById('editor-step-title').innerText = s.stepLabel || stepId;
+
+      if (stepId === 'anchoring_framework') {
+        // Special editor for anchoring framework
+        box.innerHTML = `
+          <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-3">
+            <div class="font-bold text-amber-300">⭐️ Sweet Spot (Top Recommendation)</div>
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase">Badge Label:</label>
+              <input type="text" id="af_sweet_badge" value="${escapeHtml(s.sweetSpot.badge)}" oninput="updateAnchoringForm()" class="w-full mt-1 p-2 rounded bg-slate-900 border border-slate-700 text-slate-100 font-mono text-xs">
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase">Broker Advisory Rationale:</label>
+              <input type="text" id="af_sweet_rat" value="${escapeHtml(s.sweetSpot.rationale)}" oninput="updateAnchoringForm()" class="w-full mt-1 p-2 rounded bg-slate-900 border border-slate-700 text-slate-100 text-xs">
+            </div>
+          </div>
+
+          <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-3">
+            <div class="font-bold text-blue-300">⚓ Luxury Anchor (Premier Benchmark)</div>
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase">Badge Label:</label>
+              <input type="text" id="af_lux_badge" value="${escapeHtml(s.luxuryAnchor.badge)}" oninput="updateAnchoringForm()" class="w-full mt-1 p-2 rounded bg-slate-900 border border-slate-700 text-slate-100 font-mono text-xs">
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase">Broker Advisory Rationale:</label>
+              <input type="text" id="af_lux_rat" value="${escapeHtml(s.luxuryAnchor.rationale)}" oninput="updateAnchoringForm()" class="w-full mt-1 p-2 rounded bg-slate-900 border border-slate-700 text-slate-100 text-xs">
+            </div>
+          </div>
+
+          <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-3">
+            <div class="font-bold text-emerald-300">💡 Agile Alternative (Smart Value)</div>
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase">Badge Label:</label>
+              <input type="text" id="af_val_badge" value="${escapeHtml(s.smartValue.badge)}" oninput="updateAnchoringForm()" class="w-full mt-1 p-2 rounded bg-slate-900 border border-slate-700 text-slate-100 font-mono text-xs">
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase">Broker Advisory Rationale:</label>
+              <input type="text" id="af_val_rat" value="${escapeHtml(s.smartValue.rationale)}" oninput="updateAnchoringForm()" class="w-full mt-1 p-2 rounded bg-slate-900 border border-slate-700 text-slate-100 text-xs">
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      // Standard Step Form
+      let buttonsHtml = '';
+      if (Array.isArray(s.buttons)) {
+        s.buttons.forEach((b, idx) => {
+          buttonsHtml += `
+            <div class="flex items-center gap-2 p-2 rounded-lg bg-slate-950 border border-slate-800">
+              <span class="text-[10px] font-mono text-slate-500 w-4">${idx + 1}</span>
+              <input type="text" value="${escapeHtml(b.label)}" oninput="updateButtonLabel(${idx}, this.value)" class="flex-1 p-1.5 rounded bg-slate-900 border border-slate-700 text-slate-100 text-xs">
+              <button onclick="removeButton(${idx})" class="p-1 rounded text-red-400 hover:bg-red-950/50" title="Delete button">✕</button>
+            </div>
+          `;
+        });
+      }
+
+      box.innerHTML = `
+        <div>
+          <label class="text-[10px] text-slate-400 uppercase font-bold">Header Title:</label>
+          <input type="text" id="input_header" value="${escapeHtml(s.header || 'SEARCH CONCIERGE')}" oninput="onHeaderChange(this.value)" class="w-full mt-1 p-2 rounded-lg bg-slate-950 border border-slate-700 text-slate-100 font-mono text-xs">
+        </div>
+
+        <div>
+          <label class="text-[10px] text-slate-400 uppercase font-bold">Step Subtitle / Counter:</label>
+          <input type="text" id="input_steplabel" value="${escapeHtml(s.stepLabel || '')}" oninput="onStepLabelChange(this.value)" class="w-full mt-1 p-2 rounded-lg bg-slate-950 border border-slate-700 text-slate-100 font-mono text-xs">
+        </div>
+
+        <div>
+          <label class="text-[10px] text-slate-400 uppercase font-bold">Question / Prompt:</label>
+          <textarea id="input_prompt" rows="2" oninput="onPromptChange(this.value)" class="w-full mt-1 p-2 rounded-lg bg-slate-950 border border-slate-700 text-slate-100 text-xs">${escapeHtml(s.prompt || '')}</textarea>
+        </div>
+
+        <div class="pt-2 border-t border-slate-800">
+          <label class="text-[10px] text-slate-400 uppercase font-bold block mb-1.5">Button Grid Layout:</label>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="setButtonLayout('1_per_row')" class="p-2 rounded-lg text-xs font-semibold border ${
+              s.layout === '1_per_row' ? 'bg-amber-400/20 border-amber-400 text-amber-200' : 'bg-slate-950 border-slate-800 text-slate-400'
+            }">1 Per Row (Full-Width Pill)</button>
+            <button onclick="setButtonLayout('2_per_row')" class="p-2 rounded-lg text-xs font-semibold border ${
+              s.layout === '2_per_row' ? 'bg-amber-400/20 border-amber-400 text-amber-200' : 'bg-slate-950 border-slate-800 text-slate-400'
+            }">2 Per Row (Compact Grid)</button>
+          </div>
+        </div>
+
+        <div class="pt-2 border-t border-slate-800">
+          <div class="flex items-center justify-between mb-2">
+            <label class="text-[10px] text-slate-400 uppercase font-bold">Buttons (${(s.buttons || []).length}):</label>
+            <button onclick="addNewButton()" class="text-[10px] font-bold text-amber-300 hover:underline">+ Add Button</button>
+          </div>
+          <div class="space-y-1.5">
+            ${buttonsHtml}
+          </div>
+        </div>
+      `;
+    }
+
+    function onHeaderChange(val) {
+      if (!treeConfig.steps[currentSelectedStepId]) return;
+      treeConfig.steps[currentSelectedStepId].header = val;
+      renderEditorSimScreen(currentSelectedStepId);
+    }
+
+    function onStepLabelChange(val) {
+      if (!treeConfig.steps[currentSelectedStepId]) return;
+      treeConfig.steps[currentSelectedStepId].stepLabel = val;
+      renderEditorSimScreen(currentSelectedStepId);
+    }
+
+    function onPromptChange(val) {
+      if (!treeConfig.steps[currentSelectedStepId]) return;
+      treeConfig.steps[currentSelectedStepId].prompt = val;
+      renderEditorSimScreen(currentSelectedStepId);
+    }
+
+    function setButtonLayout(layout) {
+      if (!treeConfig.steps[currentSelectedStepId]) return;
+      treeConfig.steps[currentSelectedStepId].layout = layout;
+      renderStepEditorForm(currentSelectedStepId);
+      renderEditorSimScreen(currentSelectedStepId);
+    }
+
+    function updateButtonLabel(idx, val) {
+      if (!treeConfig.steps[currentSelectedStepId]) return;
+      treeConfig.steps[currentSelectedStepId].buttons[idx].label = val;
+      renderEditorSimScreen(currentSelectedStepId);
+    }
+
+    function removeButton(idx) {
+      if (!treeConfig.steps[currentSelectedStepId]) return;
+      treeConfig.steps[currentSelectedStepId].buttons.splice(idx, 1);
+      renderStepEditorForm(currentSelectedStepId);
+      renderEditorSimScreen(currentSelectedStepId);
+    }
+
+    function addNewButton() {
+      if (!treeConfig.steps[currentSelectedStepId]) return;
+      if (!Array.isArray(treeConfig.steps[currentSelectedStepId].buttons)) {
+        treeConfig.steps[currentSelectedStepId].buttons = [];
+      }
+      treeConfig.steps[currentSelectedStepId].buttons.push({
+        label: '✨ New Option',
+        callback: 'srch_custom_' + Date.now()
+      });
+      renderStepEditorForm(currentSelectedStepId);
+      renderEditorSimScreen(currentSelectedStepId);
+    }
+
+    function updateAnchoringForm() {
+      const s = treeConfig.steps.anchoring_framework;
+      s.sweetSpot.badge = document.getElementById('af_sweet_badge').value;
+      s.sweetSpot.rationale = document.getElementById('af_sweet_rat').value;
+      s.luxuryAnchor.badge = document.getElementById('af_lux_badge').value;
+      s.luxuryAnchor.rationale = document.getElementById('af_lux_rat').value;
+      s.smartValue.badge = document.getElementById('af_val_badge').value;
+      s.smartValue.rationale = document.getElementById('af_val_rat').value;
+      renderEditorSimScreen('anchoring_framework');
+    }
+
+    function renderEditorSimScreen(stepId) {
+      const box = document.getElementById('editor-sim-screen');
+      if (!treeConfig || !treeConfig.steps || !treeConfig.steps[stepId]) return;
+      const s = treeConfig.steps[stepId];
+
+      if (stepId === 'anchoring_framework') {
+        box.innerHTML = `
+          <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+            <div class="font-bold text-white tracking-wider">SEARCH CONCIERGE</div>
+            <div class="text-slate-600 text-[10px]">──────────</div>
+            <div class="text-amber-300 font-bold">Verified Portfolio Matches (3)</div>
+          </div>
+          <div class="p-2.5 rounded-lg bg-slate-900/90 border-l-4 border-amber-400 space-y-1">
+            <div class="font-bold text-amber-300 text-[11px]">${escapeHtml(s.sweetSpot.badge)}</div>
+            <div class="font-bold text-white">🏢 Time Square 7 (Duplex Loft)</div>
+            <div class="text-amber-400 font-bold">▫️ Price: $81,315 USD</div>
+            <div class="text-slate-400 text-[10px]">▫️ Specs: 38th Fl · 65m² · 1BR Duplex</div>
+            <div class="text-[10px] text-amber-200/90 italic">💡 Why: ${escapeHtml(s.sweetSpot.rationale)}</div>
+          </div>
+          <div class="p-2.5 rounded-lg bg-slate-900/90 border-l-4 border-blue-400 space-y-1">
+            <div class="font-bold text-blue-300 text-[11px]">${escapeHtml(s.luxuryAnchor.badge)}</div>
+            <div class="font-bold text-white">🏢 Odom Living (Executive 2BR)</div>
+            <div class="text-blue-300 font-bold">▫️ Price: $260,000 USD</div>
+            <div class="text-slate-400 text-[10px]">▫️ Specs: 18th Fl · 82m² · 2BR</div>
+            <div class="text-[10px] text-blue-200/90 italic">💡 Why: ${escapeHtml(s.luxuryAnchor.rationale)}</div>
+          </div>
+          <div class="p-2.5 rounded-lg bg-slate-900/90 border-l-4 border-emerald-400 space-y-1">
+            <div class="font-bold text-emerald-300 text-[11px]">${escapeHtml(s.smartValue.badge)}</div>
+            <div class="font-bold text-white">🏢 Residence L (Smart Entry)</div>
+            <div class="text-emerald-300 font-bold">▫️ Price: $65,000 USD</div>
+            <div class="text-slate-400 text-[10px]">▫️ Specs: 15th Fl · 50m² · 1BR</div>
+            <div class="text-[10px] text-emerald-200/90 italic">💡 Why: ${escapeHtml(s.smartValue.rationale)}</div>
+          </div>
+        `;
+        return;
+      }
+
+      let buttonsHtml = '';
+      const isGrid = s.layout === '2_per_row';
+      const btns = s.buttons || [];
+
+      if (isGrid) {
+        buttonsHtml = `<div class="grid grid-cols-2 gap-1.5 pt-1">`;
+        btns.forEach(b => {
+          buttonsHtml += `<div class="py-2 px-1.5 rounded-xl bg-slate-800 text-slate-100 font-semibold text-center border border-slate-700 text-[11px] truncate">${escapeHtml(b.label)}</div>`;
+        });
+        buttonsHtml += `</div>`;
+      } else {
+        buttonsHtml = `<div class="space-y-1.5 pt-1">`;
+        btns.forEach(b => {
+          buttonsHtml += `<div class="w-full py-2 px-2.5 rounded-xl bg-slate-800 text-slate-100 font-semibold text-center border border-slate-700 text-xs">${escapeHtml(b.label)}</div>`;
+        });
+        buttonsHtml += `</div>`;
+      }
+
+      if (Array.isArray(s.fullWidthButtons)) {
+        s.fullWidthButtons.forEach(b => {
+          buttonsHtml += `<div class="w-full mt-1.5 py-2 px-2.5 rounded-xl bg-slate-800 text-slate-200 text-center border border-slate-700 text-xs">${escapeHtml(b.label)}</div>`;
+        });
+      }
+
+      if (s.backButton) {
+        buttonsHtml += `<div class="w-full mt-1.5 py-1.5 px-2 rounded-xl bg-slate-900 text-slate-400 text-center border border-slate-800 text-[10px]">${escapeHtml(s.backButton.label)}</div>`;
+      }
+
+      box.innerHTML = `
+        <div class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 space-y-1.5">
+          <div class="font-bold text-white tracking-wider">${escapeHtml(s.header || 'SEARCH CONCIERGE')}</div>
+          <div class="text-slate-600 text-[10px]">──────────</div>
+          <div class="font-semibold text-amber-300 text-xs">${escapeHtml(s.stepLabel || '')}</div>
+          <p class="text-slate-300 text-xs pt-1 leading-relaxed">${escapeHtml(s.prompt || '')}</p>
+        </div>
+        ${buttonsHtml}
+      `;
+    }
+
+    async function saveConfigToServer() {
+      try {
+        const res = await fetch('/api/tree-config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(treeConfig)
+        });
+        if (res.ok) {
+          const status = document.getElementById('save-status');
+          status.classList.remove('hidden');
+          setTimeout(() => status.classList.add('hidden'), 3500);
+          alert('✅ Chat Tree Saved! Updated live on Telegram bot @Nick_REAKH_Bot.');
+        } else {
+          alert('Error saving configuration.');
+        }
+      } catch (e) {
+        alert('Network error while saving: ' + e.message);
+      }
+    }
+
+    function revertConfig() {
+      if (confirm('Reload configuration from server?')) {
+        loadTreeConfig();
+      }
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    function switchTab(tab) {
+      document.getElementById('view-editor').classList.add('hidden');
+      document.getElementById('view-tree').classList.add('hidden');
+      document.getElementById('view-simulator').classList.add('hidden');
+      document.getElementById('view-architecture').classList.add('hidden');
+
+      document.getElementById('tab-editor').className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white transition-all";
+      document.getElementById('tab-tree').className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white transition-all";
+      document.getElementById('tab-simulator').className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white transition-all";
+      document.getElementById('tab-architecture').className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white transition-all";
+
+      document.getElementById('view-' + tab).classList.remove('hidden');
+      document.getElementById('tab-' + tab).className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#cc9d4d] text-slate-950 transition-all shadow-sm";
+
+      if (tab === 'simulator') {
+        launchSim('start');
+      } else if (tab === 'editor') {
+        if (!treeConfig) loadTreeConfig();
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadTreeConfig();
+    });
+      document.getElementById('view-tree').classList.add('hidden');
+      document.getElementById('view-simulator').classList.add('hidden');
+      document.getElementById('view-architecture').classList.add('hidden');
+
+      document.getElementById('tab-tree').className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white transition-all";
+      document.getElementById('tab-simulator').className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white transition-all";
+      document.getElementById('tab-architecture').className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white transition-all";
+
+      document.getElementById('view-' + tab).classList.remove('hidden');
+      document.getElementById('tab-' + tab).className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#cc9d4d] text-slate-950 transition-all shadow-sm";
+
+      if (tab === 'simulator') {
+        launchSim('start');
+      }
+    }
+
+    const state = {
+      type: 'Sale',
+      status: 'offplan',
+      propType: 'condo',
+      location: 'tk',
+      budget: 'sale_1'
+    };
+
+    function updateStateTracker() {
+      document.getElementById('sim-state-display').innerText = JSON.stringify(state, null, 2);
+    }
+
+    function launchSim(screen) {
+      switchTab('simulator');
+      const box = document.getElementById('sim-screen');
+
+      if (screen === 'start') {
+        box.innerHTML = `
+          <div class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
+            <div class="font-bold text-white tracking-wider">SEARCH CONCIERGE</div>
+            <div class="text-slate-600 text-[10px]">──────────</div>
+            <div class="font-semibold text-amber-300">Step 1 of 4 · Objective</div>
+            <p class="text-slate-300">Are you looking to acquire or rent a property in Phnom Penh?</p>
+          </div>
+          <div class="space-y-1.5 pt-2">
+            <button onclick="state.type='Sale'; launchSim('buy_status')" class="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-center border border-slate-700 text-xs">🏢 Buy Property</button>
+            <button onclick="state.type='Rent'; launchSim('rent_type')" class="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-center border border-slate-700 text-xs">🔑 Rent a Home</button>
+          </div>
+        `;
+      } else if (screen === 'buy_status') {
+        box.innerHTML = `
+          <div class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
+            <div class="font-bold text-white tracking-wider">SEARCH CONCIERGE</div>
+            <div class="text-slate-600 text-[10px]">──────────</div>
+            <div class="font-semibold text-amber-300">Step 2 of 4 · Property Status (Buy)</div>
+            <p class="text-slate-300">Select your preferred development status:</p>
+          </div>
+          <div class="space-y-1.5 pt-2">
+            <button onclick="state.status='offplan'; launchSim('buy_type')" class="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-center border border-slate-700 text-xs">🏗️ Off-Plan (New Developments)</button>
+            <button onclick="state.status='resale'; launchSim('buy_type')" class="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-center border border-slate-700 text-xs">🔑 Resale (Ready to Move-In)</button>
+            <button onclick="state.status='any'; launchSim('buy_type')" class="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-center border border-slate-700 text-xs">🌐 Any Status (Show All)</button>
+            <button onclick="launchSim('start')" class="w-full py-2 px-3 rounded-xl bg-slate-900 text-slate-400 text-center border border-slate-800 text-[11px]">⬅️ Back to Objective</button>
+          </div>
+        `;
+      } else if (screen === 'buy_type' || screen === 'rent_type') {
+        const isRent = state.type === 'Rent';
+        box.innerHTML = `
+          <div class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
+            <div class="font-bold text-white tracking-wider">SEARCH CONCIERGE</div>
+            <div class="text-slate-600 text-[10px]">──────────</div>
+            <div class="font-semibold text-amber-300">Step ${isRent ? '2 of 4' : '3 of 4'} · Property Type</div>
+            <p class="text-slate-300">Which property category best fits your lifestyle?</p>
+          </div>
+          <div class="grid grid-cols-2 gap-1.5 pt-2">
+            <button onclick="state.propType='condo'; launchSim(state.type === 'Rent' ? 'rent_loc' : 'buy_loc')" class="py-2.5 px-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-center border border-slate-700 text-xs">🏢 Modern Condo</button>
+            <button onclick="state.propType='apt'; launchSim(state.type === 'Rent' ? 'rent_loc' : 'buy_loc')" class="py-2.5 px-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-center border border-slate-700 text-xs">🛋️ Serviced Apt</button>
+            <button onclick="state.propType='villa'; launchSim(state.type === 'Rent' ? 'rent_loc' : 'buy_loc')" class="py-2.5 px-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-center border border-slate-700 text-xs">🏡 Villa / House</button>
+            <button onclick="state.propType='any'; launchSim(state.type === 'Rent' ? 'rent_loc' : 'buy_loc')" class="py-2.5 px-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-center border border-slate-700 text-xs">🌐 Any Type</button>
+          </div>
+          <button onclick="launchSim(state.type === 'Rent' ? 'start' : 'buy_status')" class="w-full mt-2 py-2 px-3 rounded-xl bg-slate-900 text-slate-400 text-center border border-slate-800 text-[11px]">⬅️ Back</button>
+        `;
+      } else if (screen === 'buy_loc' || screen === 'rent_loc') {
+        const isRent = state.type === 'Rent';
+        box.innerHTML = `
+          <div class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
+            <div class="font-bold text-white tracking-wider">SEARCH CONCIERGE</div>
+            <div class="text-slate-600 text-[10px]">──────────</div>
+            <div class="font-semibold text-amber-300">Step ${isRent ? '3 of 4' : '4 of 4'} · Prime District</div>
+            <p class="text-slate-300">Select your preferred location in Phnom Penh:</p>
+          </div>
+          <div class="grid grid-cols-2 gap-1.5 pt-2">
+            <button onclick="state.location='bkk1'; launchSim(state.type === 'Rent' ? 'rent_budget' : 'buy_budget')" class="py-2.5 px-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-center border border-slate-700 text-xs">📍 BKK1</button>
+            <button onclick="state.location='tb'; launchSim(state.type === 'Rent' ? 'rent_budget' : 'buy_budget')" class="py-2.5 px-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-center border border-slate-700 text-xs">📍 Tonle Bassac</button>
+            <button onclick="state.location='tk'; launchSim(state.type === 'Rent' ? 'rent_budget' : 'buy_budget')" class="py-2.5 px-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-center border border-slate-700 text-xs">📍 Toul Kork</button>
+            <button onclick="state.location='ttp'; launchSim(state.type === 'Rent' ? 'rent_budget' : 'buy_budget')" class="py-2.5 px-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-center border border-slate-700 text-xs">📍 Chamkarmon</button>
+            <button onclick="state.location='ph'; launchSim(state.type === 'Rent' ? 'rent_budget' : 'buy_budget')" class="py-2.5 px-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-center border border-slate-700 text-xs">📍 Chroy Changvar</button>
+            <button onclick="state.location='ph'; launchSim(state.type === 'Rent' ? 'rent_budget' : 'buy_budget')" class="py-2.5 px-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-center border border-slate-700 text-xs">📍 Peng Huoth</button>
+          </div>
+          <button onclick="state.location='any'; launchSim(state.type === 'Rent' ? 'rent_budget' : 'buy_budget')" class="w-full mt-1.5 py-2 px-3 rounded-xl bg-slate-800 text-slate-200 text-center border border-slate-700 text-xs">🌐 Any Prime District</button>
+          <button onclick="launchSim(state.type === 'Rent' ? 'rent_type' : 'buy_type')" class="w-full mt-1.5 py-2 px-3 rounded-xl bg-slate-900 text-slate-400 text-center border border-slate-800 text-[11px]">⬅️ Back</button>
+        `;
+      } else if (screen === 'buy_budget' || screen === 'rent_budget') {
+        const isRent = state.type === 'Rent';
+        if (isRent) {
+          box.innerHTML = `
+            <div class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
+              <div class="font-bold text-white tracking-wider">SEARCH CONCIERGE</div>
+              <div class="text-slate-600 text-[10px]">──────────</div>
+              <div class="font-semibold text-amber-300">Step 4 of 4 · Monthly Budget (Rent)</div>
+              <p class="text-slate-300">Select your target monthly budget:</p>
+            </div>
+            <div class="space-y-1.5 pt-2">
+              <button onclick="state.budget='rent_1'; launchSim('results_rent')" class="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-center border border-slate-700 text-xs">💵 Under $600 / month</button>
+              <button onclick="state.budget='rent_2'; launchSim('results_rent')" class="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-center border border-slate-700 text-xs">💵 $600 – $1,200 / month</button>
+              <button onclick="state.budget='rent_3'; launchSim('results_rent')" class="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-center border border-slate-700 text-xs">💵 $1,200 – $2,500 / month</button>
+              <button onclick="state.budget='rent_4'; launchSim('results_rent')" class="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-center border border-slate-700 text-xs">💵 $2,500+ / month (Luxury)</button>
+              <button onclick="state.budget='any'; launchSim('results_rent')" class="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-center border border-slate-700 text-xs">🌐 Any Budget</button>
+              <button onclick="launchSim('rent_loc')" class="w-full py-2 px-3 rounded-xl bg-slate-900 text-slate-400 text-center border border-slate-800 text-[11px]">⬅️ Back to District</button>
+            </div>
+          `;
+        } else {
+          box.innerHTML = `
+            <div class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
+              <div class="font-bold text-white tracking-wider">SEARCH CONCIERGE</div>
+              <div class="text-slate-600 text-[10px]">──────────</div>
+              <div class="font-semibold text-amber-300">Step 5 of 5 · Target Budget (Buy)</div>
+              <p class="text-slate-300">Select your acquisition budget bracket:</p>
+            </div>
+            <div class="space-y-1.5 pt-2">
+              <button onclick="state.budget='sale_1'; launchSim('results_buy')" class="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-center border border-slate-700 text-xs">💰 Under $100,000 USD</button>
+              <button onclick="state.budget='sale_2'; launchSim('results_buy')" class="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-center border border-slate-700 text-xs">💰 $100,000 – $200,000 USD</button>
+              <button onclick="state.budget='sale_3'; launchSim('results_buy')" class="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-center border border-slate-700 text-xs">💰 $200,000 – $500,000 USD</button>
+              <button onclick="state.budget='sale_4'; launchSim('results_buy')" class="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-center border border-slate-700 text-xs">💰 $500,000+ USD (Prime Luxury)</button>
+              <button onclick="state.budget='any'; launchSim('results_buy')" class="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-center border border-slate-700 text-xs">🌐 Any Budget</button>
+              <button onclick="launchSim('buy_loc')" class="w-full py-2 px-3 rounded-xl bg-slate-900 text-slate-400 text-center border border-slate-800 text-[11px]">⬅️ Back to District</button>
+            </div>
+          `;
+        }
+      } else if (screen === 'results_buy' || screen === 'results_rent') {
+        const isRent = screen === 'results_rent';
+        box.innerHTML = `
+          <div class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+            <div class="font-bold text-white tracking-wider">SEARCH CONCIERGE</div>
+            <div class="text-slate-600 text-[10px]">──────────</div>
+            <div class="font-bold text-white">Comparative Portfolio (${isRent ? '6 Matches' : '3 Matches'})</div>
+            <div class="text-[11px] text-slate-400 italic">${isRent ? 'Rent · Condo · All Districts' : 'Off-Plan · Sale · Condo · Toul Kork'}</div>
+
+            <!-- Quote 1: Top Pick -->
+            <div class="p-3 rounded-xl bg-amber-950/20 border-l-4 border-amber-400 text-slate-200 space-y-1">
+              <div class="text-[11px] font-bold text-amber-300">⭐️ TOP RECOMMENDATION · Sweet Spot</div>
+              <div class="font-bold text-white">🏢 ${isRent ? 'BKK1 Residence' : 'Time Square 7 (TK Avenue)'}</div>
+              <div class="text-amber-400 font-bold">▫️ Price: ${isRent ? '$700/mo' : '$81,315 USD'}</div>
+              <div class="text-slate-400">▫️ Specs: ${isRent ? '1BR · 1BA · City View' : 'Floor 38 · 65m² · 1BR Duplex'}</div>
+              <div class="text-slate-400">📍 <i>${isRent ? 'BKK1' : 'Toul Kork'}</i></div>
+              <div class="text-[11px] text-amber-200/90 italic">💡 Why this fits: Best value balance of layout and pricing.</div>
+              <a href="#" class="text-blue-400 hover:underline block pt-1 text-[11px]">🔗 View Photos & Verified Post ↗</a>
+            </div>
+
+            <!-- Quote 2: Anchor -->
+            <div class="p-3 rounded-xl bg-blue-950/20 border-l-4 border-blue-400 text-slate-200 space-y-1">
+              <div class="text-[11px] font-bold text-blue-300">⚓ PREMIER BENCHMARK · Luxury Anchor</div>
+              <div class="font-bold text-white">🏢 ${isRent ? 'One Park - Boeng Kak 1' : 'Time Square 7 (High Floor)'}</div>
+              <div class="text-blue-300 font-bold">▫️ Price: ${isRent ? '$800/mo' : '$88,245 USD'}</div>
+              <div class="text-slate-400">▫️ Specs: ${isRent ? '6th Fl · 77.84m² · 2BR' : 'Floor 45AF · 65m² · Duplex'}</div>
+              <div class="text-slate-400">📍 <i>Toul Kork</i></div>
+              <div class="text-[11px] text-blue-200/90 italic">💡 Why this fits: Higher floor & larger footprint setting benchmark.</div>
+              <a href="#" class="text-blue-400 hover:underline block pt-1 text-[11px]">🔗 View Photos & Verified Post ↗</a>
+            </div>
+
+            <!-- Quote 3: Value Pick -->
+            <div class="p-3 rounded-xl bg-emerald-950/20 border-l-4 border-emerald-400 text-slate-200 space-y-1">
+              <div class="text-[11px] font-bold text-emerald-300">💡 SMART VALUE · Agile Alternative</div>
+              <div class="font-bold text-white">🏢 ${isRent ? 'One Park (Compact 1BR)' : 'Residence L (Russian Market)'}</div>
+              <div class="text-emerald-300 font-bold">▫️ Price: ${isRent ? '$600/mo' : '$65,000 USD'}</div>
+              <div class="text-slate-400">▫️ Specs: ${isRent ? '6th Fl · 52.75m² · 1BR' : '15th Fl · 50m² · 1BR'}</div>
+              <div class="text-slate-400">📍 <i>${isRent ? 'Toul Kork' : 'Chamkarmon'}</i></div>
+              <div class="text-[11px] text-emerald-200/90 italic">💡 Why this fits: Lowest entry point while retaining prime access.</div>
+              <a href="#" class="text-blue-400 hover:underline block pt-1 text-[11px]">🔗 View Photos & Verified Post ↗</a>
+            </div>
+          </div>
+
+          <!-- Bottom Action Buttons -->
+          <div class="space-y-1.5 pt-2">
+            <button class="w-full py-2.5 px-3 rounded-xl bg-slate-800 text-slate-200 text-center border border-slate-700 text-xs font-semibold">📂 Next 3 Listings ❯</button>
+            <button class="w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-center text-xs">💬 Inquire with Nick Directly</button>
+            <div class="grid grid-cols-2 gap-1.5">
+              <button onclick="launchSim('start')" class="py-2 px-2 rounded-xl bg-slate-800 text-slate-300 text-center border border-slate-700 text-[11px]">🔄 Refine Filters</button>
+              <button class="py-2 px-2 rounded-xl bg-slate-800 text-slate-300 text-center border border-slate-700 text-[11px]">🌐 Website Catalog ↗</button>
+            </div>
+          </div>
+        `;
+      } else if (screen.startsWith('ts7_')) {
+        box.innerHTML = `
+          <div class="p-3.5 rounded-2xl bg-purple-950/40 border border-purple-500/40 space-y-2 text-xs">
+            <div class="font-bold text-white tracking-wider">🏢 TIME SQUARE 7 · 38TH FLOOR DUPLEX PROPOSAL</div>
+            <div class="text-slate-600 text-[10px]">━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+            <div class="text-slate-300">▫️ <b>Unit Number:</b> 38C1 (38th Floor)</div>
+            <div class="text-slate-300">▫️ <b>Layout:</b> 1-Bed Duplex Loft · Double-Height Void</div>
+            <div class="text-slate-300">▫️ <b>Size:</b> 65 sqm Gross Area</div>
+            <div class="text-slate-300">▫️ <b>Orientation:</b> Outer City View (Recommended)</div>
+            <div class="text-slate-300">▫️ <b>Developer List Price:</b> $95,813 USD</div>
+            <div class="text-amber-400 font-bold text-sm">🔥 Promotional Net Price: $81,315 USD</div>
+            <div class="text-slate-400">▫️ <b>Price / sqm:</b> $1,251 / sqm Gross</div>
+            
+            <div class="pt-2 border-t border-purple-900/60 font-mono text-[11px] text-slate-300 space-y-1">
+              <div class="text-white font-bold">💳 36-MONTH DEVELOPER SCHEDULE:</div>
+              <div>1. Booking Deposit: $1,000 USD</div>
+              <div>2. Down Payment (10%): $7,132 USD</div>
+              <div>3. Monthly Installment: $813 / mo (x36)</div>
+              <div>4. Handover Balance (54.0%): $43,915 USD (Q3 2028)</div>
+            </div>
+
+            <div class="p-2 rounded bg-purple-900/30 text-purple-200 text-[11px] italic mt-2">
+              ▫️ <b>Advisor Insight:</b> Unit 38C1 is positioned on the outer perimeter, offering unobstructed city skyline views and maximum natural daylight.
+            </div>
+          </div>
+
+          <div class="space-y-1.5 pt-2">
+            <button onclick="alert('Unit 38C1 marked SOLD! Engine immediately recommends adjacent unit 38D1 on the exact same floor.');" class="w-full py-2.5 px-3 rounded-xl bg-red-950/60 border border-red-500/50 hover:bg-red-900 text-red-200 font-bold text-center text-xs">❌ Mark 38C1 as Sold</button>
+            <button onclick="alert('All 48 units reloaded from developer price sheet.');" class="w-full py-2 px-3 rounded-xl bg-slate-800 text-slate-300 text-center border border-slate-700 text-xs">🔄 Reset All TS7 Units to Available</button>
+          </div>
+        `;
+      }
+
+      updateStateTracker();
+    }
+  </script>
+</body>
+</html>

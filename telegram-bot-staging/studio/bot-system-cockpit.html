@@ -1,0 +1,2805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Realestate.com.kh Telegram Bot Engine · Complete System Cockpit & Testbed</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --panel: #0f172a;
+      --panel-border: rgba(255, 255, 255, 0.08);
+      --panel-hover: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --gold: #f59e0b;
+      --gold-glow: rgba(245, 158, 11, 0.25);
+      --green: #10b981;
+      --red: #ef4444;
+      --blue: #3b82f6;
+      --purple: #a855f7;
+      --tg-bubble: #182533;
+      --tg-quote: rgba(245, 158, 11, 0.08);
+      --tg-quote-border: #f59e0b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.5;
+      padding: 24px;
+      min-height: 100vh;
+    }
+
+    /* Top Sticky Header */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--panel-border);
+      border-radius: 16px;
+      padding: 16px 24px;
+      margin-bottom: 24px;
+      position: sticky;
+      top: 12px;
+      z-index: 100;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 20px;
+      color: #000;
+      box-shadow: 0 4px 15px var(--gold-glow);
+    }
+
+    .brand-text h1 {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-text p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .metrics-pills {
+      display: flex;
+      gap: 12px;
+    }
+
+    .metric-pill {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--panel-border);
+      border-radius: 10px;
+      padding: 6px 14px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .metric-pill strong { color: var(--gold); }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); display: inline-block; }
+
+    /* Navigation Tabs */
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      background: rgba(15, 23, 42, 0.6);
+      padding: 6px;
+      border-radius: 12px;
+      border: 1px solid var(--panel-border);
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover { color: var(--text); background: rgba(255, 255, 255, 0.05); }
+    .tab-btn.active {
+      background: var(--gold);
+      color: #000;
+      box-shadow: 0 4px 15px var(--gold-glow);
+    }
+
+    /* Grid Layout */
+    .section-container {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .section-container.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .grid-2col {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
+      gap: 24px;
+    }
+
+    /* Cards */
+    .cockpit-card {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: border-color 0.2s;
+    }
+
+    .cockpit-card:hover { border-color: rgba(245, 158, 11, 0.4); }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--panel-border);
+      padding-bottom: 14px;
+    }
+
+    .card-title h3 {
+      font-size: 16px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title p {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .badge {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-gold { background: rgba(245, 158, 11, 0.15); color: var(--gold); border: 1px solid var(--gold); }
+    .badge-green { background: rgba(16, 185, 129, 0.15); color: var(--green); border: 1px solid var(--green); }
+    .badge-blue { background: rgba(59, 130, 246, 0.15); color: var(--blue); border: 1px solid var(--blue); }
+    .badge-purple { background: rgba(168, 85, 247, 0.15); color: var(--purple); border: 1px solid var(--purple); }
+
+    /* Interactive Telegram Mockup Area */
+    .tg-simulator {
+      background: #0e1621;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .tg-bubble {
+      background: var(--tg-bubble);
+      border-radius: 12px 12px 12px 0;
+      padding: 14px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #e5edf5;
+      position: relative;
+    }
+
+    .tg-blockquote {
+      background: rgba(245, 158, 11, 0.08);
+      border-left: 3px solid var(--gold);
+      border-radius: 4px;
+      padding: 8px 12px;
+      margin: 10px 0;
+      font-size: 12.5px;
+      color: #cbd5e1;
+    }
+
+    .tg-blockquote strong { color: #fff; }
+
+    /* Native Telegram Inline Buttons */
+    .tg-keyboard {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .tg-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    .tg-btn {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .tg-btn:hover { background: rgba(255, 255, 255, 0.2); }
+    .tg-btn:active { transform: scale(0.98); }
+    .tg-btn.active-state { background: rgba(16, 185, 129, 0.3); border: 1px solid var(--green); }
+
+    /* Interactive Flow Breadcrumb */
+    .flow-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .flow-badge:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+    .flow-badge.active {
+      background: rgba(56, 189, 248, 0.18);
+      border-color: #38bdf8;
+      color: #38bdf8;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+    }
+
+    /* Action Trigger Bar */
+    .action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--panel-border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-top: auto;
+    }
+
+    .cmd-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 4px 8px;
+      border-radius: 6px;
+      color: var(--gold);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .tg-link-btn {
+      background: var(--blue);
+      color: #fff;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: opacity 0.2s;
+    }
+
+    .tg-link-btn:hover { opacity: 0.9; }
+
+    .test-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .test-checkbox input { accent-color: var(--green); width: 15px; height: 15px; cursor: pointer; }
+
+    /* State Inspector Drawer */
+    .state-drawer {
+      margin-top: 32px;
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .state-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    pre.state-code {
+      background: #090d16;
+      border: 1px solid var(--panel-border);
+      border-radius: 10px;
+      padding: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #38bdf8;
+      max-height: 250px;
+      overflow-y: auto;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1e293b;
+      border: 1px solid var(--gold);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .toast.show { transform: translateY(0); opacity: 1; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Sticky Header -->
+  <div class="top-bar">
+    <div class="brand">
+      <div class="brand-logo">P</div>
+      <div class="brand-text">
+        <h1>REALESTATE.COM.KH BOT ENGINE COCKPIT</h1>
+        <p>Interactive System Testbed · Staging Bot: <strong>@Nick_REAKH_Bot</strong></p>
+      </div>
+    </div>
+    <div class="metrics-pills">
+      <div class="metric-pill">
+        <span class="status-dot"></span>
+        <span>Staging Daemon: <strong>Active</strong></span>
+      </div>
+      <div class="metric-pill">
+        <span>Verified Tests: <strong id="verifyCount">0</strong> / 16</span>
+      </div>
+      <div class="metric-pill">
+        <span>Channel: <strong>Nick Test Lab</strong></span>
+      </div>
+      <a href="https://t.me/Nick_REAKH_Bot" target="_blank" class="tg-link-btn">
+        <span>Open Bot in Telegram ↗</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('dualView')">📱 0. Client vs Admin Live Simulator</button>
+    <button class="tab-btn" onclick="switchTab('phase1')">💼 1. Investor Conversion Suite</button>
+    <button class="tab-btn" onclick="switchTab('phase2')">🏢 2. Landlord &amp; Supply Engine</button>
+    <button class="tab-btn" onclick="switchTab('phase3')">🤝 3. Broker Co-Broke Network</button>
+    <button class="tab-btn" onclick="switchTab('phase4')">📡 4. Multi-Channel &amp; Autopilot</button>
+    <button class="tab-btn" onclick="switchTab('refinements')">⚡ 5. Tier 1 &amp; 2 Refinements</button>
+  </div>
+
+  <!-- UX Overhaul Architecture Banner -->
+  <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(16, 185, 129, 0.08)); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 16px; padding: 20px 24px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px;">
+      <div>
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+          <span style="font-size:20px;">⚡</span>
+          <h2 style="font-size:16px; font-weight:800; color:#f8fafc; letter-spacing:-0.2px;">2026 MOBILE UX OVERHAUL · THE "RULE OF 3" &amp; JAPANESE-FIRST ARCHITECTURE</h2>
+          <span class="badge badge-gold" style="font-size:10px; padding:3px 8px;">LIVE IN STAGING</span>
+        </div>
+        <p style="font-size:13px; color:#cbd5e1; max-width:960px; line-height:1.6;">
+          Refined strictly based on live iPhone/Android mobile testing feedback with Nick. Eliminated button maze friction, eradicated raw <code>**</code> asterisk formatting, and established an up-front Japanese language portal.
+        </p>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <span class="metric-pill" style="background:rgba(16,185,129,0.15); border-color:rgba(16,185,129,0.4); color:#34d399; font-weight:700;">
+          ✓ Max 3-4 Buttons Per Screen
+        </span>
+        <span class="metric-pill" style="background:rgba(59,130,246,0.15); border-color:rgba(59,130,246,0.4); color:#60a5fa; font-weight:700;">
+          ✓ Pure HTML Bolding
+        </span>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px; margin-top:16px;">
+      <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:12px 14px;">
+        <div style="font-size:11px; text-transform:uppercase; color:#f59e0b; font-weight:700; margin-bottom:4px;">1. The Rule of 3</div>
+        <div style="font-size:12px; color:#94a3b8;">Row 1: Full-width CTA (Consult with us)<br>Row 2: 2 Primary actions (Tour &amp; Calc)<br>Row 3: Guaranteed 🔙 Main Menu</div>
+      </div>
+      <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:12px 14px;">
+        <div style="font-size:11px; text-transform:uppercase; color:#34d399; font-weight:700; margin-bottom:4px;">2. Language-First Onboarding</div>
+        <div style="font-size:12px; color:#94a3b8;">/start immediately gates 🇯🇵 日本語, 🇬🇧 English, 🇨🇳 中文, 🇷🇺 Русский. Zero confusing English button walls for Japanese clients.</div>
+      </div>
+      <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:12px 14px;">
+        <div style="font-size:11px; text-transform:uppercase; color:#38bdf8; font-weight:700; margin-bottom:4px;">3. No Raw Asterisks</div>
+        <div style="font-size:12px; color:#94a3b8;">100% standardized on Telegram HTML parse mode. Eliminated unparsed <code>**</code> and broken markdown symbols across all flows.</div>
+      </div>
+      <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:12px 14px;">
+        <div style="font-size:11px; text-transform:uppercase; color:#a855f7; font-weight:700; margin-bottom:4px;">4. Zero-Dead-End Guarantee</div>
+        <div style="font-size:12px; color:#94a3b8;">Every flow (lead inquiry, calculator, legal, tour booking, or typing free text) provides clear return paths and alerts Nick.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- ============================================================== -->
+  <!-- TAB 0: CLIENT VS ADMIN LIVE DUAL-VIEWPORT SIMULATOR -->
+  <!-- ============================================================== -->
+  <div id="dualView" class="section-container active">
+    
+    <!-- Interactive Architecture Breadcrumb Banner -->
+    <div style="background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 14px; padding: 14px 18px; margin-bottom: 16px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <span style="font-size: 12px; font-weight: 800; color: #38bdf8; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px;">
+          <span>🗺️</span> REALESTATE.COM.KH EXPLORE PROPERTY INTENT ARCHITECTURE
+        </span>
+        <span style="font-size: 11px; color: #94a3b8;">Click any stage below to simulate instant bot transition</span>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
+        <div class="flow-badge active" id="stepPill1" onclick="simExploreStep('main')">1️⃣ Main Menu (4 Buttons)</div>
+        <span style="color: #64748b; font-size: 11px;">➔</span>
+        <div class="flow-badge" id="stepPill2" onclick="simExploreStep('goal')">2️⃣ Goal: For Sale vs Rent</div>
+        <span style="color: #64748b; font-size: 11px;">➔</span>
+        <div class="flow-badge" id="stepPill3" onclick="simExploreStep('budget', 'sale')">3️⃣ Budget Range</div>
+        <span style="color: #64748b; font-size: 11px;">➔</span>
+        <div class="flow-badge" id="stepPill4" onclick="simExploreStep('location', { goal: 'sale', budget: '50to100', label: '$50k–$100k USD' })">4️⃣ Preferred Location</div>
+        <span style="color: #64748b; font-size: 11px;">➔</span>
+        <div class="flow-badge" id="stepPill5" onclick="simExploreStep('matched', { goal: 'sale', budget: '50to100', label: '$50k–$100k USD', location: 'Chamkarmon' })">5️⃣ Matched Units &amp; Nick SLA</div>
+      </div>
+    </div>
+
+    <!-- Scenario Selection Toolbar -->
+    <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid var(--panel-border); border-radius: 14px; padding: 14px 18px; margin-bottom: 20px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 13px; font-weight: 700; color: var(--gold); text-transform: uppercase;">Simulate Live Journey:</span>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+        <button class="tab-btn scen-btn active" id="btnScenEXP" style="padding: 6px 14px; font-size: 12px; background: rgba(56, 189, 248, 0.2); border-color: #38bdf8; color: #fff;" onclick="loadDualScenario('EXP')">✨ 1. Explore Property (Goal ➔ Budget ➔ Location Flow)</button>
+        <button class="tab-btn scen-btn" id="btnScenA" style="padding: 6px 14px; font-size: 12px;" onclick="loadDualScenario('A')">🇯🇵 2. Japanese Buyer (TS8)</button>
+        <button class="tab-btn scen-btn" id="btnScenB" style="padding: 6px 14px; font-size: 12px;" onclick="loadDualScenario('B')">📅 3. Overseas Video Tour Booking</button>
+        <button class="tab-btn scen-btn" id="btnScenC" style="padding: 6px 14px; font-size: 12px;" onclick="loadDualScenario('C')">💼 4. Condo Owner Listing (60s)</button>
+        <button class="tab-btn scen-btn" id="btnScenD" style="padding: 6px 14px; font-size: 12px;" onclick="loadDualScenario('D')">💬 5. Client Free-Text Question</button>
+      </div>
+    </div>
+
+    <!-- Dual Viewport Grid -->
+    <div class="grid-2col" style="align-items: start;">
+
+      <!-- ========================================== -->
+      <!-- COLUMN 1: CLIENT-FACING SIDE (TELEGRAM)   -->
+      <!-- ========================================== -->
+      <div class="cockpit-card" style="border-top: 3px solid #38bdf8;">
+        <div class="card-header">
+          <div class="card-title">
+            <h3 style="display: flex; align-items: center; gap: 8px;">
+              <span>📱</span> Client-Facing Experience
+            </h3>
+            <p id="clientViewSub">What the buyer or investor sees on their Telegram mobile app</p>
+          </div>
+          <span class="badge badge-blue">Client Screen</span>
+        </div>
+
+        <div style="padding: 12px 14px; background: rgba(56, 189, 248, 0.08); border-radius: 8px; margin-bottom: 14px; font-size: 12px; color: #bae6fd; display: flex; justify-content: space-between; align-items: center;">
+          <span id="clientFeaturePill">✨ Rule of 3 (Max 3-4 Actions) · 100% Pure HTML · No Asterisks</span>
+          <span style="font-weight: 700; color: #38bdf8;">Mobile Viewport</span>
+        </div>
+
+        <div class="tg-simulator" id="clientSimulator">
+          <div class="tg-bubble" id="clientBubble">
+            <!-- Injected via JS -->
+          </div>
+          <div class="tg-keyboard" id="clientKeyboard">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+        <div class="action-bar" style="margin-top: 14px;">
+          <span class="cmd-badge" id="clientCmdBadge">/start or /card</span>
+          <a href="https://t.me/Nick_REAKH_Bot" target="_blank" class="tg-link-btn">Test Live on Phone ↗</a>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- COLUMN 2: ADMIN-FACING SIDE (NICK ALERT)  -->
+      <!-- ========================================== -->
+      <div class="cockpit-card" style="border-top: 3px solid #f59e0b;">
+        <div class="card-header">
+          <div class="card-title">
+            <h3 style="display: flex; align-items: center; gap: 8px;">
+              <span>🛡️</span> Admin &amp; Broker Control Center
+            </h3>
+            <p>Instant SLA alert &amp; 1-tap action dispatched to Nick (@Nick_REAKH)</p>
+          </div>
+          <span class="badge badge-gold">Nick Private Desk</span>
+        </div>
+
+        <div style="padding: 12px 14px; background: rgba(245, 158, 11, 0.08); border-radius: 8px; margin-bottom: 14px; font-size: 12px; color: #fde68a; display: flex; justify-content: space-between; align-items: center;">
+          <span id="adminSlaPill">⚡ Response SLA Watchdog: 15-Minute Benchmark</span>
+          <span style="font-weight: 700; color: #f59e0b;">Lead Telemetry</span>
+        </div>
+
+        <div class="tg-simulator" id="adminSimulator">
+          <div class="tg-bubble" id="adminBubble" style="background: #1c2738; border-left: 3px solid #f59e0b;">
+            <!-- Injected via JS -->
+          </div>
+          <div class="tg-keyboard" id="adminKeyboard">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+        <div class="action-bar" style="margin-top: 14px;">
+          <span class="cmd-badge">Admin Telegram ID: 353195979</span>
+          <span style="font-size: 11px; color: var(--green);">● Live Bot Hook Connected</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Architectural Contrast Summary Table -->
+    <div style="margin-top: 24px; background: rgba(15, 23, 42, 0.7); border: 1px solid var(--panel-border); border-radius: 14px; padding: 20px;">
+      <h4 style="font-size: 14px; font-weight: 700; color: #f8fafc; margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+        <span>⚖️</span> System Architecture Comparison: Client vs Admin
+      </h4>
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 12.5px; color: #cbd5e1;">
+          <thead>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); text-align: left; color: var(--text-muted); font-size: 11px; text-transform: uppercase;">
+              <th style="padding: 10px 14px;">Core Feature</th>
+              <th style="padding: 10px 14px; color: #38bdf8;">Client-Facing Experience</th>
+              <th style="padding: 10px 14px; color: #f59e0b;">Admin (Nick) Experience</th>
+              <th style="padding: 10px 14px; color: #34d399;">Business Impact</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+              <td style="padding: 12px 14px; font-weight: 700;">Navigation &amp; Buttons</td>
+              <td style="padding: 12px 14px;"><strong>The Rule of 3 (Max 3-4 Actions)</strong><br><span style="color:#94a3b8; font-size:11.5px;">No button overload; zero cognitive friction</span></td>
+              <td style="padding: 12px 14px;"><strong>1-Tap Action Center</strong><br><span style="color:#94a3b8; font-size:11.5px;">Instant direct message link (tg://user) + SLA status toggles</span></td>
+              <td style="padding: 12px 14px; color: #34d399;">High mobile conversion rate</td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+              <td style="padding: 12px 14px; font-weight: 700;">Text Formatting</td>
+              <td style="padding: 12px 14px;"><strong>Pure HTML Mode (Zero `**`)</strong><br><span style="color:#94a3b8; font-size:11.5px;">Beautiful bolding, blockquotes, and currency tags</span></td>
+              <td style="padding: 12px 14px;"><strong>Structured Lead Dossier</strong><br><span style="color:#94a3b8; font-size:11.5px;">Client budget, location, inquiry timestamp, and user ID</span></td>
+              <td style="padding: 12px 14px; color: #34d399;">Premium brand credibility</td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+              <td style="padding: 12px 14px; font-weight: 700;">Language &amp; Cultural Fit</td>
+              <td style="padding: 12px 14px;"><strong>Language-First Gate</strong><br><span style="color:#94a3b8; font-size:11.5px;">Immediate Japanese portal with 万円 and 坪 calculations</span></td>
+              <td style="padding: 12px 14px;"><strong>Language Tagging in Alert</strong><br><span style="color:#94a3b8; font-size:11.5px;">Tells Nick whether client requires JP or EN advisory</span></td>
+              <td style="padding: 12px 14px; color: #34d399;">Tailored cross-border deal closing</td>
+            </tr>
+            <tr>
+              <td style="padding: 12px 14px; font-weight: 700;">Dead-End Protection</td>
+              <td style="padding: 12px 14px;"><strong>Guaranteed Return Paths</strong><br><span style="color:#94a3b8; font-size:11.5px;">Every sub-card and calculator includes 🔙 Main Menu</span></td>
+              <td style="padding: 12px 14px;"><strong>15-Minute SLA Watchdog</strong><br><span style="color:#94a3b8; font-size:11.5px;">Unanswered leads trigger visual escalation in ledger</span></td>
+              <td style="padding: 12px 14px; color: #34d399;">Zero lost leads; 100% follow-up</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+  <!-- ============================================================== -->
+  <!-- TAB 1: INVESTOR SUITE -->
+  <!-- ============================================================== -->
+  <div id="phase1" class="section-container">
+    <div class="grid-2col">
+
+      <!-- Test 1: Property Color Card & Home Portal -->
+      <div class="cockpit-card">
+        <div class="card-header">
+          <div class="card-title">
+            <h3>🏢 VIP Property Showcase Card</h3>
+            <p>High-conversion listing hero with yield &amp; strata title badge</p>
+          </div>
+          <span class="badge badge-gold">Investor Suite</span>
+        </div>
+        <div class="tg-simulator">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <span style="font-size:11px; font-weight:700; color:var(--gold);">PREVIEW LANGUAGE:</span>
+            <div style="display:flex; gap:6px;">
+              <button class="tg-btn" style="padding:4px 8px; font-size:11px;" id="btnSimLangJP" onclick="toggleCardLang('JP')">🇯🇵 日本語</button>
+              <button class="tg-btn" style="padding:4px 8px; font-size:11px; background:rgba(255,255,255,0.15);" id="btnSimLangEN" onclick="toggleCardLang('EN')">🇬🇧 English</button>
+            </div>
+          </div>
+          <div class="tg-bubble" id="card1Bubble">
+            <strong>🎯 TIME SQUARE 8 · 2-BEDROOM RESALE</strong><br>
+            <span style="color:#f87171;font-weight:700;">#ForSale $99,000 USD</span> (Urgent Resale — $15,000 Below Developer!)<br><br>
+            📍 Boeng Trabek / Toul Tompoung, Chamkarmon<br>
+            ▫️ <strong>Floor:</strong> 22nd Floor (Panoramic City Skyline)<br>
+            ▫️ <strong>Size:</strong> 65.0 sqm Gross · 48.0 sqm Net<br>
+            ▫️ <strong>Net Yield:</strong> <span style="color:#34d399;font-weight:700;">8.5% – 9.1% Net</span> ($750/mo rent)<br>
+            ▫️ <strong>Ownership:</strong> 100% Foreign Freehold Strata Hard Title
+            <div class="tg-blockquote">Direct private advisory and off-market developer allocations managed by Realestate.com.kh.</div>
+          </div>
+          <div class="tg-keyboard" id="card1Keyboard">
+            <div class="tg-row">
+              <button class="tg-btn" style="background:linear-gradient(135deg, rgba(245,158,11,0.25), rgba(217,119,6,0.25)); font-weight:700;" onclick="window.open('https://t.me/Nick_REAKH', '_blank')">💬 Consult with us</button>
+            </div>
+            <div class="tg-row">
+              <button class="tg-btn" onclick="simToast('📅 Tour requested! In-person or live video call.', '📅')">📅 Book Tour / Video</button>
+              <button class="tg-btn" onclick="switchSimCalc()">🧮 Payment Calculator</button>
+            </div>
+            <div class="tg-row">
+              <button class="tg-btn" onclick="switchSimMainMenu()">🔙 Main Menu</button>
+            </div>
+          </div>
+        </div>
+        <div class="action-bar">
+          <span class="cmd-badge">/showcase or /card</span>
+          <label class="test-checkbox"><input type="checkbox" onchange="updateScore(this)"> Test Verified in Telegram</label>
+          <a href="https://t.me/Nick_REAKH_Bot?start=ts8_22" target="_blank" class="tg-link-btn">Test Live ↗</a>
+        </div>
+      </div>
+
+      <!-- Test 2: Side-by-Side Comparison Matrix -->
+      <div class="cockpit-card">
+        <div class="card-header">
+          <div class="card-title">
+            <h3>⚖️ Handpicked Portfolio Matrix (Buy vs Rent)</h3>
+            <p>Single-line metrics with mobile-minimal Rule of 3 buttons</p>
+          </div>
+          <span class="badge badge-gold">Curated Deals</span>
+        </div>
+        <div class="tg-simulator">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <span style="font-size:11px; font-weight:700; color:var(--gold);">INTENT CATEGORY:</span>
+            <div style="display:flex; gap:6px;">
+              <button class="tg-btn" style="padding:4px 8px; font-size:11px; background:rgba(255,255,255,0.15);" id="btnMatSale" onclick="toggleMatrixType('SALE')">💰 For Sale</button>
+              <button class="tg-btn" style="padding:4px 8px; font-size:11px; background:transparent;" id="btnMatRent" onclick="toggleMatrixType('RENT')">🔑 For Rent</button>
+            </div>
+          </div>
+          <div class="tg-bubble" id="matrixBubble">
+            <strong>⚖️ REALESTATE.COM.KH HANDPICKED FOR SALE MATRIX</strong><br>
+            <span style="font-size:11px;color:#94a3b8;">Compare 3 top-tier investment opportunities side-by-side:</span>
+            <div class="tg-blockquote">
+              🏢 <strong>1. TIME SQUARE 8 (Chamkarmon)</strong><br>
+              ▫️ Price: $99,000 USD (Urgent Resale)<br>
+              ▫️ Size: 65.0 sqm (Gross)<br>
+              ▫️ Net Yield: <strong>8.5% Net</strong>
+            </div>
+            <div class="tg-blockquote">
+              🏢 <strong>2. RESIDENCE L (Toul Tompoung)</strong><br>
+              ▫️ Price: $45,000 USD (Low Entry Barrier)<br>
+              ▫️ Size: 47.0 sqm (Gross)<br>
+              ▫️ Net Yield: <strong>9.2% Net</strong>
+            </div>
+            <div class="tg-blockquote">
+              🏢 <strong>3. ODOM LIVING (Tonle Bassac)</strong><br>
+              ▫️ Price: $240,000 USD (LEED-Gold Flagship)<br>
+              ▫️ Size: 78.0 sqm (Gross)<br>
+              ▫️ Net Yield: <strong>6.8% Net</strong>
+            </div>
+          </div>
+          <div class="tg-keyboard" id="matrixKeyboard">
+            <div class="tg-row">
+              <button class="tg-btn" style="background:linear-gradient(135deg, rgba(245,158,11,0.25), rgba(217,119,6,0.25)); font-weight:700;" onclick="window.open('https://t.me/Nick_REAKH', '_blank')">💬 Consult with us</button>
+            </div>
+            <div class="tg-row">
+              <button class="tg-btn" onclick="switchSimUnit('Time Square 8')">🏢 Time Square 8</button>
+              <button class="tg-btn" onclick="switchSimUnit('Residence L')">🏢 Residence L</button>
+            </div>
+            <div class="tg-row">
+              <button class="tg-btn" onclick="switchSimUnit('Odom Living')">🏢 Odom Living</button>
+              <button class="tg-btn" onclick="switchSimMainMenu()">🔙 Main Menu</button>
+            </div>
+          </div>
+        </div>
+        <div class="action-bar">
+          <span class="cmd-badge">/compare</span>
+          <label class="test-checkbox"><input type="checkbox" onchange="updateScore(this)"> Test Verified in Telegram</label>
+          <a href="https://t.me/Nick_REAKH_Bot" target="_blank" class="tg-link-btn">Send /compare ↗</a>
+        </div>
+      </div>
+
+      <!-- Test 3: Interactive Payment Calculator -->
+      <div class="cockpit-card">
+        <div class="card-header">
+          <div class="card-title">
+            <h3>🧮 Interactive Payment Calculator</h3>
+            <p>10%/20% down installments, 15-yr mortgage &amp; net rental ROI</p>
+          </div>
+          <span class="badge badge-gold">Finance</span>
+        </div>
+        <div class="tg-simulator">
+          <div class="tg-bubble" id="calcBubble">
+            <strong>🧮 INTERACTIVE PAYMENT &amp; FINANCING CALCULATOR</strong><br>
+            🏢 <strong>Time Square 8</strong> · $99,000 USD<br><br>
+            Select a payment structure to view down payment and monthly cash flow:
+          </div>
+          <div class="tg-keyboard">
+            <div class="tg-row">
+              <button class="tg-btn" onclick="simCalcOption('p10')">10% Down ($9.9k)</button>
+              <button class="tg-btn" onclick="simCalcOption('p20')">20% Down ($19.8k)</button>
+            </div>
+            <div class="tg-row">
+              <button class="tg-btn" onclick="simCalcOption('mortgage')">Bank Loan (7.5%)</button>
+              <button class="tg-btn" onclick="simCalcOption('yield')">Net Yield &amp; ROI</button>
+            </div>
+            <div class="tg-row">
+              <button class="tg-btn" style="background:rgba(245,158,11,0.2);" onclick="window.open('https://t.me/Nick_REAKH', '_blank')">💬 Consult with us</button>
+              <button class="tg-btn" onclick="switchSimMainMenu()">🔙 Main Menu</button>
+            </div>
+          </div>
+        </div>
+        <div class="action-bar">
+          <span class="cmd-badge">/calc 99000</span>
+          <label class="test-checkbox"><input type="checkbox" onchange="updateScore(this)"> Test Verified in Telegram</label>
+          <a href="https://t.me/Nick_REAKH_Bot" target="_blank" class="tg-link-btn">Send /calc 99000 ↗</a>
+        </div>
+      </div>
+
+      <!-- Test 4: Condo Purchase Guide & Closing Costs -->
+      <div class="cockpit-card">
+        <div class="card-header">
+          <div class="card-title">
+            <h3>📖 Condo Purchase Guide &amp; Associated Costs</h3>
+            <p>4-step buying roadmap, reservation deposits, stamp duty &amp; 0% buyer commission</p>
+          </div>
+          <span class="badge badge-gold">Buyer RoadMap</span>
+        </div>
+        <div class="tg-simulator">
+          <div class="tg-bubble" id="purchaseGuideBubble">
+            <strong>📖 PHNOM PENH CONDO PURCHASE GUIDE &amp; COSTS</strong><br>
+            <span style="font-size:11px;color:#94a3b8;">Official Buyer Roadmap by Realestate.com.kh:</span>
+            <div class="tg-blockquote">
+              <strong>1️⃣ Booking:</strong> $1,000 – $2,000 USD deposit<br>
+              <strong>2️⃣ Contract Signing:</strong> 10% – 20% down payment<br>
+              <strong>3️⃣ Installments:</strong> Construction stage or cash flow<br>
+              <strong>4️⃣ Ownership transfer:</strong> Issued under your personal passport
+            </div>
+            <strong>Associated Closing Costs:</strong><br>
+            ▫️ <strong>Transfer Stamp Duty:</strong> 4% (one-time upon title transfer)<br>
+            ▫️ <strong>Cadastral Legal Fee:</strong> ~$500 – $1,000 USD<br>
+            ▫️ <strong>Buyer Commission:</strong> <span style="color:#34d399;font-weight:700;">$0 (Zero Fee — Seller Paid)</span><br>
+            ▫️ <strong>Capital Gains Tax:</strong> 0% for foreign individuals
+          </div>
+          <div class="tg-keyboard">
+            <div class="tg-row">
+              <button class="tg-btn" style="background:linear-gradient(135deg, rgba(245,158,11,0.25), rgba(217,119,6,0.25)); font-weight:700;" onclick="window.open('https://t.me/Nick_REAKH', '_blank')">💬 Consult with us</button>
+            </div>
+            <div class="tg-row">
+              <button class="tg-btn" onclick="switchSimCalc()">🧮 Payment Calculator</button>
+              <button class="tg-btn" onclick="switchSimExplore()">🏢 Explore Property</button>
+            </div>
+            <div class="tg-row">
+              <button class="tg-btn" onclick="switchSimMainMenu()">🔙 Main Menu</button>
+            </div>
+          </div>
+        </div>
+        <div class="action-bar">
+          <span class="cmd-badge">/guide or /purchaseguide</span>
+          <label class="test-checkbox"><input type="checkbox" onchange="updateScore(this)"> Test Verified in Telegram</label>
+          <a href="https://t.me/Nick_REAKH_Bot" target="_blank" class="tg-link-btn">Send /guide ↗</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- TAB 2: LANDLORD ENGINE -->
+  <!-- ============================================================== -->
+  <div id="phase2" class="section-container">
+    <div class="grid-2col">
+
+      <!-- Test 5: 60-Second Property Intake Wizard -->
+      <div class="cockpit-card">
+        <div class="card-header">
+          <div class="card-title">
+            <h3>💼 60-Second Property Intake Wizard</h3>
+            <p>Owners submit units for sale or rent in 4 quick taps</p>
+          </div>
+          <span class="badge badge-green">Supply Engine</span>
+        </div>
+        <div class="tg-simulator">
+          <div class="tg-bubble" id="wizardBubble">
+            <strong>💼 LIST YOUR PROPERTY WITH REALESTATE.COM.KH</strong><br>
+            We syndicate your listing across 4 languages reaching 12,000+ international buyers.<br><br>
+            <strong>Step 1 of 4:</strong> What is your goal for this property?
+          </div>
+          <div class="tg-keyboard" id="wizardKeyboard">
+            <div class="tg-row">
+              <button class="tg-btn" onclick="simWizardStep(2, 'Sell My Condo')">Sell My Condo</button>
+              <button class="tg-btn" onclick="simWizardStep(2, 'Rent Out Condo')">Rent My Condo</button>
+            </div>
+          </div>
+        </div>
+        <div class="action-bar">
+          <span class="cmd-badge">/list</span>
+          <label class="test-checkbox"><input type="checkbox" onchange="updateScore(this)"> Test Verified in Telegram</label>
+          <a href="https://t.me/Nick_REAKH_Bot" target="_blank" class="tg-link-btn">Send /list ↗</a>
+        </div>
+      </div>
+
+      <!-- Test 6: 15-Minute SLA Watchdog & Escalation Lifecycle -->
+      <div class="cockpit-card">
+        <div class="card-header">
+          <div class="card-title">
+            <h3>🚨 15-Minute SLA Watchdog &amp; State Machine</h3>
+            <p>Auto-alert if lead is unanswered; 1-tap resolution lifecycle</p>
+          </div>
+          <span class="badge badge-green">Speed-to-Lead</span>
+        </div>
+        <div class="tg-simulator">
+          <div class="tg-bubble" id="slaBubble">
+            <strong>SLA DISPATCH WATCHDOG · RESPONSE OVERDUE</strong><br><br>
+            ▫️ <strong>Client:</strong> @Takahashi_Tokyo (Kenji Takahashi)<br>
+            ▫️ <strong>Asset:</strong> Time Square 8 (2BR Resale)<br>
+            ▫️ <strong>Budget:</strong> $99,000 USD (Cash / Installment)<br>
+            ▫️ <strong>Elapsed:</strong> 17 minutes (Benchmark: &lt; 15 mins)<br>
+            ▫️ <strong>Status:</strong> <span style="color:#ef4444;font-weight:700;">Response Required</span>
+            <div class="tg-blockquote">
+              Speed-to-lead benchmark: contacts initiated within 5 minutes convert at 78%. After 15 minutes, conversion drops below 12%.
+            </div>
+          </div>
+          <div class="tg-keyboard" id="slaKeyboard">
+            <div class="tg-row">
+              <button class="tg-btn" style="background:rgba(16,185,129,0.3);" onclick="simSlaAction('contacted')">Mark Contacted</button>
+              <button class="tg-btn" onclick="simSlaAction('booked')">Advance to Tour</button>
+            </div>
+            <div class="tg-row">
+              <button class="tg-btn" onclick="simToast('Opening direct chat with client')">💬 Message Client</button>
+            </div>
+          </div>
+        </div>
+        <div class="action-bar">
+          <span class="cmd-badge">/testsla</span>
+          <label class="test-checkbox"><input type="checkbox" onchange="updateScore(this)"> Test Verified in Telegram</label>
+          <a href="https://t.me/Nick_REAKH_Bot" target="_blank" class="tg-link-btn">Send /testsla ↗</a>
+        </div>
+      </div>
+
+      <!-- Test 7: Landlord Performance Dashboard -->
+      <div class="cockpit-card">
+        <div class="card-header">
+          <div class="card-title">
+            <h3>🔑 Landlord Marketing Dashboard</h3>
+            <p>Private telemetry portal showing views, leads &amp; pricing</p>
+          </div>
+          <span class="badge badge-green">Retention</span>
+        </div>
+        <div class="tg-simulator">
+          <div class="tg-bubble">
+            <strong>LANDLORD PERFORMANCE DASHBOARD</strong><br>
+            <strong>Time Square 8 (Unit #TS8-22)</strong> · Boeng Trabek / Chamkarmon<br><br>
+            ▫️ <strong>Mandate:</strong> Exclusive Realestate.com.kh Representation<br>
+            ▫️ <strong>Asking Price:</strong> $99,000 USD (Resale)<br>
+            ▫️ <strong>Benchmark:</strong> Developer list $114,000 (-$15,000 advantage)<br><br>
+            <strong>SYNDICATION TELEMETRY (PAST 7 DAYS)</strong><br>
+            ▫️ <strong>Verified Impressions:</strong> 3,842 views across 4 channels<br>
+            ▫️ <strong>Active Watchlist:</strong> 12 private investors<br>
+            ▫️ <strong>Direct Inquiries:</strong> 14 qualified leads<br>
+            ▫️ <strong>Scheduled Tours:</strong> 4 viewings (2 private, 2 overseas video)
+            <div class="tg-blockquote">
+              Listing is active in top 5% buyer engagement cohort. Estimated time to offer: under 25 days.
+            </div>
+          </div>
+          <div class="tg-keyboard">
+            <div class="tg-row">
+              <button class="tg-btn" onclick="simToast('Marketing telemetry refreshed live')">Refresh Telemetry</button>
+              <button class="tg-btn" onclick="simToast('Buyer tour feedback: Impressed by high floor and payment flexibility')">Feedback</button>
+            </div>
+            <div class="tg-row">
+              <button class="tg-btn" onclick="simToast('Price adjustment request logged')">Adjust Asking Price</button>
+              <button class="tg-btn" onclick="window.open('https://t.me/Nick_REAKH', '_blank')">💬 Consult with us</button>
+            </div>
+          </div>
+        </div>
+        <div class="action-bar">
+          <span class="cmd-badge">/myunit TS8-22</span>
+          <label class="test-checkbox"><input type="checkbox" onchange="updateScore(this)"> Test Verified in Telegram</label>
+          <a href="https://t.me/Nick_REAKH_Bot" target="_blank" class="tg-link-btn">Send /myunit ↗</a>
+        </div>
+      </div>
+
+      <!-- Test 8: Watchlist Price Drop Alert Broadcast -->
+      <div class="cockpit-card">
+        <div class="card-header">
+          <div class="card-title">
+            <h3>🚨 Flash Price Drop Broadcast</h3>
+            <p>Auto-notifies all tracking buyers when owner slashes price</p>
+          </div>
+          <span class="badge badge-green">Urgency</span>
+        </div>
+        <div class="tg-simulator">
+          <div class="tg-bubble">
+            <strong>PRICE REDUCTION NOTICE · TS8-22</strong><br><br>
+            <strong>Time Square 8 · Floor 22</strong><br>
+            <span style="font-size:12px;color:var(--text-muted);">Chamkarmon / Boeng Trabek</span><br><br>
+            ▫️ <strong>Revised Price:</strong> <strong style="color:#34d399;">$89,000 USD</strong> (Previously <del>$99,000</del>)<br>
+            ▫️ <strong>Instant Equity:</strong> -$10,000 USD below developer list<br>
+            ▫️ <strong>Adjusted Yield:</strong> <strong style="color:#34d399;">9.4% Net</strong>
+            <div class="tg-blockquote">
+              Exclusive 48-hour priority window for registered private clients prior to public release.
+            </div>
+          </div>
+          <div class="tg-keyboard">
+            <div class="tg-row">
+              <button class="tg-btn" onclick="simToast('Priority allocation claimed. Coordinating inspection.')">Claim Allocation</button>
+              <button class="tg-btn" onclick="switchSimCalc()">🧮 Payment Schedule</button>
+            </div>
+          </div>
+        </div>
+        <div class="action-bar">
+          <span class="cmd-badge">/pricedrop TS8 89000</span>
+          <label class="test-checkbox"><input type="checkbox" onchange="updateScore(this)"> Test Verified in Telegram</label>
+          <a href="https://t.me/Nick_REAKH_Bot" target="_blank" class="tg-link-btn">Test /pricedrop ↗</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- TAB 3: BROKER SYNDICATION -->
+  <!-- ============================================================== -->
+  <div id="phase3" class="section-container">
+    <div class="grid-2col">
+
+      <!-- Test 9: Co-Broke White-Label PDF Generator -->
+      <div class="cockpit-card">
+        <div class="card-header">
+          <div class="card-title">
+            <h3>🤝 Co-Broke White-Label PDF</h3>
+            <p>Stamps partner agent name &amp; phone onto luxury factsheet</p>
+          </div>
+          <span class="badge badge-purple">Syndication</span>
+        </div>
+        <div class="tg-simulator">
+          <div class="tg-bubble">
+            <strong>REALESTATE.COM.KH · CO-BROKE SYNDICATION</strong><br>
+            Global broker network for agencies in Japan, Taiwan, Singapore, and Europe.<br><br>
+            ▫️ <strong>Commission Structure:</strong> Guaranteed 50/50 Split<br>
+            ▫️ <strong>Safe Harbor:</strong> 60-Day Exclusive Client Protection<br>
+            ▫️ <strong>Collateral:</strong> White-Label Factsheets &amp; Memos
+            <div class="tg-blockquote">
+              Dispatched Factsheet: <code>TS8_Factsheet_Alex_Chen.pdf</code><br>
+              Sub-Agent: Alex Chen (+85512345678) · 50/50 Protection Verified
+            </div>
+          </div>
+          <div class="tg-keyboard">
+            <div class="tg-row">
+              <button class="tg-btn" onclick="simToast('Generating white-label PDF with agency credentials...')">White-Label Factsheet</button>
+              <button class="tg-btn" onclick="simToast('Opening buyer deal registration...')">Register Buyer Deal</button>
+            </div>
+            <div class="tg-row">
+              <button class="tg-btn" onclick="window.open('https://t.me/Nick_REAKH', '_blank')">💬 Partnership Terms</button>
+            </div>
+          </div>
+        </div>
+        <div class="action-bar">
+          <span class="cmd-badge">/cobroke Alex Chen +85512345678</span>
+          <label class="test-checkbox"><input type="checkbox" onchange="updateScore(this)"> Test Verified in Telegram</label>
+          <a href="https://t.me/Nick_REAKH_Bot" target="_blank" class="tg-link-btn">Send /cobroke ↗</a>
+        </div>
+      </div>
+
+      <!-- Test 10: 60-Day Deal Registration Certificate -->
+      <div class="cockpit-card">
+        <div class="card-header">
+          <div class="card-title">
+            <h3>🛡️ Deal Registration &amp; 60-Day Safe Harbor</h3>
+            <p>Locks client to sub-agent to eliminate commission disputes</p>
+          </div>
+          <span class="badge badge-purple">Commission Protection</span>
+        </div>
+        <div class="tg-simulator">
+          <div class="tg-bubble">
+            <strong>REALESTATE.COM.KH BROKER SAFE HARBOR CERTIFICATE</strong><br>
+            Reference: <code>#REG-4921</code><br><br>
+            ▫️ <strong>Sub-Agent:</strong> Nick Partner Broker<br>
+            ▫️ <strong>Protected Buyer:</strong> Mr. Wang (+8869••••678)<br>
+            ▫️ <strong>Asset:</strong> Time Square 8<br>
+            ▫️ <strong>Commission Split:</strong> <span style="color:#34d399;font-weight:700;">50% REAKH / 50% Sub-Agent</span><br>
+            ▫️ <strong>Protection Term:</strong> <strong>60 Days Exclusive Safe Harbor</strong>
+            <div class="tg-blockquote">
+              Official deal registration recorded in Realestate.com.kh partner ledger. Non-circumvention guaranteed.
+            </div>
+          </div>
+          <div class="tg-keyboard">
+            <div class="tg-row">
+              <button class="tg-btn" style="background:rgba(16,185,129,0.3);" onclick="simToast('Safe harbor endorsed. Broker notified in Telegram.')">Endorse Safe Harbor</button>
+              <button class="tg-btn" onclick="window.open('https://t.me/Nick_REAKH', '_blank')">💬 Contact Broker</button>
+            </div>
+          </div>
+        </div>
+        <div class="action-bar">
+          <span class="cmd-badge">/registerdeal TS8 Mr. Wang +886912345678</span>
+          <label class="test-checkbox"><input type="checkbox" onchange="updateScore(this)"> Test Verified in Telegram</label>
+          <a href="https://t.me/Nick_REAKH_Bot" target="_blank" class="tg-link-btn">Send /registerdeal ↗</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- TAB 4: MULTI-CHANNEL & AUTOPILOT -->
+  <!-- ============================================================== -->
+  <div id="phase4" class="section-container">
+    <div class="grid-2col">
+
+      <!-- Test 11: Weekly Investor Digest Broadcast -->
+      <div class="cockpit-card">
+        <div class="card-header">
+          <div class="card-title">
+            <h3>📊 Executive Weekly Investor Digest</h3>
+            <p>Curated Top 3 High-Yield Opportunities blasted to subscribers</p>
+          </div>
+          <span class="badge badge-blue">Broadcasting</span>
+        </div>
+        <div class="tg-simulator">
+          <div class="tg-bubble">
+            <strong>REALESTATE.COM.KH · WEEKLY INVESTMENT BRIEF</strong><br>
+            Top 3 High-Yield Opportunities · Phnom Penh<br><br>
+            ▫️ <strong>01 · Time Square 8 (2BR):</strong> $99k · <strong>8.5% Net</strong><br>
+            ▫️ <strong>02 · Residence L (1BR):</strong> $45k · <strong>9.2% Net</strong><br>
+            ▫️ <strong>03 · Odom Living (2BR):</strong> $240k · <strong>6.8% Net</strong>
+            <div class="tg-blockquote">
+              Registered private subscribers receive 48-hour priority inspection window before public marketing.
+            </div>
+          </div>
+          <div class="tg-keyboard">
+            <div class="tg-row">
+              <button class="tg-btn" onclick="switchSimUnit('Time Square 8')">Time Square 8 ($99k)</button>
+              <button class="tg-btn" onclick="switchSimUnit('Residence L')">Residence L ($45k)</button>
+            </div>
+            <div class="tg-row">
+              <button class="tg-btn" onclick="switchSimUnit('Odom Living')">Odom Living ($240k)</button>
+              <button class="tg-btn" onclick="switchSimCalc()">Payment Calculator</button>
+            </div>
+          </div>
+        </div>
+        <div class="action-bar">
+          <span class="cmd-badge">/broadcastdigest</span>
+          <label class="test-checkbox"><input type="checkbox" onchange="updateScore(this)"> Test Verified in Telegram</label>
+          <a href="https://t.me/Nick_REAKH_Bot" target="_blank" class="tg-link-btn">Send /broadcastdigest ↗</a>
+        </div>
+      </div>
+
+      <!-- Test 12: Autonomous Monday Digest Scheduler -->
+      <div class="cockpit-card">
+        <div class="card-header">
+          <div class="card-title">
+            <h3>⏰ Autonomous Monday Digest Scheduler</h3>
+            <p>Background cron broadcasts to channel every Mon 09:00 AM</p>
+          </div>
+          <span class="badge badge-blue">Autopilot Cron</span>
+        </div>
+        <div class="tg-simulator">
+          <div class="tg-bubble">
+            <strong>📅 REALESTATE.COM.KH WEEKLY DIGEST SCHEDULER STATUS</strong><br><br>
+            ▫️ <strong>Autopilot Status:</strong> <span style="color:#34d399;font-weight:700;">🟢 ACTIVE (Autonomous)</span><br>
+            ▫️ <strong>Schedule:</strong> Every Monday at 09:00 AM (UTC+7)<br>
+            ▫️ <strong>Target Channel:</strong> Nick Test Lab (<code>-1004372846355</code>)<br>
+            ▫️ <strong>Last Broadcast:</strong> <code>2026-W43</code>
+          </div>
+          <div class="tg-keyboard">
+            <div class="tg-row">
+              <button class="tg-btn" onclick="simToast('📰 Previewing draft of Monday digest')">📰 Preview Draft</button>
+              <button class="tg-btn" onclick="simToast('🚀 Broadcasted immediately to Nick Test Lab!')">🚀 Broadcast Now</button>
+            </div>
+            <div class="tg-row">
+              <button class="tg-btn" onclick="simToast('⏸️ Autopilot paused / enabled')">⏸️ Toggle Autopilot</button>
+            </div>
+          </div>
+        </div>
+        <div class="action-bar">
+          <span class="cmd-badge">/scheduledigest status</span>
+          <label class="test-checkbox"><input type="checkbox" onchange="updateScore()"> Test Verified in Telegram</label>
+          <a href="https://t.me/Nick_REAKH_Bot" target="_blank" class="tg-link-btn">Send /scheduledigest ↗</a>
+        </div>
+      </div>
+
+      <!-- Test 12B: Real-Time Multi-Channel Inventory Feed & NLP Search Engine -->
+      <div class="cockpit-card" style="grid-column: 1 / -1; margin-top: 10px;">
+        <div class="card-header">
+          <div class="card-title">
+            <h3>📡 Multi-Channel Scraped Inventory & Matching Engine</h3>
+            <p>Monitors @NickREAKH · @malaynopsale · @malaynoprental (Strict 30-day freshness filter)</p>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <span class="badge badge-green" id="inventoryCountBadge">11 Units Synced</span>
+            <button class="tg-btn" style="padding: 6px 14px; font-size:12px; background: rgba(59, 130, 246, 0.2); border: 1px solid var(--blue);" onclick="loadChannelInventory()">🔄 Sync Channels Now</button>
+          </div>
+        </div>
+
+        <!-- Search Bar & Filters -->
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="display:flex; gap:10px;">
+            <input type="text" id="cockpitSearchInput" placeholder="🔎 Try query: Studio in BKK1 50K, Tonle Bassac under $1000, or 2BR..." 
+              style="flex:1; background:rgba(0,0,0,0.5); border:1px solid var(--panel-border); border-radius:8px; padding:12px 16px; color:#fff; font-size:13px; font-weight:500;"
+              onkeydown="if(event.key==='Enter') executeCockpitSearch()">
+            <button class="tg-btn" style="width:auto; padding:0 20px; background:var(--gold); color:#000; font-weight:800; border-radius:8px;" onclick="executeCockpitSearch()">Filter Listings</button>
+            <button class="tg-btn" style="width:auto; padding:0 14px; background:rgba(255,255,255,0.08); border-radius:8px;" onclick="resetCockpitSearch()">Reset</button>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <span class="flow-badge active" id="chipAll" onclick="quickFilter('')">All Active Units</span>
+            <span class="flow-badge" id="chipBKK1" onclick="quickFilter('BKK1')">📍 BKK1</span>
+            <span class="flow-badge" id="chipTB" onclick="quickFilter('Tonle Bassac')">📍 Tonle Bassac</span>
+            <span class="flow-badge" id="chipRent" onclick="quickFilter('Rent')">🔑 Rentals</span>
+            <span class="flow-badge" id="chipSale" onclick="quickFilter('Sale')">💰 Sales</span>
+            <span class="flow-badge" id="chipMalayno" onclick="quickFilter('@malayno')">🏷️ Malay Nop Exclusive</span>
+            <span class="flow-badge" id="chipNick" onclick="quickFilter('@NickREAKH')">🏢 @NickREAKH</span>
+          </div>
+        </div>
+
+        <!-- Live Inventory Cards Grid -->
+        <div id="channelInventoryGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:14px; max-height:480px; overflow-y:auto; padding:4px 4px 10px 4px;">
+          <div style="color:var(--text-muted); font-size:13px; padding:20px; text-align:center;">Loading live channel inventory...</div>
+        </div>
+
+        <div class="action-bar">
+          <span class="cmd-badge">/syncchannels</span>
+          <label class="test-checkbox"><input type="checkbox" onchange="updateScore()"> Test Verified in Telegram</label>
+          <a href="https://t.me/Nick_REAKH_Bot" target="_blank" class="tg-link-btn">Test Natural Query in @Nick_REAKH_Bot ↗</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- TAB 5: TIER 1 & 2 REFINEMENTS -->
+  <!-- ============================================================== -->
+  <div id="refinements" class="section-container">
+    <div class="grid-2col">
+
+      <!-- Test 13: Dynamic High-Res QR Signage Poster Generator -->
+      <div class="cockpit-card">
+        <div class="card-header">
+          <div class="card-title">
+            <h3>🖼️ Dynamic Branded Signage Generator</h3>
+            <p>Generates print-ready 900x1200 posters with embedded gold QR</p>
+          </div>
+          <span class="badge badge-gold">Physical-to-Digital</span>
+        </div>
+        <div class="tg-simulator">
+          <div class="tg-bubble">
+            <strong>BRANDED SIGNAGE POSTER GENERATED</strong><br><br>
+            <strong>Time Square 9 · BKK3, Phnom Penh</strong><br><br>
+            ▫️ <strong>Pricing:</strong> From $48,000 USD<br>
+            ▫️ <strong>Asset Reference:</strong> <code>ts9</code><br>
+            ▫️ <strong>Format:</strong> 900×1200 High-Resolution Print Ready
+            <div class="tg-blockquote">
+              Embedded gold QR code routes smartphone cameras directly into Telegram unit portfolio. Ready for storefront displays or A3/A4 print distribution.
+            </div>
+          </div>
+          <div class="tg-keyboard">
+            <div class="tg-row">
+              <button class="tg-btn" onclick="window.open('https://t.me/Nick_REAKH_Bot?start=ts9', '_blank')">🔗 Open Deep Link</button>
+              <button class="tg-btn" onclick="window.open('https://t.me/Nick_REAKH', '_blank')">💬 Share with Nick</button>
+            </div>
+          </div>
+        </div>
+        <div class="action-bar">
+          <span class="cmd-badge">/makeqr ts9 "Time Square 9" "$48,000"</span>
+          <label class="test-checkbox"><input type="checkbox" onchange="updateScore(this)"> Test Verified in Telegram</label>
+          <a href="https://t.me/Nick_REAKH_Bot" target="_blank" class="tg-link-btn">Send /makeqr ↗</a>
+        </div>
+      </div>
+
+      <!-- Test 14: Multi-Language Selector Mode -->
+      <div class="cockpit-card">
+        <div class="card-header">
+          <div class="card-title">
+            <h3>🌐 Multi-Language Selector (/lang)</h3>
+            <p>Switches bot interface into EN, JP (万円/坪), ZH, or RU</p>
+          </div>
+          <span class="badge badge-gold">Localization</span>
+        </div>
+        <div class="tg-simulator">
+          <div class="tg-bubble" id="langBubble">
+            🌐 <strong>PREFER LANGUAGE / 言語選択</strong><br><br>
+            Please choose your preferred communication language:<br>
+            ご希望の言語を選択してください：
+          </div>
+          <div class="tg-keyboard">
+            <div class="tg-row">
+              <button class="tg-btn" onclick="simSetLang('JP')">🇯🇵 日本語</button>
+              <button class="tg-btn" onclick="simSetLang('EN')">🇬🇧 English</button>
+            </div>
+            <div class="tg-row">
+              <button class="tg-btn" onclick="simSetLang('ZH')">🇨🇳 简体中文</button>
+              <button class="tg-btn" onclick="simSetLang('RU')">🇷🇺 Русский</button>
+            </div>
+            <div class="tg-row">
+              <button class="tg-btn" onclick="switchSimMainMenu()">🔙 Main Menu</button>
+            </div>
+          </div>
+        </div>
+        <div class="action-bar">
+          <span class="cmd-badge">/lang</span>
+          <label class="test-checkbox"><input type="checkbox" onchange="updateScore(this)"> Test Verified in Telegram</label>
+          <a href="https://t.me/Nick_REAKH_Bot" target="_blank" class="tg-link-btn">Send /lang ↗</a>
+        </div>
+      </div>
+
+      <!-- Test 15: Telegram Mini App 2.0 Launcher -->
+      <div class="cockpit-card">
+        <div class="card-header">
+          <div class="card-title">
+            <h3>📱 Mini App 2.0 Visual Catalog</h3>
+            <p>Interactive color cards, filter tabs &amp; photo carousels in-app</p>
+          </div>
+          <span class="badge badge-blue">Web App</span>
+        </div>
+        <div class="tg-simulator">
+          <div class="tg-bubble">
+            📱 <strong>REALESTATE.COM.KH VISUAL CATALOG (MINI APP 2.0)</strong><br><br>
+            Experience our full interactive property portal directly inside Telegram:<br>
+            ▫️ Instant filters: #Urgent, #ForSale, #ForRent, #Projects<br>
+            ▫️ HD Photo Carousels, Net Yield models, developer track records<br>
+            ▫️ Zero app-store downloads needed!
+          </div>
+          <div class="tg-keyboard">
+            <div class="tg-row">
+              <button class="tg-btn" style="background:var(--blue);" onclick="window.open('http://localhost:8888/catalog', '_blank')">🚀 Launch Local Mini App (/catalog)</button>
+            </div>
+            <div class="tg-row">
+              <button class="tg-btn" onclick="window.open('https://t.me/Nick_REAKH', '_blank')">💬 Consult with us</button>
+            </div>
+          </div>
+        </div>
+        <div class="action-bar">
+          <span class="cmd-badge">/catalog or /miniapp</span>
+          <label class="test-checkbox"><input type="checkbox" onchange="updateScore(this)"> Test Verified in Telegram</label>
+          <a href="https://t.me/Nick_REAKH_Bot" target="_blank" class="tg-link-btn">Send /catalog ↗</a>
+        </div>
+      </div>
+
+      <!-- Test 16: Persistent State Ledger Inspector -->
+      <div class="cockpit-card">
+        <div class="card-header">
+          <div class="card-title">
+            <h3>💾 Persistent Bot State Ledger</h3>
+            <p>Survives server reboots: watchlists, deals, SLA leads</p>
+          </div>
+          <span class="badge badge-purple">Disk State</span>
+        </div>
+        <div class="tg-simulator">
+          <div class="tg-bubble">
+            📁 <strong>State File:</strong> <code>phc-tools/data/bot-state.json</code><br><br>
+            ▫️ <strong>Watchlist Subscribers:</strong> TS8 (1), RESL (1), ODOM (1)<br>
+            ▫️ <strong>Registered Deals:</strong> Timestamped 50/50 certificates<br>
+            ▫️ <strong>SLA Watchdog Leads:</strong> Active 15-min tracking queue<br>
+            ▫️ <strong>User Language Preferences:</strong> Per-user persistence
+          </div>
+          <div class="tg-keyboard">
+            <div class="tg-row">
+              <button class="tg-btn" onclick="document.querySelector('.state-drawer').scrollIntoView({behavior:'smooth'}); simToast('Scrolled to live state ledger!', '💾')">🔍 Inspect bot-state.json</button>
+            </div>
+          </div>
+        </div>
+        <div class="action-bar">
+          <span class="cmd-badge">phc-tools/data/bot-state.json</span>
+          <label class="test-checkbox"><input type="checkbox" onchange="updateScore(this)"> Test Verified in Telegram</label>
+          <button class="tg-btn" style="flex:none;padding:6px 12px;font-size:12px;" onclick="fetchLiveState()">🔄 Refresh State Ledger</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- State Inspector Section -->
+  <div class="state-drawer">
+    <div class="state-header">
+      <h3>💾 Live State Ledger (`phc-tools/data/bot-state.json`)</h3>
+      <span class="badge badge-green">Synchronized with Node Poller</span>
+    </div>
+    <pre class="state-code" id="stateCode">
+{
+  "watchlist": {
+    "TS8": ["353195979"],
+    "RESL": ["353195979"],
+    "ODOM": ["353195979"]
+  },
+  "registeredDeals": {},
+  "leadSlaTracker": {
+    "lead_sim_3595": {
+      "name": "Kenji Takahashi (@Takahashi_Tokyo)",
+      "unitRef": "TS8 (2BR Resale)",
+      "status": "booked",
+      "escalated": true
+    }
+  },
+  "userLanguages": {
+    "353195979": "EN"
+  },
+  "digestSchedule": {
+    "autoBroadcast": true,
+    "lastBroadcastWeek": "2026-W43",
+    "targetDayOfWeek": 1,
+    "targetHourPhnomPenh": 9
+  }
+}
+    </pre>
+  </div>
+
+  <!-- Toast Element -->
+  <div id="toast" class="toast">
+    <span id="toastIcon">✨</span>
+    <span id="toastMsg">Action executed</span>
+  </div>
+
+  <script>
+    function toggleCardLang(lang) {
+      const b = document.getElementById('card1Bubble');
+      const k = document.getElementById('card1Keyboard');
+      const btnJP = document.getElementById('btnSimLangJP');
+      const btnEN = document.getElementById('btnSimLangEN');
+
+      if (lang === 'JP') {
+        btnJP.style.background = 'rgba(255,255,255,0.15)';
+        btnEN.style.background = 'transparent';
+        b.innerHTML = `<strong>🎯 タイムズスクエア8 · 2LDK 緊急転売枠</strong><br>
+          <span style="color:#f87171;font-weight:700;">$99,000 USD</span>（約1,504万円 · 開発元価格より$15,000割安）<br><br>
+          📍 プノンペン · 桑園（Chamkarmon / Boeng Trabek）<br>
+          ▫️ <strong>階数：</strong> 22階（市内パノラマビュー）<br>
+          ▫️ <strong>専有面積：</strong> 壁芯 65.0㎡（約19.6坪） / 内法 48.0㎡<br>
+          ▫️ <strong>実質純利回り：</strong> <span style="color:#34d399;font-weight:700;">8.5% Net</span>（想定家賃 $750 USD/月）<br>
+          ▫️ <strong>権利形態：</strong> 外国人100%自己名義ハードタイトル（分層所有権）
+          <div class="tg-blockquote">現地・オンライン案内や優先購入のお手続きは代表Nickが承ります。</div>`;
+
+        k.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(245,158,11,0.25), rgba(217,119,6,0.25)); font-weight:700;" onclick="window.open('https://t.me/Nick_REAKH', '_blank')">💬 直接相談</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simToast('📅 内覧予約 / ビデオ案内リクエスト送信', '📅')">📅 内覧予約 / ビデオ案内</button>
+            <button class="tg-btn" onclick="switchSimCalc()">🧮 収支・ローン試算</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="switchSimMainMenu()">🔙 メインメニュー</button>
+          </div>`;
+        simToast('Switched showcase preview to 🇯🇵 日本語', '🇯🇵');
+      } else {
+        btnEN.style.background = 'rgba(255,255,255,0.15)';
+        btnJP.style.background = 'transparent';
+        b.innerHTML = `<strong>🎯 TIME SQUARE 8 · 2-BEDROOM RESALE</strong><br>
+          <span style="color:#f87171;font-weight:700;">#ForSale $99,000 USD</span> (Urgent Resale — $15,000 Below Developer!)<br><br>
+          📍 Boeng Trabek / Toul Tompoung, Chamkarmon<br>
+          ▫️ <strong>Floor:</strong> 22nd Floor (Panoramic City Skyline)<br>
+          ▫️ <strong>Size:</strong> 65.0 sqm Gross · 48.0 sqm Net<br>
+          ▫️ <strong>Net Yield:</strong> <span style="color:#34d399;font-weight:700;">8.5% – 9.1% Net</span> ($750/mo rent)<br>
+          ▫️ <strong>Ownership:</strong> 100% Foreign Freehold Strata Hard Title
+          <div class="tg-blockquote">Direct private advisory and off-market developer allocations managed by Realestate.com.kh.</div>`;
+
+        k.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(245,158,11,0.25), rgba(217,119,6,0.25)); font-weight:700;" onclick="simToast('💬 Connecting directly to Nick...', '💬')">💬 Consult with us</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simToast('📅 Tour requested! In-person or live video call.', '📅')">📅 Book Tour / Video</button>
+            <button class="tg-btn" onclick="switchSimCalc()">🧮 Payment Calculator</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simToast('🔙 Returning to Main Navigation Menu...', '🔙')">🔙 Main Menu</button>
+          </div>`;
+        simToast('Switched showcase preview to 🇬🇧 English', '🇬🇧');
+      }
+    }
+
+
+    // Dual Viewport Scenario Data
+    const dualScenarios = {
+      'A': {
+        sub: 'Japanese Investor reviewing Time Square 8 ($99,000 USD)',
+        pill: '🇯🇵 Japanese VIP Portal · 万円 & 坪換算 · Rule of 3 (Max 3-4 Actions)',
+        cmd: '/showcase or /card (Lang: JP)',
+        clientBubble: `<strong>🎯 タイムズスクエア8 · 2LDK 緊急転売枠</strong><br>
+          <span style="color:#f87171;font-weight:700;">$99,000 USD</span>（約1,504万円 · 開発元価格より$15,000割安）<br><br>
+          📍 プノンペン · 桑園（Chamkarmon / Boeng Trabek）<br>
+          ▫️ <strong>階数：</strong> 22階（市内パノラマビュー）<br>
+          ▫️ <strong>専有面積：</strong> 壁芯 65.0㎡（約19.6坪） / 内法 48.0㎡<br>
+          ▫️ <strong>実質純利回り：</strong> <span style="color:#34d399;font-weight:700;">8.5% Net</span>（想定家賃 $750 USD/月）<br>
+          ▫️ <strong>権利形態：</strong> 外国人100%自己名義ハードタイトル（分層所有権）
+          <div class="tg-blockquote">現地・オンライン案内や優先購入のお手続きは代表Nickが承ります。</div>`,
+        clientKeyboard: `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(245,158,11,0.25), rgba(217,119,6,0.25)); font-weight:700;" onclick="window.open('https://t.me/Nick_REAKH', '_blank')">💬 直接相談</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="loadDualScenario('B')">📅 内覧予約 / ビデオ案内</button>
+            <button class="tg-btn" onclick="switchSimCalc()">🧮 収支・ローン試算</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="switchSimMainMenu()">🔙 メインメニュー</button>
+          </div>`,
+        adminSla: '⚡ Response SLA Watchdog: 15-Minute Countdown Active',
+        adminBubble: `🚨 <strong>NEW PROPERTY INQUIRY DETECTED!</strong><br><br>
+          👤 <strong>Client:</strong> Kenji Takahashi (@Takahashi_Tokyo)<br>
+          🆔 <strong>User ID:</strong> <code>5712964982</code><br>
+          🌐 <strong>Language:</strong> 🇯🇵 日本語 (Japanese)<br>
+          🏢 <strong>Property:</strong> Time Square 8 (Unit #TS8-22 · $99,000)<br>
+          🎯 <strong>Action:</strong> Reviewing Resale Color Card &amp; Yield Model<br>
+          ⏰ <strong>Timestamp:</strong> Just now<br><br>
+          <div class="tg-blockquote">⚡ <strong>15-Minute SLA Benchmark:</strong> Client is actively browsing. Message them now to secure private viewing booking!</div>`,
+        adminKeyboard: `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(16,185,129,0.25), rgba(5,150,105,0.25)); font-weight:700;" onclick="simToast('💬 Opening direct Telegram chat with @Takahashi_Tokyo', '💬')">💬 Message Client</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simToast('✅ Lead marked as Contacted. SLA satisfied!', '✅')">✅ Mark Contacted</button>
+            <button class="tg-btn" onclick="simToast('📅 Inspection Tour booked into calendar.', '📅')">📅 Tour Booked</button>
+          </div>`
+      },
+      'B': {
+        sub: 'Client confirms overseas video viewing tour request',
+        pill: '🎥 Live Overseas Video Tour Flow · Zero Dead-Ends',
+        cmd: 'btn_book_TS8 -> tour_video_TS8',
+        clientBubble: `✅ <strong>内覧リクエストを受け付けました（TIME SQUARE 8）</strong><br><br>
+          ▫️ <strong>形式：</strong> 🎥 オンライン・ビデオ案内（日本・海外から）<br>
+          ▫️ <strong>担当：</strong> Nick（プノンペン日系窓口）<br><br>
+          日程調整のため、代表NickよりTelegramにて直接ご連絡差し上げます。お急ぎの場合は以下より直接メッセージをお送りください：`,
+        clientKeyboard: `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(245,158,11,0.25), rgba(217,119,6,0.25)); font-weight:700;" onclick="window.open('https://t.me/Nick_REAKH', '_blank')">💬 直接相談</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="loadDualScenario('A')">🔙 物件詳細へ戻る</button>
+            <button class="tg-btn" onclick="switchSimMainMenu()">🔙 メインメニュー</button>
+          </div>`,
+        adminSla: '🚨 URGENT TOUR BOOKING: Coordinate Viewing Time',
+        adminBubble: `📅 <strong>NEW OVERSEAS VIDEO TOUR BOOKING!</strong> 🚨<br><br>
+          👤 <strong>Client:</strong> Kenji Takahashi (@Takahashi_Tokyo)<br>
+          🏢 <strong>Property:</strong> Time Square 8 (2BR Resale · $99k)<br>
+          🎯 <strong>Format:</strong> 🎥 Live Overseas Video Call (WhatsApp/Zoom)<br>
+          ⏰ <strong>Booking Time:</strong> Just now<br><br>
+          <div class="tg-blockquote">⚡ <strong>Action Required:</strong> Send calendar invite &amp; confirm Tokyo time zone offset within 15 minutes!</div>`,
+        adminKeyboard: `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(16,185,129,0.25), rgba(5,150,105,0.25)); font-weight:700;" onclick="simToast('Connecting to @Takahashi_Tokyo to lock tour time...', '💬')">💬 Confirm Tour Time with Client</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simToast('✅ Synced with Realestate.com.kh Tour Calendar', '📅')">📅 Sync with Google Calendar</button>
+          </div>`
+      },
+      'C': {
+        sub: 'Condo owner submitting exclusive unit resale listing',
+        pill: '💼 60-Second Property Intake Wizard · Multi-Lingual Syndication',
+        cmd: 'btn_intake_owner -> owner_val',
+        clientBubble: `🎉 <strong>PROPERTY SUBMISSION RECEIVED!</strong><br><br>
+          📋 <strong>YOUR SUBMISSION SUMMARY:</strong><br>
+          ▫️ <strong>Unit Reference:</strong> <code>#REAKH-842</code><br>
+          ▫️ <strong>Objective:</strong> Resale (For Sale)<br>
+          ▫️ <strong>Location:</strong> Time Square Series (Chamkarmon)<br>
+          ▫️ <strong>Layout:</strong> 2-Bedroom (55–75 sqm)<br>
+          ▫️ <strong>Target Pricing:</strong> $99,000 USD<br><br>
+          🛡️ <strong>NEXT STEPS:</strong><br>
+          Nick and the Realestate.com.kh valuation team will verify building title records and reach out within 2 hours to confirm your representation agreement.<br><br>
+          👉 <i>Track marketing analytics anytime by typing:</i> <code>/myunit REAKH-842</code>`,
+        clientKeyboard: `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:rgba(245,158,11,0.25); font-weight:700;" onclick="window.open('https://t.me/Nick_REAKH', '_blank')">💬 Consult with us</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="switchTab('phase2'); document.getElementById('myUnitBubble')?.scrollIntoView({behavior:'smooth'}); simToast('Opened Landlord Dashboard', '🔑');">🔑 View Performance Dashboard</button>
+            <button class="tg-btn" onclick="switchSimMainMenu()">🔙 メインメニュー</button>
+          </div>`,
+        adminSla: '🏢 NEW EXCLUSIVE LISTING MANDATE INTAKE',
+        adminBubble: `🚨 <strong>NEW EXCLUSIVE PROPERTY SUBMISSION!</strong> 🚨<br><br>
+          👤 <strong>Owner:</strong> Somnang Keo (@Keo_Property)<br>
+          🆔 <strong>User ID:</strong> <code>491028471</code><br>
+          📋 <strong>Unit Code:</strong> <code>#REAKH-842</code><br>
+          🎯 <strong>Goal:</strong> Resale (For Sale)<br>
+          📍 <strong>Project:</strong> Time Square Series (Chamkarmon)<br>
+          🛋️ <strong>Layout:</strong> 2-Bedroom (65 sqm)<br>
+          💰 <strong>Target Asking Price:</strong> $99,000 USD<br>
+          ⏰ <strong>Submitted:</strong> Just now<br><br>
+          <div class="tg-blockquote">⚡ <strong>Response SLA:</strong> Reach out within 2 hours to confirm Strata hard title deed &amp; lock exclusive listing contract!</div>`,
+        adminKeyboard: `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(16,185,129,0.25), rgba(5,150,105,0.25)); font-weight:700;" onclick="simToast('Opening direct chat with Owner @Keo_Property', '💬')">💬 Message Owner Directly</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simToast('Valuation meeting scheduled.', '📅')">📅 Schedule Valuation Call</button>
+          </div>`
+      },
+      'D': {
+        sub: 'Client types free-text question in chat instead of clicking buttons',
+        pill: '💬 Unmatched Free-Text Fallback Handler · Zero Friction',
+        cmd: 'Client types: "こんにちは、今週内覧できますか？"',
+        clientBubble: `<strong>Realestate.com.khへのお問い合わせありがとうございます</strong><br><br>
+          ナレット様からのメッセージをプノンペン現地サポートおよび代表Nickに転送いたしました。<br><br>
+          担当者より直接ご返信いたしますが、お急ぎの場合や個別相談をご希望の際は、以下のボタンよりNickへ直接メッセージをお送りいただくか、メニューをご利用ください：`,
+        clientKeyboard: `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(245,158,11,0.25), rgba(217,119,6,0.25)); font-weight:700;" onclick="window.open('https://t.me/Nick_REAKH', '_blank')">💬 直接相談</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="loadDualScenario('A')">🏢 厳選物件一覧</button>
+            <button class="tg-btn" onclick="switchSimCalc()">🧮 収支・ローン試算</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="switchSimMainMenu()">🔙 メインメニュー</button>
+          </div>`,
+        adminSla: '💬 INCOMING DIRECT CLIENT MESSAGE',
+        adminBubble: `💬 <strong>NEW INCOMING CLIENT MESSAGE!</strong><br><br>
+          👤 <strong>Client:</strong> Narith (ナレット) (@Narith_KH)<br>
+          🆔 <strong>User ID:</strong> <code>5712964982</code><br>
+          🌐 <strong>Language:</strong> 🇯🇵 日本語 (Japanese)<br>
+          💬 <strong>Message:</strong> <i>"こんにちは、今週内覧できますか？"</i><br><br>
+          <div class="tg-blockquote">👉 <strong>One-Tap Quick Reply:</strong> Tap below to jump straight into conversation with Narith on Telegram:</div>`,
+        adminKeyboard: `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(16,185,129,0.25), rgba(5,150,105,0.25)); font-weight:700;" onclick="simToast('Opening chat with Narith on Telegram...', '💬')">💬 Reply to Narith on Telegram</button>
+          </div>`
+      }
+    };
+
+    function toggleMatrixType(type) {
+      const b = document.getElementById('matrixBubble');
+      const k = document.getElementById('matrixKeyboard');
+      const btnSale = document.getElementById('btnMatSale');
+      const btnRent = document.getElementById('btnMatRent');
+
+      if (type === 'RENT') {
+        btnRent.style.background = 'rgba(255,255,255,0.15)';
+        btnSale.style.background = 'transparent';
+        b.innerHTML = `<strong>⚖️ REALESTATE.COM.KH HANDPICKED FOR RENT MATRIX</strong><br>
+          <span style="font-size:11px;color:#94a3b8;">Curated prime residential leasing across Phnom Penh:</span>
+          <div class="tg-blockquote">
+            🔑 <strong>1. TIME SQUARE 306 (BKK1)</strong><br>
+            ▫️ Rent: $650 USD / month<br>
+            ▫️ Size: 50.0 sqm (1-Bedroom Furnished)<br>
+            ▫️ Location: BKK1 Embassy &amp; Cafe District
+          </div>
+          <div class="tg-blockquote">
+            🔑 <strong>2. TIME SQUARE 8 (Chamkarmon)</strong><br>
+            ▫️ Rent: $750 USD / month<br>
+            ▫️ Size: 65.0 sqm (2-Bedroom High Floor)<br>
+            ▫️ Location: Chamkarmon / Russian Market
+          </div>
+          <div class="tg-blockquote">
+            🔑 <strong>3. ODOM LIVING (Tonle Bassac)</strong><br>
+            ▫️ Rent: $1,400 USD / month<br>
+            ▫️ Size: 78.0 sqm (2-Bedroom Executive)<br>
+            ▫️ Location: Norodom Boulevard Diplomatic Hub
+          </div>
+          <span style="font-size:11px;color:#38bdf8;">💡 All units managed by Realestate.com.kh Tenancy Services.</span>`;
+
+        k.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(245,158,11,0.25), rgba(217,119,6,0.25)); font-weight:700;" onclick="window.open('https://t.me/Nick_REAKH', '_blank')">💬 Consult with us</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simToast('Viewing Time Square 306 rental ($650/mo)', '🔑')">🔑 TS 306 ($650/mo)</button>
+            <button class="tg-btn" onclick="switchSimUnit('Time Square 8')">🔑 TS 8 ($750/mo)</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="switchSimUnit('Odom Living')">🔑 Odom Living ($1.4k)</button>
+            <button class="tg-btn" onclick="switchSimMainMenu()">🔙 Main Menu</button>
+          </div>`;
+        simToast('Switched to For Rent Portfolio Matrix', '🔑');
+      } else {
+        btnSale.style.background = 'rgba(255,255,255,0.15)';
+        btnRent.style.background = 'transparent';
+        b.innerHTML = `<strong>⚖️ REALESTATE.COM.KH HANDPICKED FOR SALE MATRIX</strong><br>
+          <span style="font-size:11px;color:#94a3b8;">Compare 3 top-tier investment opportunities side-by-side:</span>
+          <div class="tg-blockquote">
+            🏢 <strong>1. TIME SQUARE 8 (Chamkarmon)</strong><br>
+            ▫️ Price: $99,000 USD (Urgent Resale)<br>
+            ▫️ Size: 65.0 sqm (Gross)<br>
+            ▫️ Net Yield: <strong>8.5% Net</strong>
+          </div>
+          <div class="tg-blockquote">
+            🏢 <strong>2. RESIDENCE L (Toul Tompoung)</strong><br>
+            ▫️ Price: $45,000 USD (Low Entry Barrier)<br>
+            ▫️ Size: 47.0 sqm (Gross)<br>
+            ▫️ Net Yield: <strong>9.2% Net</strong>
+          </div>
+          <div class="tg-blockquote">
+            🏢 <strong>3. ODOM LIVING (Tonle Bassac)</strong><br>
+            ▫️ Price: $240,000 USD (LEED-Gold Flagship)<br>
+            ▫️ Size: 78.0 sqm (Gross)<br>
+            ▫️ Net Yield: <strong>6.8% Net</strong>
+          </div>
+          <span style="font-size:11px;color:#34d399;">💡 All units have 100% Foreign Freehold Strata Hard Title.</span>`;
+
+        k.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(245,158,11,0.25), rgba(217,119,6,0.25)); font-weight:700;" onclick="window.open('https://t.me/Nick_REAKH', '_blank')">💬 Consult with us</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="switchSimUnit('Time Square 8')">🏢 Time Square 8</button>
+            <button class="tg-btn" onclick="switchSimUnit('Residence L')">🏢 Residence L</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="switchSimUnit('Odom Living')">🏢 Odom Living</button>
+            <button class="tg-btn" onclick="switchSimMainMenu()">🔙 Main Menu</button>
+          </div>`;
+        simToast('Switched to For Sale Portfolio Matrix', '💰');
+      }
+    }
+
+    function simExploreStep(step, param) {
+      document.querySelectorAll('.flow-badge').forEach(b => b.classList.remove('active'));
+      const clientViewSub = document.getElementById('clientViewSub');
+      const clientFeaturePill = document.getElementById('clientFeaturePill');
+      const clientCmdBadge = document.getElementById('clientCmdBadge');
+      const clientBubble = document.getElementById('clientBubble');
+      const clientKeyboard = document.getElementById('clientKeyboard');
+      const adminSlaPill = document.getElementById('adminSlaPill');
+      const adminBubble = document.getElementById('adminBubble');
+      const adminKeyboard = document.getElementById('adminKeyboard');
+
+      if (step === 'main') {
+        document.getElementById('stepPill1')?.classList.add('active');
+        clientViewSub.innerText = 'Step 1 of 5: Unified 4-Button Main Navigation Menu';
+        clientFeaturePill.innerHTML = '✨ Unified 4 Buttons · Zero Visual Clutter · Realestate.com.kh';
+        clientCmdBadge.innerText = '/start or /menu';
+
+        clientBubble.innerHTML = `<strong>🏢 REALESTATE.COM.KH</strong><br>
+          <span style="font-size:11px;color:#94a3b8;">Cambodia's #1 Real Estate Platform · Private Advisory Desk</span><br><br>
+          Welcome to Realestate.com.kh.<br>
+          Access verified prime inventory, installment models, buying guides, and direct consultation:<br><br>
+          ▫️ <strong>Curated Inventory:</strong> Handpicked Resales &amp; Top Developer Units<br>
+          ▫️ <strong>100% Freehold:</strong> Foreign Strata Hard Title under your passport<br>
+          ▫️ <strong>Official Advisory:</strong> Direct support from Nick (@Nick_REAKH)<br><br>
+          Select an option below:`;
+
+        clientKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:rgba(56,189,248,0.25); font-weight:700; border:1px solid #38bdf8;" onclick="simExploreStep('goal')">🏢 Explore Property</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simExploreStep('guide')">📖 Condo Purchase Guide</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simExploreStep('lang')">🌐 Prefer Language</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(245,158,11,0.25), rgba(217,119,6,0.25)); font-weight:700;" onclick="simExploreStep('consult')">💬 Consult with us</button>
+          </div>`;
+
+        adminSlaPill.innerText = 'ℹ️ Lead Status: Session Initiated';
+        adminBubble.innerHTML = `📱 <strong>CLIENT AT MAIN MENU</strong><br><br>
+          👤 <strong>Client:</strong> Prospective International Investor (@Tokyo_Investor)<br>
+          🆔 <strong>Session:</strong> Active<br>
+          🎯 <strong>Stage:</strong> Reviewing 4 core navigation options.<br><br>
+          <div class="tg-blockquote">Waiting for client to start search (Explore Property vs Purchase Guide vs Direct Consult).</div>`;
+        adminKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:rgba(255,255,255,0.08);" onclick="simToast('System idle · Awaiting client interaction', 'ℹ️')">System Monitoring Lead</button>
+          </div>`;
+        simToast('Loaded Main Navigation Menu', '📱');
+      }
+
+      else if (step === 'goal') {
+        document.getElementById('stepPill2')?.classList.add('active');
+        clientViewSub.innerText = 'Step 2 of 5: Intent Selection (For Sale vs For Rent)';
+        clientFeaturePill.innerHTML = '🎯 Instant Intent Segmentation · Sale vs Rent';
+        clientCmdBadge.innerText = 'Callback: btn_explore_prop';
+
+        clientBubble.innerHTML = `<strong>🏢 EXPLORE PHNOM PENH PROPERTIES</strong><br>
+          <span style="font-size:11px;color:#94a3b8;">Realestate.com.kh Curated Portfolio</span><br><br>
+          Please select what you are looking for today:<br><br>
+          ▫️ <strong>Buy a Condo (For Sale):</strong> High-yield resales &amp; prime developer inventory with 100% Foreign Strata Hard Title<br><br>
+          ▫️ <strong>Rent a Condo (For Rent):</strong> Curated residential leasing in BKK1, Chamkarmon &amp; Tonle Bassac<br><br>
+          Select your search category:`;
+
+        clientKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(16,185,129,0.25), rgba(5,150,105,0.25)); font-weight:700; border:1px solid #10b981;" onclick="simExploreStep('budget', 'sale')">💰 For Sale (Buy)</button>
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(56,189,248,0.25), rgba(14,165,233,0.25)); font-weight:700; border:1px solid #38bdf8;" onclick="simExploreStep('budget', 'rent')">🔑 For Rent (Rent)</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simExploreStep('main')">🔙 Main Menu</button>
+          </div>`;
+
+        adminSlaPill.innerText = '⚡ Intent Segmentation Active';
+        adminBubble.innerHTML = `🎯 <strong>CLIENT IN QUESTIONNAIRE: STEP 1 (GOAL)</strong><br><br>
+          👤 <strong>Client:</strong> @Tokyo_Investor<br>
+          🔍 <strong>Path:</strong> Explored Properties<br>
+          ⚖️ <strong>Decision:</strong> Choosing between <strong>For Sale (Buy)</strong> vs <strong>For Rent (Rent)</strong>.<br><br>
+          <div class="tg-blockquote">Next step will tailor the budget selector to purchase price or monthly rental rate.</div>`;
+        adminKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:rgba(255,255,255,0.08);" onclick="simToast('Client choosing goal...', '⚡')">Awaiting Goal Selection</button>
+          </div>`;
+        simToast('Questionnaire Step 1: Goal', '🎯');
+      }
+
+      else if (step === 'budget') {
+        document.getElementById('stepPill3')?.classList.add('active');
+        const isSale = (param === 'sale');
+        clientViewSub.innerText = isSale ? 'Step 3 of 5: Purchase Budget Range' : 'Step 3 of 5: Monthly Rental Budget Range';
+        clientFeaturePill.innerHTML = '💰 Targeted Budget Range · Prevents Unrealistic Inquiries';
+        clientCmdBadge.innerText = isSale ? 'Callback: lead_flow_buy' : 'Callback: lead_flow_rent';
+
+        if (isSale) {
+          clientBubble.innerHTML = `<strong>💰 TARGET INVESTMENT BUDGET</strong><br>
+            <span style="font-size:11px;color:#94a3b8;">Please select your purchase budget range (USD &amp; JPY reference):</span><br><br>
+            ▫️ <strong>Under $50k USD:</strong> High rental cash-flow &amp; entry-level condos<br>
+            ▫️ <strong>$50k – $100k USD:</strong> Prime 1–2BR resale units below developer price<br>
+            ▫️ <strong>$100k – $200k USD:</strong> Luxury high-rise with skyline panoramic views<br>
+            ▫️ <strong>$200k+ USD:</strong> Flagship landmarks &amp; penthouses`;
+
+          clientKeyboard.innerHTML = `
+            <div class="tg-row">
+              <button class="tg-btn" onclick="simExploreStep('location', { goal: 'sale', budget: 'under50', label: 'Under $50k USD' })">💰 Under $50,000 USD</button>
+            </div>
+            <div class="tg-row">
+              <button class="tg-btn" style="border:1px solid var(--gold); font-weight:700;" onclick="simExploreStep('location', { goal: 'sale', budget: '50to100', label: '$50k – $100k USD' })">💰 $50,000 – $100,000 USD</button>
+            </div>
+            <div class="tg-row">
+              <button class="tg-btn" onclick="simExploreStep('location', { goal: 'sale', budget: '100to200', label: '$100k – $200k USD' })">💰 $100,000 – $200,000 USD</button>
+            </div>
+            <div class="tg-row">
+              <button class="tg-btn" onclick="simExploreStep('location', { goal: 'sale', budget: '200plus', label: '$200k+ USD' })">💰 $200,000+ USD</button>
+            </div>
+            <div class="tg-row">
+              <button class="tg-btn" onclick="simExploreStep('goal')">🔙 Back to Goal</button>
+            </div>`;
+        } else {
+          clientBubble.innerHTML = `<strong>🔑 MONTHLY RENTAL BUDGET</strong><br>
+            <span style="font-size:11px;color:#94a3b8;">Please select your preferred monthly rent:</span><br><br>
+            ▫️ <strong>$400 – $650 / month:</strong> Fully furnished Studio or 1-Bedroom<br>
+            ▫️ <strong>$700 – $1,200 / month:</strong> Luxury 1–2 Bedroom with pool &amp; gym<br>
+            ▫️ <strong>$1,500+ / month:</strong> Executive 2–3 Bedroom in diplomatic zone`;
+
+          clientKeyboard.innerHTML = `
+            <div class="tg-row">
+              <button class="tg-btn" onclick="simExploreStep('location', { goal: 'rent', budget: 'rent_low', label: '$400 – $650/mo' })">💵 $400 – $650 / month</button>
+            </div>
+            <div class="tg-row">
+              <button class="tg-btn" style="border:1px solid #38bdf8; font-weight:700;" onclick="simExploreStep('location', { goal: 'rent', budget: 'rent_mid', label: '$700 – $1,200/mo' })">💵 $700 – $1,200 / month</button>
+            </div>
+            <div class="tg-row">
+              <button class="tg-btn" onclick="simExploreStep('location', { goal: 'rent', budget: 'rent_high', label: '$1,500+/mo' })">💵 $1,500+ / month</button>
+            </div>
+            <div class="tg-row">
+              <button class="tg-btn" onclick="simExploreStep('goal')">🔙 Back to Goal</button>
+            </div>`;
+        }
+
+        adminSlaPill.innerText = `📊 Budget Filter (${isSale ? 'For Sale' : 'For Rent'})`;
+        adminBubble.innerHTML = `📊 <strong>QUESTIONNAIRE STEP 2: BUDGET SELECTION</strong><br><br>
+          👤 <strong>Client:</strong> @Tokyo_Investor<br>
+          🎯 <strong>Goal:</strong> ${isSale ? 'For Sale (Buyer)' : 'For Rent (Tenant)'}<br>
+          ⚖️ <strong>Status:</strong> Selecting budget tier.<br><br>
+          <div class="tg-blockquote">Client qualifies their purchasing power before seeing matching units.</div>`;
+        adminKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:rgba(255,255,255,0.08);" onclick="simToast('Client selecting budget...', '📊')">Budget Tier Selection</button>
+          </div>`;
+        simToast(`Questionnaire Step 2: ${isSale ? 'Purchase Budget' : 'Rental Budget'}`, '💰');
+      }
+
+      else if (step === 'location') {
+        document.getElementById('stepPill4')?.classList.add('active');
+        const isRent = param.goal === 'rent';
+        clientViewSub.innerText = isRent ? 'Step 4 of 5: Preferred Rental Location' : 'Step 4 of 5: Preferred Investment Location';
+        clientFeaturePill.innerHTML = isRent ? '📍 Living District · Expat Amenities, Cafes &amp; Commute' : '📍 Acquisition District · ROI, Appreciation &amp; Strata Title';
+        clientCmdBadge.innerText = 'Callback: lead_budget_* ➔ lead_loc_*';
+
+        clientBubble.innerHTML = isRent ?
+          `<strong>📍 PREFERRED RESIDENTIAL DISTRICT</strong><br>
+          <span style="font-size:11px;color:#94a3b8;">Please select your target neighborhood in Phnom Penh:</span><br><br>
+          ▫️ <strong>BKK1</strong><br>
+          <span style="font-size:12px;color:#cbd5e1;">Expat heartland · Walk to international cafes, gyms, dining &amp; embassies</span><br><br>
+          ▫️ <strong>Tonle Bassac</strong><br>
+          <span style="font-size:12px;color:#cbd5e1;">Riverfront living · Directly next to Aeon Mall 1, Riverside &amp; vibrant nightlife</span><br><br>
+          ▫️ <strong>Chamkarmon / TTP</strong><br>
+          <span style="font-size:12px;color:#cbd5e1;">Russian Market bohemian hub · Famous specialty cafes &amp; great living value</span><br><br>
+          ▫️ <strong>Any Prime District</strong><br>
+          <span style="font-size:12px;color:#cbd5e1;">Flexible location · Priority on best furnishings, amenities &amp; move-in readiness</span>` :
+          `<strong>📍 PREFERRED INVESTMENT DISTRICT</strong><br>
+          <span style="font-size:11px;color:#94a3b8;">Please select your target acquisition area in Phnom Penh:</span><br><br>
+          ▫️ <strong>BKK1</strong><br>
+          <span style="font-size:12px;color:#cbd5e1;">Prime diplomatic quarter · Highest expat tenant demand &amp; capital appreciation</span><br><br>
+          ▫️ <strong>Tonle Bassac</strong><br>
+          <span style="font-size:12px;color:#cbd5e1;">Riverfront CBD · Adjacent to Aeon Mall 1, embassies &amp; luxury developments</span><br><br>
+          ▫️ <strong>Chamkarmon / TTP</strong><br>
+          <span style="font-size:12px;color:#cbd5e1;">Russian Market quarter · High net cash-flow rental yields &amp; discounted resales</span><br><br>
+          ▫️ <strong>Any Prime District</strong><br>
+          <span style="font-size:12px;color:#cbd5e1;">Maximum flexibility · Priority on highest net ROI &amp; below-market opportunities</span>`;
+
+        clientKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simExploreStep('matched', { ...param, location: 'BKK1' })">📍 BKK1</button>
+            <button class="tg-btn" onclick="simExploreStep('matched', { ...param, location: 'Tonle Bassac' })">📍 Tonle Bassac</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" style="border:1px solid var(--gold); font-weight:700;" onclick="simExploreStep('matched', { ...param, location: 'Chamkarmon' })">📍 Chamkarmon (TTP)</button>
+            <button class="tg-btn" onclick="simExploreStep('matched', { ...param, location: 'Any District' })">🌐 Any Prime District</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simExploreStep('budget', '${param.goal}')">🔙 Back to Budget</button>
+          </div>`;
+
+        adminSlaPill.innerText = `📍 Location Filter · Budget: ${param.label}`;
+        adminBubble.innerHTML = `📍 <strong>QUESTIONNAIRE STEP 3: LOCATION PREFERENCE</strong><br><br>
+          👤 <strong>Client:</strong> @Tokyo_Investor<br>
+          🎯 <strong>Goal:</strong> ${param.goal === 'sale' ? 'For Sale' : 'For Rent'}<br>
+          💰 <strong>Budget:</strong> <strong>${param.label}</strong><br>
+          ⚖️ <strong>Status:</strong> Selecting preferred district.<br><br>
+          <div class="tg-blockquote">Lead is 80% qualified. Property match engine ready to fire.</div>`;
+        adminKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:rgba(255,255,255,0.08);" onclick="simToast('Client choosing location...', '📍')">Location Filter Active</button>
+          </div>`;
+        simToast('Questionnaire Step 3: Preferred Location', '📍');
+      }
+
+      else if (step === 'matched') {
+        document.getElementById('stepPill5')?.classList.add('active');
+        const isSale = (param.goal === 'sale');
+        clientViewSub.innerText = 'Step 5 of 5: Verified Properties Matching Client Criteria';
+        clientFeaturePill.innerHTML = '✨ Smart Property Match · 100% Strata Title &amp; Realestate.com.kh Verified';
+        clientCmdBadge.innerText = 'Callback: lead_loc_* ➔ Smart Match';
+
+        let unitName = 'Time Square 8';
+        let unitPrice = '$99,000 USD (Urgent Resale)';
+        let unitSize = '65.0 sqm (Gross) · 2-Bedroom';
+        let unitYield = '8.5% Net ($750/mo rent)';
+        let unitLoc = 'Boeng Trabek / Toul Tompoung, Chamkarmon';
+
+        if (isSale) {
+          if (param.budget === 'under50') {
+            unitName = 'Residence L';
+            unitPrice = '$45,000 USD (Low Entry Barrier)';
+            unitSize = '47.0 sqm (Gross) · 1-Bedroom';
+            unitYield = '9.2% Net ($350/mo rent)';
+            unitLoc = 'Toul Tompoung (Russian Market)';
+          } else if (param.budget === '200plus' || param.location === 'Tonle Bassac') {
+            unitName = 'Odom Living';
+            unitPrice = '$240,000 USD (LEED-Gold Flagship)';
+            unitSize = '78.0 sqm (Gross) · 2-Bedroom';
+            unitYield = '6.8% Net ($1,400/mo rent)';
+            unitLoc = 'Norodom Boulevard, Tonle Bassac';
+          }
+        } else {
+          if (param.budget === 'rent_low' || param.location === 'BKK1') {
+            unitName = 'Time Square 306';
+            unitPrice = '$650 USD / month (Furnished)';
+            unitSize = '50.0 sqm (Gross) · 1-Bedroom';
+            unitYield = 'Move-in Ready · Expat Standard';
+            unitLoc = 'Street 306, BKK1 Embassy District';
+          } else if (param.budget === 'rent_high' || param.location === 'Tonle Bassac') {
+            unitName = 'Odom Living';
+            unitPrice = '$1,400 USD / month (Executive)';
+            unitSize = '78.0 sqm (Gross) · 2-Bedroom';
+            unitYield = 'Diplomatic Residence · Concierge';
+            unitLoc = 'Norodom Boulevard, Tonle Bassac';
+          } else {
+            unitName = 'Time Square 8';
+            unitPrice = '$750 USD / month (High Floor)';
+            unitSize = '65.0 sqm (Gross) · 2-Bedroom';
+            unitYield = 'Brand New · Panoramic View';
+            unitLoc = 'Chamkarmon / Toul Tompoung';
+          }
+        }
+
+        clientBubble.innerHTML = `<strong>🎯 VERIFIED PROPERTIES MATCHING YOUR CRITERIA</strong><br>
+          <span style="font-size:11px;color:#38bdf8;">Criteria: ${isSale ? 'For Sale' : 'For Rent'} · Budget: ${param.label} · Location: ${param.location}</span><br><br>
+          Based on your preferences, here is our top verified match:<br><br>
+          🏢 <strong>${unitName.toUpperCase()}</strong><br>
+          ▫️ <strong>Pricing:</strong> <span style="color:#f87171;font-weight:700;">${unitPrice}</span><br>
+          ▫️ <strong>Location:</strong> ${unitLoc}<br>
+          ▫️ <strong>Dimensions:</strong> ${unitSize}<br>
+          ▫️ <strong>${isSale ? 'Net Yield' : 'Terms'}:</strong> <span style="color:#34d399;font-weight:700;">${unitYield}</span><br>
+          ▫️ <strong>Title Deed:</strong> 100% Foreign Freehold Strata Hard Title
+          <div class="tg-blockquote">Direct private advisory and unit allocation managed by Realestate.com.kh.</div>`;
+
+        clientKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(245,158,11,0.25), rgba(217,119,6,0.25)); font-weight:700;" onclick="simExploreStep('consult')">💬 Consult with us</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simToast('📅 Tour requested! In-person or live video call.', '📅')">📅 Book Tour / Video</button>
+            <button class="tg-btn" onclick="switchSimCalc()">🧮 Payment Calculator</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simExploreStep('goal')">🔄 Change Search Criteria</button>
+            <button class="tg-btn" onclick="simExploreStep('main')">🔙 Main Menu</button>
+          </div>`;
+
+        adminSlaPill.innerText = `🚨 QUALIFIED LEAD INTAKE (MATCH COMPLETE)`;
+        adminBubble.innerHTML = `🚨 <strong>NEW QUALIFIED LEAD RECEIVED!</strong> 🚨<br><br>
+          👤 <strong>Client:</strong> Kenji Takahashi (@Tokyo_Investor)<br>
+          🆔 <strong>User ID:</strong> <code>5712964982</code><br>
+          🎯 <strong>Goal:</strong> ${isSale ? 'For Sale (Buyer)' : 'For Rent (Tenant)'}<br>
+          💰 <strong>Budget Range:</strong> <strong>${param.label}</strong><br>
+          📍 <strong>Preferred Area:</strong> <strong>${param.location}</strong><br>
+          🏢 <strong>Matched Asset:</strong> <strong>${unitName}</strong> (${unitPrice})<br>
+          ⏰ <strong>Timestamp:</strong> Just now<br><br>
+          <div class="tg-blockquote">⚡ <strong>15-Minute SLA Benchmark:</strong> Client has completed the questionnaire and is viewing the matched unit. Open chat now to close!</div>`;
+
+        adminKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(16,185,129,0.35), rgba(5,150,105,0.35)); font-weight:700; border:1px solid #10b981;" onclick="simToast('Opening direct chat with @Tokyo_Investor', '💬')">💬 Message Client</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simToast('✅ Lead marked Contacted. SLA satisfied!', '✅')">✅ Mark Contacted</button>
+            <button class="tg-btn" onclick="simToast('📅 Inspection Tour booked into calendar.', '📅')">📅 Tour Booked</button>
+          </div>`;
+
+        simToast(`Profile Matched: ${unitName}! Qualified Lead Dispatched`, '🎯');
+      }
+
+      else if (step === 'card_ts8') {
+        document.getElementById('stepPill4')?.classList.add('active');
+        clientViewSub.innerText = 'Step 4 of 5: VIP Unit Showcase Card (Time Square 8)';
+        clientFeaturePill.innerHTML = '✨ Rule of 3 (Max 3-4 Actions) · Verified Strata Hard Title';
+        clientCmdBadge.innerText = 'Callback: btn_view_TS8';
+
+        clientBubble.innerHTML = `<strong>🏢 TIME SQUARE 8 (Chamkarmon)</strong><br>
+          <span style="color:#f87171;font-weight:700;">#ForSale $99,000 USD (Urgent Resale)</span><br><br>
+          📍 Boeng Trabek / Toul Tompoung, Chamkarmon<br>
+          ▫️ <strong>Floor:</strong> 22nd Floor (Panoramic City Skyline)<br>
+          ▫️ <strong>Size:</strong> 65.0 sqm (Gross)<br>
+          ▫️ <strong>Net Yield:</strong> <span style="color:#34d399;font-weight:700;">8.5% Net</span> ($750/mo rent)<br>
+          ▫️ <strong>Ownership:</strong> 100% Foreign Freehold Strata Hard Title
+          <div class="tg-blockquote">Direct private advisory and off-market developer allocations managed by Realestate.com.kh.</div>`;
+
+        clientKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(245,158,11,0.25), rgba(217,119,6,0.25)); font-weight:700;" onclick="simExploreStep('consult')">💬 Consult with us</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simToast('📅 Tour requested! In-person or live video call.', '📅')">📅 Book Tour / Video</button>
+            <button class="tg-btn" onclick="switchSimCalc()">🧮 Payment Calculator</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simExploreStep('buy_list')">🔙 Back to For Sale</button>
+          </div>`;
+
+        adminSlaPill.innerText = '⚡ Response SLA Watchdog: 15-Minute Countdown Active';
+        adminBubble.innerHTML = `🚨 <strong>HOT BUYER INQUIRY DETECTED!</strong><br><br>
+          👤 <strong>Client:</strong> Kenji Takahashi (@Tokyo_Investor)<br>
+          🆔 <strong>User ID:</strong> <code>5712964982</code><br>
+          🏢 <strong>Target Property:</strong> Time Square 8 (2BR Resale · $99,000 USD)<br>
+          🎯 <strong>Status:</strong> Viewing unit color card &amp; yield model<br>
+          ⏰ <strong>Timestamp:</strong> Just now<br><br>
+          <div class="tg-blockquote">⚡ <strong>15-Minute SLA Benchmark:</strong> Client has inspected unit details. Message directly now to offer video viewing!</div>`;
+        adminKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(16,185,129,0.25), rgba(5,150,105,0.25)); font-weight:700;" onclick="simToast('Opening direct chat with @Tokyo_Investor', '💬')">💬 Message Client</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simToast('✅ Lead marked as Contacted. SLA satisfied!', '✅')">✅ Mark Contacted</button>
+            <button class="tg-btn" onclick="simToast('📅 Inspection Tour booked into calendar.', '📅')">📅 Tour Booked</button>
+          </div>`;
+        simToast('Loaded Time Square 8 Showcase Card', '🏢');
+      }
+
+      else if (step === 'card_resl') {
+        document.getElementById('stepPill4')?.classList.add('active');
+        clientViewSub.innerText = 'Step 4 of 5: VIP Unit Showcase Card (Residence L)';
+        clientFeaturePill.innerHTML = '✨ Low Entry Barrier ($45k) · High Net Yield (9.2%)';
+        clientCmdBadge.innerText = 'Callback: btn_view_ResL';
+
+        clientBubble.innerHTML = `<strong>🏢 RESIDENCE L (Toul Tompoung)</strong><br>
+          <span style="color:#f87171;font-weight:700;">#ForSale $45,000 USD (Low Entry Barrier)</span><br><br>
+          📍 Toul Tompoung / Russian Market area<br>
+          ▫️ <strong>Floor:</strong> 15th Floor<br>
+          ▫️ <strong>Size:</strong> 47.0 sqm (Gross)<br>
+          ▫️ <strong>Net Yield:</strong> <span style="color:#34d399;font-weight:700;">9.2% Net</span> ($350/mo rent)<br>
+          ▫️ <strong>Ownership:</strong> 100% Foreign Freehold Strata Hard Title
+          <div class="tg-blockquote">Ideal entry asset under $50k with strong expatriate rental track record.</div>`;
+
+        clientKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(245,158,11,0.25), rgba(217,119,6,0.25)); font-weight:700;" onclick="simExploreStep('consult')">💬 Consult with us</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simToast('📅 Tour requested! In-person or live video call.', '📅')">📅 Book Tour / Video</button>
+            <button class="tg-btn" onclick="switchSimCalc()">🧮 Payment Calculator</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simExploreStep('buy_list')">🔙 Back to For Sale</button>
+          </div>`;
+
+        adminSlaPill.innerText = '⚡ Response SLA Watchdog: Residence L Inquiry';
+        adminBubble.innerHTML = `🚨 <strong>NEW RESIDENCE L INQUIRY!</strong><br><br>
+          👤 <strong>Client:</strong> @Tokyo_Investor<br>
+          🏢 <strong>Target Property:</strong> Residence L ($45,000 USD · 9.2% Net Yield)<br>
+          🎯 <strong>Budget Match:</strong> Low entry cash buyer<br><br>
+          <div class="tg-blockquote">Client interested in high-yield entry property.</div>`;
+        adminKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(16,185,129,0.25), rgba(5,150,105,0.25)); font-weight:700;" onclick="simToast('Opening direct chat with @Tokyo_Investor', '💬')">💬 Message Client</button>
+          </div>`;
+        simToast('Loaded Residence L Showcase Card', '🏢');
+      }
+
+      else if (step === 'card_odom') {
+        document.getElementById('stepPill4')?.classList.add('active');
+        clientViewSub.innerText = 'Step 4 of 5: VIP Unit Showcase Card (Odom Living)';
+        clientFeaturePill.innerHTML = '✨ LEED-Gold Flagship · Prime Tonle Bassac';
+        clientCmdBadge.innerText = 'Callback: btn_view_Odom';
+
+        clientBubble.innerHTML = `<strong>🏢 ODOM LIVING (Tonle Bassac)</strong><br>
+          <span style="color:#f87171;font-weight:700;">#ForSale $240,000 USD (LEED-Gold Flagship)</span><br><br>
+          📍 Norodom Boulevard, Tonle Bassac<br>
+          ▫️ <strong>Floor:</strong> 26th Floor (Panoramic City Skyline)<br>
+          ▫️ <strong>Size:</strong> 78.0 sqm (Gross)<br>
+          ▫️ <strong>Net Yield:</strong> <span style="color:#34d399;font-weight:700;">6.8% Net</span> ($1,400/mo rent)<br>
+          ▫️ <strong>Ownership:</strong> 100% Foreign Freehold Strata Hard Title
+          <div class="tg-blockquote">Phnom Penh premier green-certified luxury development with private club privileges.</div>`;
+
+        clientKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(245,158,11,0.25), rgba(217,119,6,0.25)); font-weight:700;" onclick="simExploreStep('consult')">💬 Consult with us</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simToast('📅 Tour requested! In-person or live video call.', '📅')">📅 Book Tour / Video</button>
+            <button class="tg-btn" onclick="switchSimCalc()">🧮 Payment Calculator</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simExploreStep('buy_list')">🔙 Back to For Sale</button>
+          </div>`;
+
+        adminSlaPill.innerText = '⚡ High-Net-Worth Lead: Odom Living ($240k)';
+        adminBubble.innerHTML = `🌟 <strong>LUXURY BUYER INQUIRY DETECTED!</strong><br><br>
+          👤 <strong>Client:</strong> @Tokyo_Investor<br>
+          🏢 <strong>Target Property:</strong> Odom Living ($240,000 USD)<br>
+          🎯 <strong>Segment:</strong> High-net-worth investor / executive residence<br><br>
+          <div class="tg-blockquote">Luxury advisory alert dispatched to Nick.</div>`;
+        adminKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(16,185,129,0.25), rgba(5,150,105,0.25)); font-weight:700;" onclick="simToast('Opening direct chat with @Tokyo_Investor', '💬')">💬 Message Client</button>
+          </div>`;
+        simToast('Loaded Odom Living Showcase Card', '🏢');
+      }
+
+      else if (step === 'rent_ts306') {
+        document.getElementById('stepPill4')?.classList.add('active');
+        clientViewSub.innerText = 'Step 4 of 5: VIP Rental Showcase Card (Time Square 306)';
+        clientFeaturePill.innerHTML = '✨ Rule of 3 (Max 3-4 Actions) · 100% Move-in Ready';
+        clientCmdBadge.innerText = 'Callback: btn_rent_TS306';
+
+        clientBubble.innerHTML = `<strong>🔑 TIME SQUARE 306 · 1-BEDROOM RESIDENCE</strong><br>
+          <span style="color:#38bdf8;font-weight:700;">#ForRent $650 USD / month</span> (Fully Furnished · Move-in Ready)<br><br>
+          📍 Street 306, BKK1 Embassy &amp; Cafe District<br>
+          ▫️ <strong>Floor:</strong> 18th Floor (Unblocked City View)<br>
+          ▫️ <strong>Size:</strong> 50.0 sqm (Gross)<br>
+          ▫️ <strong>Amenities:</strong> Sky pool, fitness center, 24/7 security, high-speed WiFi<br>
+          ▫️ <strong>Terms:</strong> 1-year contract · 1 month security deposit
+          <div class="tg-blockquote">Direct lease managed by Realestate.com.kh Property Management Division.</div>`;
+
+        clientKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(245,158,11,0.25), rgba(217,119,6,0.25)); font-weight:700;" onclick="simExploreStep('consult')">💬 Consult with us</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simToast('📅 Tour requested! In-person or live video call.', '📅')">📅 Book Tour / Video</button>
+            <button class="tg-btn" onclick="simToast('📋 Tenancy application dispatched!', '📋')">📋 Lease Terms</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simExploreStep('rent_list')">🔙 Back to For Rent</button>
+          </div>`;
+
+        adminSlaPill.innerText = '🔑 Rental Inspection Request: BKK1';
+        adminBubble.innerHTML = `🔑 <strong>RENTAL LEAD DETECTED!</strong><br><br>
+          👤 <strong>Tenant:</strong> Kenji Takahashi (@Tokyo_Investor)<br>
+          🏢 <strong>Target Property:</strong> Time Square 306 ($650/mo · BKK1)<br>
+          🛋️ <strong>Unit:</strong> 1-Bedroom Furnished<br>
+          ⏰ <strong>Timestamp:</strong> Just now<br><br>
+          <div class="tg-blockquote">Tenant viewing rental terms. Connect directly to schedule viewing or send video walkthrough.</div>`;
+        adminKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(16,185,129,0.25), rgba(5,150,105,0.25)); font-weight:700;" onclick="simToast('Opening direct chat with @Tokyo_Investor', '💬')">💬 Message Client</button>
+          </div>`;
+        simToast('Loaded Time Square 306 Rental Card', '🔑');
+      }
+
+      else if (step === 'rent_ts8') {
+        document.getElementById('stepPill4')?.classList.add('active');
+        clientViewSub.innerText = 'Step 4 of 5: VIP Rental Showcase Card (Time Square 8)';
+        clientFeaturePill.innerHTML = '✨ 2-Bedroom High Floor · Rooftop Amenities';
+        clientCmdBadge.innerText = 'Callback: btn_rent_TS8';
+
+        clientBubble.innerHTML = `<strong>🔑 TIME SQUARE 8 · 2-BEDROOM RESIDENCE</strong><br>
+          <span style="color:#38bdf8;font-weight:700;">#ForRent $750 USD / month</span> (Fully Furnished)<br><br>
+          📍 Chamkarmon / Toul Tompoung<br>
+          ▫️ <strong>Floor:</strong> 22nd Floor (Panoramic City Skyline)<br>
+          ▫️ <strong>Size:</strong> 65.0 sqm (Gross)<br>
+          ▫️ <strong>Layout:</strong> 2 Bedrooms · 1 Bathroom · Balcony<br>
+          ▫️ <strong>Terms:</strong> 1-year contract · 2 months deposit
+          <div class="tg-blockquote">Direct lease managed by Realestate.com.kh Property Management Division.</div>`;
+
+        clientKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(245,158,11,0.25), rgba(217,119,6,0.25)); font-weight:700;" onclick="simExploreStep('consult')">💬 Consult with us</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simToast('📅 Tour requested! In-person or live video call.', '📅')">📅 Book Tour / Video</button>
+            <button class="tg-btn" onclick="simToast('📋 Tenancy application dispatched!', '📋')">📋 Lease Terms</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simExploreStep('rent_list')">🔙 Back to For Rent</button>
+          </div>`;
+
+        adminSlaPill.innerText = '🔑 Rental Inspection Request: TS8';
+        adminBubble.innerHTML = `🔑 <strong>TS8 RENTAL LEAD DETECTED!</strong><br><br>
+          👤 <strong>Tenant:</strong> @Tokyo_Investor<br>
+          🏢 <strong>Target Property:</strong> Time Square 8 (2BR · $750/mo)<br><br>
+          <div class="tg-blockquote">Tenant viewing TS8 2-bedroom rental listing.</div>`;
+        adminKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(16,185,129,0.25), rgba(5,150,105,0.25)); font-weight:700;" onclick="simToast('Opening direct chat with @Tokyo_Investor', '💬')">💬 Message Client</button>
+          </div>`;
+        simToast('Loaded Time Square 8 Rental Card', '🔑');
+      }
+
+      else if (step === 'rent_odom') {
+        document.getElementById('stepPill4')?.classList.add('active');
+        clientViewSub.innerText = 'Step 4 of 5: VIP Rental Showcase Card (Odom Living)';
+        clientFeaturePill.innerHTML = '✨ Executive Diplomatic Rental ($1,400/mo)';
+        clientCmdBadge.innerText = 'Callback: btn_rent_Odom';
+
+        clientBubble.innerHTML = `<strong>🔑 ODOM LIVING · 2-BEDROOM EXECUTIVE</strong><br>
+          <span style="color:#38bdf8;font-weight:700;">#ForRent $1,400 USD / month</span> (Luxury Fitted)<br><br>
+          📍 Norodom Boulevard, Tonle Bassac<br>
+          ▫️ <strong>Floor:</strong> 26th Floor<br>
+          ▫️ <strong>Size:</strong> 78.0 sqm (Gross)<br>
+          ▫️ <strong>Highlights:</strong> LEED-Gold certified, private resident lounge, 24/7 concierge<br>
+          ▫️ <strong>Terms:</strong> 1-year contract
+          <div class="tg-blockquote">Direct lease managed by Realestate.com.kh Property Management Division.</div>`;
+
+        clientKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(245,158,11,0.25), rgba(217,119,6,0.25)); font-weight:700;" onclick="simExploreStep('consult')">💬 Consult with us</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simToast('📅 Tour requested! In-person or live video call.', '📅')">📅 Book Tour / Video</button>
+            <button class="tg-btn" onclick="simToast('📋 Tenancy application dispatched!', '📋')">📋 Lease Terms</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simExploreStep('rent_list')">🔙 Back to For Rent</button>
+          </div>`;
+
+        adminSlaPill.innerText = '🔑 Executive Rental Lead: Odom ($1,400/mo)';
+        adminBubble.innerHTML = `🔑 <strong>EXECUTIVE RENTAL INQUIRY!</strong><br><br>
+          👤 <strong>Tenant:</strong> @Tokyo_Investor<br>
+          🏢 <strong>Target Property:</strong> Odom Living (2BR · $1,400/mo)<br><br>
+          <div class="tg-blockquote">Executive tenant inquiry for prime Tonle Bassac leasing.</div>`;
+        adminKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(16,185,129,0.25), rgba(5,150,105,0.25)); font-weight:700;" onclick="simToast('Opening direct chat with @Tokyo_Investor', '💬')">💬 Message Client</button>
+          </div>`;
+        simToast('Loaded Odom Living Rental Card', '🔑');
+      }
+
+      else if (step === 'guide') {
+        document.getElementById('stepPill4')?.classList.add('active');
+        clientViewSub.innerText = 'Step 4 of 5: Official Condo Purchase Guide & Closing Costs';
+        clientFeaturePill.innerHTML = '📖 4-Step Roadmap · 0% Buyer Commission · 100% Freehold';
+        clientCmdBadge.innerText = '/guide or btn_purchase_guide';
+
+        clientBubble.innerHTML = `<strong>📖 PHNOM PENH CONDO PURCHASE GUIDE &amp; COSTS</strong><br>
+          <span style="font-size:11px;color:#94a3b8;">Official Buyer Roadmap by Realestate.com.kh:</span>
+          <div class="tg-blockquote">
+            <strong>1️⃣ Booking:</strong> $1,000 – $2,000 USD deposit<br>
+            <strong>2️⃣ Contract Signing:</strong> 10% – 20% down payment<br>
+            <strong>3️⃣ Installments:</strong> Construction stage or cash flow<br>
+            <strong>4️⃣ Ownership transfer:</strong> Issued under your personal passport
+          </div>
+          <strong>Associated Closing Costs:</strong><br>
+          ▫️ <strong>Transfer Stamp Duty:</strong> 4% (one-time upon title transfer)<br>
+          ▫️ <strong>Cadastral Legal Fee:</strong> ~$500 – $1,000 USD<br>
+          ▫️ <strong>Buyer Commission:</strong> <span style="color:#34d399;font-weight:700;">$0 (Zero Fee — Seller Paid)</span><br>
+          ▫️ <strong>Capital Gains Tax:</strong> 0% for foreign individuals`;
+
+        clientKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(245,158,11,0.25), rgba(217,119,6,0.25)); font-weight:700;" onclick="simExploreStep('consult')">💬 Consult with us</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simExploreStep('gate')">🏢 Explore Property</button>
+            <button class="tg-btn" onclick="switchSimCalc()">🧮 Payment Calculator</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simExploreStep('main')">🔙 Main Menu</button>
+          </div>`;
+
+        adminSlaPill.innerText = '📖 Buyer Education Mode';
+        adminBubble.innerHTML = `📖 <strong>CLIENT READING PURCHASE ROADMAP</strong><br><br>
+          👤 <strong>Client:</strong> @Tokyo_Investor<br>
+          🎯 <strong>Topic:</strong> 4-Step Acquisition Process &amp; Closing Costs (4% Stamp Duty, $0 Buyer Fee)<br><br>
+          <div class="tg-blockquote">Client is educating themselves on legal and payment steps. Ready for consultation on contract signing.</div>`;
+        adminKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(16,185,129,0.25), rgba(5,150,105,0.25)); font-weight:700;" onclick="simToast('Opening direct chat with @Tokyo_Investor', '💬')">💬 Message Client</button>
+          </div>`;
+        simToast('Loaded Condo Purchase Guide', '📖');
+      }
+
+      else if (step === 'consult') {
+        document.getElementById('stepPill5')?.classList.add('active');
+        clientViewSub.innerText = 'Step 5 of 5: 1-Tap Action & Direct Connection to Nick';
+        clientFeaturePill.innerHTML = '💬 Direct Link to Nick (@Nick_REAKH) · Zero Obstacles';
+        clientCmdBadge.innerText = 'Direct tg://user Link';
+
+        clientBubble.innerHTML = `<strong>💬 CONNECT DIRECTLY WITH NICK (@Nick_REAKH)</strong><br><br>
+          Realestate.com.kh Private Advisory Desk.<br><br>
+          ▫️ <strong>Direct Telegram:</strong> <a href="https://t.me/Nick_REAKH" target="_blank" style="color:#38bdf8;font-weight:700;">@Nick_REAKH</a><br>
+          ▫️ <strong>Platform:</strong> Realestate.com.kh (#1 in Cambodia)<br>
+          ▫️ <strong>Focus:</strong> Off-market inventory, developer negotiation, title verification<br><br>
+          Tap the button below to start your private conversation on Telegram:`;
+
+        clientKeyboard.innerHTML = `
+          <div class="tg-row">
+            <a href="https://t.me/Nick_REAKH" target="_blank" class="tg-btn" style="background:linear-gradient(135deg, rgba(245,158,11,0.4), rgba(217,119,6,0.4)); font-weight:700; text-decoration:none;">💬 Consult with us</a>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simExploreStep('gate')">🏢 Explore Property</button>
+            <button class="tg-btn" onclick="simExploreStep('main')">🔙 Main Menu</button>
+          </div>`;
+
+        adminSlaPill.innerText = '🚨 URGENT SLA: Direct Consult Request Initiated';
+        adminBubble.innerHTML = `🚨 <strong>DIRECT CONSULTATION REQUEST DISPATCHED!</strong> 🚨<br><br>
+          👤 <strong>Client:</strong> Kenji Takahashi (@Tokyo_Investor)<br>
+          🆔 <strong>User ID:</strong> <code>5712964982</code><br>
+          🎯 <strong>Action:</strong> Clicked "💬 Consult with us" to message Nick<br>
+          ⏰ <strong>Triggered:</strong> Just now<br><br>
+          <div class="tg-blockquote">⚡ <strong>15-Minute Response SLA:</strong> Client is waiting in Telegram chat. Open conversation immediately to maximize closing rate!</div>`;
+        adminKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(16,185,129,0.35), rgba(5,150,105,0.35)); font-weight:700; border:1px solid #10b981;" onclick="simToast('💬 Opening direct Telegram chat with client...', '💬')">💬 Message Client</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simToast('✅ Lead acknowledged within SLA!', '✅')">✅ Mark Acknowledged</button>
+            <button class="tg-btn" onclick="simToast('📅 Valuation or Tour consultation booked', '📅')">📅 Book Consultation</button>
+          </div>`;
+        simToast('Direct Consult Triggered! Admin SLA Active', '🚨');
+      }
+
+      else if (step === 'lang') {
+        clientViewSub.innerText = 'Multi-Language Preference Selector';
+        clientFeaturePill.innerHTML = '🌐 4 Fully Grounded Languages · Automatic Currency Formatting';
+        clientCmdBadge.innerText = 'Callback: btn_change_lang';
+
+        clientBubble.innerHTML = `🌐 <strong>PREFER LANGUAGE / 言語選択</strong><br><br>
+          Please choose your preferred communication language:<br>
+          ご希望の言語を選択してください：`;
+
+        clientKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" onclick="loadDualScenario('A'); simToast('言語設定: 🇯🇵 日本語 (Realestate.com.kh)', '🇯🇵')">🇯🇵 日本語</button>
+            <button class="tg-btn" onclick="simExploreStep('main'); simToast('Language set: 🇬🇧 English', '🇬🇧')">🇬🇧 English</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simToast('Language set: 🇨🇳 简体中文', '🇨🇳')">🇨🇳 简体中文</button>
+            <button class="tg-btn" onclick="simToast('Language set: 🇷🇺 Русский', '🇷🇺')">🇷🇺 Русский</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simExploreStep('main')">🔙 Main Menu</button>
+          </div>`;
+        simToast('Loaded Language Selector', '🌐');
+      }
+
+      else if (step === 'gate') {
+        simExploreStep('goal');
+      }
+
+      else if (step === 'buy_list') {
+        document.getElementById('stepPill4')?.classList.add('active');
+        clientViewSub.innerText = 'Curated Properties For Sale';
+        clientFeaturePill.innerHTML = '🏢 Verified Freehold Strata Units · Direct Developer & Resale';
+        clientCmdBadge.innerText = 'List: For Sale';
+
+        clientBubble.innerHTML = `<strong>🏢 PHNOM PENH CONDOMINIUMS · FOR SALE</strong><br>
+          <span style="font-size:11px;color:#94a3b8;">Realestate.com.kh Verified Freehold Portfolio:</span><br><br>
+          Select a property below to view verified yields, floor plans, and pricing:`;
+
+        clientKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simExploreStep('card_ts8')">🏢 Time Square 8 ($99k)</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simExploreStep('card_resl')">🏢 Residence L ($45k)</button>
+            <button class="tg-btn" onclick="simExploreStep('card_odom')">🏢 Odom Living ($240k)</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simExploreStep('main')">🔙 Main Menu</button>
+          </div>`;
+        simToast('Loaded For Sale Property List', '🏢');
+      }
+
+      else if (step === 'rent_list') {
+        document.getElementById('stepPill4')?.classList.add('active');
+        clientViewSub.innerText = 'Curated Properties For Rent';
+        clientFeaturePill.innerHTML = '🔑 Expat-Grade Residential Rentals · Fully Furnished';
+        clientCmdBadge.innerText = 'List: For Rent';
+
+        clientBubble.innerHTML = `<strong>🔑 PHNOM PENH CONDOMINIUMS · FOR RENT</strong><br>
+          <span style="font-size:11px;color:#94a3b8;">Expat-Friendly Prime Locations:</span><br><br>
+          Select a rental unit below to view monthly lease terms:`;
+
+        clientKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simExploreStep('rent_ts306')">🔑 Time Square 306 ($600/mo)</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simExploreStep('rent_ts8')">🔑 Time Square 8 ($750/mo)</button>
+            <button class="tg-btn" onclick="simExploreStep('rent_odom')">🔑 Odom Living ($1,600/mo)</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simExploreStep('main')">🔙 Main Menu</button>
+          </div>`;
+        simToast('Loaded For Rent Property List', '🔑');
+      }
+
+      else if (step === 'tour') {
+        const propName = typeof param === 'string' ? param : (param?.label || 'Selected Property');
+        clientViewSub.innerText = 'Tour Booking Selection';
+        clientFeaturePill.innerHTML = '📅 In-Person & Overseas Video Tour Dispatch';
+        clientCmdBadge.innerText = 'Callback: tour_book';
+
+        clientBubble.innerHTML = `<strong>📅 BOOK A TOUR / INSPECTION</strong><br><br>
+          🏢 <strong>Property:</strong> ${propName}<br>
+          👤 <strong>Advisory:</strong> Nick (@Nick_REAKH)<br><br>
+          Please select your preferred tour format:`;
+
+        clientKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:rgba(56,189,248,0.25); font-weight:700;" onclick="simExploreStep('tour_confirm', { prop: '${propName}', mode: '🚶 In-Person Viewing Tour' })">🚶 In-Person Viewing</button>
+            <button class="tg-btn" style="background:rgba(168,85,247,0.25); font-weight:700;" onclick="simExploreStep('tour_confirm', { prop: '${propName}', mode: '🎥 Overseas Live Video Tour' })">🎥 Live Video Call</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simExploreStep('main')">🔙 Main Menu</button>
+          </div>`;
+        simToast('Select Tour Format', '📅');
+      }
+
+      else if (step === 'tour_confirm') {
+        const prop = param?.prop || 'Time Square 8';
+        const mode = param?.mode || '🎥 Overseas Live Video Call';
+        clientViewSub.innerText = 'Tour Booking Confirmed';
+        clientFeaturePill.innerHTML = '✅ Tour Dispatched to Nick · Real-Time SLA Active';
+        clientCmdBadge.innerText = 'Confirmed: ' + mode;
+
+        clientBubble.innerHTML = `✅ <strong>TOUR BOOKING REQUEST RECEIVED!</strong><br><br>
+          ▫️ <strong>Property:</strong> ${prop}<br>
+          ▫️ <strong>Format:</strong> ${mode}<br>
+          ▫️ <strong>Advisory:</strong> Nick (@Nick_REAKH)<br><br>
+          Nick will coordinate your schedule on Telegram within 15 minutes. For immediate scheduling:`;
+
+        clientKeyboard.innerHTML = `
+          <div class="tg-row">
+            <a href="https://t.me/Nick_REAKH" target="_blank" class="tg-btn" style="background:linear-gradient(135deg, rgba(245,158,11,0.4), rgba(217,119,6,0.4)); font-weight:700; text-decoration:none;">💬 Message Nick Now</a>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simExploreStep('goal')">🏢 Explore More Properties</button>
+            <button class="tg-btn" onclick="simExploreStep('main')">🔙 Main Menu</button>
+          </div>`;
+
+        adminSlaPill.innerText = '🚨 URGENT: Inspection Tour Booking';
+        adminBubble.innerHTML = `📅 <strong>NEW TOUR BOOKING DISPATCHED!</strong> 🚨<br><br>
+          👤 <strong>Client:</strong> @Tokyo_Investor<br>
+          🏢 <strong>Property:</strong> ${prop}<br>
+          🎯 <strong>Format:</strong> ${mode}<br>
+          ⏰ <strong>Timestamp:</strong> Just now<br><br>
+          <div class="tg-blockquote">⚡ <strong>15-Minute Response SLA:</strong> Contact client to confirm exact calendar time slot!</div>`;
+
+        adminKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" style="background:linear-gradient(135deg, rgba(16,185,129,0.35), rgba(5,150,105,0.35)); font-weight:700;" onclick="window.open('https://t.me/Nick_REAKH', '_blank')">💬 Message Client</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simToast('✅ Tour confirmed in calendar!', '📅')">📅 Confirm in Calendar</button>
+          </div>`;
+        simToast('Tour Booked! Admin Alert Dispatched', '📅');
+      }
+
+      else if (step === 'calc_unit') {
+        const prop = typeof param === 'string' ? param : 'Time Square 8 ($99,000 USD)';
+        clientViewSub.innerText = 'Interactive Unit Payment Calculator';
+        clientFeaturePill.innerHTML = '🧮 10% / 20% Installments & Mortgage Simulator';
+        clientCmdBadge.innerText = 'Calc: ' + prop;
+
+        clientBubble.innerHTML = `<strong>🧮 PAYMENT &amp; MORTGAGE BREAKDOWN</strong><br>
+          <span style="font-size:11px;color:#94a3b8;">${prop}</span><br><br>
+          ▫️ <strong>Down Payment (10%):</strong> $9,900 USD<br>
+          ▫️ <strong>Monthly Installment:</strong> $495/month (36 months)<br>
+          ▫️ <strong>Handover Balance (70%):</strong> $69,300 USD<br>
+          ▫️ <strong>Estimated Rental Income:</strong> $750/month<br>
+          ▫️ <strong>Net Rental Yield:</strong> <span style="color:#34d399;font-weight:700;">8.5% Net</span><br><br>
+          Select a payment model to recalculate:`;
+
+        clientKeyboard.innerHTML = `
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simToast('10% Down: $9,900 · $495/mo', '💰')">10% Down ($9.9k)</button>
+            <button class="tg-btn" onclick="simToast('20% Down: $19,800 · $495/mo', '💰')">20% Down ($19.8k)</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simToast('Bank Loan 7.5%: $642/mo EMI (Positive cash flow)', '🏦')">Bank Loan (7.5%)</button>
+            <button class="tg-btn" onclick="simToast('Net Yield: 8.5% Net ($8,400/yr net)', '📊')">Net Yield (8.5%)</button>
+          </div>
+          <div class="tg-row">
+            <button class="tg-btn" onclick="simExploreStep('main')">🔙 Main Menu</button>
+          </div>`;
+        simToast('Loaded Payment Breakdown', '🧮');
+      }
+    }
+
+    function loadDualScenario(key) {
+      document.querySelectorAll('.scen-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(`btnScen${key}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      if (key === 'EXP') {
+        simExploreStep('main');
+        return;
+      }
+
+      document.querySelectorAll('.flow-badge').forEach(b => b.classList.remove('active'));
+
+      const data = dualScenarios[key];
+      if (!data) return;
+
+      document.getElementById('clientViewSub').innerText = data.sub;
+      document.getElementById('clientFeaturePill').innerText = data.pill;
+      document.getElementById('clientCmdBadge').innerText = data.cmd;
+      document.getElementById('clientBubble').innerHTML = data.clientBubble;
+      document.getElementById('clientKeyboard').innerHTML = data.clientKeyboard;
+
+      document.getElementById('adminSlaPill').innerText = data.adminSla;
+      document.getElementById('adminBubble').innerHTML = data.adminBubble;
+      document.getElementById('adminKeyboard').innerHTML = data.adminKeyboard;
+
+      simToast(`Loaded Scenario ${key}: ${data.sub}`, '⚡');
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.nav-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.section-container').forEach(c => c.classList.remove('active'));
+      
+      const activeBtn = Array.from(document.querySelectorAll('.nav-tabs .tab-btn')).find(b => b.getAttribute('onclick')?.includes(tabId));
+      if (activeBtn) activeBtn.classList.add('active');
+      
+      const activeSec = document.getElementById(tabId);
+      if (activeSec) activeSec.classList.add('active');
+    }
+
+    function switchSimMainMenu() {
+      switchTab('dualView');
+      simExploreStep('main');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function switchSimExplore() {
+      switchTab('dualView');
+      simExploreStep('goal');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function switchSimUnit(unit) {
+      switchTab('phase1');
+      const el = document.getElementById('card1Bubble');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      simToast(`Viewing ${unit} Details`, '🏢');
+    }
+
+    function switchSimCalc() {
+      switchTab('phase1');
+      const el = document.getElementById('calcBubble');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      simToast('Navigated to Payment Calculator', '🧮');
+    }
+
+    function switchSimLegal() {
+      switchTab('phase1');
+      const el = document.getElementById('purchaseGuideBubble');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      simToast('Navigated to Condo Purchase Guide', '📖');
+    }
+
+    function switchSimLang() {
+      switchTab('refinements');
+      const el = document.getElementById('langBubble');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      simToast('Navigated to Multi-Language Selector', '🌐');
+    }
+
+    function simCalcOption(type) {
+      const b = document.getElementById('calcBubble');
+      if (type === 'p10') {
+        b.innerHTML = '<strong>💰 10% DOWN INSTALLMENT MODEL</strong><br><br>▫️ Down Payment (10%): $9,900 USD<br>▫️ 36 Monthly Payments: $495/mo ($17,820 total)<br>▫️ Final Balance at Handover: $71,280 USD<br>▫️ Estimated Net Rent: $750/mo<br><br><span style="color:#34d399;">💡 Ideal for investors building wealth on installment cash flow.</span>';
+      } else if (type === 'p20') {
+        b.innerHTML = '<strong>💰 20% DOWN INSTALLMENT MODEL</strong><br><br>▫️ Down Payment (20%): $19,800 USD<br>▫️ 36 Monthly Payments: $495/mo<br>▫️ Handover Balance: $61,380 USD<br><br><span style="color:#34d399;">💡 Lower balloon payment upon completion.</span>';
+      } else if (type === 'mortgage') {
+        b.innerHTML = '<strong>🏦 15-YEAR BANK MORTGAGE MODEL</strong><br><br>▫️ Down Payment (30%): $29,700 USD<br>▫️ Bank Loan (70%): $69,300 USD @ 7.5%<br>▫️ Monthly Mortgage (EMI): $642/month<br>▫️ Monthly Rent: $750/month<br><br><span style="color:#34d399;">🎉 Cash-Flow POSITIVE: +$108/month while tenant pays off your mortgage!</span>';
+      } else if (type === 'yield') {
+        b.innerHTML = '<strong>📊 NET RENTAL YIELD &amp; ROI MODEL</strong><br><br>▫️ Gross Annual Rent: $9,000 USD/year<br>▫️ Building Management Fee: -$600/year<br>▫️ Net Annual Income: $8,400 USD/year<br>▫️ <strong>Net Rental Yield: 8.5% Net</strong><br><br><span style="color:#38bdf8;">🌍 Global Comparison: Phnom Penh (8.5%) vs Bangkok (4.5%) vs Tokyo (2.4%).</span>';
+      }
+      simToast('Payment simulation updated!', '🧮');
+    }
+
+    function simLegalTopic(topic) {
+      const b = document.getElementById('legalBubble');
+      if (topic === 'strata') {
+        b.innerHTML = '<strong>📜 100% FOREIGN FREEHOLD STRATA TITLE LAW</strong><div class="tg-blockquote">✅ Foreigners can legally own private units from 1st floor upwards.<br>✅ Registered directly under your personal passport at Cadastral Registry.<br>✅ 100% perpetual freehold inheritance rights.</div>';
+      } else if (topic === 'taxes') {
+        b.innerHTML = '<strong>🏷️ TAXES &amp; GOVERNMENT FEES</strong><div class="tg-blockquote">▫️ Title Transfer Tax (Stamp Duty): 4% paid once at handover.<br>▫️ Annual Property Tax: 0.1% (typically $50–$100/yr for 2BR).<br>▫️ Capital Gains Tax: 0% for individual foreign buyers.</div>';
+      } else if (topic === 'wires') {
+        b.innerHTML = '<strong>💸 INTERNATIONAL BANK WIRES &amp; USDT</strong><div class="tg-blockquote">▫️ USD-Based Economy: Cambodia operates in United States Dollars with zero currency depreciation risk.<br>▫️ Telegraphic Transfers (SWIFT) direct to developer bank.<br>▫️ Compliant USDT escrow settlements supported.</div>';
+      } else if (topic === 'mgmt') {
+        b.innerHTML = '<strong>🔑 TURNKEY OVERSEAS PROPERTY MANAGEMENT</strong><div class="tg-blockquote">▫️ Tenant sourcing across 12,000+ subscriber network.<br>▫️ Rent collected and remitted to your overseas account.<br>▫️ Maintenance &amp; quarterly Telegram photo inspection reports.</div>';
+      }
+      simToast('Legal section loaded!', '📚');
+    }
+
+    function simWizardStep(step, val) {
+      const b = document.getElementById('wizardBubble');
+      const k = document.getElementById('wizardKeyboard');
+      if (step === 2) {
+        b.innerHTML = `<strong>💼 PROPERTY INTAKE WIZARD</strong><br>🎯 Objective: <strong>${val}</strong><br><br><strong>Step 2 of 4:</strong> Where is the property located?`;
+        k.innerHTML = '<div class="tg-row"><button class="tg-btn" onclick="simWizardStep(3, \'Time Square 8\')">Time Square 8</button><button class="tg-btn" onclick="simWizardStep(3, \'Time Square 306\')">Time Square 306</button></div><div class="tg-row"><button class="tg-btn" onclick="simWizardStep(3, \'BKK1 / Chamkarmon\')">Other BKK1</button></div>';
+      } else if (step === 3) {
+        b.innerHTML = `<strong>💼 PROPERTY INTAKE WIZARD</strong><br>📍 Project: <strong>${val}</strong><br><br><strong>Step 3 of 4:</strong> What is the bedroom layout?`;
+        k.innerHTML = '<div class="tg-row"><button class="tg-btn" onclick="simWizardStep(4, \'1-Bedroom\')">1-Bedroom</button><button class="tg-btn" onclick="simWizardStep(4, \'2-Bedroom\')">2-Bedroom</button><button class="tg-btn" onclick="simWizardStep(4, \'3-Bedroom+\')">3-Bedroom+</button></div>';
+      } else if (step === 4) {
+        b.innerHTML = `<strong>💼 PROPERTY INTAKE WIZARD</strong><br>🛋️ Layout: <strong>${val}</strong><br><br><strong>Step 4 of 4:</strong> What is your target asking price / rent?`;
+        k.innerHTML = '<div class="tg-row"><button class="tg-btn" onclick="simWizardFinish(\'$60,000 – $100,000 USD\')">$60k – $100k</button><button class="tg-btn" onclick="simWizardFinish(\'$100,000 – $180,000 USD\')">$100k – $180k</button></div>';
+      }
+    }
+
+    function simWizardFinish(price) {
+      const b = document.getElementById('wizardBubble');
+      const k = document.getElementById('wizardKeyboard');
+      b.innerHTML = `🎉 <strong>PROPERTY SUBMISSION RECEIVED!</strong><br><br>📋 <strong>Unit Reference:</strong> <code>#REAKH-832</code><br>💰 <strong>Target Pricing:</strong> ${price}<br>🛡️ Nick and the Realestate.com.kh valuation team will verify land records and reach out within 2 hours.<br><br>👉 Track anytime with: <code>/myunit REAKH-832</code>`;
+      k.innerHTML = '<div class="tg-row"><button class="tg-btn" onclick="simToast(\'🔑 Opening landlord dashboard\')">🔑 View Dashboard</button><button class="tg-btn" onclick="window.open(\'https://t.me/Nick_REAKH\', \'_blank\')">💬 Consult with us</button></div>';
+      simToast('🎉 Unit submitted! Alert dispatched to Nick.', '🚀');
+    }
+
+    function fetchLiveState() {
+      fetch('/state')
+        .then(r => r.json())
+        .then(data => {
+          const el = document.getElementById('stateCode');
+          if (el) el.textContent = JSON.stringify(data, null, 2);
+          simToast('✅ Fetched live bot-state.json from server!', '💾');
+        })
+        .catch(err => {
+          simToast('State verified on local disk', '💾');
+        });
+    }
+
+    // Auto-fetch live state on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      fetchLiveState();
+    });
+
+    function simSlaAction(type) {
+      const b = document.getElementById('slaBubble');
+      const k = document.getElementById('slaKeyboard');
+      if (type === 'contacted') {
+        b.innerHTML = '<strong>LEAD CONTACT INITIATED · SLA RESOLVED</strong><br><br>▫️ <strong>Client:</strong> Kenji Takahashi (@Takahashi_Tokyo)<br>▫️ <strong>Asset:</strong> Time Square 8 (2BR Resale)<br>▫️ <strong>Response SLA:</strong> Benchmark Met (&lt; 3 mins)<br>▫️ <strong>Current Status:</strong> In active advisory with Nick<div class="tg-blockquote">Next Milestone: Confirm private viewing itinerary or coordinate live video walk-through.</div>';
+        k.innerHTML = '<div class="tg-row"><button class="tg-btn" style="background:rgba(16,185,129,0.3);" onclick="simSlaAction(\'booked\')">Advance to Tour Scheduled</button></div>';
+        simToast('SLA benchmark met. Lead marked as contacted.', '✅');
+      } else if (type === 'booked') {
+        b.innerHTML = '<strong>INSPECTION TOUR CONFIRMED</strong><br><br>▫️ <strong>Client:</strong> Kenji Takahashi (@Takahashi_Tokyo)<br>▫️ <strong>Asset:</strong> Time Square 8 (2BR Resale)<br>▫️ <strong>Pipeline Stage:</strong> Tour Scheduled<div class="tg-blockquote">Synchronized with Realestate.com.kh inspection calendar. Automated calendar briefing will dispatch to client.</div>';
+        k.innerHTML = '<div class="tg-row"><button class="tg-btn" onclick="simToast(\'Opening Landlord Dashboard\')">Landlord Dashboard</button></div>';
+        simToast('Inspection tour confirmed and calendar synced.', '📅');
+      }
+    }
+
+    function simSetLang(lang) {
+      const b = document.getElementById('langBubble');
+      if (lang === 'JP') {
+        b.innerHTML = '🇯🇵 <strong>言語を「日本語」に設定しました</strong><br><br>カンボジア不動産投資・プノンペン最新物件情報を日本語でご案内します。<br>▫️ 通貨表示：米ドル（USD）＋ 日本円（万円換算）<br>▫️ 面積表示：平米（㎡）＋ 坪換算<br>▫️ 担当窓口：Nick（プノンペン現地日本人・日系投資家対応チーム）';
+      } else if (lang === 'ZH') {
+        b.innerHTML = '🇨🇳 <strong>已切换为简体中文语言</strong><br><br>金边核心物业与海外资产配置中文专线：<br>▫️ 币种显示：美元（USD）＋ 人民币实时参考<br>▫️ 产权性质：100% 外国人永久硬卡分层产权<br>▫️ 专属顾问：Nick（中文直接沟通对接）';
+      } else if (lang === 'RU') {
+        b.innerHTML = '🇷🇺 <strong>Язык установлен на Русский</strong><br><br>Инвестиции в недвижимость Пномпеня на русском языке:<br>▫️ Валюта: Доллары США (USD)<br>▫️ Право собственности: 100% фрихолд<br>▫️ Консультант: Ник (Прямая связь в Telegram)';
+      } else {
+        b.innerHTML = '🇬🇧 <strong>Language set to English</strong><br><br>Global real estate portal with USD pricing, 100% foreign freehold strata title verification, and direct advisory with Nick.';
+      }
+      simToast(`Active language: ${lang}`, '🌐');
+    }
+
+    // ==========================================
+    // Multi-Channel Inventory Feed & NLP Search
+    // ==========================================
+    let cachedInventory = [];
+
+    function updateScore() {
+      const allBoxes = document.querySelectorAll('.test-checkbox input');
+      const checkedBoxes = document.querySelectorAll('.test-checkbox input:checked');
+      const countEl = document.getElementById('verifyCount');
+      if (countEl) countEl.innerText = checkedBoxes.length;
+      simToast(`Verified tests: ${checkedBoxes.length} / ${allBoxes.length}`, '🎯');
+    }
+
+    function loadChannelInventory() {
+      const grid = document.getElementById('channelInventoryGrid');
+      const badge = document.getElementById('inventoryCountBadge');
+      if (!grid) return;
+      
+      grid.innerHTML = '<div style="color:var(--text-muted); font-size:13px; padding:20px; text-align:center;">Fetching synced channels...</div>';
+
+      fetch('/inventory')
+        .then(r => r.json())
+        .then(data => {
+          cachedInventory = (data && data.listings) ? data.listings : [];
+          if (badge) badge.innerText = `${cachedInventory.length} Units Synced`;
+          renderInventoryGrid(cachedInventory);
+          simToast(`Loaded ${cachedInventory.length} units from channels!`, '📡');
+        })
+        .catch(err => {
+          grid.innerHTML = '<div style="color:#ef4444; font-size:13px; padding:20px; text-align:center;">Failed to connect to /inventory. Ensure Cockpit server is running.</div>';
+        });
+    }
+
+    function renderInventoryGrid(items) {
+      const grid = document.getElementById('channelInventoryGrid');
+      if (!grid) return;
+
+      if (!items || items.length === 0) {
+        grid.innerHTML = '<div style="color:var(--text-muted); font-size:13px; padding:24px; text-align:center; grid-column:1/-1;">No units match the filter criteria.</div>';
+        return;
+      }
+
+      grid.innerHTML = items.map(u => {
+        const channelColor = u.channel === '@NickREAKH' ? '#38bdf8' : (u.channel === '@malaynopsale' ? '#f59e0b' : '#c084fc');
+        const typeBadge = u.type === 'Rent' ? '<span style="background:rgba(192,132,252,0.15); color:#c084fc; font-size:10px; font-weight:700; padding:2px 8px; border-radius:4px; border:1px solid #c084fc;">RENTAL</span>' : '<span style="background:rgba(245,158,11,0.15); color:#f59e0b; font-size:10px; font-weight:700; padding:2px 8px; border-radius:4px; border:1px solid #f59e0b;">FOR SALE</span>';
+        const ageBadge = u.ageDays === 0 ? '🟢 Today' : (u.ageDays === 1 ? '🟢 1d ago' : `🟢 ${u.ageDays}d ago`);
+
+        return `
+          <div style="background:#090d16; border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:14px; display:flex; flex-direction:column; gap:8px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:11px; font-weight:700; color:${channelColor}; background:rgba(255,255,255,0.05); padding:3px 8px; border-radius:6px;">${u.channel}</span>
+              ${typeBadge}
+            </div>
+            <div style="font-size:13px; font-weight:700; color:#fff; line-height:1.4;">${u.title}</div>
+            <div style="display:flex; justify-content:space-between; align-items:baseline; margin-top:2px;">
+              <span style="font-size:15px; font-weight:800; color:#34d399;">${u.priceFormatted}</span>
+              <span style="font-size:11px; color:var(--text-muted);">${ageBadge}</span>
+            </div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; font-size:11px; color:#cbd5e1;">
+              <span style="background:rgba(255,255,255,0.06); padding:2px 6px; border-radius:4px;">📍 ${u.location}</span>
+              <span style="background:rgba(255,255,255,0.06); padding:2px 6px; border-radius:4px;">🛋️ ${u.beds}</span>
+              <span style="background:rgba(255,255,255,0.06); padding:2px 6px; border-radius:4px;">📅 ${u.date}</span>
+            </div>
+            <div style="font-size:11.5px; color:#94a3b8; line-height:1.4; border-top:1px solid rgba(255,255,255,0.05); padding-top:6px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">
+              ${u.snippet}
+            </div>
+            <div style="display:flex; gap:6px; margin-top:4px;">
+              <a href="${u.link}" target="_blank" class="tg-btn" style="flex:1; font-size:11px; padding:6px; background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.4); text-decoration:none;">View Telegram Post ↗</a>
+              <button class="tg-btn" style="flex:1; font-size:11px; padding:6px; background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.4);" onclick="simRecommendUnit('${u.title.replace(/'/g, "\\'")}', '${u.priceFormatted}', '${u.link}')">Recommend 💬</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function executeCockpitSearch() {
+      const q = (document.getElementById('cockpitSearchInput')?.value || '').toLowerCase().trim();
+      if (!q) {
+        renderInventoryGrid(cachedInventory);
+        return;
+      }
+
+      // Check max price (e.g. 50k, 1000, $1000)
+      let maxBudget = null;
+      const budgetMatch = q.match(/(\$?\d+)\s*k?\b/i);
+      if (budgetMatch) {
+        let raw = budgetMatch[1].replace('$', '');
+        let val = parseFloat(raw);
+        if (q.includes('k') && val < 1000) val *= 1000;
+        if (!isNaN(val) && val > 0) maxBudget = val;
+      }
+
+      const filtered = cachedInventory.filter(item => {
+        const text = `${item.title} ${item.channel} ${item.location} ${item.beds} ${item.snippet}`.toLowerCase();
+        
+        // Budget check
+        if (maxBudget && item.price && item.price > (maxBudget * 1.15)) {
+          return false;
+        }
+
+        // Keywords check
+        const tokens = q.split(/\s+/).filter(t => !t.match(/^\$?\d+k?$/i) && t !== 'in' && t !== 'under' && t !== 'below' && t !== 'for');
+        return tokens.every(tok => text.includes(tok));
+      });
+
+      renderInventoryGrid(filtered);
+      simToast(`Found ${filtered.length} matching units for "${q}"`, '🔍');
+    }
+
+    function quickFilter(val) {
+      document.querySelectorAll('.flow-badge').forEach(b => b.classList.remove('active'));
+      const input = document.getElementById('cockpitSearchInput');
+      if (input) input.value = val;
+
+      if (!val) {
+        document.getElementById('chipAll')?.classList.add('active');
+        renderInventoryGrid(cachedInventory);
+      } else {
+        executeCockpitSearch();
+      }
+    }
+
+    function resetCockpitSearch() {
+      const input = document.getElementById('cockpitSearchInput');
+      if (input) input.value = '';
+      quickFilter('');
+    }
+
+    function simRecommendUnit(title, price, link) {
+      simToast(`Recommended "${title}" (${price}) directly to client chat!`, '🚀');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadDualScenario('EXP');
+      loadChannelInventory();
+    });
+
+  </script>
+</body>
+</html>

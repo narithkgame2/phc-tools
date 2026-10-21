@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PHC · Commission Tracker</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#083467;--gold:#cc9d4d;--gold-light:#e8c47a;--gold-pale:#fdf3e3;
+  --cream:#fdf8f0;--g1:#f5f6f8;--g2:#e8ecf2;--g3:#c0c8d4;--g4:#7a8799;
+  --text:#1a2535;--red:#d63031;--green:#00b894;--orange:#e17055;
+  /* Sidebar uses the live site's actual dark theme tokens (propertyhubcambodia.com),
+     converted from its --navy/--gold/--foreground HSL values in src/index.css */
+  --sb:#0F192E;--sb-deep:#091120;--sb-hover:rgba(255,255,255,.06);--sb-active:rgba(192,154,89,.16);
+  --sb-text:rgba(245,243,240,.65);--sb-text-s:#F5F3F0;--sb-icon:rgba(245,243,240,.4);--sb-border:rgba(255,255,255,.08);
+  --sb-gold:#C09A59;--sb-gold-light:#D9BD8C;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--g1);color:var(--text);height:100vh;overflow:hidden;-webkit-font-smoothing:antialiased;}
+a{text-decoration:none;cursor:pointer;color:inherit;}
+
+/* ── App shell ── */
+.app{display:flex;height:100vh;overflow:hidden;}
+
+/* ── Sidebar ── */
+.sidebar{width:224px;flex-shrink:0;background:var(--sb);display:flex;flex-direction:column;border-right:1px solid var(--sb-border);transition:width .2s ease;overflow:hidden;}
+.sidebar.collapsed{width:52px;}
+.sidebar.collapsed .sb-label,.sidebar.collapsed .ws-info,.sidebar.collapsed .sb-section-label,.sidebar.collapsed .sb-count{display:none;}
+.sidebar.collapsed .ws-header{padding:14px 0;justify-content:center;}
+.sidebar.collapsed .ws-logo{display:none;}
+.sidebar.collapsed .collapse-btn{transform:rotate(180deg);}
+
+.ws-header{display:flex;align-items:center;gap:9px;padding:14px 12px 12px;border-bottom:1px solid var(--sb-border);flex-shrink:0;}
+.ws-logo{width:28px;height:28px;object-fit:contain;flex-shrink:0;}
+.ws-info{flex:1;min-width:0;}
+.ws-name{font-size:13px;font-weight:700;color:var(--sb-text-s);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ws-sub{font-size:10px;color:var(--sb-icon);margin-top:1px;}
+.collapse-btn{background:none;border:none;color:var(--sb-icon);cursor:pointer;font-size:13px;padding:4px;border-radius:4px;flex-shrink:0;line-height:1;}
+.collapse-btn:hover{background:var(--sb-hover);color:var(--sb-text-s);}
+
+.sb-nav{flex:1;overflow-y:auto;padding:8px 0;scrollbar-width:none;}
+.sb-nav::-webkit-scrollbar{display:none;}
+.sb-section-label{font-size:9px;font-weight:600;color:var(--sb-icon);text-transform:uppercase;letter-spacing:.1em;padding:10px 14px 4px;}
+.sb-item{display:flex;align-items:center;gap:8px;padding:6px 10px;margin:1px 6px;border-radius:6px;color:var(--sb-text);font-size:12px;font-weight:400;transition:all .15s;cursor:pointer;user-select:none;}
+.sb-item:hover{background:var(--sb-hover);color:var(--sb-text-s);}
+.sb-item.active{background:var(--sb-active);color:var(--sb-gold-light);font-weight:600;}
+.sb-icon{width:18px;height:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;color:var(--sb-icon);}
+.sb-item.active .sb-icon{color:var(--sb-gold-light);}
+.sb-item:hover .sb-icon{color:var(--sb-text-s);}
+.sb-label{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-count{font-size:10px;color:var(--sb-icon);margin-left:auto;font-weight:500;}
+.sb-item.active .sb-count{color:var(--sb-gold-light);}
+.av-ring{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;flex-shrink:0;}
+
+.sb-footer{border-top:1px solid var(--sb-border);padding:8px 14px;display:flex;align-items:center;gap:7px;}
+.api-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.25);flex-shrink:0;}
+.api-dot.ok{background:var(--green);}
+.api-dot.err{background:var(--red);}
+.api-txt{font-size:10px;color:var(--sb-icon);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* ── Main ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+.topbar{background:#fff;border-bottom:1px solid var(--g2);height:44px;display:flex;align-items:center;padding:0 20px;gap:6px;flex-shrink:0;}
+.breadcrumb{font-size:12px;color:var(--g4);}
+.bc-sep{font-size:12px;color:var(--g3);margin:0 4px;}
+.bc-active{font-size:12px;font-weight:600;color:var(--text);}
+
+.toolbar{background:#fff;border-bottom:1px solid var(--g2);height:52px;display:flex;align-items:center;padding:0 20px;gap:10px;flex-shrink:0;}
+.month-picker{background:var(--g1);border:1px solid var(--g2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 12px;border-radius:7px;cursor:pointer;outline:none;}
+.add-btn{background:var(--navy);color:#fff;font-size:12px;font-weight:600;padding:8px 18px;border:none;border-radius:7px;cursor:pointer;white-space:nowrap;transition:background .15s;margin-left:auto;}
+.add-btn:hover{background:#0a4080;}
+
+.content-scroll{flex:1;overflow-y:auto;padding:24px 24px 60px;}
+.page{max-width:1200px;margin:0 auto;}
+.section-label{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--g4);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:"";flex:1;height:1px;background:var(--g2);}
+
+/* ── Stat cards ── */
+.stats-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:28px;}
+.stat-card{background:#fff;border:1px solid var(--g2);border-radius:12px;padding:18px 20px;position:relative;overflow:hidden;}
+.stat-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;}
+.stat-card.c-navy::before{background:var(--navy);}
+.stat-card.c-gold::before{background:linear-gradient(90deg,var(--gold),var(--gold-light));}
+.stat-card.c-nick::before{background:#3b82f6;}
+.stat-card.c-monika::before{background:#8b5cf6;}
+.stat-card.c-reza::before{background:#10b981;}
+.stat-card.c-orange::before{background:var(--orange);}
+.stat-label{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--g4);margin-bottom:8px;}
+.stat-val{font-family:'DM Serif Display',serif;font-size:28px;color:var(--text);line-height:1;margin-bottom:4px;}
+.stat-sub{font-size:11px;color:var(--g4);}
+.stat-sub b{color:var(--text);}
+
+/* ── Agent cards ── */
+.agent-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;}
+.agent-card{background:#fff;border:1px solid var(--g2);border-radius:12px;padding:20px 22px;}
+.agent-top{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.agent-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:16px;color:#fff;flex-shrink:0;}
+.av-nick{background:#3b82f6;}
+.av-monika{background:#8b5cf6;}
+.av-reza{background:#10b981;}
+.agent-name{font-size:14px;font-weight:600;color:var(--text);}
+.agent-role{font-size:11px;color:var(--g4);}
+.agent-stat-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--g2);font-size:12px;color:var(--g4);}
+.agent-stat-row:last-child{border-bottom:none;padding-bottom:0;}
+.agent-stat-row b{color:var(--text);font-weight:600;}
+.agent-big{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin-bottom:2px;}
+.agent-big-lbl{font-family:'DM Mono',monospace;font-size:10px;color:var(--g4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;}
+
+/* ── Deal table ── */
+.table-wrap{background:#fff;border:1px solid var(--g2);border-radius:12px;overflow:hidden;}
+.table-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g2);}
+.table-title{font-size:13px;font-weight:600;color:var(--text);}
+table{width:100%;border-collapse:collapse;}
+thead th{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--g4);text-align:left;padding:10px 14px;background:var(--g1);border-bottom:1px solid var(--g2);}
+tbody td{padding:12px 14px;border-bottom:1px solid var(--g2);font-size:12px;vertical-align:middle;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:var(--g1);}
+.deal-client{font-weight:600;color:var(--text);}
+.deal-project{color:var(--g4);font-size:11px;margin-top:2px;}
+.price-cell{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;}
+.split-cell{display:flex;flex-direction:column;gap:2px;}
+.split-line{font-size:11px;font-family:'DM Mono',monospace;}
+.split-n{color:#3b82f6;}
+.split-m{color:#8b5cf6;}
+.split-r{color:#10b981;}
+.agent-chip{display:inline-block;font-size:10px;font-family:'DM Mono',monospace;padding:2px 8px;border-radius:10px;font-weight:500;}
+.ac-n{background:#dbeafe;color:#1e40af;}
+.ac-m{background:#ede9fe;color:#4c1d95;}
+.ac-r{background:#d1fae5;color:#065f46;}
+.ac-all{background:var(--g2);color:var(--g4);}
+.action-btn{background:none;border:1px solid var(--g2);color:var(--g4);font-size:11px;padding:4px 10px;border-radius:6px;cursor:pointer;transition:all .15s;}
+.action-btn:hover{border-color:var(--navy);color:var(--navy);}
+.del-btn{color:var(--red);border-color:rgba(214,48,49,.2);}
+.del-btn:hover{background:#fee2e2;border-color:var(--red);}
+.empty-row td{text-align:center;padding:40px;color:var(--g4);font-size:13px;}
+.status-pill{display:inline-block;font-size:10px;font-weight:600;padding:3px 9px;border-radius:10px;letter-spacing:.02em;}
+.status-Approved{background:#d1fae5;color:#065f46;}
+.status-Pending{background:#fef3c7;color:#92400e;}
+.status-Inactive{background:var(--g2);color:var(--g4);}
+.link-cell{display:flex;align-items:center;gap:6px;}
+.link-text{font-family:'DM Mono',monospace;font-size:11px;color:var(--g4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;}
+.copy-btn{background:none;border:1px solid var(--g2);color:var(--g4);font-size:10px;padding:3px 8px;border-radius:6px;cursor:pointer;flex-shrink:0;transition:all .15s;}
+.copy-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+/* ── Modal ── */
+.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(8,52,103,.45);z-index:200;align-items:center;justify-content:center;padding:20px;}
+.modal-backdrop.show{display:flex;}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:540px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.2);}
+.modal-header{background:var(--navy);color:#fff;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;border-radius:16px 16px 0 0;}
+.modal-title{font-family:'DM Serif Display',serif;font-size:17px;}
+.modal-close{background:none;border:none;color:rgba(255,255,255,.6);font-size:20px;cursor:pointer;line-height:1;padding:2px 6px;}
+.modal-close:hover{color:#fff;}
+.modal-body{padding:22px;}
+.form-row{margin-bottom:16px;}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.form-label{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--g4);margin-bottom:6px;display:block;}
+.form-input{width:100%;border:1px solid var(--g2);border-radius:8px;padding:9px 12px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);background:#fff;outline:none;transition:border-color .15s;}
+.form-input:focus{border-color:var(--navy);}
+.form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%237a8799' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:30px;}
+.split-section{background:var(--g1);border-radius:10px;padding:16px;margin-bottom:16px;}
+.split-title{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--g4);margin-bottom:12px;}
+.split-row{display:grid;grid-template-columns:1fr 80px 100px;gap:8px;align-items:center;margin-bottom:10px;}
+.split-row:last-child{margin-bottom:0;}
+.split-name{font-size:12px;font-weight:600;color:var(--text);}
+.split-pct-input{border:1px solid var(--g2);border-radius:7px;padding:7px 10px;font-size:13px;font-family:'DM Mono',monospace;width:100%;text-align:right;outline:none;transition:border-color .15s;}
+.split-pct-input:focus{border-color:var(--navy);}
+.split-amt{font-family:'DM Mono',monospace;font-size:12px;color:var(--g4);text-align:right;}
+.split-warning{font-size:11px;color:var(--red);margin-top:8px;display:none;}
+.commission-preview{background:var(--gold-pale);border:1px solid rgba(204,157,77,.3);border-radius:8px;padding:12px 14px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;}
+.commission-preview-lbl{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--g4);}
+.commission-preview-val{font-family:'DM Serif Display',serif;font-size:22px;color:var(--navy);}
+.modal-footer{padding:0 22px 22px;display:flex;gap:10px;justify-content:flex-end;}
+.btn-cancel{background:var(--g1);border:1px solid var(--g2);color:var(--text);font-size:13px;font-weight:500;padding:9px 20px;border-radius:9px;cursor:pointer;}
+.btn-save{background:var(--navy);color:#fff;font-size:13px;font-weight:600;padding:9px 24px;border-radius:9px;border:none;cursor:pointer;transition:background .15s;}
+.btn-save:hover{background:#0a4080;}
+
+/* ── Toast ── */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;font-size:13px;padding:12px 18px;border-radius:10px;border-left:3px solid var(--gold);box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:300;transform:translateY(80px);opacity:0;transition:all .25s;pointer-events:none;}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* ── Delete confirm ── */
+.confirm-backdrop{display:none;position:fixed;inset:0;background:rgba(8,52,103,.45);z-index:300;align-items:center;justify-content:center;}
+.confirm-backdrop.show{display:flex;}
+.confirm-box{background:#fff;border-radius:14px;padding:28px;max-width:360px;width:90%;text-align:center;}
+.confirm-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:8px;}
+.confirm-sub{font-size:12px;color:var(--g4);margin-bottom:20px;}
+.confirm-btns{display:flex;gap:10px;justify-content:center;}
+.btn-del-confirm{background:var(--red);color:#fff;border:none;font-size:13px;font-weight:600;padding:9px 20px;border-radius:9px;cursor:pointer;}
+.btn-del-cancel{background:var(--g1);border:1px solid var(--g2);color:var(--text);font-size:13px;padding:9px 20px;border-radius:9px;cursor:pointer;}
+
+@media(max-width:900px){
+  .stats-grid{grid-template-columns:repeat(3,1fr);}
+  .agent-grid{grid-template-columns:1fr;}
+}
+@media(max-width:700px){
+  .sidebar{width:52px;}
+  .sidebar .sb-label,.sidebar .ws-info,.sidebar .sb-section-label,.sidebar .sb-count{display:none;}
+}
+@media(max-width:600px){
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .content-scroll{padding:16px 14px 48px;}
+  table{font-size:11px;}
+  thead th,tbody td{padding:9px 10px;}
+}
+</style>
+</head>
+<body>
+<div id="phc-gate" style="display:none;position:fixed;inset:0;background:#083467;z-index:99999;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,sans-serif;"><div style="background:#fff;border-radius:16px;padding:40px 36px;width:320px;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.35);"><div style="font-family:Georgia,serif;font-size:22px;font-weight:700;color:#083467;margin-bottom:6px;">PHC Director</div><div style="font-size:13px;color:#7a8799;margin-bottom:8px;">Property Hub Cambodia</div><div style="width:40px;height:2px;background:#cc9d4d;margin:0 auto 24px;"></div><input id="phc-gate-pw" type="password" placeholder="Director password" autocomplete="current-password" style="width:100%;border:1.5px solid #e8ecf2;border-radius:9px;padding:11px 14px;font-size:14px;text-align:center;letter-spacing:.12em;outline:none;margin-bottom:12px;" onfocus="this.style.borderColor='#083467'" onblur="this.style.borderColor='#e8ecf2'" onkeydown="if(event.key==='Enter')phcCheck();"><button onclick="phcCheck()" style="width:100%;background:#083467;color:#fff;border:none;border-radius:9px;padding:12px;font-size:13px;font-weight:600;cursor:pointer;">Continue →</button><div id="phc-gate-err" style="display:none;color:#d63031;font-size:12px;margin-top:12px;">Incorrect password. Try again.</div></div></div>
+<script>(function(){var g=document.getElementById('phc-gate');if(sessionStorage.getItem('phc_ceo_auth')==='1'){g.style.display='none';}else{g.style.display='flex';setTimeout(function(){document.getElementById('phc-gate-pw').focus();},50);}window.phcCheck=function(){var v=document.getElementById('phc-gate-pw').value;if(v==='Nick@PHC2026'){sessionStorage.setItem('phc_ceo_auth','1');sessionStorage.setItem('phc_agent_auth','1');g.style.display='none';}else{document.getElementById('phc-gate-err').style.display='block';document.getElementById('phc-gate-pw').value='';document.getElementById('phc-gate-pw').focus();}};})();</script>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Delete confirm -->
+<div class="confirm-backdrop" id="confirmBd">
+  <div class="confirm-box">
+    <div class="confirm-title">Delete this deal?</div>
+    <div class="confirm-sub">This will remove it from Google Sheets permanently.</div>
+    <div class="confirm-btns">
+      <button class="btn-del-cancel" onclick="closeConfirm()">Cancel</button>
+      <button class="btn-del-confirm" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal-backdrop" id="modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Log New Deal</div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row-2">
+        <div>
+          <label class="form-label">Client Name</label>
+          <input class="form-input" id="f-client" placeholder="e.g. Kenji Tanaka">
+        </div>
+        <div>
+          <label class="form-label">Close Date</label>
+          <input class="form-input" id="f-date" type="date">
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div>
+          <label class="form-label">Project</label>
+          <select class="form-input form-select" id="f-project">
+            <option value="">Select project…</option>
+            <option>Time Square 7</option>
+            <option>Time Square 8</option>
+            <option>Time Square 9</option>
+            <option>Time Square 10</option>
+            <option>Kingston Royale</option>
+            <option>Le Conde BKK1</option>
+            <option>J Tower 3</option>
+            <option>Odom Tower</option>
+            <option>Odom Living</option>
+            <option>UC88 Wyndham Garden</option>
+            <option>Diamond Bay Garden</option>
+            <option>Angkor Grace</option>
+            <option>LZ Sea View Premium</option>
+            <option>Picasso Sky Gemme</option>
+            <option>GATO Tower</option>
+            <option>Multiple/TBD</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label">Unit</label>
+          <input class="form-input" id="f-unit" placeholder="e.g. 08A">
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div>
+          <label class="form-label">Sale Price ($)</label>
+          <input class="form-input" id="f-price" type="number" min="0" placeholder="e.g. 85000" oninput="recalc()">
+        </div>
+        <div>
+          <label class="form-label">Commission Rate (%)</label>
+          <input class="form-input" id="f-rate" type="number" min="0" max="20" step="0.1" placeholder="e.g. 3" oninput="recalc()">
+        </div>
+      </div>
+
+      <div class="commission-preview">
+        <div>
+          <div class="commission-preview-lbl">Total Commission</div>
+          <div class="commission-preview-val" id="comm-preview">$0</div>
+        </div>
+        <div style="text-align:right">
+          <div class="commission-preview-lbl">Sale Price</div>
+          <div style="font-family:'DM Mono',monospace;font-size:13px;color:var(--navy)" id="price-preview">$0</div>
+        </div>
+      </div>
+
+      <div class="split-section">
+        <div class="split-title">Commission Split — must total 100%</div>
+        <div class="split-row">
+          <div class="split-name" style="color:#3b82f6">Nick</div>
+          <input class="split-pct-input" id="f-nick-pct" type="number" min="0" max="100" value="33" oninput="recalc()">
+          <div class="split-amt" id="nick-amt">$0</div>
+        </div>
+        <div class="split-row">
+          <div class="split-name" style="color:#8b5cf6">Monika</div>
+          <input class="split-pct-input" id="f-monika-pct" type="number" min="0" max="100" value="34" oninput="recalc()">
+          <div class="split-amt" id="monika-amt">$0</div>
+        </div>
+        <div class="split-row">
+          <div class="split-name" style="color:#10b981">Reza</div>
+          <input class="split-pct-input" id="f-reza-pct" type="number" min="0" max="100" value="33" oninput="recalc()">
+          <div class="split-amt" id="reza-amt">$0</div>
+        </div>
+        <div class="split-warning" id="split-warn">⚠ Percentages must add up to 100%</div>
+      </div>
+
+      <div class="split-section" style="border-left:3px solid var(--orange)">
+        <div class="split-title">Referral Partner (optional)</div>
+        <div class="split-row">
+          <select class="form-input form-select" id="f-partner" onchange="onPartnerPick()">
+            <option value="">No referral partner</option>
+          </select>
+          <input class="split-pct-input" id="f-partner-pct" type="number" min="0" max="100" step="1" value="15" oninput="recalc()">
+          <div class="split-amt" id="partner-amt" style="color:var(--orange)">$0</div>
+        </div>
+      </div>
+
+      <div class="form-row-2">
+        <div>
+          <label class="form-label">Lead Agent</label>
+          <select class="form-input form-select" id="f-agent">
+            <option value="N">Nick</option>
+            <option value="M">Monika</option>
+            <option value="R">Reza</option>
+            <option value="All">All Three</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label">Notes</label>
+          <input class="form-input" id="f-notes" placeholder="Optional notes">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveDeal()">Save Deal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Partner Modal -->
+<div class="modal-backdrop" id="partnerModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="partner-modal-title">Add Partner</div>
+      <button class="modal-close" onclick="closePartnerModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row-2">
+        <div>
+          <label class="form-label">Name</label>
+          <input class="form-input" id="f-p-name" placeholder="e.g. Sokha Chan" oninput="onPartnerNameInput()">
+        </div>
+        <div>
+          <label class="form-label">Commission Rate (%)</label>
+          <input class="form-input" id="f-p-rate" type="number" min="0" max="100" step="0.1" placeholder="e.g. 15">
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div>
+          <label class="form-label">Slug (used in the referral link — can't be changed after saving)</label>
+          <input class="form-input" id="f-p-slug" placeholder="e.g. sokha-chan">
+        </div>
+        <div>
+          <label class="form-label">Status</label>
+          <select class="form-input form-select" id="f-p-status">
+            <option value="Approved">Approved</option>
+            <option value="Pending">Pending</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div>
+          <label class="form-label">Contact Phone (optional)</label>
+          <input class="form-input" id="f-p-phone" placeholder="e.g. 012 345 678">
+        </div>
+        <div>
+          <label class="form-label">Contact Email (optional)</label>
+          <input class="form-input" id="f-p-email" placeholder="e.g. sokha@example.com">
+        </div>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Notes (optional)</label>
+        <input class="form-input" id="f-p-notes" placeholder="How this partnership was agreed, terms, etc.">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closePartnerModal()">Cancel</button>
+      <button class="btn-save" onclick="savePartner()">Save Partner</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── App shell ── -->
+<div class="app">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="ws-header">
+      <img class="ws-logo" src="data:image/png;base64,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" alt="PHC">
+      <div class="ws-info">
+        <div class="ws-name">PHC CRM</div>
+        <div class="ws-sub">Commission Tracker</div>
+      </div>
+      <button class="collapse-btn" onclick="toggleSidebar()" title="Toggle sidebar"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="10,3 5,8 10,13"/></svg></button>
+    </div>
+
+    <nav class="sb-nav">
+      <div class="sb-section-label">Deals</div>
+      <a class="sb-item active" id="sbAll" onclick="sbSetDealFilter('all',this)">
+        <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1.5" y="5" width="13" height="9" rx="1.5"/><path d="M5.5 5V3.5A1.5 1.5 0 0 1 7 2h2a1.5 1.5 0 0 1 1.5 1.5V5"/><path d="M1.5 9h13"/></svg></span><span class="sb-label">All Deals</span>
+        <span class="sb-count" id="sbCntAll">0</span>
+      </a>
+      <a class="sb-item" id="sbReferral" onclick="sbSetDealFilter('referral',this)">
+        <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3L2.5 6.5L6 10"/><path d="M2.5 6.5H10a3.5 3.5 0 0 1 3.5 3.5v2"/></svg></span><span class="sb-label">Referrals</span>
+        <span class="sb-count" id="sbCntReferral">0</span>
+      </a>
+
+      <div class="sb-section-label">Agents</div>
+      <a class="sb-item" id="sbAgentAll" onclick="sbSetAgent('',this)">
+        <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="5" r="2.5"/><path d="M1 13c0-2.76 2.24-5 5-5s5 2.24 5 5"/><circle cx="12.5" cy="5" r="2"/><path d="M15 13c0-2.21-1.34-4-3-4.5"/></svg></span><span class="sb-label">All Agents</span>
+      </a>
+      <a class="sb-item" id="sbAgentN" onclick="sbSetAgent('N',this)">
+        <div class="av-ring" style="background:#3b82f6">N</div><span class="sb-label">Nick</span>
+        <span class="sb-count" id="sbCntN">0</span>
+      </a>
+      <a class="sb-item" id="sbAgentM" onclick="sbSetAgent('M',this)">
+        <div class="av-ring" style="background:#8b5cf6">M</div><span class="sb-label">Monika</span>
+        <span class="sb-count" id="sbCntM">0</span>
+      </a>
+      <a class="sb-item" id="sbAgentR" onclick="sbSetAgent('R',this)">
+        <div class="av-ring" style="background:#10b981">R</div><span class="sb-label">Reza</span>
+        <span class="sb-count" id="sbCntR">0</span>
+      </a>
+
+      <div class="sb-section-label" style="margin-top:6px">Reports</div>
+      <a class="sb-item" id="sbPartners" onclick="showPartnersView(this)">
+        <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="5" r="2.5"/><path d="M1 13c0-2.76 2.24-5 5-5s5 2.24 5 5"/><circle cx="12.5" cy="5" r="2"/><path d="M15 13c0-2.21-1.34-4-3-4.5"/></svg></span><span class="sb-label">Partners</span>
+      </a>
+
+      <div class="sb-section-label" style="margin-top:6px">Other Tools</div>
+      <a class="sb-item" href="PHC_Lead_Tracker.html">
+        <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="1" width="14" height="14" rx="2"/><path d="M4 8h8M4 5h8M4 11h5"/></svg></span><span class="sb-label">Lead Tracker</span>
+      </a>
+      <a class="sb-item" href="PHC_Client_Manager.html">
+        <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="2.5" width="14" height="11" rx="1.5"/><circle cx="5.5" cy="7" r="1.6"/><path d="M3 11.2c0-1.6 1.1-2.7 2.5-2.7S8 9.6 8 11.2"/><path d="M10.2 6.2h3M10.2 8.7h3"/></svg></span><span class="sb-label">Client Manager</span>
+      </a>
+      <a class="sb-item" href="index.html">
+        <span class="sb-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9L8 4l5 5"/><path d="M5 14V9h6v5"/></svg></span><span class="sb-label">← Back to Hub</span>
+      </a>
+    </nav>
+
+    <div class="sb-footer">
+      <div class="api-dot" id="syncDot"></div>
+      <div class="api-txt" id="syncTxt">Loading…</div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <span class="breadcrumb">Commission Tracker</span>
+      <span class="bc-sep">/</span>
+      <span class="bc-active" id="bcCurrent">All Deals</span>
+    </div>
+
+    <div class="toolbar" id="toolbar">
+      <select class="month-picker" id="monthPicker" onchange="renderAll()"></select>
+      <button class="add-btn" onclick="openModal()">+ Log Deal</button>
+    </div>
+
+    <div class="content-scroll">
+      <div class="page">
+
+        <div id="dealsView">
+        <!-- ── STAT CARDS ── -->
+        <div class="stats-grid">
+          <div class="stat-card c-navy">
+            <div class="stat-label">Deals Closed</div>
+            <div class="stat-val" id="s-count">—</div>
+            <div class="stat-sub" id="s-count-sub">this period</div>
+          </div>
+          <div class="stat-card c-gold">
+            <div class="stat-label">Total Commission</div>
+            <div class="stat-val" id="s-total">—</div>
+            <div class="stat-sub" id="s-total-sub">this period</div>
+          </div>
+          <div class="stat-card c-nick">
+            <div class="stat-label">Nick</div>
+            <div class="stat-val" id="s-nick">—</div>
+            <div class="stat-sub" id="s-nick-sub">this period</div>
+          </div>
+          <div class="stat-card c-monika">
+            <div class="stat-label">Monika</div>
+            <div class="stat-val" id="s-monika">—</div>
+            <div class="stat-sub" id="s-monika-sub">this period</div>
+          </div>
+          <div class="stat-card c-reza">
+            <div class="stat-label">Reza</div>
+            <div class="stat-val" id="s-reza">—</div>
+            <div class="stat-sub" id="s-reza-sub">this period</div>
+          </div>
+          <div class="stat-card c-orange">
+            <div class="stat-label">Referral Payouts</div>
+            <div class="stat-val" id="s-referral">—</div>
+            <div class="stat-sub" id="s-referral-sub">this period</div>
+          </div>
+        </div>
+
+        <!-- ── AGENT CARDS ── -->
+        <div class="section-label">Year to Date · All Deals</div>
+        <div class="agent-grid" id="agent-grid" style="margin-bottom:28px;"></div>
+
+        <!-- ── DEAL TABLE ── -->
+        <div class="table-wrap">
+          <div class="table-header">
+            <div class="table-title" id="table-title">Deals</div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Client & Project</th>
+                <th>Close Date</th>
+                <th>Sale Price</th>
+                <th>Commission</th>
+                <th>Split</th>
+                <th>Agent</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="deal-tbody"></tbody>
+          </table>
+        </div>
+        </div>
+
+        <!-- ── PARTNERS VIEW ── -->
+        <div id="partnersView" style="display:none">
+          <div class="stats-grid">
+            <div class="stat-card c-navy">
+              <div class="stat-label">Active Partners</div>
+              <div class="stat-val" id="p-count">—</div>
+              <div class="stat-sub">approved</div>
+            </div>
+            <div class="stat-card c-gold">
+              <div class="stat-label">Leads Referred</div>
+              <div class="stat-val" id="p-leads">—</div>
+              <div class="stat-sub">all time</div>
+            </div>
+            <div class="stat-card c-nick">
+              <div class="stat-label">Converted to Client</div>
+              <div class="stat-val" id="p-converted">—</div>
+              <div class="stat-sub">all time</div>
+            </div>
+            <div class="stat-card c-orange">
+              <div class="stat-label">Commission Owed</div>
+              <div class="stat-val" id="p-owed">—</div>
+              <div class="stat-sub">unpaid, all time</div>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <div class="table-header">
+              <div class="table-title">Partner Performance</div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Partner</th>
+                  <th>Leads Referred</th>
+                  <th>Converted to Client</th>
+                  <th>Deals Closed</th>
+                  <th>Commission Owed</th>
+                </tr>
+              </thead>
+              <tbody id="partner-tbody"></tbody>
+            </table>
+          </div>
+
+          <div class="table-wrap" style="margin-top:20px">
+            <div class="table-header">
+              <div class="table-title">Manage Partners</div>
+              <button class="add-btn" onclick="openPartnerModal()">+ Add Partner</button>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Commission Rate</th>
+                  <th>Status</th>
+                  <th>Registered</th>
+                  <th>Referral Link</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="partner-manage-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API_URL = 'https://script.google.com/macros/s/AKfycbyCd3r8sX18YONWUf98_eB_B3uuXbn3ALq8A7ataIysQfUPU9y43DvZUe-OoRIticXBzg/exec';
+const API_KEY = '4fa0044f8132a04af7a24bface7613efe2152f97d9dcd432';
+const LS_KEY  = 'phc_deals_cache';
+const LS_PARTNERS = 'phc_partners_cache';
+const SITE_URL = 'https://propertyhubcambodia.com/';
+
+let deals = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+let editingId = null;
+let deletingId = null;
+let dealFilter = 'all';   // 'all' | 'referral'
+let partners = [];        // approved partners only — used by the deal-log dropdown
+let allPartners = JSON.parse(localStorage.getItem(LS_PARTNERS) || '[]'); // every partner, any status
+let editingPartnerId = null;
+let agentFilter = '';     // '' | 'N' | 'M' | 'R'
+
+// ── Helpers ──────────────────────────────────────────────────────
+
+function $(id){ return document.getElementById(id); }
+function usd(n){ n=Number(n)||0; return n>=1000?'$'+(n/1000).toFixed(1)+'K':'$'+n.toFixed(0); }
+function usdFull(n){ return '$'+(Number(n)||0).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0}); }
+
+function toast(msg){
+  const el=$('toast'); el.textContent=msg; el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),3000);
+}
+
+function monthLabel(ym){ // "2026-05" → "May 2026"
+  const [y,m]=ym.split('-');
+  return new Date(+y,+m-1,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+}
+
+function dealMonth(d){ return (d.closedDate||d.createdAt||'').slice(0,7); }
+
+function toggleSidebar(){ $('sidebar').classList.toggle('collapsed'); }
+
+// ── Sidebar filters ──────────────────────────────────────────────
+
+function sbSetDealFilter(type, el){
+  dealFilter = type;
+  document.querySelectorAll('#sbAll,#sbReferral,#sbPartners').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active');
+  $('bcCurrent').textContent = type==='referral' ? 'Referrals' : 'All Deals';
+  $('dealsView').style.display='';
+  $('partnersView').style.display='none';
+  $('toolbar').style.display='';
+  renderAll();
+}
+
+function sbSetAgent(agent, el){
+  agentFilter = agent;
+  document.querySelectorAll('#sbAgentAll,#sbAgentN,#sbAgentM,#sbAgentR').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+// ── Partners view ────────────────────────────────────────────────
+
+let leadsCache = null;
+let clientsCache = null;
+
+async function fetchSheet(sheet){
+  try{
+    const r=await fetch(API_URL+'?action=getAll&sheet='+sheet+'&key='+encodeURIComponent(API_KEY));
+    const data=await r.json();
+    return Array.isArray(data)?data:[];
+  }catch{ return []; }
+}
+
+async function showPartnersView(el){
+  document.querySelectorAll('#sbAll,#sbReferral,#sbPartners').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active');
+  $('bcCurrent').textContent='Partners';
+  $('dealsView').style.display='none';
+  $('partnersView').style.display='';
+  $('toolbar').style.display='none';
+  if(leadsCache===null) leadsCache=await fetchSheet('Leads');
+  if(clientsCache===null) clientsCache=await fetchSheet('Clients');
+  await loadPartners(); // refresh so status/rate edits show up immediately
+  renderPartnersView();
+  renderManagePartners();
+}
+
+function renderPartnersView(){
+  const leads=leadsCache||[];
+  const clients=clientsCache||[];
+  const rows=partners.map(p=>{
+    const leadCount=leads.filter(l=>l.referralPartner===p.slug).length;
+    const convertedCount=clients.filter(c=>c.referralPartner===p.slug).length;
+    const partnerDeals=deals.filter(d=>d.referralPartner===p.slug);
+    const owed=partnerDeals.reduce((s,d)=>s+(d.partnerAmt||0),0);
+    return {name:p.displayName, leadCount, convertedCount, dealCount:partnerDeals.length, owed};
+  });
+
+  $('p-count').textContent=partners.length;
+  $('p-leads').textContent=rows.reduce((s,r)=>s+r.leadCount,0);
+  $('p-converted').textContent=rows.reduce((s,r)=>s+r.convertedCount,0);
+  $('p-owed').textContent=usd(rows.reduce((s,r)=>s+r.owed,0));
+
+  if(!rows.length){
+    $('partner-tbody').innerHTML=`<tr class="empty-row"><td colspan="5">No approved partners yet — click "+ Add Partner" below</td></tr>`;
+    return;
+  }
+
+  $('partner-tbody').innerHTML=rows.sort((a,b)=>b.owed-a.owed).map(r=>`<tr>
+    <td>${r.name}</td>
+    <td>${r.leadCount}</td>
+    <td>${r.convertedCount}</td>
+    <td>${r.dealCount}</td>
+    <td class="price-cell">${usdFull(r.owed)}</td>
+  </tr>`).join('');
+}
+
+function renderManagePartners(){
+  if(!allPartners.length){
+    $('partner-manage-tbody').innerHTML=`<tr class="empty-row"><td colspan="6">No partners yet — click "+ Add Partner" to register one</td></tr>`;
+    return;
+  }
+  const sorted=[...allPartners].sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''));
+  $('partner-manage-tbody').innerHTML=sorted.map(p=>{
+    const registered=p.createdAt?new Date(p.createdAt).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'—';
+    const link=referralLink(p.slug);
+    return `<tr>
+      <td>${p.displayName||'—'}</td>
+      <td>${p.ratePct||0}%</td>
+      <td><span class="status-pill status-${p.status||'Pending'}">${p.status||'Pending'}</span></td>
+      <td style="font-family:'DM Mono',monospace;font-size:11px">${registered}</td>
+      <td>
+        <div class="link-cell">
+          <span class="link-text" title="${link}">${link}</span>
+          <button class="copy-btn" onclick="copyReferralLink('${p.slug}')">Copy</button>
+        </div>
+      </td>
+      <td style="white-space:nowrap">
+        <button class="action-btn" onclick="openPartnerModal('${p.id}')">Edit</button>
+        ${p.status==='Inactive'
+          ? `<button class="action-btn" onclick="setPartnerStatus('${p.id}','Approved')">Reactivate</button>`
+          : `<button class="action-btn del-btn" onclick="setPartnerStatus('${p.id}','Inactive')">Deactivate</button>`}
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function openPartnerModal(id){
+  editingPartnerId=id||null;
+  const p=id?allPartners.find(x=>x.id===id):null;
+  $('partner-modal-title').textContent=p?'Edit Partner':'Add Partner';
+  $('f-p-name').value=p?p.displayName:'';
+  $('f-p-slug').value=p?p.slug:'';
+  $('f-p-slug').disabled=!!p; // slug is permanent once saved — it's baked into the referral link and historical Leads/Deals rows
+  $('f-p-rate').value=p?p.ratePct:'15';
+  $('f-p-status').value=p?p.status:'Approved';
+  $('f-p-phone').value=p?(p.contactPhone||''):'';
+  $('f-p-email').value=p?(p.contactEmail||''):'';
+  $('f-p-notes').value=p?(p.notes||''):'';
+  $('partnerModal').classList.add('show');
+}
+
+function closePartnerModal(){ $('partnerModal').classList.remove('show'); }
+
+function onPartnerNameInput(){
+  if(editingPartnerId) return; // never auto-change the slug of an existing partner
+  $('f-p-slug').value=slugify($('f-p-name').value);
+}
+
+async function savePartner(){
+  const name=$('f-p-name').value.trim();
+  const slug=slugify($('f-p-slug').value);
+  if(!name){ toast('Enter a name'); return; }
+  if(!slug){ toast('Enter a slug'); return; }
+  if(!editingPartnerId && allPartners.some(p=>p.slug===slug)){ toast('That slug is already in use'); return; }
+
+  const now=new Date().toISOString();
+  const payload={
+    slug,
+    displayName:name,
+    ratePct:Number($('f-p-rate').value)||0,
+    status:$('f-p-status').value,
+    contactPhone:$('f-p-phone').value.trim(),
+    contactEmail:$('f-p-email').value.trim(),
+    notes:$('f-p-notes').value.trim(),
+    updatedAt:now,
+  };
+
+  if(editingPartnerId){
+    const idx=allPartners.findIndex(p=>p.id===editingPartnerId);
+    if(idx>-1) allPartners[idx]={...allPartners[idx],...payload};
+    await apiPOST({action:'update',sheet:'Partners',id:editingPartnerId,data:payload});
+    toast('Partner updated');
+  }else{
+    const id='P-'+slug+'-'+Date.now();
+    allPartners.push({id, createdAt:now, ...payload});
+    await apiPOST({action:'insert',sheet:'Partners',data:{id, createdAt:now, ...payload}});
+    toast('Partner added');
+  }
+
+  partners=allPartners.filter(p=>p.status==='Approved');
+  localStorage.setItem(LS_PARTNERS,JSON.stringify(allPartners));
+  populatePartnerSelect('');
+  closePartnerModal();
+  renderManagePartners();
+  renderPartnersView();
+}
+
+async function setPartnerStatus(id,status){
+  const idx=allPartners.findIndex(p=>p.id===id);
+  if(idx===-1) return;
+  allPartners[idx].status=status;
+  const now=new Date().toISOString();
+  allPartners[idx].updatedAt=now;
+  await apiPOST({action:'update',sheet:'Partners',id,data:{status,updatedAt:now}});
+  partners=allPartners.filter(p=>p.status==='Approved');
+  localStorage.setItem(LS_PARTNERS,JSON.stringify(allPartners));
+  populatePartnerSelect('');
+  renderManagePartners();
+  renderPartnersView();
+  toast(status==='Inactive'?'Partner deactivated':'Partner reactivated');
+}
+
+// ── Month picker ─────────────────────────────────────────────────
+
+function buildMonthPicker(){
+  const pk=$('monthPicker');
+  const months=new Set(deals.map(d=>dealMonth(d)).filter(Boolean));
+  const now=new Date();
+  const cur=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  months.add(cur);
+  const sorted=[...months].sort().reverse();
+  pk.innerHTML=`<option value="ALL">All Time</option>`+sorted.map(m=>`<option value="${m}">${monthLabel(m)}</option>`).join('');
+  if(!pk.value) pk.value=cur;
+}
+
+// ── API ──────────────────────────────────────────────────────────
+
+async function apiPOST(body){
+  try{ await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(Object.assign({key:API_KEY},body)),mode:'no-cors'}); return {ok:true}; }catch{return null;}
+}
+
+async function loadPartners(){
+  try{
+    const r=await fetch(API_URL+'?action=getAll&sheet=Partners&key='+encodeURIComponent(API_KEY));
+    const data=await r.json();
+    if(Array.isArray(data)){
+      allPartners=data;
+      partners=data.filter(p=>p.status==='Approved');
+      localStorage.setItem(LS_PARTNERS,JSON.stringify(allPartners));
+    }
+  }catch{}
+  populatePartnerSelect('');
+}
+
+function populatePartnerSelect(selectedSlug){
+  const sel=$('f-partner');
+  if(!sel) return;
+  sel.innerHTML='<option value="">No referral partner</option>'+partners.map(p=>`<option value="${p.slug}"${p.slug===selectedSlug?' selected':''}>${p.displayName}</option>`).join('');
+}
+
+function partnerLabel(slug){
+  // looks up allPartners (not just approved) so a deal logged while a partner
+  // was still active still shows their name after they're later deactivated
+  const p=allPartners.find(x=>x.slug===slug);
+  return p?p.displayName:(slug||'');
+}
+
+function slugify(name){
+  return (name||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+}
+
+function referralLink(slug){
+  return SITE_URL+'?ref='+slug;
+}
+
+function copyReferralLink(slug){
+  const link=referralLink(slug);
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(link).then(()=>toast('Referral link copied')).catch(()=>toast(link));
+  }else{
+    toast(link);
+  }
+}
+
+async function loadDeals(){
+  try{
+    const r=await fetch(API_URL+'?action=getAll&sheet=Deals&key='+encodeURIComponent(API_KEY));
+    const data=await r.json();
+    if(Array.isArray(data)){
+      deals=data.filter(d=>d.id).map(d=>({
+        ...d,
+        salePrice:Number(d.salePrice)||0,
+        commissionRate:Number(d.commissionRate)||0,
+        commissionTotal:Number(d.commissionTotal)||0,
+        nickPct:Number(d.nickPct)||0, monikaPct:Number(d.monikaPct)||0, rezaPct:Number(d.rezaPct)||0,
+        nickAmt:Number(d.nickAmt)||0, monikaAmt:Number(d.monikaAmt)||0, rezaAmt:Number(d.rezaAmt)||0,
+        partnerPct:Number(d.partnerPct)||0, partnerAmt:Number(d.partnerAmt)||0
+      }));
+      localStorage.setItem(LS_KEY,JSON.stringify(deals));
+      $('syncDot').className='api-dot ok';
+      $('syncTxt').textContent='Live · '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    }
+  }catch{
+    $('syncDot').className='api-dot err';
+    $('syncTxt').textContent='Offline — cached';
+  }
+  buildMonthPicker();
+  renderAll();
+}
+
+// ── Render ───────────────────────────────────────────────────────
+
+function monthFilteredDeals(){
+  const period=$('monthPicker').value||'ALL';
+  return deals.filter(d=> period==='ALL' || dealMonth(d)===period);
+}
+
+function filteredDeals(){
+  return monthFilteredDeals().filter(d=>{
+    if(agentFilter && d.agent!==agentFilter) return false;
+    if(dealFilter==='referral' && !d.referralPartner) return false;
+    return true;
+  });
+}
+
+function updateSidebarCounts(){
+  const md=monthFilteredDeals();
+  $('sbCntAll').textContent=md.length;
+  $('sbCntReferral').textContent=md.filter(d=>d.referralPartner).length;
+  $('sbCntN').textContent=md.filter(d=>d.agent==='N').length;
+  $('sbCntM').textContent=md.filter(d=>d.agent==='M').length;
+  $('sbCntR').textContent=md.filter(d=>d.agent==='R').length;
+}
+
+function renderAll(){
+  const fd=filteredDeals();
+  renderStats(fd);
+  renderAgents();
+  renderTable(fd);
+  updateSidebarCounts();
+}
+
+function renderStats(fd){
+  const total=fd.reduce((s,d)=>s+d.commissionTotal,0);
+  const nick=fd.reduce((s,d)=>s+d.nickAmt,0);
+  const monika=fd.reduce((s,d)=>s+d.monikaAmt,0);
+  const reza=fd.reduce((s,d)=>s+d.rezaAmt,0);
+  const referred=fd.filter(d=>d.referralPartner);
+  const referralTotal=referred.reduce((s,d)=>s+d.partnerAmt,0);
+  const period=$('monthPicker').value==='ALL'?'all time':monthLabel($('monthPicker').value);
+  $('s-count').textContent=fd.length;
+  $('s-count-sub').textContent=fd.length===1?'deal · '+period:'deals · '+period;
+  $('s-total').textContent=usd(total);
+  $('s-total-sub').textContent='commission · '+period;
+  $('s-nick').textContent=usd(nick);
+  $('s-nick-sub').textContent=period;
+  $('s-monika').textContent=usd(monika);
+  $('s-monika-sub').textContent=period;
+  $('s-reza').textContent=usd(reza);
+  $('s-reza-sub').textContent=period;
+  $('s-referral').textContent=usd(referralTotal);
+  $('s-referral-sub').textContent=(referred.length===1?'1 referral · ':referred.length+' referrals · ')+period;
+}
+
+function renderAgents(){
+  const agents=[
+    {key:'N',name:'Nick',role:'CEO & Director',cls:'nick',av:'av-nick'},
+    {key:'M',name:'Monika',role:'Co-Founder · Japanese Market',cls:'monika',av:'av-monika'},
+    {key:'R',name:'Reza',role:'Co-Founder · European Market',cls:'reza',av:'av-reza'}
+  ];
+  const now=new Date();
+  const ytdPrefix=now.getFullYear()+'-';
+  $('agent-grid').innerHTML=agents.map(a=>{
+    const ytd=deals.filter(d=>dealMonth(d).startsWith(ytdPrefix));
+    const total=ytd.reduce((s,d)=>s+(a.key==='N'?d.nickAmt:a.key==='M'?d.monikaAmt:d.rezaAmt),0);
+    const count=ytd.filter(d=>d.agent===a.key).length;
+    const allDealsAmt=deals.reduce((s,d)=>s+(a.key==='N'?d.nickAmt:a.key==='M'?d.monikaAmt:d.rezaAmt),0);
+    const initials=a.name.split(' ').map(w=>w[0]).join('');
+    return `<div class="agent-card">
+      <div class="agent-top">
+        <div class="agent-avatar ${a.av}">${initials}</div>
+        <div><div class="agent-name">${a.name}</div><div class="agent-role">${a.role}</div></div>
+      </div>
+      <div class="agent-big">${usdFull(total)}</div>
+      <div class="agent-big-lbl">YTD Commission</div>
+      <div class="agent-stat-row"><span>Deals closed (YTD)</span><b>${count}</b></div>
+      <div class="agent-stat-row"><span>All-time earnings</span><b>${usdFull(allDealsAmt)}</b></div>
+    </div>`;
+  }).join('');
+}
+
+function renderTable(fd){
+  const sorted=[...fd].sort((a,b)=>(b.closedDate||'').localeCompare(a.closedDate||''));
+  const period=$('monthPicker').value==='ALL'?'All Deals':monthLabel($('monthPicker').value);
+  $('table-title').textContent=period+' ('+sorted.length+')';
+
+  if(!sorted.length){
+    $('deal-tbody').innerHTML=`<tr class="empty-row"><td colspan="7">No deals found for this period</td></tr>`;
+    return;
+  }
+
+  const agentBadge=(a)=>{
+    if(a==='N') return `<span class="agent-chip ac-n">Nick</span>`;
+    if(a==='M') return `<span class="agent-chip ac-m">Monika</span>`;
+    if(a==='R') return `<span class="agent-chip ac-r">Reza</span>`;
+    return `<span class="agent-chip ac-all">All</span>`;
+  };
+
+  $('deal-tbody').innerHTML=sorted.map(d=>{
+    const dateStr=d.closedDate?new Date(d.closedDate).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'—';
+    return `<tr>
+      <td>
+        <div class="deal-client">${d.clientName||'—'}</div>
+        <div class="deal-project">${d.project||''} ${d.unit?'· Unit '+d.unit:''}</div>
+        ${d.referralPartner?`<div style="font-size:10px;font-family:'DM Mono',monospace;color:var(--orange);margin-top:2px;">↩ ${partnerLabel(d.referralPartner)} · ${usdFull(d.partnerAmt)}</div>`:''}
+      </td>
+      <td style="font-family:'DM Mono',monospace;font-size:11px">${dateStr}</td>
+      <td class="price-cell">${usdFull(d.salePrice)}</td>
+      <td>
+        <div class="price-cell">${usdFull(d.commissionTotal)}</div>
+        <div style="font-size:10px;font-family:'DM Mono',monospace;color:var(--g4)">${d.commissionRate}%</div>
+      </td>
+      <td>
+        <div class="split-cell">
+          <span class="split-line split-n">N ${d.nickPct}% · ${usdFull(d.nickAmt)}</span>
+          <span class="split-line split-m">M ${d.monikaPct}% · ${usdFull(d.monikaAmt)}</span>
+          <span class="split-line split-r">R ${d.rezaPct}% · ${usdFull(d.rezaAmt)}</span>
+        </div>
+      </td>
+      <td>${agentBadge(d.agent)}</td>
+      <td style="white-space:nowrap">
+        <button class="action-btn" onclick="openEdit('${d.id}')">Edit</button>
+        <button class="action-btn del-btn" onclick="askDelete('${d.id}')">Delete</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Modal ────────────────────────────────────────────────────────
+
+function onPartnerPick(){
+  const slug=$('f-partner').value;
+  const p=partners.find(x=>x.slug===slug);
+  if(p) $('f-partner-pct').value=p.ratePct||15;
+  recalc();
+}
+function recalc(){
+  const price=Number($('f-price').value)||0;
+  const rate=Number($('f-rate').value)||0;
+  const comm=Math.round(price*(rate/100)*100)/100;
+  const nickP=Number($('f-nick-pct').value)||0;
+  const monikaP=Number($('f-monika-pct').value)||0;
+  const rezaP=Number($('f-reza-pct').value)||0;
+  const total=nickP+monikaP+rezaP;
+
+  $('comm-preview').textContent=usdFull(comm);
+  $('price-preview').textContent=usdFull(price);
+  $('nick-amt').textContent=usdFull(Math.round(comm*(nickP/100)));
+  $('monika-amt').textContent=usdFull(Math.round(comm*(monikaP/100)));
+  $('reza-amt').textContent=usdFull(Math.round(comm*(rezaP/100)));
+  $('split-warn').style.display=total!==100?'block':'none';
+
+  const partnerSet=$('f-partner').value.length>0;
+  const partnerP=Number($('f-partner-pct').value)||0;
+  $('partner-amt').textContent=partnerSet?usdFull(Math.round(comm*(partnerP/100))):'$0';
+}
+
+function openModal(){
+  editingId=null;
+  $('modal-title').textContent='Log New Deal';
+  $('f-client').value='';
+  $('f-date').value=new Date().toISOString().slice(0,10);
+  $('f-project').value='';
+  $('f-unit').value='';
+  $('f-price').value='';
+  $('f-rate').value='3';
+  $('f-nick-pct').value='33';
+  $('f-monika-pct').value='34';
+  $('f-reza-pct').value='33';
+  $('f-agent').value='N';
+  $('f-notes').value='';
+  populatePartnerSelect('');
+  $('f-partner-pct').value='15';
+  recalc();
+  $('modal').classList.add('show');
+}
+
+function openEdit(id){
+  const d=deals.find(x=>x.id===id);
+  if(!d) return;
+  editingId=id;
+  $('modal-title').textContent='Edit Deal';
+  $('f-client').value=d.clientName||'';
+  $('f-date').value=d.closedDate||'';
+  $('f-project').value=d.project||'';
+  $('f-unit').value=d.unit||'';
+  $('f-price').value=d.salePrice||'';
+  $('f-rate').value=d.commissionRate||'';
+  $('f-nick-pct').value=d.nickPct||0;
+  $('f-monika-pct').value=d.monikaPct||0;
+  $('f-reza-pct').value=d.rezaPct||0;
+  $('f-agent').value=d.agent||'N';
+  $('f-notes').value=d.notes||'';
+  populatePartnerSelect(d.referralPartner||'');
+  $('f-partner-pct').value=d.partnerPct||15;
+  recalc();
+  $('modal').classList.add('show');
+}
+
+function closeModal(){ $('modal').classList.remove('show'); }
+
+function saveDeal(){
+  const nickP=Number($('f-nick-pct').value)||0;
+  const monikaP=Number($('f-monika-pct').value)||0;
+  const rezaP=Number($('f-reza-pct').value)||0;
+  if(nickP+monikaP+rezaP!==100){ toast('Split must total 100%'); return; }
+
+  const price=Number($('f-price').value)||0;
+  const rate=Number($('f-rate').value)||0;
+  const comm=Math.round(price*(rate/100)*100)/100;
+  const now=new Date().toISOString();
+
+  const referralPartner=$('f-partner').value;
+  const partnerPct=referralPartner?(Number($('f-partner-pct').value)||0):0;
+  const partnerAmt=referralPartner?Math.round(comm*(partnerPct/100)):0;
+
+  const payload={
+    id: editingId||('D'+Date.now()),
+    createdAt: editingId?(deals.find(d=>d.id===editingId)||{}).createdAt||now : now,
+    updatedAt: now,
+    closedDate: $('f-date').value,
+    clientName: $('f-client').value.trim(),
+    project: $('f-project').value,
+    unit: $('f-unit').value.trim(),
+    salePrice: price,
+    commissionRate: rate,
+    commissionTotal: comm,
+    nickPct: nickP,   monikaPct: monikaP,   rezaPct: rezaP,
+    nickAmt: Math.round(comm*(nickP/100)),
+    monikaAmt: Math.round(comm*(monikaP/100)),
+    rezaAmt: Math.round(comm*(rezaP/100)),
+    agent: $('f-agent').value,
+    notes: $('f-notes').value.trim(),
+    referralPartner: referralPartner,
+    partnerPct: partnerPct,
+    partnerAmt: partnerAmt
+  };
+
+  if(editingId){
+    const idx=deals.findIndex(d=>d.id===editingId);
+    if(idx>-1) deals[idx]=payload;
+    apiPOST({action:'update',sheet:'Deals',id:editingId,data:payload});
+    toast('Deal updated');
+  } else {
+    deals.unshift(payload);
+    apiPOST({action:'insert',sheet:'Deals',data:payload});
+    toast('Deal logged');
+  }
+  localStorage.setItem(LS_KEY,JSON.stringify(deals));
+  buildMonthPicker();
+  renderAll();
+  closeModal();
+}
+
+// ── Delete ───────────────────────────────────────────────────────
+
+function askDelete(id){ deletingId=id; $('confirmBd').classList.add('show'); }
+function closeConfirm(){ $('confirmBd').classList.remove('show'); deletingId=null; }
+function confirmDelete(){
+  if(!deletingId) return;
+  deals=deals.filter(d=>d.id!==deletingId);
+  localStorage.setItem(LS_KEY,JSON.stringify(deals));
+  apiPOST({action:'delete',sheet:'Deals',id:deletingId});
+  buildMonthPicker();
+  renderAll();
+  closeConfirm();
+  toast('Deal deleted');
+}
+
+// ── Init ─────────────────────────────────────────────────────────
+
+buildMonthPicker();
+renderAll();
+loadPartners();
+loadDeals();
+</script>
+</body>
+</html>
