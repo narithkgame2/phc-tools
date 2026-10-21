@@ -1,0 +1,118 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2026-10-21",
+  "steps": {
+    "step1_objective": {
+      "id": "step1_objective",
+      "header": "SEARCH CONCIERGE",
+      "stepLabel": "Step 1 of 4 · Objective",
+      "prompt": "Are you looking to acquire or rent a property in Phnom Penh?",
+      "layout": "1_per_row",
+      "buttons": [
+        { "label": "🏢 Buy Property", "callback": "srch_step1_sale" },
+        { "label": "🔑 Rent a Home", "callback": "srch_step1_rent" }
+      ]
+    },
+    "step2_buy_status": {
+      "id": "step2_buy_status",
+      "header": "SEARCH CONCIERGE",
+      "stepLabel": "Step 2 of 4 · Property Status (Buy)",
+      "prompt": "Select your preferred development status:",
+      "layout": "1_per_row",
+      "buttons": [
+        { "label": "🏗️ Off-Plan (New Developments)", "callback": "srch_status_offplan" },
+        { "label": "🔑 Resale (Ready to Move-In)", "callback": "srch_status_resale" },
+        { "label": "🌐 Any Status (Show All)", "callback": "srch_status_any" },
+        { "label": "⬅️ Back to Objective", "callback": "srch_step0_start" }
+      ]
+    },
+    "step2_rent_type": {
+      "id": "step2_rent_type",
+      "header": "SEARCH CONCIERGE",
+      "stepLabel": "Step 2 of 4 · Property Type (Rent)",
+      "prompt": "Which property type best fits your lifestyle?",
+      "layout": "2_per_row",
+      "buttons": [
+        { "label": "🏢 Modern Condo", "callback": "srch_type_condo" },
+        { "label": "🛋️ Serviced Apt", "callback": "srch_type_apt" },
+        { "label": "🏡 Villa / House", "callback": "srch_type_villa" },
+        { "label": "🌐 Any Property Type", "callback": "srch_type_any" }
+      ],
+      "backButton": { "label": "⬅️ Back to Objective", "callback": "srch_step0_start" }
+    },
+    "step3_buy_type": {
+      "id": "step3_buy_type",
+      "header": "SEARCH CONCIERGE",
+      "stepLabel": "Step 3 of 4 · Property Type",
+      "prompt": "Which category do you want to invest in?",
+      "layout": "2_per_row",
+      "buttons": [
+        { "label": "🏢 Modern Condo", "callback": "srch_type_condo" },
+        { "label": "🛋️ Serviced Apt", "callback_data": "srch_type_apt" },
+        { "label": "🏡 Villa / Borey", "callback_data": "srch_type_villa" },
+        { "label": "🌐 Any Property Type", "callback_data": "srch_type_any" }
+      ],
+      "backButton": { "label": "⬅️ Back to Status", "callback": "srch_back_to_step2" }
+    },
+    "location_districts": {
+      "id": "location_districts",
+      "header": "SEARCH CONCIERGE",
+      "stepLabel": "Prime District",
+      "prompt": "Select your preferred location in Phnom Penh:",
+      "layout": "2_per_row",
+      "buttons": [
+        { "label": "📍 BKK1", "callback": "srch_loc_bkk1" },
+        { "label": "📍 Tonle Bassac", "callback": "srch_loc_tb" },
+        { "label": "📍 Toul Kork", "callback": "srch_loc_tk" },
+        { "label": "📍 Chamkarmon", "callback": "srch_loc_ttp" },
+        { "label": "📍 Chroy Changvar", "callback": "srch_loc_ph" },
+        { "label": "📍 Peng Huoth", "callback": "srch_loc_ph" }
+      ],
+      "fullWidthButtons": [
+        { "label": "🌐 Any Prime District", "callback": "srch_loc_any" }
+      ]
+    },
+    "budget_rent": {
+      "id": "budget_rent",
+      "header": "SEARCH CONCIERGE",
+      "stepLabel": "Step 4 of 4 · Monthly Budget (Rent)",
+      "prompt": "Select your target monthly budget:",
+      "layout": "1_per_row",
+      "buttons": [
+        { "label": "💵 Under $600 / month", "callback": "srch_bg_rent_1", "min": 0, "max": 600 },
+        { "label": "💵 $600 – $1,200 / month", "callback": "srch_bg_rent_2", "min": 550, "max": 1250 },
+        { "label": "💵 $1,200 – $2,500 / month", "callback": "srch_bg_rent_3", "min": 1150, "max": 2600 },
+        { "label": "💵 $2,500+ / month (Luxury)", "callback": "srch_bg_rent_4", "min": 2400, "max": 25000 },
+        { "label": "🌐 Any Budget", "callback": "srch_bg_rent_any", "min": 0, "max": 999999 }
+      ]
+    },
+    "budget_buy": {
+      "id": "budget_buy",
+      "header": "SEARCH CONCIERGE",
+      "stepLabel": "Step 5 of 5 · Target Budget (Buy)",
+      "prompt": "Select your acquisition budget bracket:",
+      "layout": "1_per_row",
+      "buttons": [
+        { "label": "💰 Under $100,000 USD", "callback": "srch_bg_sale_1", "min": 0, "max": 105000 },
+        { "label": "💰 $100,000 – $200,000 USD", "callback": "srch_bg_sale_2", "min": 95000, "max": 210000 },
+        { "label": "💰 $200,000 – $500,000 USD", "callback": "srch_bg_sale_3", "min": 190000, "max": 520000 },
+        { "label": "💰 $500,000+ USD (Prime Luxury)", "callback": "srch_bg_sale_4", "min": 480000, "max": 10000000 },
+        { "label": "🌐 Any Budget", "callback": "srch_bg_sale_any", "min": 0, "max": 99999999 }
+      ]
+    },
+    "anchoring_framework": {
+      "sweetSpot": {
+        "badge": "⭐️ TOP RECOMMENDATION · Sweet Spot",
+        "rationale": "Best value balance of layout, usable floor area, and pricing."
+      },
+      "luxuryAnchor": {
+        "badge": "⚓ PREMIER BENCHMARK · Luxury Anchor",
+        "rationale": "Higher-tier specification establishing the quality benchmark."
+      },
+      "smartValue": {
+        "badge": "💡 SMART VALUE · Agile Alternative",
+        "rationale": "Lowest entry price point while retaining prime location access."
+      }
+    }
+  }
+}

@@ -8,7 +8,62 @@ const fs = require('fs');
 const path = require('path');
 
 const INVENTORY_FILE = path.join(__dirname, 'data', 'multi-channel-inventory.json');
+const CONFIG_FILE = path.join(__dirname, 'data', 'chat-tree-config.json');
 const userSearchState = {};
+
+function getTreeConfig() {
+  try {
+    if (fs.existsSync(CONFIG_FILE)) {
+      return JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8'));
+    }
+  } catch (e) {
+    // fallback
+  }
+  return null;
+}
+
+function getStepDef(stepId, defaultDef) {
+  const cfg = getTreeConfig();
+  if (cfg && cfg.steps && cfg.steps[stepId]) {
+    const s = cfg.steps[stepId];
+    const header = s.header || 'SEARCH CONCIERGE';
+    const label = s.stepLabel || defaultDef.stepLabel;
+    const prompt = s.prompt || defaultDef.prompt;
+    const text = `<b>${header}</b>\n──────────\n<b>${label}</b>\n\n${prompt}`;
+    
+    let inline_keyboard = [];
+    if (Array.isArray(s.buttons) && s.buttons.length > 0) {
+      if (s.layout === '2_per_row') {
+        for (let i = 0; i < s.buttons.length; i += 2) {
+          const row = [{ text: s.buttons[i].label, callback_data: s.buttons[i].callback || s.buttons[i].callback_data }];
+          if (s.buttons[i + 1]) {
+            row.push({ text: s.buttons[i + 1].label, callback_data: s.buttons[i + 1].callback || s.buttons[i + 1].callback_data });
+          }
+          inline_keyboard.push(row);
+        }
+      } else {
+        for (const b of s.buttons) {
+          inline_keyboard.push([{ text: b.label, callback_data: b.callback || b.callback_data }]);
+        }
+      }
+    } else {
+      inline_keyboard = defaultDef.reply_markup.inline_keyboard;
+    }
+
+    if (Array.isArray(s.fullWidthButtons)) {
+      for (const b of s.fullWidthButtons) {
+        inline_keyboard.push([{ text: b.label, callback_data: b.callback || b.callback_data }]);
+      }
+    }
+
+    if (s.backButton) {
+      inline_keyboard.push([{ text: s.backButton.label, callback_data: s.backButton.callback || s.backButton.callback_data }]);
+    }
+
+    return { text, reply_markup: { inline_keyboard } };
+  }
+  return defaultDef;
+}
 
 function escapeHtml(str) {
   return String(str || '')
@@ -43,12 +98,9 @@ function isSearchCallback(data) {
 
 // ── STEP 1: BUY VS RENT ───────────────────────────────────────
 function renderStep1() {
-  return {
-    text: 
-      `<b>SEARCH CONCIERGE</b>\n` +
-      `──────────\n` +
-      `<b>Step 1 of 4 · Objective</b>\n\n` +
-      `Are you looking to acquire or rent a property in Phnom Penh?`,
+  const defaultDef = {
+    stepLabel: 'Step 1 of 4 · Objective',
+    prompt: 'Are you looking to acquire or rent a property in Phnom Penh?',
     reply_markup: {
       inline_keyboard: [
         [{ text: '🏢 Buy Property', callback_data: 'srch_step1_sale' }],
@@ -56,6 +108,7 @@ function renderStep1() {
       ]
     }
   };
+  return getStepDef('step1_objective', defaultDef);
 }
 
 // ── STEP 2: STATUS (FOR SALE) OR PROPERTY TYPE (FOR RENT) ─────
@@ -64,12 +117,9 @@ function renderStep2(state) {
 
   if (!isRent) {
     // Buy -> Choose Status (Full-width un-truncatable pills)
-    return {
-      text: 
-        `<b>SEARCH CONCIERGE</b>\n` +
-        `──────────\n` +
-        `<b>Step 2 of 4 · Property Status (Buy)</b>\n\n` +
-        `Select your preferred development status:`,
+    const defaultDef = {
+      stepLabel: 'Step 2 of 4 · Property Status (Buy)',
+      prompt: 'Select your preferred development status:',
       reply_markup: {
         inline_keyboard: [
           [{ text: '🏗️ Off-Plan (New Developments)', callback_data: 'srch_status_offplan' }],
@@ -79,15 +129,13 @@ function renderStep2(state) {
         ]
       }
     };
+    return getStepDef('step2_buy_status', defaultDef);
   }
 
   // Rent -> Choose Property Type
-  return {
-    text: 
-      `<b>SEARCH CONCIERGE</b>\n` +
-      `──────────\n` +
-      `<b>Step 2 of 4 · Property Type (Rent)</b>\n\n` +
-      `Which property type best fits your lifestyle?`,
+  const defaultDef = {
+    stepLabel: 'Step 2 of 4 · Property Type (Rent)',
+    prompt: 'Which property type best fits your lifestyle?',
     reply_markup: {
       inline_keyboard: [
         [
@@ -104,6 +152,7 @@ function renderStep2(state) {
       ]
     }
   };
+  return getStepDef('step2_rent_type', defaultDef);
 }
 
 // ── STEP 3: TYPE (FOR BUY) OR LOCATION (FOR RENT) ─────────────
@@ -112,12 +161,9 @@ function renderStep3(state) {
 
   if (!isRent) {
     // Buy Step 3: Property Type
-    return {
-      text: 
-        `<b>SEARCH CONCIERGE</b>\n` +
-        `──────────\n` +
-        `<b>Step 3 of 4 · Property Type</b>\n\n` +
-        `Which category do you want to invest in?`,
+    const defaultDef = {
+      stepLabel: 'Step 3 of 4 · Property Type',
+      prompt: 'Which category do you want to invest in?',
       reply_markup: {
         inline_keyboard: [
           [
@@ -134,6 +180,7 @@ function renderStep3(state) {
         ]
       }
     };
+    return getStepDef('step3_buy_type', defaultDef);
   }
 
   // Rent Step 3: Location
@@ -161,12 +208,9 @@ function renderStep5(state) {
 // ── HELPER: LOCATION SELECTOR (CLEAN BALANCED GRID) ───────────
 function renderLocationStep(state) {
   const stepNum = state.type === 'Rent' ? '3 of 4' : '4 of 5';
-  return {
-    text: 
-      `<b>SEARCH CONCIERGE</b>\n` +
-      `──────────\n` +
-      `<b>Step ${stepNum} · Prime District</b>\n\n` +
-      `Select your preferred location in Phnom Penh:`,
+  const defaultDef = {
+    stepLabel: `Step ${stepNum} · Prime District`,
+    prompt: 'Select your preferred location in Phnom Penh:',
     reply_markup: {
       inline_keyboard: [
         [
@@ -190,40 +234,43 @@ function renderLocationStep(state) {
       ]
     }
   };
+  const res = getStepDef('location_districts', defaultDef);
+  const backCallback = state.type === 'Rent' ? 'srch_back_to_step2' : 'srch_back_to_step3';
+  if (res.reply_markup?.inline_keyboard) {
+    const lastRow = res.reply_markup.inline_keyboard[res.reply_markup.inline_keyboard.length - 1];
+    if (lastRow && lastRow[0]?.text?.includes('Back')) {
+      lastRow[0].callback_data = backCallback;
+    } else {
+      res.reply_markup.inline_keyboard.push([{ text: '⬅️ Back', callback_data: backCallback }]);
+    }
+  }
+  return res;
 }
 
 // ── HELPER: BUDGET SELECTOR (FULL-WIDTH READABLE BUTTONS) ──────
 function renderBudgetStep(state) {
   const isRent = state.type === 'Rent';
   const stepNum = isRent ? '4 of 4' : '5 of 5';
+  const stepKey = isRent ? 'budget_rent' : 'budget_buy';
 
-  if (isRent) {
-    return {
-      text: 
-        `<b>SEARCH CONCIERGE</b>\n` +
-        `──────────\n` +
-        `<b>Step ${stepNum} · Monthly Budget (Rent)</b>\n\n` +
-        `Select your target monthly budget:`,
-      reply_markup: {
-        inline_keyboard: [
-          [{ text: '💵 Under $600 / month', callback_data: 'srch_bg_rent_1' }],
-          [{ text: '💵 $600 – $1,200 / month', callback_data: 'srch_bg_rent_2' }],
-          [{ text: '💵 $1,200 – $2,500 / month', callback_data: 'srch_bg_rent_3' }],
-          [{ text: '💵 $2,500+ / month (Luxury)', callback_data: 'srch_bg_rent_4' }],
-          [{ text: '🌐 Any Budget', callback_data: 'srch_bg_rent_any' }],
-          [{ text: '⬅️ Back to District', callback_data: 'srch_back_to_loc' }]
-        ]
-      }
-    };
-  }
+  const defaultRentDef = {
+    stepLabel: `Step ${stepNum} · Monthly Budget (Rent)`,
+    prompt: 'Select your target monthly budget:',
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: '💵 Under $600 / month', callback_data: 'srch_bg_rent_1' }],
+        [{ text: '💵 $600 – $1,200 / month', callback_data: 'srch_bg_rent_2' }],
+        [{ text: '💵 $1,200 – $2,500 / month', callback_data: 'srch_bg_rent_3' }],
+        [{ text: '💵 $2,500+ / month (Luxury)', callback_data: 'srch_bg_rent_4' }],
+        [{ text: '🌐 Any Budget', callback_data: 'srch_bg_rent_any' }],
+        [{ text: '⬅️ Back to District', callback_data: 'srch_back_to_loc' }]
+      ]
+    }
+  };
 
-  // Buy Budget
-  return {
-    text: 
-      `<b>SEARCH CONCIERGE</b>\n` +
-      `──────────\n` +
-      `<b>Step ${stepNum} · Target Budget (Buy)</b>\n\n` +
-      `Select your acquisition budget bracket:`,
+  const defaultBuyDef = {
+    stepLabel: `Step ${stepNum} · Target Budget (Buy)`,
+    prompt: 'Select your acquisition budget bracket:',
     reply_markup: {
       inline_keyboard: [
         [{ text: '💰 Under $100,000 USD', callback_data: 'srch_bg_sale_1' }],
@@ -235,6 +282,13 @@ function renderBudgetStep(state) {
       ]
     }
   };
+
+  const res = getStepDef(stepKey, isRent ? defaultRentDef : defaultBuyDef);
+  const hasBack = res.reply_markup?.inline_keyboard?.some(row => row.some(b => b.text?.includes('Back')));
+  if (!hasBack && res.reply_markup?.inline_keyboard) {
+    res.reply_markup.inline_keyboard.push([{ text: '⬅️ Back to District', callback_data: 'srch_back_to_loc' }]);
+  }
+  return res;
 }
 
 // ── FILTER INVENTORY ──────────────────────────────────────────
@@ -340,24 +394,26 @@ function renderResultsCard(state, page = 1) {
     // 1. ⭐️ Top Recommendation (Sweet Spot)
     // 2. ⚓ Premier Benchmark (Luxury Anchor)
     // 3. 💡 Smart Value (Agile Alternative)
+    const cfg = getTreeConfig();
+    const anchorCfg = cfg?.steps?.anchoring_framework;
     let framedItems = [];
     if (rawBatch.length === 3) {
       const sorted = [...rawBatch].sort((a, b) => (a.price || 0) - (b.price || 0));
       framedItems = [
         {
-          badge: '⭐️ TOP RECOMMENDATION · Sweet Spot',
+          badge: anchorCfg?.sweetSpot?.badge || '⭐️ TOP RECOMMENDATION · Sweet Spot',
           item: sorted[1],
-          rationale: 'Best value balance of layout, usable floor area, and pricing.'
+          rationale: anchorCfg?.sweetSpot?.rationale || 'Best value balance of layout, usable floor area, and pricing.'
         },
         {
-          badge: '⚓ PREMIER BENCHMARK · Luxury Anchor',
+          badge: anchorCfg?.luxuryAnchor?.badge || '⚓ PREMIER BENCHMARK · Luxury Anchor',
           item: sorted[2],
-          rationale: 'Higher-tier specification establishing the quality benchmark.'
+          rationale: anchorCfg?.luxuryAnchor?.rationale || 'Higher-tier specification establishing the quality benchmark.'
         },
         {
-          badge: '💡 SMART VALUE · Agile Alternative',
+          badge: anchorCfg?.smartValue?.badge || '💡 SMART VALUE · Agile Alternative',
           item: sorted[0],
-          rationale: 'Lowest entry price point while retaining prime location access.'
+          rationale: anchorCfg?.smartValue?.rationale || 'Lowest entry price point while retaining prime location access.'
         }
       ];
     } else {
