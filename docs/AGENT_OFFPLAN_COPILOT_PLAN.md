@@ -61,3 +61,23 @@ When a unit (e.g. 38C1) is reserved by another agent:
 - **Calculation Engine:** `phc-tools/project-advisor-engine.cjs`
 - **Telegram Bot Poller:** `phc-tools/staging-bot-poller.cjs`
 - **Supabase Unit Draft Intake:** `phc-website/supabase/migrations/20261017180000_add_unit_draft_intake.sql`
+
+---
+
+## 6. HISTORICAL MEMORY & EVOLUTION TRACKING (THE BROKER ADVANTAGE)
+Average agents have zero memory. PHC retains permanent historical versioning across all developments:
+
+### 1. Dual Storage Architecture
+- **Local Storage (`phc-tools/data/projects/{projectId}/`):**
+  - `project-master.json`: Current live availability & active promotion.
+  - `price-lists/`: Versioned raw developer files (`2024-05_v1.0_Launch.pdf`, `2026-10_v2.0_Duplex_Promo.jpg`).
+  - `history/pricing-evolution.json`: Timestamped price changes per stack.
+  - `history/layout-changelog.md`: Architectural layout revisions between phases.
+- **Google Drive Sync:**
+  - Dedicated Google Drive intake folder (`PHC Property Database / {Project}`) for seamless mobile uploads from Telegram broker chats.
+
+### 2. High-Value Client Advisory Metrics
+- **Launch Arbitrage Metric:** Automatically calculates Current Net Price vs. Phase 1 Launch Baseline (e.g. *"7.6% Below Original Launch Price"*).
+- **Layout Revision Protection:** Tracks subtle developer plan modifications (net area shrinkage, AC ledge shifts, column intrusions) to protect buyer interests.
+- **Below-Launch VIP Resale Alerts:** Automatically triggers alerts when an urgent resale unit drops below the developer's original launch price.
+
