@@ -2556,17 +2556,29 @@ async function pollUpdates() {
         // ── DEVELOPER PROJECT INTELLIGENCE CALLBACKS ─────────────
         if (dataStr.startsWith('admin_sold_ts7_')) {
           const unitCode = dataStr.replace('admin_sold_ts7_', '');
+          const soldResult = projectEngine.markUnitSold('time-square-7', unitCode);
+
+          if (!soldResult.success && soldResult.alreadySold) {
+            await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ callback_query_id: cbId, text: `Unit ${unitCode} was already sold!`, show_alert: true })
+            });
+            return;
+          }
+
           await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ callback_query_id: cbId, text: `Unit ${unitCode} marked as SOLD!` })
           });
 
-          const soldResult = projectEngine.markUnitSold('time-square-7', unitCode);
           const nextResult = soldResult.nextBestRecommendation;
           const nextUnit = nextResult.bestUnit;
+          const floorInfo = nextResult.floorDifference === 0 
+            ? 'Same floor adjacent stack' 
+            : `${nextResult.floorDifference} floor${nextResult.floorDifference > 1 ? 's' : ''} away`;
 
-          const updatedText = `⚠️ <b>UPDATE: Unit ${unitCode} is SOLD!</b>\n` +
-            `<i>Live database updated. Here is the next best available outer-view duplex:</i>\n\n` +
+          const updatedText = `⚠️ <b>UPDATE: Unit ${unitCode} is marked SOLD!</b>\n` +
+            `<i>Live database updated. Nearest alternative recommended (${floorInfo}):</i>\n\n` +
             projectEngine.formatProposalCard(nextResult);
 
           await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
