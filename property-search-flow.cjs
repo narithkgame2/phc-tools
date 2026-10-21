@@ -197,7 +197,7 @@ function renderLocationStep(state) {
   };
 }
 
-// ── HELPER: BUDGET SELECTOR ───────────────────────────────────
+// ── HELPER: BUDGET SELECTOR (FULL-WIDTH READABLE BUTTONS) ──────
 function renderBudgetStep(state) {
   const isRent = state.type === 'Rent';
   const stepNum = isRent ? '4 of 4' : '5 of 5';
@@ -211,20 +211,12 @@ function renderBudgetStep(state) {
         `Select your target monthly budget:`,
       reply_markup: {
         inline_keyboard: [
-          [
-            { text: '💵 Under $600 / mo', callback_data: 'srch_bg_rent_1' },
-            { text: '💵 $600 – $1,200 / mo', callback_data: 'srch_bg_rent_2' }
-          ],
-          [
-            { text: '💵 $1,200 – $2,500 / mo', callback_data: 'srch_bg_rent_3' },
-            { text: '💵 $2,500+ / mo', callback_data: 'srch_bg_rent_4' }
-          ],
-          [
-            { text: '🌐 Any Budget', callback_data: 'srch_bg_rent_any' }
-          ],
-          [
-            { text: '⬅️ Back', callback_data: 'srch_back_to_loc' }
-          ]
+          [{ text: '💵 Under $600 / month', callback_data: 'srch_bg_rent_1' }],
+          [{ text: '💵 $600 – $1,200 / month', callback_data: 'srch_bg_rent_2' }],
+          [{ text: '💵 $1,200 – $2,500 / month', callback_data: 'srch_bg_rent_3' }],
+          [{ text: '💵 $2,500+ / month (Luxury)', callback_data: 'srch_bg_rent_4' }],
+          [{ text: '🌐 Any Budget', callback_data: 'srch_bg_rent_any' }],
+          [{ text: '⬅️ Back to District', callback_data: 'srch_back_to_loc' }]
         ]
       }
     };
@@ -239,20 +231,12 @@ function renderBudgetStep(state) {
       `Select your acquisition budget bracket:`,
     reply_markup: {
       inline_keyboard: [
-        [
-          { text: '💰 Under $100,000', callback_data: 'srch_bg_sale_1' },
-          { text: '💰 $100k – $200,000', callback_data: 'srch_bg_sale_2' }
-        ],
-        [
-          { text: '💰 $200k – $500,000', callback_data: 'srch_bg_sale_3' },
-          { text: '💰 $500,000+ USD', callback_data: 'srch_bg_sale_4' }
-        ],
-        [
-          { text: '🌐 Any Budget', callback_data: 'srch_bg_sale_any' }
-        ],
-        [
-          { text: '⬅️ Back', callback_data: 'srch_back_to_loc' }
-        ]
+        [{ text: '💰 Under $100,000 USD', callback_data: 'srch_bg_sale_1' }],
+        [{ text: '💰 $100,000 – $200,000 USD', callback_data: 'srch_bg_sale_2' }],
+        [{ text: '💰 $200,000 – $500,000 USD', callback_data: 'srch_bg_sale_3' }],
+        [{ text: '💰 $500,000+ USD (Prime Luxury)', callback_data: 'srch_bg_sale_4' }],
+        [{ text: '🌐 Any Budget', callback_data: 'srch_bg_sale_any' }],
+        [{ text: '⬅️ Back to District', callback_data: 'srch_back_to_loc' }]
       ]
     }
   };
@@ -335,12 +319,12 @@ function filterInventory(state) {
   return matches;
 }
 
-// ── RENDER RESULTS CARD ───────────────────────────────────────
+// ── RENDER RESULTS CARD (ANCHORING FRAMEWORK) ─────────────────
 function renderResultsCard(state, page = 1) {
   const allMatches = filterInventory(state);
   const pageSize = 3;
   const startIndex = (page - 1) * pageSize;
-  const displayed = allMatches.slice(startIndex, startIndex + pageSize);
+  const rawBatch = allMatches.slice(startIndex, startIndex + pageSize);
   const totalCount = allMatches.length;
 
   const isRent = state.type === 'Rent';
@@ -350,14 +334,47 @@ function renderResultsCard(state, page = 1) {
   let text = 
     `<b>SEARCH CONCIERGE</b>\n` +
     `──────────\n` +
-    `<b>Verified Portfolio Matches (${totalCount})</b>\n` +
+    `<b>Comparative Portfolio (${totalCount} Matches)</b>\n` +
     `<i>${escapeHtml(filterSummary)}</i>\n\n`;
 
-  if (displayed.length === 0) {
+  if (rawBatch.length === 0) {
     text += `<blockquote>No exact listings match this filter combination in our active catalog right now. Contact Nick directly for off-market units.</blockquote>\n\n`;
   } else {
-    displayed.forEach((m, idx) => {
-      const num = startIndex + idx + 1;
+    // Apply PHC 3-Property Anchoring Framework
+    // If 3 items in batch, sort by price and frame as:
+    // 1. ⭐️ Top Recommendation (Sweet Spot)
+    // 2. ⚓ Premier Benchmark (Luxury Anchor)
+    // 3. 💡 Smart Value (Agile Alternative)
+    let framedItems = [];
+    if (rawBatch.length === 3) {
+      const sorted = [...rawBatch].sort((a, b) => (a.price || 0) - (b.price || 0));
+      framedItems = [
+        {
+          badge: '⭐️ TOP RECOMMENDATION · Sweet Spot',
+          item: sorted[1],
+          rationale: 'Best value balance of layout, usable floor area, and pricing.'
+        },
+        {
+          badge: '⚓ PREMIER BENCHMARK · Luxury Anchor',
+          item: sorted[2],
+          rationale: 'Higher-tier specification establishing the quality benchmark.'
+        },
+        {
+          badge: '💡 SMART VALUE · Agile Alternative',
+          item: sorted[0],
+          rationale: 'Lowest entry price point while retaining prime location access.'
+        }
+      ];
+    } else {
+      framedItems = rawBatch.map((item, idx) => ({
+        badge: idx === 0 ? '⭐️ RECOMMENDED OPTION' : `💡 COMPARATIVE OPTION ${idx + 1}`,
+        item,
+        rationale: 'Matches your selected district, property type, and budget target.'
+      }));
+    }
+
+    framedItems.forEach((f) => {
+      const m = f.item;
       const snippet = sanitizeUtf8(m.snippet || '');
 
       // 1. Extract Real Building/Project Name from snippet or title
@@ -399,10 +416,12 @@ function renderResultsCard(state, page = 1) {
         : (m.price ? (isRent ? `$${m.price.toLocaleString()}/mo` : `$${m.price.toLocaleString()} USD`) : 'Inquire');
 
       text += 
-        `<blockquote><b>${num}. ${escapeHtml(building)}</b>\n` +
+        `<blockquote><b>${f.badge}</b>\n` +
+        `🏢 <b>${escapeHtml(building)}</b>\n` +
         `▫️ <b>Price:</b> <b>${escapeHtml(priceClean)}</b>\n` +
         (specsLine ? `▫️ <b>Specs:</b> ${escapeHtml(specsLine)}\n` : '') +
         `📍 <i>${escapeHtml(m.location || 'Phnom Penh')}</i>\n` +
+        `💡 <i>Why this fits: ${f.rationale}</i>\n` +
         `🔗 <a href="${escapeHtml(m.link)}">View Photos & Channel Post ↗</a></blockquote>\n\n`;
     });
   }
