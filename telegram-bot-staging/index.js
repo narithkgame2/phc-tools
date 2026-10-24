@@ -1173,27 +1173,75 @@ function getCoBrokeMenu() {
   };
 }
 
+// Real numbers only: channel members from Telegram, listings from the inventory file, leads from the CRM sheet.
+// Counts only, no names or contact details. Anything that cannot be read is said plainly, never guessed.
+const CRM_API_URL = 'https://script.google.com/macros/s/AKfycbzlAxcJqEI3upZ18sm-mj2Gxd3w2XSkD_YYqgkZ4kdw2_AV3V8f2B4qVcPESHZTOq2k8Q/exec';
+async function buildRealDigest() {
+  const out = [`📊 <b>DIGEST · REAL NUMBERS ONLY</b>\n`];
+
+  let members = null;
+  try {
+    const r = await fetch(`https://api.telegram.org/bot${token}/getChatMemberCount?chat_id=${channelId}`);
+    const j = await r.json();
+    if (j.ok) members = j.result;
+  } catch (e) { /* reported below */ }
+  out.push(`▫️ <b>Test channel members:</b> ${members === null ? 'could not be read' : members}`);
+
+  try {
+    const inv = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'multi-channel-inventory.json'), 'utf8'));
+    const n = typeof inv.totalCount === 'number' ? inv.totalCount : (Array.isArray(inv.listings) ? inv.listings.length : null);
+    out.push(`▫️ <b>Listings in inventory file:</b> ${n === null ? 'could not be read' : n}`);
+  } catch (e) {
+    out.push('▫️ <b>Listings in inventory file:</b> could not be read');
+  }
+
+  try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 8000);
+    const r = await fetch(`${CRM_API_URL}?action=getAll&sheet=Leads`, { signal: ctrl.signal });
+    clearTimeout(timer);
+    const leads = await r.json();
+    if (!Array.isArray(leads)) throw new Error('unexpected CRM reply');
+    const cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
+    const recent = leads.filter(l => { const d = Date.parse(l.createdAt); return !isNaN(d) && d >= cutoff; });
+    const countBy = (arr, key) => {
+      const m = {};
+      arr.forEach(l => { const k = String(l[key] || '').trim() || 'Not set'; m[k] = (m[k] || 0) + 1; });
+      return Object.entries(m).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([k, v]) => `${k} ${v}`).join(' · ');
+    };
+    out.push(`\n📈 <b>CRM LEADS</b>`);
+    out.push(`▫️ <b>All leads:</b> ${leads.length}`);
+    out.push(`▫️ <b>New in the last 30 days:</b> ${recent.length}`);
+    if (leads.length) {
+      out.push(`▫️ <b>By stage:</b> ${countBy(leads, 'stage')}`);
+      out.push(`▫️ <b>By nationality:</b> ${countBy(leads, 'nationality')}`);
+    }
+  } catch (e) {
+    out.push('\n📈 <b>CRM LEADS:</b> not connected. The CRM did not return lead data (it may need a private key), so no lead numbers are shown.');
+  }
+
+  out.push('\n<i>Nothing here is estimated. A line that says "could not be read" means the source did not answer.</i>');
+  return out.join('\n');
+}
+
 function getDigestBroadcast() {
   return {
     text: 
       `<b>REALESTATE.COM.KH · WEEKLY INVESTMENT BRIEF</b>\n` +
-      `Top 3 High-Yield Opportunities · Phnom Penh\n\n` +
+      `Three listings · Phnom Penh\n\n` +
       `<b>01 · TIME SQUARE 8 | 2-BEDROOM RESALE</b>\n` +
-      `▫️ <b>Price:</b> $99,000 USD (Urgent Resale — $15,000 Below Developer)\n` +
+      `▫️ <b>Price:</b> $99,000 USD (Resale)\n` +
       `▫️ <b>Location:</b> Boeng Trabek / Toul Tompoung, Chamkarmon\n` +
-      `▫️ <b>Net Rental Yield:</b> 8.5% Net ($750/month rent)\n` +
       `▫️ <b>Installment:</b> 10% Down ($9,900) + $495/mo construction terms\n\n` +
-      `<b>02 · RESIDENCE L | HIGH CASH-FLOW ASSET</b>\n` +
+      `<b>02 · RESIDENCE L</b>\n` +
       `▫️ <b>Price:</b> $45,000 USD (Immediate Handover & Tenancy)\n` +
       `▫️ <b>Location:</b> Toul Tompoung, Chamkarmon\n` +
-      `▫️ <b>Net Rental Yield:</b> 9.2% Net ($350/month rent)\n` +
-      `▫️ <b>Title:</b> 100% Foreign Freehold Strata Title\n\n` +
+      `▫️ <b>Title:</b> Strata title (confirm status per unit)\n\n` +
       `<b>03 · ODOM LIVING | FLAGSHIP RESIDENTIAL TOWER</b>\n` +
       `▫️ <b>Price:</b> $240,000 USD (Handover Q1 2027)\n` +
       `▫️ <b>Location:</b> Norodom Boulevard, Tonle Bassac\n` +
-      `▫️ <b>Net Rental Yield:</b> 6.8% Net (Diplomatic & Executive Tenancies)\n` +
-      `▫️ <b>Architecture:</b> Phnom Penh's LEED-Gold landmark mixed-use\n\n` +
-      `<blockquote>Registered private subscribers receive 48-hour priority inspection window before public marketing.</blockquote>`,
+      `\n` +
+      `<blockquote>For yields after tax, management and vacancy, ask Nick for the net calculation. Figures are for reference only and are not a guarantee of future income.</blockquote>`,
     reply_markup: {
       inline_keyboard: [
         [
@@ -1394,23 +1442,7 @@ async function pollUpdates() {
         }
 
         if (text === '/digest' || text === '/stats') {
-          const report = 
-            `📊 <b>REALESTATE.COM.KH · EXECUTIVE DIGEST</b>\n\n` +
-            `📈 <b>CHANNEL NETWORK PERFORMANCE:</b>\n` +
-            `▫️ <b>Total Reach:</b> 12,400+ subscribers across 4 languages\n` +
-            `▫️ <b>Active Listings:</b> 4 verified properties\n` +
-            `▫️ <b>Leads Captured:</b> 19 qualified buyer/tenant inquiries\n\n` +
-            `🏆 <b>TOP PERFORMING PROPERTIES:</b>\n` +
-            `1. <b>Time Square 8 (2BR)</b> · $99,000 Resale — 42 inquiries\n` +
-            `2. <b>Time Square 306 (1BR)</b> · $650/mo Rent — 28 inquiries\n` +
-            `3. <b>Time Square 9 (Launch)</b> · From $48,000 — 17 inquiries\n\n` +
-            `🎯 <b>BUYER ORIGIN DEMOGRAPHICS:</b>\n` +
-            `🇯🇵 <b>Japan:</b> 42% (Nick routing)\n` +
-            `🇬🇧 <b>Expats / Local:</b> 31% (Monika routing)\n` +
-            `🇷🇺 <b>Russia / CIS:</b> 18% (Monika routing)\n` +
-            `🇩🇪 <b>Europe (DACH):</b> 9% (Raz routing)\n\n` +
-            `💡 <b>STRATEGIC ACTION ADVICE:</b>\n` +
-            `High buyer demand for 1BR units in BKK1 under $700/mo. Relist any available inventory this Tuesday morning.`;
+          const report = await buildRealDigest();
 
           await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
             method: 'POST',
