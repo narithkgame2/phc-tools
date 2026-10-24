@@ -210,7 +210,9 @@ const server = http.createServer((req, res) => {
   res.end('Not Found');
 });
 
-server.listen(PORT, '0.0.0.0', () => {
+// Listens on this Mac only by default (it serves live bot state). Set HOST=0.0.0.0 only on purpose.
+const HOST = process.env.HOST || '127.0.0.1';
+server.listen(PORT, HOST, () => {
   console.log(`[Cockpit & Studio Server] Running on http://localhost:${PORT}`);
   console.log(`  - Canva Step Studio: http://localhost:${PORT}/canvas`);
   console.log(`  - Cockpit Dashboard: http://localhost:${PORT}/cockpit`);

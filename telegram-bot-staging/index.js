@@ -4,7 +4,13 @@
 // Features: Lead Capture, Telegram Mini App, GPS Pins, Trust Engine
 // ═══════════════════════════════════════════════════════════════
 
-const token = process.env.TELEGRAM_BOT_TOKEN || '8453711743:AAHj3SKU8orwO4ksev1z_xVvX0mNcm8_yq4';
+// Bot token: read from a private file outside the project (see load-secrets.js). Never written in code.
+require('./load-secrets.js');
+const token = process.env.TELEGRAM_BOT_TOKEN;
+if (!token || !/^\d{6,12}:[A-Za-z0-9_-]{30,}$/.test(token)) {
+  console.error('\nThe bot token is missing or not valid.\nOpen this private file and paste the token after TELEGRAM_BOT_TOKEN=\n  ~/.phc-secrets/nick-reakh-bot.env\nThen start the bot again.\n');
+  process.exit(1);
+}
 const channelId = '-1004372846355'; // Nick Test Lab
 const nickChatId = '353195979';
 
@@ -42,6 +48,7 @@ const STATE_FILE = path.join(__dirname, 'data', 'bot-state.json');
 const { syncAllChannels, searchInventory } = require('./engines/channel-syncer.js');
 const { handleSearchCallback, handleSearchCommand, isSearchCallback } = require('./engines/search-concierge.js');
 const projectEngine = require('./engines/project-advisor.js');
+const roleGate = require('./engines/role-gate.js');
 
 // Periodic Multi-Channel Sync (every 30 minutes)
 setInterval(() => {
@@ -471,7 +478,7 @@ function getPurchaseGuide(lang = 'EN') {
       `▫️ <b>Cadastral Legal & Registration Fee:</b> ~$500 – $1,000 USD\n` +
       `▫️ <b>Maintenance Sinking Fund:</b> ~$10 – $20/sqm (one-time upon handover)\n` +
       `▫️ <b>Buyer Commission:</b> <b>$0 (Zero Fee)</b> — 100% developer/seller paid\n` +
-      `▫️ <b>Individual Capital Gains Tax:</b> <b>0%</b></blockquote>\n\n` +
+      `▫️ <b>Capital Gains Tax:</b> 20% of the taxable gain, scheduled from January 2027 (may change)</blockquote>\n\n` +
       `💡 <i>Realestate.com.kh coordinates complete contract verification, escrow transfers, and Cadastral title registration.</i>`,
     reply_markup: {
       inline_keyboard: [
@@ -1375,6 +1382,16 @@ async function pollUpdates() {
         const sender = update.message.from;
         const senderName = sender.first_name || 'Client';
         console.log(`💬 Message from ${senderName} (${chatId}): "${text.slice(0, 100)}..."`);
+
+        // ROLE CHECK: staff and admin commands work for Nick only. Clients get a polite "not available".
+        if (roleGate.isAdminCommand(text) && !roleGate.isAdmin(sender.id)) {
+          console.log(`🔒 Blocked admin command from non-admin ${sender.id}`);
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, text: roleGate.deniedText(userLanguages[chatId]) })
+          });
+          continue;
+        }
 
         if (text === '/digest' || text === '/stats') {
           const report = 
@@ -2546,6 +2563,16 @@ async function pollUpdates() {
         const userName = user.username ? `@${user.username}` : user.first_name;
 
         console.log(`\n👉 Tap received: ${dataStr} from user ${userName} (${user.id})`);
+
+        // ROLE CHECK: staff and admin buttons work for Nick only.
+        if (roleGate.isAdminCallback(dataStr) && !roleGate.isAdmin(user.id)) {
+          console.log(`🔒 Blocked admin button from non-admin ${user.id}`);
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId, text: roleGate.deniedText(userLanguages[msg && msg.chat ? msg.chat.id : user.id]) })
+          });
+          continue;
+        }
 
         // ── 5-STEP INTERACTIVE SEARCH CONCIERGE ───────────────────
         if (isSearchCallback(dataStr)) {
@@ -4184,7 +4211,7 @@ async function pollUpdates() {
             `<blockquote>💰 <b>Official Tax Schedule:</b>\n` +
             `▫️ <b>Property Transfer Tax (Stamp Duty):</b> 4% of Cadastral assessed value (paid once upon hard title transfer).\n` +
             `▫️ <b>Annual Property Tax:</b> 0.1% on properties valued above ~$25,000 USD (typically only $50–$100/yr for a 2BR condo).\n` +
-            `▫️ <b>Capital Gains Tax:</b> 0% for individual foreign buyers.\n` +
+            `▫️ <b>Capital Gains Tax:</b> 20% of the taxable gain, scheduled from January 2027 (may change).\n` +
             `▫️ <b>Rental Withholding Tax:</b> Non-residents pay 14% withholding.</blockquote>\n\n` +
             `💡 <i>Realestate.com.kh prepares complete tax clearance paperwork on your behalf.</i>`;
 
@@ -5304,6 +5331,8 @@ async function pollUpdates() {
 // Optional Lightweight HTTP Server for Cloud Health Checks (Render / Railway / Koyeb)
 const http = require('http');
 const PORT = process.env.PORT || 8080;
+// Listens on this Mac only by default. A cloud host (Render, Railway, Koyeb) must set HOST=0.0.0.0.
+const HOST = process.env.HOST || '127.0.0.1';
 const healthServer = http.createServer((req, res) => {
   if (req.url === '/health' || req.url === '/') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -5318,8 +5347,8 @@ const healthServer = http.createServer((req, res) => {
     res.end('Not Found');
   }
 });
-healthServer.listen(PORT, '0.0.0.0', () => {
-  console.log(`🌐 Cloud Health Server listening on 0.0.0.0:${PORT}`);
+healthServer.listen(PORT, HOST, () => {
+  console.log(`🌐 Health Server listening on ${HOST}:${PORT}`);
 });
 
 async function runLoop() {
