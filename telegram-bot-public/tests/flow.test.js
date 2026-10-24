@@ -42,5 +42,13 @@ t('every placeholder has a source (only known ones remain)', () => steps.forEach
 })));
 t('callback data stays under 64 bytes', () => steps.forEach((s) => R.keyboard(s, 'en').inline_keyboard.forEach((row) => row.forEach((b) => b.callback_data && assert.ok(Buffer.byteLength(b.callback_data) < 64)))));
 
+t('buy budget has four bands plus not decided, in all languages, with no gaps in the wording', () => {
+  const b1 = steps.find((s) => s.id === 'b1');
+  assert.strictEqual(b1.buttons.length, 6); // five choices and Main menu
+  assert.deepStrictEqual(b1.buttons.slice(0, 5).map((b) => b.l), ['Under $50,000', '$50,000 to $100,000', '$100,000 to $200,000', 'Above $200,000', 'Not decided yet']);
+  assert.deepStrictEqual(b1.tr.jp.b.slice(0, 5), ['5万ドル未満', '5万から10万ドル', '10万から20万ドル', '20万ドル以上', 'まだ決めていない']);
+  assert.ok(b1.buttons.slice(0, 5).every((b) => b.to === 'b2'));
+});
+
 console.log(`\nRESULTS: ${passed} / ${total} TESTS PASSED (${Math.round(passed / total * 100)}%)`);
 process.exit(passed === total ? 0 : 1);
