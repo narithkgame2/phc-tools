@@ -4,7 +4,13 @@
 // Features: Lead Capture, Telegram Mini App, GPS Pins, Trust Engine
 // ═══════════════════════════════════════════════════════════════
 
-const token = process.env.TELEGRAM_BOT_TOKEN || '8453711743:AAHj3SKU8orwO4ksev1z_xVvX0mNcm8_yq4';
+// Bot token: read from a private file outside the project (see load-secrets.js). Never written in code.
+require('./telegram-bot-staging/load-secrets.js');
+const token = process.env.TELEGRAM_BOT_TOKEN;
+if (!token || !/^\d{6,12}:[A-Za-z0-9_-]{30,}$/.test(token)) {
+  console.error('\nThe bot token is missing or not valid.\nOpen this private file and paste the token after TELEGRAM_BOT_TOKEN=\n  ~/.phc-secrets/nick-reakh-bot.env\nThen start the bot again.\n');
+  process.exit(1);
+}
 const channelId = '-1004372846355'; // Nick Test Lab
 const nickChatId = '353195979';
 
@@ -471,7 +477,7 @@ function getPurchaseGuide(lang = 'EN') {
       `▫️ <b>Cadastral Legal & Registration Fee:</b> ~$500 – $1,000 USD\n` +
       `▫️ <b>Maintenance Sinking Fund:</b> ~$10 – $20/sqm (one-time upon handover)\n` +
       `▫️ <b>Buyer Commission:</b> <b>$0 (Zero Fee)</b> — 100% developer/seller paid\n` +
-      `▫️ <b>Individual Capital Gains Tax:</b> <b>0%</b></blockquote>\n\n` +
+      `▫️ <b>Capital Gains Tax:</b> 20% of the taxable gain, scheduled from January 2027 (may change)</blockquote>\n\n` +
       `💡 <i>Realestate.com.kh coordinates complete contract verification, escrow transfers, and Cadastral title registration.</i>`,
     reply_markup: {
       inline_keyboard: [
@@ -4184,7 +4190,7 @@ async function pollUpdates() {
             `<blockquote>💰 <b>Official Tax Schedule:</b>\n` +
             `▫️ <b>Property Transfer Tax (Stamp Duty):</b> 4% of Cadastral assessed value (paid once upon hard title transfer).\n` +
             `▫️ <b>Annual Property Tax:</b> 0.1% on properties valued above ~$25,000 USD (typically only $50–$100/yr for a 2BR condo).\n` +
-            `▫️ <b>Capital Gains Tax:</b> 0% for individual foreign buyers.\n` +
+            `▫️ <b>Capital Gains Tax:</b> 20% of the taxable gain, scheduled from January 2027 (may change).\n` +
             `▫️ <b>Rental Withholding Tax:</b> Non-residents pay 14% withholding.</blockquote>\n\n` +
             `💡 <i>Realestate.com.kh prepares complete tax clearance paperwork on your behalf.</i>`;
 

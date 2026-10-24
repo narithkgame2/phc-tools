@@ -45,7 +45,7 @@ What "track record" means in Cambodia (completed projects, title delivery, resal
 
 ## 8. How to Calculate Condo ROI in Cambodia
 **Pillar:** Market data (financial) · **Priority:** P2
-JP investors are highly numerate and want to run their own calculations. Always present **net** yield, not just gross (management fee ~8-12%, property tax 0.1%/year, vacancy factor 1-2 months/year, CGT on exit). Include a sample calculation.
+JP investors are highly numerate and want to run their own calculations. Always present **net** yield, not just gross (management fee 5 to 10%, property tax 0.1%/year, vacancy factor 1-2 months/year, CGT on exit). Include a sample calculation.
 
 ## 9. Studio vs 1-Bedroom: Which Is a Better Investment?
 **Pillar:** Buying process (first-purchase decision) · **Priority:** P2
