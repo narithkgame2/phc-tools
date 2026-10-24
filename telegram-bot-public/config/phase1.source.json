@@ -1,0 +1,1399 @@
+[
+ {
+  "id": "start",
+  "flow": "Entry",
+  "title": "Language",
+  "text": " Choose your language / 言語を選択してください / ជ្រើសរើសភាសា",
+  "buttons": [
+   {
+    "l": "English",
+    "to": "menu",
+    "half": true,
+    "url": ""
+   },
+   {
+    "l": "日本語",
+    "to": "menu",
+    "half": true,
+    "url": ""
+   },
+   {
+    "l": "ខ្មែរ",
+    "to": "menu",
+    "half": true,
+    "url": ""
+   }
+  ],
+  "note": "Skipped when the phone is set to Japanese: the bot opens in Japanese straight away. Everyone else sees this screen once, and the choice is remembered.",
+  "tr": {
+   "jp": {
+    "t": "Choose your language / 言語を選択してください / ជ្រើសរើសភាសា",
+    "b": [
+     "English",
+     "日本語",
+     "ខ្មែរ"
+    ]
+   },
+   "kh": {
+    "t": "Choose your language / 言語を選択してください / ជ្រើសរើសភាសា",
+    "b": [
+     "English",
+     "日本語",
+     "ខ្មែរ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "menu",
+  "flow": "Entry",
+  "title": "Main menu",
+  "text": "<b>NICK | カンボジア不動産投資</b>\n<i>Phnom Penh property, by the numbers</i>\n\nCompare properly before you buy.\nWhat would you like to do?",
+  "buttons": [
+   {
+    "l": "Find a property to buy",
+    "to": "b1",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Find a place to rent",
+    "to": "rr1",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Book a tour",
+    "to": "tour",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "More",
+    "to": "more",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Language",
+    "to": "start",
+    "half": true,
+    "url": ""
+   },
+   {
+    "l": "Talk to Nick",
+    "to": "",
+    "half": true,
+    "url": "https://line.me/ti/p/@615ueovq"
+   }
+  ],
+  "note": "Four jobs on the first screen, everything else under More. Brand decided by Nick: the display name NICK | カンボジア不動産投資 in every language, like every other channel. Subtitle and tagline come from the channel plan.",
+  "tr": {
+   "jp": {
+    "t": "<b>NICK | カンボジア不動産投資</b>\n<i>プノンペン在住・日本語対応</i>\n\n買う前に、正しく比較しましょう。\nご用件をお選びください。",
+    "b": [
+     "物件を購入する",
+     "賃貸物件を探す",
+     "内覧を予約する",
+     "その他",
+     "言語",
+     "Nickに相談"
+    ]
+   },
+   "kh": {
+    "t": "<b>NICK | カンボジア不動産投資</b>\n<i>អចលនទ្រព្យភ្នំពេញ តាមរយៈលេខពិតប្រាកដ</i>\n\nប្រៀបធៀបឱ្យបានត្រឹមត្រូវ មុនពេលទិញ។\nតើអ្នកចង់ធ្វើអ្វី?",
+    "b": [
+     "រកអចលនទ្រព្យទិញ",
+     "រកផ្ទះជួល",
+     "កក់ពេលទស្សនា",
+     "ផ្សេងៗ",
+     "ភាសា",
+     "ទាក់ទង Nick"
+    ]
+   }
+  }
+ },
+ {
+  "id": "b1",
+  "flow": "Buy",
+  "title": "Buy 1: Budget",
+  "text": "<b>Your budget</b>\n<i>Step 1 of 2</i>\n\nWhat range suits you?",
+  "buttons": [
+   {
+    "l": "Under $100,000",
+    "to": "b2",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "$100,000 to $200,000",
+    "to": "b2",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "$200,000 to $500,000",
+    "to": "b2",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "$500,000 and above",
+    "to": "b2",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Any budget",
+    "to": "b2",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Main menu",
+    "to": "menu",
+    "half": false,
+    "url": ""
+   }
+  ],
+  "tr": {
+   "jp": {
+    "t": "<b>ご予算</b>\n<i>ステップ1/2</i>\n\nご希望の価格帯をお選びください。",
+    "b": [
+     "10万ドル未満",
+     "10万ドルから20万ドル",
+     "20万ドルから50万ドル",
+     "50万ドル以上",
+     "予算は問いません",
+     "メインメニュー"
+    ]
+   },
+   "kh": {
+    "t": "<b>ថវិការបស់អ្នក</b>\n<i>ជំហាន 1 ក្នុងចំណោម 2</i>\n\nតើថវិកាប៉ុន្មានសមស្រប?",
+    "b": [
+     "ក្រោម $100,000",
+     "$100,000 ដល់ $200,000",
+     "$200,000 ដល់ $500,000",
+     "$500,000 ឡើងទៅ",
+     "គ្រប់ថវិកា",
+     "ម៉ឺនុយមេ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "b2",
+  "flow": "Buy",
+  "title": "Buy 2: District",
+  "text": "<b>Your district</b>\n<i>Step 2 of 2</i>\n\nWhere in Phnom Penh?",
+  "buttons": [
+   {
+    "l": "BKK1",
+    "to": "bres",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Tonle Bassac",
+    "to": "bres",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Toul Kork",
+    "to": "bres",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Chamkarmon",
+    "to": "bres",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Any district",
+    "to": "bres",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Back",
+    "to": "b1",
+    "half": false,
+    "url": ""
+   }
+  ],
+  "tr": {
+   "jp": {
+    "t": "<b>エリア</b>\n<i>ステップ2/2</i>\n\nプノンペンのどのエリアをご希望ですか？",
+    "b": [
+     "BKK1",
+     "トンレバサック",
+     "トゥールコック",
+     "チャムカールモン",
+     "エリアは問いません",
+     "戻る"
+    ]
+   },
+   "kh": {
+    "t": "<b>តំបន់របស់អ្នក</b>\n<i>ជំហាន 2 ក្នុងចំណោម 2</i>\n\nតើចង់បាននៅតំបន់ណាក្នុងភ្នំពេញ?",
+    "b": [
+     "BKK1",
+     "ទន្លេបាសាក់",
+     "ទួលគោក",
+     "ចំការមន",
+     "គ្រប់តំបន់",
+     "ត្រឡប់ក្រោយ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "bres",
+  "flow": "Buy",
+  "title": "Buy results",
+  "text": "<b>3 of [n] matches</b>\n<i>[search summary]</i>\n\n<blockquote><b>1. Top recommendation, Sweet Spot</b>\n<b>[Building 1]</b>\n$[price]  ·  [size] sqm  ·  [beds] bed\n<i>Why it fits: [one fact from the listing]</i></blockquote>\n\n<blockquote><b>2. Premier benchmark, Luxury Anchor</b>\n<b>[Building 2]</b>\n$[price]  ·  [size] sqm  ·  [beds] bed\n<i>Why it fits: [one fact from the listing]</i></blockquote>\n\n<blockquote><b>3. Smart value, Agile Alternative</b>\n<b>[Building 3]</b>\n$[price]  ·  [size] sqm  ·  [beds] bed\n<i>Why it fits: [one fact from the listing]</i></blockquote>",
+  "buttons": [
+   {
+    "l": "Ask Nick about #1",
+    "to": "lead1",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "More options",
+    "to": "bres",
+    "half": true,
+    "url": ""
+   },
+   {
+    "l": "Refine",
+    "to": "bref",
+    "half": true,
+    "url": ""
+   },
+   {
+    "l": "Back",
+    "to": "b2",
+    "half": false,
+    "url": ""
+   }
+  ],
+  "note": "Cards ranked by price across ALL matches, never silently dropping a filter.",
+  "tr": {
+   "jp": {
+    "t": "<b>該当[n]件のうち3件</b>\n<i>[search summary]</i>\n\n<blockquote><b>1. 一番のおすすめ(Sweet Spot)</b>\n<b>[Building 1]</b>\n$[price]  ·  [size]㎡  ·  [beds]ベッド\n<i>選ぶ理由: [one fact from the listing]</i></blockquote>\n\n<blockquote><b>2. 上位の基準(Luxury Anchor)</b>\n<b>[Building 2]</b>\n$[price]  ·  [size]㎡  ·  [beds]ベッド\n<i>選ぶ理由: [one fact from the listing]</i></blockquote>\n\n<blockquote><b>3. お求めやすい選択肢(Smart Value)</b>\n<b>[Building 3]</b>\n$[price]  ·  [size]㎡  ·  [beds]ベッド\n<i>選ぶ理由: [one fact from the listing]</i></blockquote>",
+    "b": [
+     "Nickに1番を相談",
+     "他の候補を見る",
+     "条件を絞る",
+     "戻る"
+    ]
+   },
+   "kh": {
+    "t": "<b>3 ក្នុងចំណោម [n] ដែលត្រូវនឹងលក្ខខណ្ឌ</b>\n<i>[search summary]</i>\n\n<blockquote><b>1. ការណែនាំកំពូល (Sweet Spot)</b>\n<b>[Building 1]</b>\n$[price]  ·  [size] ម៉ែត្រការ៉េ  ·  [beds] បន្ទប់គេង\n<i>ហេតុផលដែលសមស្រប: [one fact from the listing]</i></blockquote>\n\n<blockquote><b>2. ស្តង់ដារកម្រិតខ្ពស់ (Luxury Anchor)</b>\n<b>[Building 2]</b>\n$[price]  ·  [size] ម៉ែត្រការ៉េ  ·  [beds] បន្ទប់គេង\n<i>ហេតុផលដែលសមស្រប: [one fact from the listing]</i></blockquote>\n\n<blockquote><b>3. តម្លៃសមរម្យ (Smart Value)</b>\n<b>[Building 3]</b>\n$[price]  ·  [size] ម៉ែត្រការ៉េ  ·  [beds] បន្ទប់គេង\n<i>ហេតុផលដែលសមស្រប: [one fact from the listing]</i></blockquote>",
+    "b": [
+     "សួរ Nick អំពីលេខ 1",
+     "ជម្រើសបន្ថែម",
+     "តម្រង",
+     "ត្រឡប់ក្រោយ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "bref",
+  "flow": "Buy",
+  "title": "Refine results",
+  "text": "<b>Refine</b>\n\nNarrow your results:",
+  "buttons": [
+   {
+    "l": "Property type",
+    "to": "bres",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Off plan or resale",
+    "to": "bres",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Bedrooms",
+    "to": "bres",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Back to results",
+    "to": "bres",
+    "half": false,
+    "url": ""
+   }
+  ],
+  "tr": {
+   "jp": {
+    "t": "<b>絞り込み</b>\n\n条件を選んでください。",
+    "b": [
+     "物件の種類",
+     "建築中か完成済みか",
+     "寝室数",
+     "結果に戻る"
+    ]
+   },
+   "kh": {
+    "t": "<b>តម្រង</b>\n\nកំណត់លទ្ធផលរបស់អ្នក៖",
+    "b": [
+     "ប្រភេទអចលនទ្រព្យ",
+     "កំពុងសាងសង់ ឬបានបញ្ចប់",
+     "បន្ទប់គេង",
+     "ត្រឡប់ទៅលទ្ធផល"
+    ]
+   }
+  }
+ },
+ {
+  "id": "rr1",
+  "flow": "Rent",
+  "title": "Rent 1: Monthly budget",
+  "text": "<b>Your monthly budget</b>\n<i>Step 1 of 2</i>\n\nWhat range suits you?",
+  "buttons": [
+   {
+    "l": "Under $600 a month",
+    "to": "rr2",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "$600 to $1,200 a month",
+    "to": "rr2",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "$1,200 to $2,500 a month",
+    "to": "rr2",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "$2,500 and above a month",
+    "to": "rr2",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Main menu",
+    "to": "menu",
+    "half": false,
+    "url": ""
+   }
+  ],
+  "tr": {
+   "jp": {
+    "t": "<b>月額のご予算</b>\n<i>ステップ1/2</i>\n\nご希望の価格帯をお選びください。",
+    "b": [
+     "月額600ドル未満",
+     "月額600ドルから1,200ドル",
+     "月額1,200ドルから2,500ドル",
+     "月額2,500ドル以上",
+     "メインメニュー"
+    ]
+   },
+   "kh": {
+    "t": "<b>ថវិកាប្រចាំខែ</b>\n<i>ជំហាន 1 ក្នុងចំណោម 2</i>\n\nតើថវិកាប៉ុន្មានសមស្រប?",
+    "b": [
+     "ក្រោម $600 ក្នុងមួយខែ",
+     "$600 ដល់ $1,200 ក្នុងមួយខែ",
+     "$1,200 ដល់ $2,500 ក្នុងមួយខែ",
+     "$2,500 ឡើងទៅ ក្នុងមួយខែ",
+     "ម៉ឺនុយមេ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "rr2",
+  "flow": "Rent",
+  "title": "Rent 2: District",
+  "text": "<b>Your district</b>\n<i>Step 2 of 2</i>\n\nWhere in Phnom Penh?",
+  "buttons": [
+   {
+    "l": "BKK1",
+    "to": "rres",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Tonle Bassac",
+    "to": "rres",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Toul Kork",
+    "to": "rres",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Any district",
+    "to": "rres",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Back",
+    "to": "rr1",
+    "half": false,
+    "url": ""
+   }
+  ],
+  "tr": {
+   "jp": {
+    "t": "<b>エリア</b>\n<i>ステップ2/2</i>\n\nプノンペンのどのエリアをご希望ですか？",
+    "b": [
+     "BKK1",
+     "トンレバサック",
+     "トゥールコック",
+     "エリアは問いません",
+     "戻る"
+    ]
+   },
+   "kh": {
+    "t": "<b>តំបន់របស់អ្នក</b>\n<i>ជំហាន 2 ក្នុងចំណោម 2</i>\n\nតើចង់បាននៅតំបន់ណាក្នុងភ្នំពេញ?",
+    "b": [
+     "BKK1",
+     "ទន្លេបាសាក់",
+     "ទួលគោក",
+     "គ្រប់តំបន់",
+     "ត្រឡប់ក្រោយ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "rres",
+  "flow": "Rent",
+  "title": "Rent results",
+  "text": "<b>3 of [n] matches</b>\n<i>[search summary]</i>\n\n<blockquote><b>1. Top recommendation, Sweet Spot</b>\n<b>[Building 1]</b>\n$[price]  ·  [size] sqm  ·  [beds] bed\n<i>Why it fits: [one fact from the listing]</i></blockquote>\n\n<blockquote><b>2. Premier benchmark, Luxury Anchor</b>\n<b>[Building 2]</b>\n$[price]  ·  [size] sqm  ·  [beds] bed\n<i>Why it fits: [one fact from the listing]</i></blockquote>\n\n<blockquote><b>3. Smart value, Agile Alternative</b>\n<b>[Building 3]</b>\n$[price]  ·  [size] sqm  ·  [beds] bed\n<i>Why it fits: [one fact from the listing]</i></blockquote>",
+  "buttons": [
+   {
+    "l": "Ask Nick about #1",
+    "to": "lead1",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "More options",
+    "to": "rres",
+    "half": true,
+    "url": ""
+   },
+   {
+    "l": "Back",
+    "to": "rr2",
+    "half": false,
+    "url": ""
+   }
+  ],
+  "tr": {
+   "jp": {
+    "t": "<b>該当[n]件のうち3件</b>\n<i>[search summary]</i>\n\n<blockquote><b>1. 一番のおすすめ(Sweet Spot)</b>\n<b>[Building 1]</b>\n$[price]  ·  [size]㎡  ·  [beds]ベッド\n<i>選ぶ理由: [one fact from the listing]</i></blockquote>\n\n<blockquote><b>2. 上位の基準(Luxury Anchor)</b>\n<b>[Building 2]</b>\n$[price]  ·  [size]㎡  ·  [beds]ベッド\n<i>選ぶ理由: [one fact from the listing]</i></blockquote>\n\n<blockquote><b>3. お求めやすい選択肢(Smart Value)</b>\n<b>[Building 3]</b>\n$[price]  ·  [size]㎡  ·  [beds]ベッド\n<i>選ぶ理由: [one fact from the listing]</i></blockquote>",
+    "b": [
+     "Nickに1番を相談",
+     "他の候補を見る",
+     "戻る"
+    ]
+   },
+   "kh": {
+    "t": "<b>3 ក្នុងចំណោម [n] ដែលត្រូវនឹងលក្ខខណ្ឌ</b>\n<i>[search summary]</i>\n\n<blockquote><b>1. ការណែនាំកំពូល (Sweet Spot)</b>\n<b>[Building 1]</b>\n$[price]  ·  [size] ម៉ែត្រការ៉េ  ·  [beds] បន្ទប់គេង\n<i>ហេតុផលដែលសមស្រប: [one fact from the listing]</i></blockquote>\n\n<blockquote><b>2. ស្តង់ដារកម្រិតខ្ពស់ (Luxury Anchor)</b>\n<b>[Building 2]</b>\n$[price]  ·  [size] ម៉ែត្រការ៉េ  ·  [beds] បន្ទប់គេង\n<i>ហេតុផលដែលសមស្រប: [one fact from the listing]</i></blockquote>\n\n<blockquote><b>3. តម្លៃសមរម្យ (Smart Value)</b>\n<b>[Building 3]</b>\n$[price]  ·  [size] ម៉ែត្រការ៉េ  ·  [beds] បន្ទប់គេង\n<i>ហេតុផលដែលសមស្រប: [one fact from the listing]</i></blockquote>",
+    "b": [
+     "សួរ Nick អំពីលេខ 1",
+     "ជម្រើសបន្ថែម",
+     "ត្រឡប់ក្រោយ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "lead1",
+  "flow": "Lead",
+  "title": "Lead 1: Goal",
+  "text": "<b>Ask Nick</b>\n<i>Step 1 of 3</i>\n\nWhat is this for?",
+  "buttons": [
+   {
+    "l": "Live in it",
+    "to": "lead2",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Invest",
+    "to": "lead2",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Rent it out",
+    "to": "lead2",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Main menu",
+    "to": "menu",
+    "half": false,
+    "url": ""
+   }
+  ],
+  "tr": {
+   "jp": {
+    "t": "<b>Nickに相談</b>\n<i>ステップ1/3</i>\n\nご利用の目的は？",
+    "b": [
+     "自分で住む",
+     "投資する",
+     "賃貸に出す",
+     "メインメニュー"
+    ]
+   },
+   "kh": {
+    "t": "<b>សួរ Nick</b>\n<i>ជំហាន 1 ក្នុងចំណោម 3</i>\n\nតើនេះសម្រាប់អ្វី?",
+    "b": [
+     "រស់នៅខ្លួនឯង",
+     "វិនិយោគ",
+     "ដាក់ឱ្យជួល",
+     "ម៉ឺនុយមេ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "lead2",
+  "flow": "Lead",
+  "title": "Lead 2: Timeline",
+  "text": "<b>Ask Nick</b>\n<i>Step 2 of 3</i>\n\nWhen are you looking to move?",
+  "buttons": [
+   {
+    "l": "Now",
+    "to": "lead3",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "In 3 to 6 months",
+    "to": "lead3",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Later",
+    "to": "lead3",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Back",
+    "to": "lead1",
+    "half": false,
+    "url": ""
+   }
+  ],
+  "tr": {
+   "jp": {
+    "t": "<b>Nickに相談</b>\n<i>ステップ2/3</i>\n\nいつ頃をご検討ですか？",
+    "b": [
+     "すぐに",
+     "3か月から6か月後",
+     "まだ先",
+     "戻る"
+    ]
+   },
+   "kh": {
+    "t": "<b>សួរ Nick</b>\n<i>ជំហាន 2 ក្នុងចំណោម 3</i>\n\nតើអ្នកគ្រោងផ្លាស់ទៅពេលណា?",
+    "b": [
+     "ឥឡូវនេះ",
+     "ក្នុងរយៈពេល 3 ដល់ 6 ខែ",
+     "ពេលក្រោយ",
+     "ត្រឡប់ក្រោយ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "lead3",
+  "flow": "Lead",
+  "title": "Lead 3: Reply by",
+  "text": "<b>Ask Nick</b>\n<i>Step 3 of 3</i>\n\nHow should Nick reply?",
+  "buttons": [
+   {
+    "l": "LINE",
+    "to": "",
+    "half": false,
+    "url": "https://line.me/ti/p/@615ueovq"
+   },
+   {
+    "l": "Telegram",
+    "to": "leaddone",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "WhatsApp",
+    "to": "leaddone",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Phone call",
+    "to": "leaddone",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Back",
+    "to": "lead2",
+    "half": false,
+    "url": ""
+   }
+  ],
+  "tr": {
+   "jp": {
+    "t": "<b>Nickに相談</b>\n<i>ステップ3/3</i>\n\nNickからのご連絡方法は？",
+    "b": [
+     "LINE",
+     "Telegram",
+     "WhatsApp",
+     "お電話",
+     "戻る"
+    ]
+   },
+   "kh": {
+    "t": "<b>សួរ Nick</b>\n<i>ជំហាន 3 ក្នុងចំណោម 3</i>\n\nតើ Nick គួរឆ្លើយតបអ្នកតាមវិធីណា?",
+    "b": [
+     "LINE",
+     "Telegram",
+     "WhatsApp",
+     "ទូរស័ព្ទ",
+     "ត្រឡប់ក្រោយ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "leaddone",
+  "flow": "Lead",
+  "title": "Lead sent",
+  "text": "Thank you. Nick will reply within 1 business day.",
+  "buttons": [
+   {
+    "l": "Main menu",
+    "to": "menu",
+    "half": false,
+    "url": ""
+   }
+  ],
+  "end": true,
+  "note": "Nick gets one message with the listing, the answers and the client link. The 15 minute reply watchdog starts here. Decided: 1 business day, only if you can keep it.",
+  "tr": {
+   "jp": {
+    "t": "ありがとうございます。Nickが1営業日以内にご返信いたします。",
+    "b": [
+     "メインメニュー"
+    ]
+   },
+   "kh": {
+    "t": "សូមអរគុណ។ Nick នឹងឆ្លើយតបក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។",
+    "b": [
+     "ម៉ឺនុយមេ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "tour",
+  "flow": "Tour",
+  "title": "Book a tour",
+  "text": "<b>Book a tour</b>\n<i>Step 1 of 3</i>\n\nHow would you like to see it?",
+  "buttons": [
+   {
+    "l": "In person in Phnom Penh",
+    "to": "tourday",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Live video call",
+    "to": "tourday",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Main menu",
+    "to": "menu",
+    "half": false,
+    "url": ""
+   }
+  ],
+  "tr": {
+   "jp": {
+    "t": "<b>内覧を予約</b>\n<i>ステップ1/3</i>\n\nどのように物件をご覧になりますか？",
+    "b": [
+     "プノンペンで現地内覧",
+     "ライブ映像で内覧",
+     "メインメニュー"
+    ]
+   },
+   "kh": {
+    "t": "<b>កក់ពេលទស្សនា</b>\n<i>ជំហាន 1 ក្នុងចំណោម 3</i>\n\nតើអ្នកចង់មើលដោយរបៀបណា?",
+    "b": [
+     "ទស្សនាផ្ទាល់នៅភ្នំពេញ",
+     "ទស្សនាតាមវីដេអូផ្ទាល់",
+     "ម៉ឺនុយមេ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "tourday",
+  "flow": "Tour",
+  "title": "Pick a day",
+  "text": "<b>Pick a day</b>\n<i>Step 2 of 3</i>",
+  "buttons": [
+   {
+    "l": "Today",
+    "to": "tourtime",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Tomorrow",
+    "to": "tourtime",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "This week",
+    "to": "tourtime",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Back",
+    "to": "tour",
+    "half": false,
+    "url": ""
+   }
+  ],
+  "note": "Days and times come from Nick's calendar, so a slot is never offered twice.",
+  "tr": {
+   "jp": {
+    "t": "<b>日程を選択</b>\n<i>ステップ2/3</i>",
+    "b": [
+     "今日",
+     "明日",
+     "今週中",
+     "戻る"
+    ]
+   },
+   "kh": {
+    "t": "<b>ជ្រើសរើសថ្ងៃ</b>\n<i>ជំហាន 2 ក្នុងចំណោម 3</i>",
+    "b": [
+     "ថ្ងៃនេះ",
+     "ថ្ងៃស្អែក",
+     "សប្តាហ៍នេះ",
+     "ត្រឡប់ក្រោយ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "tourtime",
+  "flow": "Tour",
+  "title": "Pick a time",
+  "text": "<b>Pick a time</b>\n<i>Step 3 of 3, Phnom Penh time</i>",
+  "buttons": [
+   {
+    "l": "09:00",
+    "to": "tourok",
+    "half": true,
+    "url": ""
+   },
+   {
+    "l": "11:00",
+    "to": "tourok",
+    "half": true,
+    "url": ""
+   },
+   {
+    "l": "14:00",
+    "to": "tourok",
+    "half": true,
+    "url": ""
+   },
+   {
+    "l": "16:00",
+    "to": "tourok",
+    "half": true,
+    "url": ""
+   },
+   {
+    "l": "Back",
+    "to": "tourday",
+    "half": false,
+    "url": ""
+   }
+  ],
+  "tr": {
+   "jp": {
+    "t": "<b>時間を選択</b>\n<i>ステップ3/3、プノンペン時間</i>",
+    "b": [
+     "09:00",
+     "11:00",
+     "14:00",
+     "16:00",
+     "戻る"
+    ]
+   },
+   "kh": {
+    "t": "<b>ជ្រើសរើសម៉ោង</b>\n<i>ជំហាន 3 ក្នុងចំណោម 3 តាមម៉ោងភ្នំពេញ</i>",
+    "b": [
+     "09:00",
+     "11:00",
+     "14:00",
+     "16:00",
+     "ត្រឡប់ក្រោយ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "tourok",
+  "flow": "Tour",
+  "title": "Tour requested",
+  "text": "<b>Tour requested</b>\n\n[day] at [time], [in person or video].\nNick confirms within 1 business day. You will get a reminder the day before.",
+  "buttons": [
+   {
+    "l": "Main menu",
+    "to": "menu",
+    "half": false,
+    "url": ""
+   }
+  ],
+  "end": true,
+  "note": "Creates a lead and a calendar hold. The reminder goes out the day before.",
+  "tr": {
+   "jp": {
+    "t": "<b>内覧のご希望を受け付けました</b>\n\n[day] [time]、[in person or video]。\nNickが1営業日以内にご確認します。前日にリマインドをお送りします。",
+    "b": [
+     "メインメニュー"
+    ]
+   },
+   "kh": {
+    "t": "<b>បានទទួលសំណើទស្សនា</b>\n\n[day] ម៉ោង [time], [in person or video]។\nNick នឹងបញ្ជាក់ក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។ អ្នកនឹងទទួលបានការរំលឹកមួយថ្ងៃមុន។",
+    "b": [
+     "ម៉ឺនុយមេ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "more",
+  "flow": "More",
+  "title": "More menu",
+  "text": "<b>More</b>\n\nEverything else the bot can do.",
+  "buttons": [
+   {
+    "l": "Check a listing for me",
+    "to": "check1",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Estimate with my numbers",
+    "to": "calc1",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Privacy and my data",
+    "to": "privacy",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Back",
+    "to": "menu",
+    "half": false,
+    "url": ""
+   }
+  ],
+  "tr": {
+   "jp": {
+    "t": "<b>その他</b>\n\nそのほかのメニューです。",
+    "b": [
+     "物件のチェックを依頼",
+     "ご自身の数値で試算",
+     "プライバシーとデータ",
+     "戻る"
+    ]
+   },
+   "kh": {
+    "t": "<b>ផ្សេងៗ</b>\n\nអ្វីៗផ្សេងទៀតដែលប្រព័ន្ធអាចធ្វើបាន។",
+    "b": [
+     "ពិនិត្យបញ្ជីអចលនទ្រព្យឱ្យខ្ញុំ",
+     "ប៉ាន់ស្មានតាមលេខខ្ញុំ",
+     "ឯកជនភាព និងទិន្នន័យ",
+     "ត្រឡប់ក្រោយ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "check1",
+  "flow": "Check",
+  "title": "Check a listing for me",
+  "text": "<b>Check a listing for me</b>\n\nFound something online? Send the link or a screenshot. Nick will tell you what to check before you go further.",
+  "buttons": [
+   {
+    "l": "Simulate: client sends it",
+    "to": "check2",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Back",
+    "to": "more",
+    "half": false,
+    "url": ""
+   }
+  ],
+  "note": "In the bot this step moves on when the client sends a link or a photo. The button only lets you play it here.",
+  "tr": {
+   "jp": {
+    "t": "<b>物件のチェックを依頼</b>\n\n他のサイトで気になる物件を見つけましたか？リンクまたはスクリーンショットをお送りください。購入を進める前に確認すべき点をNickがお伝えします。",
+    "b": [
+     "Simulate: client sends it",
+     "戻る"
+    ]
+   },
+   "kh": {
+    "t": "<b>ពិនិត្យបញ្ជីអចលនទ្រព្យឱ្យខ្ញុំ</b>\n\nរកឃើញអ្វីមួយនៅលើអ៊ីនធឺណិតឬ? សូមផ្ញើតំណ ឬរូបថតអេក្រង់។ Nick នឹងប្រាប់អ្នកថាគួរពិនិត្យអ្វីមុនពេលបន្ត។",
+    "b": [
+     "Simulate: client sends it",
+     "ត្រឡប់ក្រោយ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "check2",
+  "flow": "Check",
+  "title": "Listing received",
+  "text": "Received. Nick will review it and reply within 1 business day.",
+  "buttons": [
+   {
+    "l": "Main menu",
+    "to": "menu",
+    "half": false,
+    "url": ""
+   }
+  ],
+  "end": true,
+  "note": "Creates a lead with the link or photo attached.",
+  "tr": {
+   "jp": {
+    "t": "受け取りました。Nickが内容を確認し、1営業日以内にご返信いたします。",
+    "b": [
+     "メインメニュー"
+    ]
+   },
+   "kh": {
+    "t": "បានទទួលហើយ។ Nick នឹងពិនិត្យ ហើយឆ្លើយតបក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។",
+    "b": [
+     "ម៉ឺនុយមេ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "calc1",
+  "flow": "Estimate",
+  "title": "Estimate with my numbers",
+  "text": "<b>Estimate with my numbers</b>\n\nSend three numbers in one message: price, monthly rent and yearly costs.\nExample: <code>68000 650 1800</code>",
+  "buttons": [
+   {
+    "l": "Simulate: client sends it",
+    "to": "calc2",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Back",
+    "to": "more",
+    "half": false,
+    "url": ""
+   }
+  ],
+  "note": "The client types the numbers. The bot supplies no yield figure of its own.",
+  "tr": {
+   "jp": {
+    "t": "<b>ご自身の数値で試算</b>\n\n3つの数字を1通のメッセージでお送りください。価格、月額家賃、年間費用です。\n例: <code>68000 650 1800</code>",
+    "b": [
+     "Simulate: client sends it",
+     "戻る"
+    ]
+   },
+   "kh": {
+    "t": "<b>ប៉ាន់ស្មានតាមលេខរបស់ខ្ញុំ</b>\n\nសូមផ្ញើលេខបីក្នុងសារតែមួយ៖ តម្លៃ ថ្លៃជួលប្រចាំខែ និងចំណាយប្រចាំឆ្នាំ។\nឧទាហរណ៍: <code>68000 650 1800</code>",
+    "b": [
+     "Simulate: client sends it",
+     "ត្រឡប់ក្រោយ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "calc2",
+  "flow": "Estimate",
+  "title": "Your estimate",
+  "text": "<b>Your estimate</b>\n<i>Based only on the numbers you sent</i>\n\nYearly rent: $[amount]\nYearly costs: $[amount]\nNet income: $[amount]\nNet yield: [result] percent\n\nYields and prices are for reference only and do not guarantee future income.",
+  "buttons": [
+   {
+    "l": "Ask Nick to review it",
+    "to": "lead1",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Try other numbers",
+    "to": "calc1",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Back",
+    "to": "more",
+    "half": false,
+    "url": ""
+   }
+  ],
+  "tr": {
+   "jp": {
+    "t": "<b>試算結果</b>\n<i>お送りいただいた数値のみに基づきます</i>\n\n年間家賃: $[amount]\n年間費用: $[amount]\n純収入: $[amount]\n実質利回り: [result]%\n\n※利回り・価格は参考値であり、将来の収益を保証するものではありません。",
+    "b": [
+     "Nickに確認を依頼",
+     "別の数値で試す",
+     "戻る"
+    ]
+   },
+   "kh": {
+    "t": "<b>ការប៉ាន់ស្មានរបស់អ្នក</b>\n<i>ផ្អែកលើលេខដែលអ្នកបានផ្ញើតែប៉ុណ្ណោះ</i>\n\nថ្លៃជួលប្រចាំឆ្នាំ: $[amount]\nចំណាយប្រចាំឆ្នាំ: $[amount]\nប្រាក់ចំណូលសុទ្ធ: $[amount]\nអត្រាផលសុទ្ធ: [result] ភាគរយ\n\nទិន្នផល និងតម្លៃគឺជាតម្លៃយោងប៉ុណ្ណោះ ហើយមិនធានាប្រាក់ចំណូលនាពេលអនាគតទេ។",
+    "b": [
+     "សុំ Nick ពិនិត្យ",
+     "សាកល្បងលេខផ្សេង",
+     "ត្រឡប់ក្រោយ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "privacy",
+  "flow": "Privacy",
+  "title": "Privacy and my data",
+  "text": "<b>Privacy and my data</b>\n\nWe store your Telegram ID, your language and the answers you give so Nick can help you. We do not sell or share them.\n\nYou can delete everything at any time.",
+  "buttons": [
+   {
+    "l": "Delete my data",
+    "to": "forget",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Back",
+    "to": "more",
+    "half": false,
+    "url": ""
+   }
+  ],
+  "note": "Needs a quick legal read for clients in the EU and Japan.",
+  "tr": {
+   "jp": {
+    "t": "<b>プライバシーとデータ</b>\n\nNickがご相談に対応するため、TelegramのID、言語、ご回答内容を保存します。第三者への販売や共有は行いません。\n\nデータはいつでも削除できます。",
+    "b": [
+     "データを削除する",
+     "戻る"
+    ]
+   },
+   "kh": {
+    "t": "<b>ឯកជនភាព និងទិន្នន័យរបស់ខ្ញុំ</b>\n\nយើងរក្សាទុក Telegram ID ភាសា និងចម្លើយរបស់អ្នក ដើម្បីឱ្យ Nick អាចជួយអ្នកបាន។ យើងមិនលក់ ឬចែករំលែកវាទេ។\n\nអ្នកអាចលុបទាំងអស់បានគ្រប់ពេល។",
+    "b": [
+     "លុបទិន្នន័យរបស់ខ្ញុំ",
+     "ត្រឡប់ក្រោយ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "forget",
+  "flow": "Privacy",
+  "title": "Confirm delete my data",
+  "text": "<b>Delete my data</b>\n\nThis removes your saved searches, shortlist, alerts and enquiry history.\nTap Confirm to delete.",
+  "buttons": [
+   {
+    "l": "Confirm",
+    "to": "forgetdone",
+    "half": true,
+    "url": ""
+   },
+   {
+    "l": "Cancel",
+    "to": "privacy",
+    "half": true,
+    "url": ""
+   }
+  ],
+  "big": true,
+  "tr": {
+   "jp": {
+    "t": "<b>データの削除</b>\n\n保存した検索条件、お気に入り、通知設定、相談履歴を削除します。\n「確認」をタップすると削除されます。",
+    "b": [
+     "確認",
+     "キャンセル"
+    ]
+   },
+   "kh": {
+    "t": "<b>លុបទិន្នន័យរបស់ខ្ញុំ</b>\n\nវានឹងលុបការស្វែងរកដែលបានរក្សាទុក បញ្ជីរក្សាទុក ការជូនដំណឹង និងប្រវត្តិសាកសួរ។\nចុច \"បញ្ជាក់\" ដើម្បីលុប។",
+    "b": [
+     "បញ្ជាក់",
+     "បោះបង់"
+    ]
+   }
+  }
+ },
+ {
+  "id": "forgetdone",
+  "flow": "Privacy",
+  "title": "Data deleted",
+  "text": "Your data has been deleted.",
+  "buttons": [
+   {
+    "l": "Main menu",
+    "to": "menu",
+    "half": false,
+    "url": ""
+   }
+  ],
+  "end": true,
+  "tr": {
+   "jp": {
+    "t": "データを削除しました。",
+    "b": [
+     "メインメニュー"
+    ]
+   },
+   "kh": {
+    "t": "ទិន្នន័យរបស់អ្នកត្រូវបានលុបហើយ។",
+    "b": [
+     "ម៉ឺនុយមេ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "nores",
+  "flow": "System messages",
+  "title": "No exact match",
+  "text": "<b>No exact match</b>\n<i>[search summary]</i>\n\nThese are the closest options. Each one shows how it differs from what you asked for.",
+  "buttons": [
+   {
+    "l": "See closest matches",
+    "to": "bres",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Change my search",
+    "to": "b1",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Talk to Nick",
+    "to": "",
+    "half": false,
+    "url": "https://line.me/ti/p/@615ueovq"
+   }
+  ],
+  "note": "Sent instead of results when nothing matches. Never show a wrong result under the right label.",
+  "tr": {
+   "jp": {
+    "t": "<b>完全に一致する物件はありません</b>\n<i>[search summary]</i>\n\n条件に近い物件をご案内します。ご希望との違いを物件ごとに表示します。",
+    "b": [
+     "近い物件を見る",
+     "条件を変更する",
+     "Nickに相談"
+    ]
+   },
+   "kh": {
+    "t": "<b>គ្មានលទ្ធផលត្រូវគ្នាពិតប្រាកដ</b>\n<i>[search summary]</i>\n\nនេះជាជម្រើសជិតបំផុត។ ម្នាក់ៗបង្ហាញពីភាពខុសគ្នាពីអ្វីដែលអ្នកស្នើ។",
+    "b": [
+     "មើលជម្រើសជិតបំផុត",
+     "ប្តូរការស្វែងរក",
+     "ទាក់ទង Nick"
+    ]
+   }
+  }
+ },
+ {
+  "id": "error",
+  "flow": "System messages",
+  "title": "Something went wrong",
+  "text": "<b>Something went wrong</b>\n\nThat was on our side, not yours. Your answers are saved.",
+  "buttons": [
+   {
+    "l": "Try again",
+    "to": "menu",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Talk to Nick",
+    "to": "",
+    "half": false,
+    "url": "https://line.me/ti/p/@615ueovq"
+   }
+  ],
+  "note": "Sent whenever the bot hits an error. Nick also gets an alert.",
+  "tr": {
+   "jp": {
+    "t": "<b>問題が発生しました</b>\n\n当社側の問題で、お客様の操作によるものではありません。回答内容は保存されています。",
+    "b": [
+     "もう一度試す",
+     "Nickに相談"
+    ]
+   },
+   "kh": {
+    "t": "<b>មានបញ្ហាកើតឡើង</b>\n\nនេះជាបញ្ហាខាងយើង មិនមែនខាងអ្នកទេ។ ចម្លើយរបស់អ្នកត្រូវបានរក្សាទុក។",
+    "b": [
+     "សាកល្បងម្តងទៀត",
+     "ទាក់ទង Nick"
+    ]
+   }
+  }
+ },
+ {
+  "id": "unknown",
+  "flow": "System messages",
+  "title": "Did not understand",
+  "text": "<b>I did not catch that</b>\n\nPick an option below, or type a few words to search, for example <code>2 bedroom BKK1</code>.",
+  "buttons": [
+   {
+    "l": "Find a property to buy",
+    "to": "b1",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Main menu",
+    "to": "menu",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Talk to Nick",
+    "to": "",
+    "half": false,
+    "url": "https://line.me/ti/p/@615ueovq"
+   }
+  ],
+  "note": "Sent when someone types something the bot cannot match.",
+  "tr": {
+   "jp": {
+    "t": "<b>うまく理解できませんでした</b>\n\n下のメニューから選ぶか、キーワードを入力してください。例: <code>2 bedroom BKK1</code>",
+    "b": [
+     "物件を購入する",
+     "メインメニュー",
+     "Nickに相談"
+    ]
+   },
+   "kh": {
+    "t": "<b>ខ្ញុំមិនយល់ទេ</b>\n\nសូមជ្រើសរើសជម្រើសខាងក្រោម ឬវាយពាក្យខ្លះដើម្បីស្វែងរក ឧទាហរណ៍ <code>2 bedroom BKK1</code>។",
+    "b": [
+     "រកអចលនទ្រព្យទិញ",
+     "ម៉ឺនុយមេ",
+     "ទាក់ទង Nick"
+    ]
+   }
+  }
+ },
+ {
+  "id": "refused",
+  "flow": "System messages",
+  "title": "Not available",
+  "text": "That option is not available for your account.\nIf you need it, message Nick.",
+  "buttons": [
+   {
+    "l": "Main menu",
+    "to": "menu",
+    "half": false,
+    "url": ""
+   },
+   {
+    "l": "Talk to Nick",
+    "to": "",
+    "half": false,
+    "url": "https://line.me/ti/p/@615ueovq"
+   }
+  ],
+  "note": "Sent when someone without access uses a staff or agent command.",
+  "tr": {
+   "jp": {
+    "t": "こちらはお客様のアカウントではご利用いただけません。\n必要な場合はNickまでご連絡ください。",
+    "b": [
+     "メインメニュー",
+     "Nickに相談"
+    ]
+   },
+   "kh": {
+    "t": "ជម្រើសនេះមិនមានសម្រាប់គណនីរបស់អ្នកទេ។\nប្រសិនបើអ្នកត្រូវការ សូមផ្ញើសារទៅ Nick។",
+    "b": [
+     "ម៉ឺនុយមេ",
+     "ទាក់ទង Nick"
+    ]
+   }
+  }
+ },
+ {
+  "id": "offline",
+  "flow": "System messages",
+  "title": "Nick is offline",
+  "text": "<b>Nick is offline</b>\n<i>Phnom Penh time</i>\n\nYour message is saved. Nick replies from [opening time].",
+  "buttons": [
+   {
+    "l": "Main menu",
+    "to": "menu",
+    "half": false,
+    "url": ""
+   }
+  ],
+  "end": true,
+  "note": "Added to every confirmation sent outside working hours.",
+  "tr": {
+   "jp": {
+    "t": "<b>Nickは現在オフラインです</b>\n<i>プノンペン時間</i>\n\nメッセージは保存されています。Nickは[opening time]から返信します。",
+    "b": [
+     "メインメニュー"
+    ]
+   },
+   "kh": {
+    "t": "<b>Nick មិនអនឡាញ</b>\n<i>ម៉ោងភ្នំពេញ</i>\n\nសាររបស់អ្នកត្រូវបានរក្សាទុក។ Nick នឹងឆ្លើយតបចាប់ពី [opening time]។",
+    "b": [
+     "ម៉ឺនុយមេ"
+    ]
+   }
+  }
+ }
+]
