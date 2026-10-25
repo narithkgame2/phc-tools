@@ -210,7 +210,7 @@
      "url": ""
     },
     {
-     "l": "Toul Tompoung",
+     "l": "TTP",
      "to": "bres",
      "half": true,
      "url": ""
@@ -222,9 +222,9 @@
      "url": ""
     },
     {
-     "l": "Other area or not sure",
+     "l": "Others",
      "to": "b2other",
-     "half": false,
+     "half": true,
      "url": ""
     },
     {
@@ -241,9 +241,9 @@
       "ダウンペン",
       "トンレバサック",
       "BKK1",
-      "トゥールトンポン",
+      "TTP",
       "トゥールコック",
-      "その他・まだ決めていない",
+      "その他",
       "戻る"
      ]
     },
@@ -253,19 +253,19 @@
       "ដូនពេញ",
       "ទន្លេបាសាក់",
       "BKK1",
-      "ទួលទំពូង",
+      "TTP",
       "ទួលគោក",
-      "តំបន់ផ្សេង ឬមិនទាន់សម្រេច",
+      "ផ្សេងៗ",
       "ត្រឡប់ក្រោយ"
      ]
     }
    },
-   "note": "Five main areas and one more button. It opens a screen to type an area or project name, or to skip."
+   "note": "Three rows of two, then Back. TTP is Toul Tompoung. Others opens a screen to type an area or project name, or to skip."
   },
   {
    "id": "b2other",
    "flow": "Buy",
-   "title": "Buy 2: Other area (typed)",
+   "title": "Buy 2: Others (typed)",
    "text": "<b>Other area</b>\n\nType the area or the project name in the message box below, then press send.\n<i>Example: BKK3, Time Square 8</i>\n\nNo preference? Tap the button.",
    "buttons": [
     {
@@ -440,7 +440,7 @@
      "url": ""
     },
     {
-     "l": "Toul Tompoung",
+     "l": "TTP",
      "to": "rres",
      "half": true,
      "url": ""
@@ -452,9 +452,9 @@
      "url": ""
     },
     {
-     "l": "Other area or not sure",
+     "l": "Others",
      "to": "rr2other",
-     "half": false,
+     "half": true,
      "url": ""
     },
     {
@@ -471,9 +471,9 @@
       "ダウンペン",
       "トンレバサック",
       "BKK1",
-      "トゥールトンポン",
+      "TTP",
       "トゥールコック",
-      "その他・まだ決めていない",
+      "その他",
       "戻る"
      ]
     },
@@ -483,19 +483,19 @@
       "ដូនពេញ",
       "ទន្លេបាសាក់",
       "BKK1",
-      "ទួលទំពូង",
+      "TTP",
       "ទួលគោក",
-      "តំបន់ផ្សេង ឬមិនទាន់សម្រេច",
+      "ផ្សេងៗ",
       "ត្រឡប់ក្រោយ"
      ]
     }
    },
-   "note": "Five main areas and one more button. It opens a screen to type an area or project name, or to skip."
+   "note": "Three rows of two, then Back. TTP is Toul Tompoung. Others opens a screen to type an area or project name, or to skip."
   },
   {
    "id": "rr2other",
    "flow": "Rent",
-   "title": "Rent 2: Other area (typed)",
+   "title": "Rent 2: Others (typed)",
    "text": "<b>Other area</b>\n\nType the area or the project name in the message box below, then press send.\n<i>Example: BKK3, Time Square 8</i>\n\nNo preference? Tap the button.",
    "buttons": [
     {

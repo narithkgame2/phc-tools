@@ -56,5 +56,15 @@ t('rent budget has four bands plus not decided', () => {
   assert.deepStrictEqual(r1.tr.jp.b.slice(0, 5), ['500ドル未満', '500から800ドル', '800から1,500ドル', '1,500ドル以上', 'まだ決めていない']);
 });
 
+t('buttons fit by display width (full-width Japanese counts double): shared row 14, full row 28', () => {
+  const wd = (str) => Array.from(String(str)).reduce((w, ch) => { const c = ch.codePointAt(0);
+    if ((c >= 0x3000 && c <= 0x9FFF) || (c >= 0xFF00 && c <= 0xFFEF)) return w + 2;
+    if (c >= 0x1780 && c <= 0x17FF) return w + (((c >= 0x17B6 && c <= 0x17D3) || c === 0x17DD) ? 0 : 1.2);
+    return w + 1; }, 0);
+  steps.forEach((s) => ['en', 'jp', 'kh'].forEach((l) => s.buttons.forEach((b, i) => {
+    const lab = R.labelOf(s, i, l), w = wd(lab); assert.ok(w <= (b.half ? 14 : 28), `${s.id} ${l} "${lab}" is ${w} wide`);
+  })));
+});
+
 console.log(`\nRESULTS: ${passed} / ${total} TESTS PASSED (${Math.round(passed / total * 100)}%)`);
 process.exit(passed === total ? 0 : 1);

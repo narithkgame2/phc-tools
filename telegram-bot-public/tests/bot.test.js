@@ -124,7 +124,7 @@ const NICK = '353195979';
     assert.ok(sent.length >= 1);
   });
   await t('Other area: the next message typed becomes the district and the request goes to Nick', async () => {
-    const r = rig(), me = r.U(20, 'ja'); await r.say(me, '/buy'); await r.tap(me, r.firstLabel(20)); await r.tap(me, 'その他・まだ決めていない');
+    const r = rig(), me = r.U(20, 'ja'); await r.say(me, '/buy'); await r.tap(me, r.firstLabel(20)); await r.tap(me, 'その他');
     assert.ok(r.lastTo(20).body.text.includes('メッセージ欄') && r.lastTo(20).body.text.includes('例:'));
     await r.say(me, 'Time Square 8 の周辺');
     assert.ok(r.lastTo(20).body.text.includes('承りました') && r.lastTo(20).body.text.includes('Time Square 8 の周辺'));
@@ -134,27 +134,27 @@ const NICK = '353195979';
   });
   await t('Other area works for rent and escapes HTML in what the client typed', async () => {
     const r = rig(), me = r.U(21, 'en'); await r.say(me, '/start'); await r.tap(me, 'English'); await r.tap(me, 'Find a place to rent');
-    await r.tap(me, r.firstLabel(21)); await r.tap(me, 'Other area or not sure'); await r.say(me, '<b>Sen Sok</b> & more');
+    await r.tap(me, r.firstLabel(21)); await r.tap(me, 'Others'); await r.say(me, '<b>Sen Sok</b> & more');
     const done = r.lastTo(21).body.text; assert.ok(done.includes('&lt;b&gt;Sen Sok&lt;/b&gt; &amp; more'), done);
     assert.ok(r.sent.filter((s) => s.body.chat_id === NICK).pop().body.text.includes('&lt;b&gt;Sen Sok'));
   });
   await t('typing a command while waiting for an area still works and stops the waiting', async () => {
-    const r = rig(), me = r.U(22, 'ja'); await r.say(me, '/buy'); await r.tap(me, r.firstLabel(22)); await r.tap(me, 'その他・まだ決めていない');
+    const r = rig(), me = r.U(22, 'ja'); await r.say(me, '/buy'); await r.tap(me, r.firstLabel(22)); await r.tap(me, 'その他');
     await r.say(me, '/menu'); assert.ok(r.lastTo(22).body.text.includes('買う前に'));
     assert.strictEqual(r.db['22'].awaiting, null);
     await r.say(me, 'Sen Sok'); assert.ok(!r.sent.some((s) => s.body.chat_id === NICK), 'must not send a request');
   });
   await t('a sticker while waiting asks again instead of breaking', async () => {
-    const r = rig(), me = r.U(23, 'ja'); await r.say(me, '/buy'); await r.tap(me, r.firstLabel(23)); await r.tap(me, 'その他・まだ決めていない');
+    const r = rig(), me = r.U(23, 'ja'); await r.say(me, '/buy'); await r.tap(me, r.firstLabel(23)); await r.tap(me, 'その他');
     await r.say(me, '', { text: undefined, sticker: { file_id: 'x' } });
     assert.ok(r.lastTo(23).body.text.includes('メッセージ欄')); assert.strictEqual(r.db['23'].awaiting, 'area:bres:b2');
   });
   await t('Back from Other area returns to the districts and stops capturing text', async () => {
-    const r = rig(), me = r.U(24, 'ja'); await r.say(me, '/buy'); await r.tap(me, r.firstLabel(24)); await r.tap(me, 'その他・まだ決めていない'); await r.tap(me, '戻る');
+    const r = rig(), me = r.U(24, 'ja'); await r.say(me, '/buy'); await r.tap(me, r.firstLabel(24)); await r.tap(me, 'その他'); await r.tap(me, '戻る');
     assert.ok(r.lastTo(24).body.text.includes('エリア') || r.lastTo(24).body.text.includes('Where')); assert.strictEqual(r.db['24'].awaiting, null);
   });
   await t('a very long typed area is cut to 80 characters', async () => {
-    const r = rig(), me = r.U(25, 'ja'); await r.say(me, '/buy'); await r.tap(me, r.firstLabel(25)); await r.tap(me, 'その他・まだ決めていない');
+    const r = rig(), me = r.U(25, 'ja'); await r.say(me, '/buy'); await r.tap(me, r.firstLabel(25)); await r.tap(me, 'その他');
     await r.say(me, 'あ'.repeat(500)); assert.ok(r.db['25'].answers.b2.length === 80);
   });
 
@@ -174,7 +174,7 @@ const NICK = '353195979';
 
   await t('No preference skips the area and still sends the search request to Nick', async () => {
     const r = rig(), me = r.U(32, 'en'); await r.say(me, '/start'); await r.tap(me, 'English'); await r.tap(me, 'Find a property to buy');
-    await r.tap(me, r.firstLabel(32)); await r.tap(me, 'Other area or not sure'); await r.tap(me, 'No preference');
+    await r.tap(me, r.firstLabel(32)); await r.tap(me, 'Others'); await r.tap(me, 'No preference');
     assert.ok(r.lastTo(32).body.text.includes('Your search is saved'));
     assert.ok(r.sent.filter((s) => s.body.chat_id === NICK).pop().body.text.includes('District: No preference'));
     assert.strictEqual(r.db['32'].awaiting, null);
@@ -182,7 +182,9 @@ const NICK = '353195979';
   await t('the district screen has one catch-all button, not two', async () => {
     const r = rig(), me = r.U(33, 'en'); await r.say(me, '/start'); await r.tap(me, 'English'); await r.tap(me, 'Find a property to buy'); await r.tap(me, r.firstLabel(33));
     const labels = r.lastTo(33).body.reply_markup.inline_keyboard.flat().map((b) => b.text);
-    assert.ok(labels.includes('Other area or not sure') && !labels.includes('Any area') && !labels.includes('Other area'), labels.join(' | '));
+    assert.ok(labels.includes('Others') && !labels.includes('Any area') && !labels.includes('Other area'), labels.join(' | '));
+    const rows = r.lastTo(33).body.reply_markup.inline_keyboard.map((row) => row.length);
+    assert.deepStrictEqual(rows, [2, 2, 2, 1], 'rows should be 2,2,2,1 but are ' + rows.join(','));
   });
 
   console.log(`\nRESULTS: ${passed} / ${total} TESTS PASSED (${Math.round(passed / total * 100)}%)`);
