@@ -50,5 +50,11 @@ t('buy budget has four bands plus not decided, in all languages, with no gaps in
   assert.ok(b1.buttons.slice(0, 5).every((b) => b.to === 'b2'));
 });
 
+t('rent budget has four bands plus not decided', () => {
+  const r1 = steps.find((s) => s.id === 'rr1');
+  assert.deepStrictEqual(r1.buttons.slice(0, 5).map((b) => b.l), ['Under $500', '$500 to $800', '$800 to $1,500', 'Above $1,500', 'Not decided yet']);
+  assert.deepStrictEqual(r1.tr.jp.b.slice(0, 5), ['500ドル未満', '500から800ドル', '800から1,500ドル', '1,500ドル以上', 'まだ決めていない']);
+});
+
 console.log(`\nRESULTS: ${passed} / ${total} TESTS PASSED (${Math.round(passed / total * 100)}%)`);
 process.exit(passed === total ? 0 : 1);

@@ -42,6 +42,16 @@ by.calc1.await = 'calc'; by.check1.await = 'check';
   b1.tr.jp.b = jp.concat([jpLast]); b1.tr.kh.b = kh.concat([khLast]);
   b1.note = 'Four bands from what Nick\'s Japanese clients actually have, plus "not decided". Nick asks the exact budget on LINE.';
 })();
+// rent budget: same pattern, four bands plus "not decided" (Nick accepted the bands 2026-10-24)
+(function () {
+  const r1 = by.rr1, last = r1.buttons[r1.buttons.length - 1];
+  const en = ['Under $500', '$500 to $800', '$800 to $1,500', 'Above $1,500', 'Not decided yet'];
+  const jp = ['500ドル未満', '500から800ドル', '800から1,500ドル', '1,500ドル以上', 'まだ決めていない'];
+  const kh = ['តិចជាង $500', '$500 ដល់ $800', '$800 ដល់ $1,500', 'លើស $1,500', 'មិនទាន់សម្រេច'];
+  const jpLast = r1.tr.jp.b[r1.tr.jp.b.length - 1], khLast = r1.tr.kh.b[r1.tr.kh.b.length - 1];
+  r1.buttons = en.map(l => ({ l, to: 'rr2', half: false, url: '' })).concat([last]);
+  r1.tr.jp.b = jp.concat([jpLast]); r1.tr.kh.b = kh.concat([khLast]);
+})();
 // districts (decided with Nick 2026-10-24): five main areas, "Other area" asks the client to type it, "Any area" skips.
 (function () {
   const en = ['Daun Penh', 'Tonle Bassac', 'BKK1', 'Toul Tompoung', 'Toul Kork', 'Other area'];
