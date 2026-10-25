@@ -1,2 +1,7 @@
 data/users.json
 data/*.tmp
+data/listings.csv
+data/queue*.csv
+data/listing-state.json
+data/alerts.json
+data/testers.json

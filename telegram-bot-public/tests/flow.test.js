@@ -8,7 +8,7 @@ const steps = flow.steps, ids = new Set(steps.map((s) => s.id));
 const allTexts = (s) => ['en', 'jp', 'kh'].map((l) => R.textOf(s, l) + '\n' + s.buttons.map((b, i) => R.labelOf(s, i, l)).join('\n'));
 const cp = (x) => Array.from(String(x)).length;
 
-t('every button points to a real screen or a URL', () => steps.forEach((s) => s.buttons.forEach((b) => assert.ok(b.url || ids.has(b.to), s.id + ' -> ' + b.to))));
+t('every button points to a real screen or a URL', () => steps.forEach((s) => s.buttons.forEach((b) => assert.ok(b.url || b.cb || ids.has(b.to), s.id + ' -> ' + b.to))));
 t('every screen is reachable from the menu or a command', () => {
   const seen = new Set(['start', 'menu', 'b1', 'rr1', 'tour', 'calc1', 'calc2', 'check2', 'refused', 'unknown', 'error']);
   let grew = true;

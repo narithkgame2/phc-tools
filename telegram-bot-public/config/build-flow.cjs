@@ -9,19 +9,19 @@ function request(id, back, enT, jpT, khT) {
   const s = by[id];
   s.title = s.title.replace('results', 'request');
   s.text = enT; s.notify = 'Search request';
-  s.buttons = [{ l: 'Message Nick on LINE', to: '', half: false, url: LINE }, { l: 'Change my search', to: back, half: false, url: '' }, { l: 'Main menu', to: 'menu', half: false, url: '' }];
-  setTr(s, 'jp', jpT, ['LINEでNickに相談', '条件を変更する', 'メインメニュー']);
-  setTr(s, 'kh', khT, ['និយាយជាមួយ Nick តាម LINE', 'ប្តូរលក្ខខណ្ឌ', 'ម៉ឺនុយមេ']);
-  s.note = 'Phase 1 has no listing database, so Nick prepares the three options by hand. Real listings come in a later phase.';
+  s.buttons = [{ l: 'Message Nick on LINE', to: '', half: false, url: LINE }, { l: 'Alert me to new matches', to: '', half: false, url: '', cb: 'al:on' }, { l: 'Change my search', to: back, half: false, url: '' }, { l: 'Main menu', to: 'menu', half: false, url: '' }];
+  setTr(s, 'jp', jpT, ['LINEでNickに相談', '新着物件を通知する', '条件を変更する', 'メインメニュー']);
+  setTr(s, 'kh', khT, ['និយាយជាមួយ Nick តាម LINE', 'ជូនដំណឹងពេលមានថ្មី', 'ប្តូរលក្ខខណ្ឌ', 'ម៉ឺនុយមេ']);
+  s.note = 'Matching listings from the Sheet are shown above this screen when there are any. Either way Nick checks availability by hand and replies within 1 business day.';
 }
 request('bres', 'b1',
-  '<b>Your search is saved</b>\n<i>[search summary]</i>\n\nNick will prepare three honest options for this search and send them to you within 1 business day.\nYou can also message him now on LINE.',
-  '<b>ご希望の条件を承りました</b>\n<i>[search summary]</i>\n\nNickがこの条件に合う物件を3件、数字つきで選び、1営業日以内にお送りします。\nお急ぎの場合は、今すぐLINEでもご相談いただけます。',
-  '<b>យើងបានទទួលលក្ខខណ្ឌស្វែងរករបស់អ្នក</b>\n<i>[search summary]</i>\n\nNick នឹងជ្រើសរើសជម្រើសសមរម្យចំនួន 3 ជូនអ្នកក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។\nអ្នកក៏អាចផ្ញើសារទៅគាត់តាម LINE ភ្លាមៗបានដែរ។');
+  '<b>Your search is saved</b>\n<i>[search summary]</i>\n\nNick will check availability and send you the three best options for this search within 1 business day.\nYou can also message him now on LINE.',
+  '<b>ご希望の条件を承りました</b>\n<i>[search summary]</i>\n\nNickが空室状況を確認し、この条件に合う物件を3件、数字つきで1営業日以内にお送りします。\nお急ぎの場合は、今すぐLINEでもご相談いただけます。',
+  '<b>យើងបានទទួលលក្ខខណ្ឌស្វែងរករបស់អ្នក</b>\n<i>[search summary]</i>\n\nNick នឹងពិនិត្យភាពអាចរកបាន ហើយផ្ញើជម្រើសល្អបំផុតចំនួន 3 ជូនអ្នកក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។\nអ្នកក៏អាចផ្ញើសារទៅគាត់តាម LINE ភ្លាមៗបានដែរ។');
 request('rres', 'rr1',
-  '<b>Your search is saved</b>\n<i>[search summary]</i>\n\nNick will prepare three honest rental options for this search and send them to you within 1 business day.\nYou can also message him now on LINE.',
-  '<b>ご希望の条件を承りました</b>\n<i>[search summary]</i>\n\nNickがこの条件に合う賃貸物件を3件選び、1営業日以内にお送りします。\nお急ぎの場合は、今すぐLINEでもご相談いただけます。',
-  '<b>យើងបានទទួលលក្ខខណ្ឌស្វែងរករបស់អ្នក</b>\n<i>[search summary]</i>\n\nNick នឹងជ្រើសរើសជម្រើសសម្រាប់ជួលចំនួន 3 ជូនអ្នកក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។\nអ្នកក៏អាចផ្ញើសារទៅគាត់តាម LINE ភ្លាមៗបានដែរ។');
+  '<b>Your search is saved</b>\n<i>[search summary]</i>\n\nNick will check availability and send you the three best rental options for this search within 1 business day.\nYou can also message him now on LINE.',
+  '<b>ご希望の条件を承りました</b>\n<i>[search summary]</i>\n\nNickが空室状況を確認し、この条件に合う賃貸物件を3件、1営業日以内にお送りします。\nお急ぎの場合は、今すぐLINEでもご相談いただけます。',
+  '<b>យើងបានទទួលលក្ខខណ្ឌស្វែងរករបស់អ្នក</b>\n<i>[search summary]</i>\n\nNick នឹងពិនិត្យភាពអាចរកបាន ហើយផ្ញើជម្រើសសម្រាប់ជួលល្អបំផុតចំនួន 3 ជូនអ្នកក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។\nអ្នកក៏អាចផ្ញើសារទៅគាត់តាម LINE ភ្លាមៗបានដែរ។');
 // results no longer branch to refine or "no match"
 ['bref', 'nores', 'offline'].forEach(id => delete by[id]);
 by.more.tr.kh.b[0] = 'ពិនិត្យបញ្ជីអចលនទ្រព្យ'; // shorter, so Telegram does not cut it

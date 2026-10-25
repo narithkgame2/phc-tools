@@ -24,7 +24,7 @@ function keyboard(step, lang) {
   let pending = null;
   step.buttons.forEach(function (b, i) {
     const label = labelOf(step, i, lang);
-    const btn = b.url ? { text: label, url: b.url } : { text: label, callback_data: (step.id === 'start' ? 'l:' + LANG_BUTTONS[i] : 'g:' + step.id + ':' + i) };
+    const btn = b.url ? { text: label, url: b.url } : { text: label, callback_data: (b.cb ? b.cb : step.id === 'start' ? 'l:' + LANG_BUTTONS[i] : 'g:' + step.id + ':' + i) };
     if (b.half) {
       if (pending) { rows.push([pending, btn]); pending = null; } else pending = btn;
     } else {

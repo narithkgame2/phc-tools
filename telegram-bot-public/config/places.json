@@ -1,0 +1,1345 @@
+{
+ "built": "2026-10-25",
+ "source": "Cambodia Property Map (Google My Maps)",
+ "khans": [
+  "Chamkar Mon",
+  "Daun Penh",
+  "Toul Kork",
+  "Chroy Changvar",
+  "Sen Sok",
+  "Boeng Keng Kang",
+  "Mean Chey",
+  "7 Makara",
+  "Chba Ampov",
+  "Dangkor",
+  "Por Sen Chey",
+  "Kambol",
+  "Prek Pnov",
+  "Russei Keo"
+ ],
+ "places": [
+  {
+   "name": "La Vista One",
+   "layer": "New Developments",
+   "lat": 11.581145,
+   "lng": 104.938949,
+   "khan": "Chroy Changvar",
+   "sangkat": "Chroy Chongva",
+   "area": "Others"
+  },
+  {
+   "name": "Morgan EnMaison",
+   "layer": "New Developments",
+   "lat": 11.59265,
+   "lng": 104.936941,
+   "khan": "Chroy Changvar",
+   "sangkat": "Chroy Chongva",
+   "area": "Others"
+  },
+  {
+   "name": "The Peninsula Residence",
+   "layer": "New Developments",
+   "lat": 11.588644,
+   "lng": 104.931552,
+   "khan": "Chroy Changvar",
+   "sangkat": "Chroy Chongva",
+   "area": "Others"
+  },
+  {
+   "name": "Mekong View Tower 6",
+   "layer": "New Developments",
+   "lat": 11.584154,
+   "lng": 104.937088,
+   "khan": "Chroy Changvar",
+   "sangkat": "Chroy Chongva",
+   "area": "Others"
+  },
+  {
+   "name": "The Bliss Residence",
+   "layer": "New Developments",
+   "lat": 11.594601,
+   "lng": 104.935304,
+   "khan": "Chroy Changvar",
+   "sangkat": "Chroy Chongva",
+   "area": "Others"
+  },
+  {
+   "name": "Garden Residency 2",
+   "layer": "New Developments",
+   "lat": 11.588816,
+   "lng": 104.878865,
+   "khan": "Sen Sok",
+   "sangkat": "Phnom Penh Tmey",
+   "area": "Others"
+  },
+  {
+   "name": "Agile Sky Residence",
+   "layer": "New Developments",
+   "lat": 11.550256,
+   "lng": 104.921331,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 3 (BKK3)",
+   "area": "Others"
+  },
+  {
+   "name": "Le Conde BKK1",
+   "layer": "New Developments",
+   "lat": 11.549334,
+   "lng": 104.925213,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "M Residence",
+   "layer": "New Developments",
+   "lat": 11.554931,
+   "lng": 104.925438,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "KYi Center (Golden One)",
+   "layer": "New Developments",
+   "lat": 11.548031,
+   "lng": 104.912895,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Tuol Svay Prey 1",
+   "area": "Others"
+  },
+  {
+   "name": "Embassy Central",
+   "layer": "New Developments",
+   "lat": 11.549223,
+   "lng": 104.923335,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "Parc 21",
+   "layer": "New Developments",
+   "lat": 11.541219,
+   "lng": 104.92038,
+   "khan": "Chamkar Mon",
+   "sangkat": "Boeng Trabaek",
+   "area": "Others"
+  },
+  {
+   "name": "L Residence Borey Keyla",
+   "layer": "New Developments",
+   "lat": 11.563536,
+   "lng": 104.908139,
+   "khan": "7 Makara",
+   "sangkat": "Veal Vong",
+   "area": "Others"
+  },
+  {
+   "name": "Urban Village Phase 1",
+   "layer": "New Developments",
+   "lat": 11.521716,
+   "lng": 104.928722,
+   "khan": "Mean Chey",
+   "sangkat": "Chak Angre Leu",
+   "area": "Others"
+  },
+  {
+   "name": "Urban Village Phase 2",
+   "layer": "New Developments",
+   "lat": 11.521716,
+   "lng": 104.928722,
+   "khan": "Mean Chey",
+   "sangkat": "Chak Angre Leu",
+   "area": "Others"
+  },
+  {
+   "name": "R&F City",
+   "layer": "New Developments",
+   "lat": 11.526564,
+   "lng": 104.92793,
+   "khan": "Mean Chey",
+   "sangkat": "Chak Angre Leu",
+   "area": "Others"
+  },
+  {
+   "name": "TK Star",
+   "layer": "New Developments",
+   "lat": 11.584533,
+   "lng": 104.899023,
+   "khan": "Toul Kork",
+   "sangkat": "Boeung Kak 1",
+   "area": "Toul Kork"
+  },
+  {
+   "name": "Vue Aston",
+   "layer": "New Developments",
+   "lat": 11.54655,
+   "lng": 104.946638,
+   "khan": "Chba Ampov",
+   "sangkat": "Niroth",
+   "area": "Others"
+  },
+  {
+   "name": "88 Residence",
+   "layer": "New Developments",
+   "lat": 10.615541,
+   "lng": 103.505731,
+   "khan": "",
+   "sangkat": "",
+   "area": "Others"
+  },
+  {
+   "name": "The Sky Park- Siem Reap",
+   "layer": "New Developments",
+   "lat": 13.370329,
+   "lng": 103.84221,
+   "khan": "",
+   "sangkat": "",
+   "area": "Others"
+  },
+  {
+   "name": "Angkor Grace - Siem Reap",
+   "layer": "New Developments",
+   "lat": 13.372452,
+   "lng": 103.853921,
+   "khan": "",
+   "sangkat": "",
+   "area": "Others"
+  },
+  {
+   "name": "Rose Apple Square - Siem Reap",
+   "layer": "New Developments",
+   "lat": 13.35658,
+   "lng": 103.847547,
+   "khan": "",
+   "sangkat": "",
+   "area": "Others"
+  },
+  {
+   "name": "LZ Sea View - Sihanoukville",
+   "layer": "New Developments",
+   "lat": 10.615363,
+   "lng": 103.543294,
+   "khan": "",
+   "sangkat": "",
+   "area": "Others"
+  },
+  {
+   "name": "Uptown Condominium",
+   "layer": "New Developments",
+   "lat": 11.58012,
+   "lng": 104.929965,
+   "khan": "Chroy Changvar",
+   "sangkat": "Chroy Chongva",
+   "area": "Others"
+  },
+  {
+   "name": "D'seaview - Sihanoukville",
+   "layer": "New Developments",
+   "lat": 10.616653,
+   "lng": 103.517859,
+   "khan": "",
+   "sangkat": "",
+   "area": "Others"
+  },
+  {
+   "name": "Air Apartment - Sihanoukville",
+   "layer": "New Developments",
+   "lat": 10.635438,
+   "lng": 103.506826,
+   "khan": "",
+   "sangkat": "",
+   "area": "Others"
+  },
+  {
+   "name": "UC88 Wyndham Garden",
+   "layer": "New Developments",
+   "lat": 11.550675,
+   "lng": 104.92234,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "Diamond Bay Garden",
+   "layer": "New Developments",
+   "lat": 11.552327,
+   "lng": 104.944419,
+   "khan": "Chamkar Mon",
+   "sangkat": "Tonle Bassac",
+   "area": "Tonle Bassac"
+  },
+  {
+   "name": "The Flora Suites",
+   "layer": "New Developments",
+   "lat": 11.545707,
+   "lng": 104.923025,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "ODOM Living",
+   "layer": "New Developments",
+   "lat": 11.548785,
+   "lng": 104.929183,
+   "khan": "Chamkar Mon",
+   "sangkat": "Tonle Bassac",
+   "area": "Tonle Bassac"
+  },
+  {
+   "name": "J Tower 3",
+   "layer": "New Developments",
+   "lat": 11.543476,
+   "lng": 104.923415,
+   "khan": "Chamkar Mon",
+   "sangkat": "Tonle Bassac",
+   "area": "Tonle Bassac"
+  },
+  {
+   "name": "Time Square 6 (302)",
+   "layer": "New Developments",
+   "lat": 11.552664,
+   "lng": 104.922988,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "Time Square 5 (306)",
+   "layer": "New Developments",
+   "lat": 11.552114,
+   "lng": 104.921994,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "Residence H Sensok",
+   "layer": "New Developments",
+   "lat": 11.583625,
+   "lng": 104.880451,
+   "khan": "Sen Sok",
+   "sangkat": "Phnom Penh Tmey",
+   "area": "Others"
+  },
+  {
+   "name": "Time Square 7 - TK",
+   "layer": "Time Square Projects",
+   "lat": 11.583133,
+   "lng": 104.894942,
+   "khan": "Toul Kork",
+   "sangkat": "Boeung Kak 1",
+   "area": "Toul Kork"
+  },
+  {
+   "name": "Time Square 6 (302) - BKK1",
+   "layer": "Time Square Projects",
+   "lat": 11.552659,
+   "lng": 104.92287,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "Time Square 5 (306) - BKK1",
+   "layer": "Time Square Projects",
+   "lat": 11.551935,
+   "lng": 104.921989,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "Time Square 1 - BKK1",
+   "layer": "Time Square Projects",
+   "lat": 11.555264,
+   "lng": 104.923853,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "Time Square 2 - TK",
+   "layer": "Time Square Projects",
+   "lat": 11.583174,
+   "lng": 104.897006,
+   "khan": "Toul Kork",
+   "sangkat": "Boeung Kak 1",
+   "area": "Toul Kork"
+  },
+  {
+   "name": "Time Square 3 - TK",
+   "layer": "Time Square Projects",
+   "lat": 11.583614,
+   "lng": 104.89721,
+   "khan": "Toul Kork",
+   "sangkat": "Boeung Kak 1",
+   "area": "Toul Kork"
+  },
+  {
+   "name": "Yue Tai Phnom Penh Harbour",
+   "layer": "Finished Condos",
+   "lat": 11.575676,
+   "lng": 104.926741,
+   "khan": "Daun Penh",
+   "sangkat": "Wat Phnom",
+   "area": "Daun Penh"
+  },
+  {
+   "name": "Mekong View 3",
+   "layer": "Finished Condos",
+   "lat": 11.589089,
+   "lng": 104.936803,
+   "khan": "Chroy Changvar",
+   "sangkat": "Chroy Chongva",
+   "area": "Others"
+  },
+  {
+   "name": "Picasso City Garden",
+   "layer": "Finished Condos",
+   "lat": 11.550965,
+   "lng": 104.92426,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "Time Square 3",
+   "layer": "Finished Condos",
+   "lat": 11.583927,
+   "lng": 104.897559,
+   "khan": "Toul Kork",
+   "sangkat": "Boeung Kak 1",
+   "area": "Toul Kork"
+  },
+  {
+   "name": "De Castle Royal",
+   "layer": "Finished Condos",
+   "lat": 11.55326,
+   "lng": 104.92182,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "De Castle Diamond Condominium",
+   "layer": "Finished Condos",
+   "lat": 11.571786,
+   "lng": 104.888796,
+   "khan": "Toul Kork",
+   "sangkat": "Boeung Kak 2",
+   "area": "Toul Kork"
+  },
+  {
+   "name": "De Castle TK24",
+   "layer": "Finished Condos",
+   "lat": 11.578148,
+   "lng": 104.893594,
+   "khan": "Toul Kork",
+   "sangkat": "Boeung Kak 2",
+   "area": "Toul Kork"
+  },
+  {
+   "name": "De Castle Noblesse",
+   "layer": "Finished Condos",
+   "lat": 11.583486,
+   "lng": 104.892996,
+   "khan": "Toul Kork",
+   "sangkat": "Boeung Kak 1",
+   "area": "Toul Kork"
+  },
+  {
+   "name": "De Castle TK-83",
+   "layer": "Finished Condos",
+   "lat": 11.582418,
+   "lng": 104.897392,
+   "khan": "Toul Kork",
+   "sangkat": "Boeung Kak 1",
+   "area": "Toul Kork"
+  },
+  {
+   "name": "Time Square Serviced Apartment Cambodia",
+   "layer": "Finished Condos",
+   "lat": 11.555264,
+   "lng": 104.923853,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "Time Square 2 Apartment",
+   "layer": "Finished Condos",
+   "lat": 11.583174,
+   "lng": 104.897006,
+   "khan": "Toul Kork",
+   "sangkat": "Boeung Kak 1",
+   "area": "Toul Kork"
+  },
+  {
+   "name": "Picasso City Garden",
+   "layer": "Finished Condos",
+   "lat": 11.550965,
+   "lng": 104.92426,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "PARC 21 LUXURY BOUTIQUE HOTEL AND RESIDENCE",
+   "layer": "Finished Condos",
+   "lat": 11.541062,
+   "lng": 104.920353,
+   "khan": "Chamkar Mon",
+   "sangkat": "Boeng Trabaek",
+   "area": "Others"
+  },
+  {
+   "name": "J-Tower I",
+   "layer": "Finished Condos",
+   "lat": 11.543084,
+   "lng": 104.924714,
+   "khan": "Chamkar Mon",
+   "sangkat": "Tonle Bassac",
+   "area": "Tonle Bassac"
+  },
+  {
+   "name": "J-Tower II",
+   "layer": "Finished Condos",
+   "lat": 11.545354,
+   "lng": 104.923874,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "The Bridge",
+   "layer": "Finished Condos",
+   "lat": 11.552009,
+   "lng": 104.936311,
+   "khan": "Chamkar Mon",
+   "sangkat": "Tonle Bassac",
+   "area": "Tonle Bassac"
+  },
+  {
+   "name": "The PeAk Residences Tower 1 & 2",
+   "layer": "Finished Condos",
+   "lat": 11.553231,
+   "lng": 104.93844,
+   "khan": "Chamkar Mon",
+   "sangkat": "Tonle Bassac",
+   "area": "Tonle Bassac"
+  },
+  {
+   "name": "Diamond Twin Tower",
+   "layer": "Finished Condos",
+   "lat": 11.551916,
+   "lng": 104.940099,
+   "khan": "Chamkar Mon",
+   "sangkat": "Tonle Bassac",
+   "area": "Tonle Bassac"
+  },
+  {
+   "name": "Casa By Meridian",
+   "layer": "Finished Condos",
+   "lat": 11.547976,
+   "lng": 104.938094,
+   "khan": "Chamkar Mon",
+   "sangkat": "Tonle Bassac",
+   "area": "Tonle Bassac"
+  },
+  {
+   "name": "Rose Condo",
+   "layer": "Finished Condos",
+   "lat": 11.544342,
+   "lng": 104.931934,
+   "khan": "Chamkar Mon",
+   "sangkat": "Tonle Bassac",
+   "area": "Tonle Bassac"
+  },
+  {
+   "name": "The Olympia City",
+   "layer": "Finished Condos",
+   "lat": 11.56098,
+   "lng": 104.912716,
+   "khan": "7 Makara",
+   "sangkat": "Veal Vong",
+   "area": "Others"
+  },
+  {
+   "name": "Mekong View Tower 1",
+   "layer": "Finished Condos",
+   "lat": 11.582014,
+   "lng": 104.936554,
+   "khan": "Chroy Changvar",
+   "sangkat": "Chroy Chongva",
+   "area": "Others"
+  },
+  {
+   "name": "Mekong View Tower 2",
+   "layer": "Finished Condos",
+   "lat": 11.591432,
+   "lng": 104.934266,
+   "khan": "Chroy Changvar",
+   "sangkat": "Chroy Chongva",
+   "area": "Others"
+  },
+  {
+   "name": "Mekong View Tower 3",
+   "layer": "Finished Condos",
+   "lat": 11.589011,
+   "lng": 104.936766,
+   "khan": "Chroy Changvar",
+   "sangkat": "Chroy Chongva",
+   "area": "Others"
+  },
+  {
+   "name": "Mekong View Tower 6",
+   "layer": "Finished Condos",
+   "lat": 11.583982,
+   "lng": 104.93729,
+   "khan": "Chroy Changvar",
+   "sangkat": "Chroy Chongva",
+   "area": "Others"
+  },
+  {
+   "name": "The Bliss Mekong Residence",
+   "layer": "Finished Condos",
+   "lat": 11.59472,
+   "lng": 104.935239,
+   "khan": "Chroy Changvar",
+   "sangkat": "Chroy Chongva",
+   "area": "Others"
+  },
+  {
+   "name": "The Peninsula Phnom Penh",
+   "layer": "Finished Condos",
+   "lat": 11.589265,
+   "lng": 104.928606,
+   "khan": "Chroy Changvar",
+   "sangkat": "Chroy Chongva",
+   "area": "Others"
+  },
+  {
+   "name": "Yuetai Phnom Penh Harbour",
+   "layer": "Finished Condos",
+   "lat": 11.576418,
+   "lng": 104.926289,
+   "khan": "Daun Penh",
+   "sangkat": "Wat Phnom",
+   "area": "Daun Penh"
+  },
+  {
+   "name": "Flatiron by Meridian",
+   "layer": "Finished Condos",
+   "lat": 11.572747,
+   "lng": 104.907703,
+   "khan": "Daun Penh",
+   "sangkat": "Srah Chak",
+   "area": "Daun Penh"
+  },
+  {
+   "name": "One Park Tower",
+   "layer": "Finished Condos",
+   "lat": 11.576444,
+   "lng": 104.906178,
+   "khan": "Daun Penh",
+   "sangkat": "Srah Chak",
+   "area": "Daun Penh"
+  },
+  {
+   "name": "The Park Land TK",
+   "layer": "Finished Condos",
+   "lat": 11.592266,
+   "lng": 104.892364,
+   "khan": "Russei Keo",
+   "sangkat": "Toul Sangkae 2",
+   "area": "Others"
+  },
+  {
+   "name": "Urban Loft Condominium",
+   "layer": "Finished Condos",
+   "lat": 11.590484,
+   "lng": 104.873891,
+   "khan": "Sen Sok",
+   "sangkat": "Phnom Penh Tmey",
+   "area": "Others"
+  },
+  {
+   "name": "Urban Village Phase 1",
+   "layer": "Finished Condos",
+   "lat": 11.521761,
+   "lng": 104.928723,
+   "khan": "Mean Chey",
+   "sangkat": "Chak Angre Leu",
+   "area": "Others"
+  },
+  {
+   "name": "R&F City",
+   "layer": "Finished Condos",
+   "lat": 11.525667,
+   "lng": 104.927793,
+   "khan": "Mean Chey",
+   "sangkat": "Chak Angre Leu",
+   "area": "Others"
+  },
+  {
+   "name": "L’attrait BEOUNG KENG KANG 1",
+   "layer": "Finished Condos",
+   "lat": 11.550415,
+   "lng": 104.92749,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "The View Serviced Residence",
+   "layer": "Finished Condos",
+   "lat": 11.547706,
+   "lng": 104.924981,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "Embassy Central",
+   "layer": "Finished Condos",
+   "lat": 11.549103,
+   "lng": 104.923408,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "Agile Sky Residence",
+   "layer": "Finished Condos",
+   "lat": 11.550144,
+   "lng": 104.921147,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 3 (BKK3)",
+   "area": "Others"
+  },
+  {
+   "name": "Sky Villa Serviced Residences",
+   "layer": "Finished Condos",
+   "lat": 11.556418,
+   "lng": 104.914267,
+   "khan": "7 Makara",
+   "sangkat": "Veal Vong",
+   "area": "Others"
+  },
+  {
+   "name": "The Penthouse Residence",
+   "layer": "Finished Condos",
+   "lat": 11.547271,
+   "lng": 104.930714,
+   "khan": "Chamkar Mon",
+   "sangkat": "Tonle Bassac",
+   "area": "Tonle Bassac"
+  },
+  {
+   "name": "Infinity 28 Condominium",
+   "layer": "Finished Condos",
+   "lat": 11.583897,
+   "lng": 104.938294,
+   "khan": "Chroy Changvar",
+   "sangkat": "Chroy Chongva",
+   "area": "Others"
+  },
+  {
+   "name": "Arakawa Residence - លំនៅឋានអារ៉ាខាវ៉ា",
+   "layer": "Finished Condos",
+   "lat": 11.558798,
+   "lng": 104.881062,
+   "khan": "Sen Sok",
+   "sangkat": "Teuk Thla",
+   "area": "Others"
+  },
+  {
+   "name": "PS Crystal Condominium",
+   "layer": "Finished Condos",
+   "lat": 11.536814,
+   "lng": 104.907532,
+   "khan": "Mean Chey",
+   "sangkat": "Beoung Tompun 1",
+   "area": "Others"
+  },
+  {
+   "name": "Prince Central Plaza",
+   "layer": "Finished Condos",
+   "lat": 11.533498,
+   "lng": 104.929258,
+   "khan": "Chamkar Mon",
+   "sangkat": "Tonle Bassac",
+   "area": "Tonle Bassac"
+  },
+  {
+   "name": "Yuetai group ECC",
+   "layer": "Finished Condos",
+   "lat": 11.533226,
+   "lng": 104.929716,
+   "khan": "Chamkar Mon",
+   "sangkat": "Tonle Bassac",
+   "area": "Tonle Bassac"
+  },
+  {
+   "name": "Embassy Residences Condominium",
+   "layer": "Finished Condos",
+   "lat": 11.536204,
+   "lng": 104.92674,
+   "khan": "Chamkar Mon",
+   "sangkat": "Tonle Bassac",
+   "area": "Tonle Bassac"
+  },
+  {
+   "name": "Orkidē The Royal Condominium",
+   "layer": "Finished Condos",
+   "lat": 11.550327,
+   "lng": 104.876743,
+   "khan": "Sen Sok",
+   "sangkat": "Ou Bek K'am",
+   "area": "Others"
+  },
+  {
+   "name": "Time Square 3 Condominium",
+   "layer": "Finished Condos",
+   "lat": 11.583614,
+   "lng": 104.89721,
+   "khan": "Toul Kork",
+   "sangkat": "Boeung Kak 1",
+   "area": "Toul Kork"
+  },
+  {
+   "name": "The Skyline",
+   "layer": "Finished Condos",
+   "lat": 11.567794,
+   "lng": 104.91493,
+   "khan": "7 Makara",
+   "sangkat": "Veal Vong",
+   "area": "Others"
+  },
+  {
+   "name": "Helen Fin Inn & Apartment",
+   "layer": "Serviced Apartments",
+   "lat": 11.553903,
+   "lng": 104.922977,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "De Castle Royal",
+   "layer": "Serviced Apartments",
+   "lat": 11.553284,
+   "lng": 104.921823,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "K Residence",
+   "layer": "Serviced Apartments",
+   "lat": 11.551748,
+   "lng": 104.903919,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Tuol Svay Prey 2",
+   "area": "Others"
+  },
+  {
+   "name": "M Residence",
+   "layer": "Serviced Apartments",
+   "lat": 11.554857,
+   "lng": 104.925531,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "The Sokhom Residence",
+   "layer": "Serviced Apartments",
+   "lat": 11.551441,
+   "lng": 104.926818,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "Tulip Apartment",
+   "layer": "Serviced Apartments",
+   "lat": 11.55514,
+   "lng": 104.925406,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "SunCity Serviced Apartment",
+   "layer": "Serviced Apartments",
+   "lat": 11.548002,
+   "lng": 104.927175,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "Queen Mansion Apartment",
+   "layer": "Serviced Apartments",
+   "lat": 11.53858,
+   "lng": 104.915748,
+   "khan": "Chamkar Mon",
+   "sangkat": "Toul Tom Poung 1 (Russian Market)",
+   "area": "TTP"
+  },
+  {
+   "name": "TK Royal One Condo",
+   "layer": "Serviced Apartments",
+   "lat": 11.567248,
+   "lng": 104.892735,
+   "khan": "Toul Kork",
+   "sangkat": "Teuk La'ak 1",
+   "area": "Toul Kork"
+  },
+  {
+   "name": "SK Serviced Apartment",
+   "layer": "Serviced Apartments",
+   "lat": 11.552872,
+   "lng": 104.930916,
+   "khan": "Chamkar Mon",
+   "sangkat": "Tonle Bassac",
+   "area": "Tonle Bassac"
+  },
+  {
+   "name": "One Residence",
+   "layer": "Serviced Apartments",
+   "lat": 11.54842,
+   "lng": 104.928492,
+   "khan": "Chamkar Mon",
+   "sangkat": "Tonle Bassac",
+   "area": "Tonle Bassac"
+  },
+  {
+   "name": "Aura Condominium",
+   "layer": "Serviced Apartments",
+   "lat": 11.565592,
+   "lng": 104.921435,
+   "khan": "Daun Penh",
+   "sangkat": "Boeung Reang",
+   "area": "Daun Penh"
+  },
+  {
+   "name": "493 Apartment",
+   "layer": "Serviced Apartments",
+   "lat": 11.541188,
+   "lng": 104.918274,
+   "khan": "Chamkar Mon",
+   "sangkat": "Toul Tom Poung 1 (Russian Market)",
+   "area": "TTP"
+  },
+  {
+   "name": "Mekong View Tower 1",
+   "layer": "Serviced Apartments",
+   "lat": 11.582407,
+   "lng": 104.934356,
+   "khan": "Chroy Changvar",
+   "sangkat": "Chroy Chongva",
+   "area": "Others"
+  },
+  {
+   "name": "Mekong View Tower 2",
+   "layer": "Serviced Apartments",
+   "lat": 11.591548,
+   "lng": 104.934213,
+   "khan": "Chroy Changvar",
+   "sangkat": "Chroy Chongva",
+   "area": "Others"
+  },
+  {
+   "name": "Mekong View Tower 3",
+   "layer": "Serviced Apartments",
+   "lat": 11.589151,
+   "lng": 104.93683,
+   "khan": "Chroy Changvar",
+   "sangkat": "Chroy Chongva",
+   "area": "Others"
+  },
+  {
+   "name": "Mekong View Tower 6",
+   "layer": "Serviced Apartments",
+   "lat": 11.582144,
+   "lng": 104.936628,
+   "khan": "Chroy Changvar",
+   "sangkat": "Chroy Chongva",
+   "area": "Others"
+  },
+  {
+   "name": "Sophea Suites",
+   "layer": "Serviced Apartments",
+   "lat": 11.550769,
+   "lng": 104.926087,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "J Village Apartment (BKK1 ST.310)",
+   "layer": "Serviced Apartments",
+   "lat": 11.551574,
+   "lng": 104.925663,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "1 Residence Hotel & Apartments",
+   "layer": "Serviced Apartments",
+   "lat": 11.548171,
+   "lng": 104.928681,
+   "khan": "Chamkar Mon",
+   "sangkat": "Tonle Bassac",
+   "area": "Tonle Bassac"
+  },
+  {
+   "name": "BKK Village Apartment",
+   "layer": "Serviced Apartments",
+   "lat": 11.553582,
+   "lng": 104.922652,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "Hamptons Apartments",
+   "layer": "Serviced Apartments",
+   "lat": 11.550686,
+   "lng": 104.925608,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "Golden One Serviced Apartments",
+   "layer": "Serviced Apartments",
+   "lat": 11.548024,
+   "lng": 104.912699,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Tuol Svay Prey 1",
+   "area": "Others"
+  },
+  {
+   "name": "The PS Resident Serviced Apartment",
+   "layer": "Serviced Apartments",
+   "lat": 11.55135,
+   "lng": 104.91753,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 2 (BKK2)",
+   "area": "Others"
+  },
+  {
+   "name": "BKK Apartment On Street 51",
+   "layer": "Serviced Apartments",
+   "lat": 11.552754,
+   "lng": 104.926791,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "Bellavita Apartment",
+   "layer": "Serviced Apartments",
+   "lat": 11.555051,
+   "lng": 104.924529,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "TheCommune",
+   "layer": "Serviced Apartments",
+   "lat": 11.587614,
+   "lng": 104.896569,
+   "khan": "Toul Kork",
+   "sangkat": "Boeung Kak 1",
+   "area": "Toul Kork"
+  },
+  {
+   "name": "AMATA Residence",
+   "layer": "Serviced Apartments",
+   "lat": 11.576596,
+   "lng": 104.897382,
+   "khan": "Toul Kork",
+   "sangkat": "Boeung Kak 2",
+   "area": "Toul Kork"
+  },
+  {
+   "name": "Vyrakan Apartments",
+   "layer": "Serviced Apartments",
+   "lat": 11.534739,
+   "lng": 104.912866,
+   "khan": "Chamkar Mon",
+   "sangkat": "Toul Tumpung 2",
+   "area": "TTP"
+  },
+  {
+   "name": "Mansion 51",
+   "layer": "Serviced Apartments",
+   "lat": 11.550014,
+   "lng": 104.927207,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "Phnom Penh 51 Hotel",
+   "layer": "Serviced Apartments",
+   "lat": 11.556924,
+   "lng": 104.925592,
+   "khan": "Daun Penh",
+   "sangkat": "Chaktomuk",
+   "area": "Daun Penh"
+  },
+  {
+   "name": "TAO Riverside Residence",
+   "layer": "Serviced Apartments",
+   "lat": 11.570704,
+   "lng": 104.92967,
+   "khan": "Daun Penh",
+   "sangkat": "Phsa Kandal 1",
+   "area": "Daun Penh"
+  },
+  {
+   "name": "Citadines Flatiron Phnom Penh",
+   "layer": "Serviced Apartments",
+   "lat": 11.572766,
+   "lng": 104.907812,
+   "khan": "Daun Penh",
+   "sangkat": "Srah Chak",
+   "area": "Daun Penh"
+  },
+  {
+   "name": "Luxcity Hotel & Apartment",
+   "layer": "Serviced Apartments",
+   "lat": 11.568918,
+   "lng": 104.907384,
+   "khan": "7 Makara",
+   "sangkat": "Mittapheap",
+   "area": "Others"
+  },
+  {
+   "name": "SOHO Residence",
+   "layer": "Serviced Apartments",
+   "lat": 11.551047,
+   "lng": 104.920042,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 2 (BKK2)",
+   "area": "Others"
+  },
+  {
+   "name": "SAKNIKA Apartment Co., Ltd",
+   "layer": "Serviced Apartments",
+   "lat": 11.543592,
+   "lng": 104.924453,
+   "khan": "Chamkar Mon",
+   "sangkat": "Tonle Bassac",
+   "area": "Tonle Bassac"
+  },
+  {
+   "name": "Granferte Phnom Penh Hotel ហ្គ្រេនហ្វឺរតេ ភ្នំពេញ",
+   "layer": "Serviced Apartments",
+   "lat": 11.580372,
+   "lng": 104.891638,
+   "khan": "Toul Kork",
+   "sangkat": "Boeung Kak 2",
+   "area": "Toul Kork"
+  },
+  {
+   "name": "Bellevue Serviced Apartments",
+   "layer": "Serviced Apartments",
+   "lat": 11.5818,
+   "lng": 104.929136,
+   "khan": "Chroy Changvar",
+   "sangkat": "Chroy Chongva",
+   "area": "Others"
+  },
+  {
+   "name": "Central Mansions",
+   "layer": "Serviced Apartments",
+   "lat": 11.574169,
+   "lng": 104.919312,
+   "khan": "Daun Penh",
+   "sangkat": "Wat Phnom",
+   "area": "Daun Penh"
+  },
+  {
+   "name": "Himawari Hotel Apartments",
+   "layer": "Serviced Apartments",
+   "lat": 11.560829,
+   "lng": 104.935369,
+   "khan": "Daun Penh",
+   "sangkat": "Chaktomuk",
+   "area": "Daun Penh"
+  },
+  {
+   "name": "Somerset Norodom Phnom Penh",
+   "layer": "Serviced Apartments",
+   "lat": 11.53583,
+   "lng": 104.926652,
+   "khan": "Chamkar Mon",
+   "sangkat": "Tonle Bassac",
+   "area": "Tonle Bassac"
+  },
+  {
+   "name": "Oakwood Premier Phnom Penh",
+   "layer": "Serviced Apartments",
+   "lat": 11.57634,
+   "lng": 104.904753,
+   "khan": "Daun Penh",
+   "sangkat": "Srah Chak",
+   "area": "Daun Penh"
+  },
+  {
+   "name": "Maline Exclusive Serviced Apartments",
+   "layer": "Serviced Apartments",
+   "lat": 11.561092,
+   "lng": 104.925761,
+   "khan": "Daun Penh",
+   "sangkat": "Boeung Reang",
+   "area": "Daun Penh"
+  },
+  {
+   "name": "Urban Palace",
+   "layer": "Serviced Apartments",
+   "lat": 11.55203,
+   "lng": 104.919779,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 2 (BKK2)",
+   "area": "Others"
+  },
+  {
+   "name": "L’attrait BEOUNG KENG KANG 1",
+   "layer": "Serviced Apartments",
+   "lat": 11.550415,
+   "lng": 104.92749,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "Residence 105 Hotel and Apartment",
+   "layer": "Serviced Apartments",
+   "lat": 11.554741,
+   "lng": 104.919115,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 2 (BKK2)",
+   "area": "Others"
+  },
+  {
+   "name": "មនា អាផាតមិន Monia Apartment",
+   "layer": "Serviced Apartments",
+   "lat": 11.553021,
+   "lng": 104.925966,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "The View Serviced Residence",
+   "layer": "Serviced Apartments",
+   "lat": 11.547706,
+   "lng": 104.924981,
+   "khan": "Boeng Keng Kang",
+   "sangkat": "Boeung Keng Kang 1 (BKK1)",
+   "area": "BKK1"
+  },
+  {
+   "name": "Tronum Chamkarmon",
+   "layer": "Serviced Apartments",
+   "lat": 11.54189,
+   "lng": 104.925289,
+   "khan": "Chamkar Mon",
+   "sangkat": "Tonle Bassac",
+   "area": "Tonle Bassac"
+  },
+  {
+   "name": "Tronum Sothearos",
+   "layer": "Serviced Apartments",
+   "lat": 11.552964,
+   "lng": 104.932189,
+   "khan": "Chamkar Mon",
+   "sangkat": "Tonle Bassac",
+   "area": "Tonle Bassac"
+  },
+  {
+   "name": "TK Central Serviced Apartments",
+   "layer": "Serviced Apartments",
+   "lat": 11.582341,
+   "lng": 104.901072,
+   "khan": "Toul Kork",
+   "sangkat": "Boeung Kak 1",
+   "area": "Toul Kork"
+  },
+  {
+   "name": "One Park Residence",
+   "layer": "Serviced Apartments",
+   "lat": 11.576428,
+   "lng": 104.906217,
+   "khan": "Daun Penh",
+   "sangkat": "Srah Chak",
+   "area": "Daun Penh"
+  },
+  {
+   "name": "Odom",
+   "layer": "Serviced Apartments",
+   "lat": 11.548727,
+   "lng": 104.928624,
+   "khan": "Chamkar Mon",
+   "sangkat": "Tonle Bassac",
+   "area": "Tonle Bassac"
+  },
+  {
+   "name": "ONE70 Condominium",
+   "layer": "Serviced Apartments",
+   "lat": 11.582036,
+   "lng": 104.912528,
+   "khan": "Daun Penh",
+   "sangkat": "Srah Chak",
+   "area": "Daun Penh"
+  },
+  {
+   "name": "Morgan Tower",
+   "layer": "Serviced Apartments",
+   "lat": 11.553051,
+   "lng": 104.940372,
+   "khan": "Chamkar Mon",
+   "sangkat": "Tonle Bassac",
+   "area": "Tonle Bassac"
+  },
+  {
+   "name": "Diamond Twin Tower",
+   "layer": "Serviced Apartments",
+   "lat": 11.551916,
+   "lng": 104.940099,
+   "khan": "Chamkar Mon",
+   "sangkat": "Tonle Bassac",
+   "area": "Tonle Bassac"
+  },
+  {
+   "name": "Sokha Phnom Penh Hotel",
+   "layer": "Serviced Apartments",
+   "lat": 11.568503,
+   "lng": 104.937482,
+   "khan": "Chroy Changvar",
+   "sangkat": "Chroy Chongva",
+   "area": "Others"
+  },
+  {
+   "name": "The Peak Residence",
+   "layer": "Serviced Apartments",
+   "lat": 11.553497,
+   "lng": 104.937916,
+   "khan": "Chamkar Mon",
+   "sangkat": "Tonle Bassac",
+   "area": "Tonle Bassac"
+  }
+ ]
+}
