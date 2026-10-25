@@ -80,12 +80,27 @@ const MSG = {
 const fmtUsd = (n) => '$' + Math.round(n).toLocaleString('en-US');
 
 const nk = (x) => String(x || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-// Size basis: some units are quoted gross and some net, so a size is labelled when Nick says which it is,
-// and a price per square metre appears only then (never for projects, never when the basis is unknown).
+// Sizes: Nick's Sheet has a Net size and a Gross size column (a post often states both). The card shows what is known, labelled,
+// and a price per square metre on the net size first (the figure Japanese buyers compare), else on the gross size, else on an
+// old single size only when its basis is known. Projects show a plain "from" size and no price per square metre.
 const BASIS = { net: { jp: '（専有）', en: ' net', kh: ' net' }, gross: { jp: '（総面積）', en: ' gross', kh: ' gross' } };
 const basisText = (l, lang) => (l.basis ? BASIS[l.basis][lang] || BASIS[l.basis].en : '');
-const perSqm = (l, lang) => (l.basis && l.type === 'buy' && !l.from && l.price > 0 && l.sqm > 0
-  ? fmtUsd(l.price / l.sqm) + '/' + (lang === 'jp' ? '㎡' + BASIS[l.basis].jp : 'sqm' + (BASIS[l.basis][lang] || BASIS[l.basis].en)) : '');
+const unitSqm = (n, lang) => n + (lang === 'jp' ? '㎡' : ' sqm');
+function sizeText(l, lang) {
+  const tag = (k) => (lang === 'jp' ? BASIS[k].jp : BASIS[k].en);
+  const jp = lang === 'jp';
+  if (l.net && l.gross) return jp ? l.net + '㎡' + BASIS.net.jp + ' / ' + l.gross + '㎡' + BASIS.gross.jp : l.net + ' sqm net / ' + l.gross + ' sqm gross';
+  if (l.net) return jp ? l.net + '㎡' + BASIS.net.jp : l.net + ' sqm net';
+  if (l.gross) return jp ? l.gross + '㎡' + BASIS.gross.jp : l.gross + ' sqm gross';
+  if (!l.sqm) return '';
+  return (l.from && !jp ? 'from ' : '') + unitSqm(l.sqm, lang) + (jp && l.from ? 'から' : '') + basisText(l, lang);
+}
+function perSqm(l, lang) {
+  if (l.type !== 'buy' || l.from || !(l.price > 0)) return '';
+  const pick = l.net ? ['net', l.net] : l.gross ? ['gross', l.gross] : l.basis && l.sqm ? [l.basis, l.sqm] : null;
+  if (!pick) return '';
+  return fmtUsd(l.price / pick[1]) + '/' + (lang === 'jp' ? '㎡' + BASIS[pick[0]].jp : 'sqm' + BASIS[pick[0]].en);
+}
 function areaText(l) {
   if (!l.district || l.district === 'Others') return l.khan || '';
   const n = nk(l.district);
@@ -176,7 +191,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     const note = lang === 'jp' ? l.noteJp : l.noteEn;
     const price0 = l.type === 'buy' ? fmtUsd(l.price) : fmtUsd(l.rent) + (lang === 'jp' ? '/月' : lang === 'kh' ? '/ខែ' : '/mo');
     const price = l.from ? (lang === 'jp' ? price0 + 'から' : (lang === 'kh' ? 'ចាប់ពី ' : 'from ') + price0) : price0;
-    const facts = [price, l.sqm ? (l.from && lang !== 'jp' ? 'from ' : '') + l.sqm + (lang === 'jp' ? '㎡' + (l.from ? 'から' : '') : ' sqm') + basisText(l, lang) : '', l.beds ? l.beds + (lang === 'jp' ? 'ベッドルーム' : 'BR') : '', l.floor ? (lang === 'jp' ? l.floor + '階' : 'Floor ' + l.floor) : '', perSqm(l, lang)].filter(Boolean).join(' · ');
+    const facts = [price, sizeText(l, lang), l.beds ? l.beds + (lang === 'jp' ? 'ベッドルーム' : 'BR') : '', l.floor ? (lang === 'jp' ? l.floor + '階' : 'Floor ' + l.floor) : '', perSqm(l, lang)].filter(Boolean).join(' · ');
     // Others is only a search bucket, so show the real khan. Otherwise show the label (Nick's market name, also used by the buttons)
     // and, when the official district differs, the khan beside it: "Tonle Bassac (Chba Ampov)".
     const area = areaText(l);
