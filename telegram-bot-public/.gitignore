@@ -6,3 +6,5 @@ data/listing-state.json
 data/alerts.json
 data/testers.json
 data/mode.json
+data/agents.json
+data/channels.json

@@ -50,6 +50,18 @@ const alertStore = { get: (k) => astate[String(k)], set: (k, v) => { astate[Stri
 let testerIds = [];
 try { testerIds = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'testers.json'), 'utf8')); } catch (e) { testerIds = []; }
 
+// Phase 2 agent area: who the agents are, the units they submitted, and the channels approved units are posted to.
+const AGENT_FILE = path.join(__dirname, 'data', 'agents.json');
+let ad = { agents: {}, units: {}, seq: 0 };
+try { ad = Object.assign(ad, JSON.parse(fs.readFileSync(AGENT_FILE, 'utf8'))); } catch (e) { /* first run */ }
+function persistAgents() { const tmp = AGENT_FILE + '.tmp'; fs.writeFileSync(tmp, JSON.stringify(ad)); fs.renameSync(tmp, AGENT_FILE); }
+const agentData = {
+  getAgent: (k) => ad.agents[String(k)], setAgent: (k, v) => { ad.agents[String(k)] = v; persistAgents(); }, deleteAgent: (k) => { delete ad.agents[String(k)]; persistAgents(); }, allAgents: () => Object.keys(ad.agents).map((k) => ad.agents[k]),
+  getUnit: (k) => ad.units[k], setUnit: (k, v) => { ad.units[k] = v; persistAgents(); }, allUnits: () => Object.keys(ad.units).map((k) => ad.units[k]), nextSeq: () => { ad.seq += 1; persistAgents(); return ad.seq; },
+};
+let channels = [];
+try { channels = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'channels.json'), 'utf8')); } catch (e) { channels = []; } // [{ "chat": "@Nick_Cambodia", "mode": "auto" | "confirm", "lang": "jp" | "en" }]
+
 async function api(method, body) {
   try {
     const r = await fetch('https://api.telegram.org/bot' + token + '/' + method, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
@@ -67,7 +79,7 @@ async function api(method, body) {
 const listingsSource = process.env.LISTINGS_CSV_URL || path.join(__dirname, 'data', 'listings.csv');
 // The website feed: Active projects and units from propertyhubcambodia.com (public data, no key). Set WEBSITE_LISTINGS_URL=off to disable.
 const websiteFeed = process.env.WEBSITE_LISTINGS_URL === 'off' ? '' : (process.env.WEBSITE_LISTINGS_URL || 'https://www.propertyhubcambodia.com/api/bot-listings');
-const bot = createBot({ api, store, flow, nickId: NICK_ID, listingState, alertStore, testerIds, isPrivate: () => { try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'mode.json'), 'utf8')).private === true; } catch (e) { return false; } }, getListings: combine(makeLoader(listingsSource, 300000, places), makeWebsiteLoader(websiteFeed, 300000, { photos: process.env.SHOW_WEBSITE_PHOTOS === '1', places, boundaries })), onError: (e) => console.error('Handler error:', e.message) });
+const bot = createBot({ api, store, flow, nickId: NICK_ID, listingState, alertStore, testerIds, agentData, channels, places, isPrivate: () => { try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'mode.json'), 'utf8')).private === true; } catch (e) { return false; } }, getListings: combine(makeLoader(listingsSource, 300000, places), makeWebsiteLoader(websiteFeed, 300000, { photos: process.env.SHOW_WEBSITE_PHOTOS === '1', places, boundaries })), onError: (e) => console.error('Handler error:', e.message) });
 
 async function setupProfile() {
   const cmds = {
@@ -87,6 +99,7 @@ async function run() {
   // Tell Nick where the bot is running each time it starts, so he knows whether the hosted copy or his Mac is answering.
   if (NICK_ID) await api('sendMessage', { chat_id: NICK_ID, text: 'Bot started on ' + require('os').hostname() + ' (@' + ((me.result && me.result.username) || '?') + ').' });
   // Alerts are checked every 10 minutes; the bot itself keeps to one message a day and to 9:00 to 21:00 Japan time.
+  setInterval(() => bot.runAgentChecks().catch((e) => console.error('Agent check error:', e.message)), 10 * 60 * 1000);
   setInterval(() => bot.runAlerts().catch((e) => console.error('Alert error:', e.message)), 10 * 60 * 1000);
   let offset = 0;
   for (;;) {

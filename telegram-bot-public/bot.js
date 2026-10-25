@@ -2,6 +2,7 @@
 // createBot({ api, store, flow, nickId }) -> { handleUpdate(update) }
 const R = require('./engines/render.js');
 const L = require('./engines/listings.js');
+const { createAgentArea } = require('./engines/agents.js');
 
 const DISCLAIMER = {
   jp: '※利回り・価格は参考値であり、将来の収益を保証するものではありません。',
@@ -63,6 +64,7 @@ const MSG = {
     en: 'We are getting ready to open. Please check back soon.',
     kh: 'កំពុងរៀបចំដើម្បីបើក។ សូមត្រឡប់មកវិញក្រោយ។',
   },
+  photoBtn: { jp: '写真を見る {id}', en: 'Photos {id}', kh: 'រូបថត {id}' },
   menuBtn: { jp: 'メインメニュー', en: 'Main menu', kh: 'ម៉ឺនុយមេ' },
   tenanted: { jp: 'テナント入居中', en: 'Tenanted', kh: 'មានអ្នកជួលរួចហើយ' },
   partner: {
@@ -116,8 +118,11 @@ function parseThree(text) {
   return { price, rent, costs };
 }
 
-function createBot({ api, store, flow, nickId, onError, getListings, listingState, alertStore, testerIds, isPrivate, now }) {
-  const rawListings = getListings || (async () => []);
+function createBot({ api, store, flow, nickId, onError, getListings, listingState, alertStore, testerIds, isPrivate, agentData, channels, places, now }) {
+  // Phase 2 agent units join the listings the Sheet and the website provide
+  const baseListings = getListings || (async () => []);
+  let agentArea = null;
+  const rawListings = async () => (await baseListings()).concat(agentArea ? agentArea.listings() : []);
   const clock = now || (() => Date.now());
   const DAY = 86400000;
   // What Nick decided about each listing (Available / Not available) and who asked about it. It sits on top of the Sheet and the website:
@@ -207,7 +212,8 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     text += '\n\n<i>' + MSG.avail[lang] + '</i>';
     if (found.some((l) => l.partner)) text += '\n<i>' + MSG.partner[lang] + '</i>';
     if (found.some((l) => l.netYield)) text += '\n\n<i>*' + DISCLAIMER[lang].replace(/^※/, '') + '</i>';
-    const kb = found.map((l) => [{ text: MSG.ask[lang].replace('{id}', l.id), callback_data: 'q:' + l.id }]);
+    const kb = [];
+    found.forEach((l) => { kb.push([{ text: MSG.ask[lang].replace('{id}', l.id), callback_data: 'q:' + l.id }]); if (l.photos && l.photos.length) kb.push([{ text: MSG.photoBtn[lang].replace('{id}', l.id), callback_data: 'ph:' + l.id }]); });
     if (stopRow) kb.push([{ text: MSG.alertStopBtn[lang], callback_data: 'al:off' }]);
     return { chat: null, body: { text, parse_mode: 'HTML', disable_web_page_preview: true, reply_markup: { inline_keyboard: kb } } };
   }
@@ -273,6 +279,21 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     if (step.id === 'forgetdone') { store.delete(u.id); alerts.delete(u.id); } // the client asked to delete everything
   }
 
+  // tells every client who asked about a unit in the last 7 days that it is gone (used when an agent marks a unit sold)
+  async function tellAskersGone(ref, name) {
+    const st = state.get(ref) || {};
+    const others = (st.askers || []).filter((x) => (clock() - Date.parse(x.at)) / DAY <= 7);
+    for (const x of others) {
+      const lg = x.lang || 'jp';
+      await api('sendMessage', { chat_id: x.id, text: MSG.goneMsg[lg].replace('{name}', R.esc(name)), parse_mode: 'HTML', reply_markup: { inline_keyboard: [[{ text: MSG.nickBtn[lg], url: LINE }], [{ text: MSG.menuBtn[lg], callback_data: 'm:menu' }]] } });
+    }
+    return others.length;
+  }
+  agentArea = createAgentArea({ api, nickId, clock, esc: R.esc, L, places, lineUrl: LINE, channels: channels || [],
+    data: agentData || (() => { const ag = {}, un = {}; let seq = 0; return { getAgent: (k) => ag[String(k)], setAgent: (k, v) => { ag[String(k)] = v; }, deleteAgent: (k) => { delete ag[String(k)]; }, allAgents: () => Object.keys(ag).map((k) => ag[k]),
+      getUnit: (k) => un[k], setUnit: (k, v) => { un[k] = v; }, allUnits: () => Object.keys(un).map((k) => un[k]), nextSeq: () => ++seq }; })(),
+    getUser: (from) => user(from), saveUser: (u) => save(u), listingText: (l, lang) => listingText(l, lang), tellAskersGone });
+
   // Nick's buttons on a listing inquiry: v:<a|n|c|u>:<ref>[:<client id>]. Only Nick can use them.
   async function handleVerdict(cb) {
     if (!isNick(cb.from.id)) return;
@@ -337,6 +358,14 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
       }
       return api('sendMessage', { chat_id: chatId, text: MSG.askDone[u.lang], reply_markup: { inline_keyboard: [[{ text: MSG.nickBtn[u.lang], url: LINE }]] } });
     }
+    if (/^(aw|am|ac|ua|ur|uc|pa|pr):/.test(data)) { if (await agentArea.handleCallback(cb, u)) return; }
+    if (data.startsWith('ph:')) {
+      const l = (await loadListings(from.id)).find((x) => x.id === data.slice(3));
+      if (!l || !l.photos || !l.photos.length) return;
+      const ids = l.photos.slice(0, 10);
+      if (ids.length === 1) return api('sendPhoto', { chat_id: chatId, photo: ids[0] });
+      return api('sendMediaGroup', { chat_id: chatId, media: ids.map((id) => ({ type: 'photo', media: id })) });
+    }
     if (data === 'al:on') {
       if (!u.lang) u.lang = 'jp';
       save(u);
@@ -383,6 +412,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
       }
       return goto(chatId, from, u, 'menu');
     }
+    if (await agentArea.handleMessage(m, u, text, cmd)) return; // Phase 2: agent area and Nick's agent commands
     if (!u.lang) u.lang = /^ja/i.test(from.language_code || '') ? 'jp' : 'en';
     if (cmd === '/stop') {
       const had = !!alerts.get(u.id); alerts.delete(u.id); save(u);
@@ -457,7 +487,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
       } catch (e2) { /* nothing more to do */ }
     }
   }
-  return { handleUpdate, byId, runAlerts };
+  return { handleUpdate, byId, runAlerts, runAgentChecks: () => agentArea.runChecks() };
 }
 
 module.exports = { createBot, parseThree, DISCLAIMER, MSG };
