@@ -40,7 +40,7 @@ function withPlace(r, places) {
 
 // The Sheet uses plain headers ("Price (USD)"); old technical names still work. Same status names as the website admin.
 const ALIAS = { ref: 'id', id: 'id', status: 'status', buyorrent: 'type', type: 'type', listingtype: 'type', project: 'project_name', projectname: 'project_name', area: 'district', district: 'district',
-  priceusd: 'price_usd', monthlyrentusd: 'rent_usd_month', rentusdmonth: 'rent_usd_month', sizesqm: 'size_sqm', bedrooms: 'bedrooms', netyield: 'net_yield_pct', netyieldpct: 'net_yield_pct',
+  priceusd: 'price_usd', monthlyrentusd: 'rent_usd_month', rentusdmonth: 'rent_usd_month', sizesqm: 'size_sqm', sizebasis: 'size_basis', basis: 'size_basis', bedrooms: 'bedrooms', netyield: 'net_yield_pct', netyieldpct: 'net_yield_pct',
   photolink: 'photo_url', photourl: 'photo_url', notejapanese: 'note_jp', notejp: 'note_jp', noteenglish: 'note_en', noteen: 'note_en', lastchecked: 'last_checked', source: 'source', tenanted: 'tenanted', tenancynote: 'tenant_note', tenantnote: 'tenant_note', unitnumber: 'unit_number', unit: 'unit_number', floor: 'floor', unitfloor: 'floor' };
 function normRow(r) {
   const o = {};
@@ -71,6 +71,7 @@ function clean(rows, now, places) {
     khan: r.khan || '', sangkat: r.sangkat || '', checked: r.last_checked || '',
     id: r.id, preview: String(r.status).trim().toLowerCase() === 'preview', type: kindOf(r.type), name: r.project_name, district: r.district,
     price: num(r.price_usd), rent: num(r.rent_usd_month), sqm: num(r.size_sqm), beds: r.bedrooms,
+    basis: /net|専有|专有|internal/i.test(String(r.size_basis || '')) ? 'net' : /gross|総|延|total|built/i.test(String(r.size_basis || '')) ? 'gross' : '',
     unit: r.unit_number || '', floor: r.floor || '', tenanted: /^(yes|y|true|1)$/i.test(String(r.tenanted || '').trim()), tenantNote: r.tenant_note || '',
     partner: /reakh/i.test(String(r.source || '')), netYield: num(r.net_yield_pct), photo: /^https:\/\//.test(r.photo_url) ? r.photo_url : '', noteJp: r.note_jp, noteEn: r.note_en,
   }));

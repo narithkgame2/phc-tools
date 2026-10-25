@@ -80,6 +80,12 @@ const MSG = {
 const fmtUsd = (n) => '$' + Math.round(n).toLocaleString('en-US');
 
 const nk = (x) => String(x || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+// Size basis: some units are quoted gross and some net, so a size is labelled when Nick says which it is,
+// and a price per square metre appears only then (never for projects, never when the basis is unknown).
+const BASIS = { net: { jp: '（専有）', en: ' net', kh: ' net' }, gross: { jp: '（総面積）', en: ' gross', kh: ' gross' } };
+const basisText = (l, lang) => (l.basis ? BASIS[l.basis][lang] || BASIS[l.basis].en : '');
+const perSqm = (l, lang) => (l.basis && l.type === 'buy' && !l.from && l.price > 0 && l.sqm > 0
+  ? fmtUsd(l.price / l.sqm) + '/' + (lang === 'jp' ? '㎡' + BASIS[l.basis].jp : 'sqm' + (BASIS[l.basis][lang] || BASIS[l.basis].en)) : '');
 function areaText(l) {
   if (!l.district || l.district === 'Others') return l.khan || '';
   const n = nk(l.district);
@@ -170,7 +176,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     const note = lang === 'jp' ? l.noteJp : l.noteEn;
     const price0 = l.type === 'buy' ? fmtUsd(l.price) : fmtUsd(l.rent) + (lang === 'jp' ? '/月' : lang === 'kh' ? '/ខែ' : '/mo');
     const price = l.from ? (lang === 'jp' ? price0 + 'から' : (lang === 'kh' ? 'ចាប់ពី ' : 'from ') + price0) : price0;
-    const facts = [price, l.sqm ? (l.from && lang !== 'jp' ? 'from ' : '') + l.sqm + (lang === 'jp' ? '㎡' + (l.from ? 'から' : '') : ' sqm') : '', l.beds ? l.beds + (lang === 'jp' ? 'ベッドルーム' : 'BR') : '', l.floor ? (lang === 'jp' ? l.floor + '階' : 'Floor ' + l.floor) : ''].filter(Boolean).join(' · ');
+    const facts = [price, l.sqm ? (l.from && lang !== 'jp' ? 'from ' : '') + l.sqm + (lang === 'jp' ? '㎡' + (l.from ? 'から' : '') : ' sqm') + basisText(l, lang) : '', l.beds ? l.beds + (lang === 'jp' ? 'ベッドルーム' : 'BR') : '', l.floor ? (lang === 'jp' ? l.floor + '階' : 'Floor ' + l.floor) : '', perSqm(l, lang)].filter(Boolean).join(' · ');
     // Others is only a search bucket, so show the real khan. Otherwise show the label (Nick's market name, also used by the buttons)
     // and, when the official district differs, the khan beside it: "Tonle Bassac (Chba Ampov)".
     const area = areaText(l);

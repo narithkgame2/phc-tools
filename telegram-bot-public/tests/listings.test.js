@@ -145,6 +145,24 @@ function rig(rows) {
     }
     assert.deepStrictEqual(out, ['· Tonle Bassac (Chba Ampov)', '· TTP (Chamkar Mon)', '· BKK1', '· Toul Kork', '· Sen Sok', '· Tonle Bassac']);
   });
+  await t('size basis: a size is labelled gross or net, and price per sqm appears only when the basis is known', async () => {
+    const csv = 'Ref,Status,Listing type,Project,Area,Price (USD),Size (sqm),Size basis\nB1,Active,Resale,Net Place,BKK1,70000,35,Net\nB2,Active,Resale,Gross Place,BKK1,70000,50,Gross\nB3,Active,Resale,Unknown Place,BKK1,70000,50,\nB4,Active,Resale,Japanese Place,BKK1,90000,30,専有面積';
+    const rows = L.clean(L.parseCsv(csv), NOW);
+    assert.deepStrictEqual(rows.map((r) => r.basis), ['net', 'gross', '', 'net']);
+    const sent = []; const db = {};
+    const api = async (m, b) => { sent.push({ method: m, body: b }); return { ok: true }; };
+    const store = { get: (k) => db[String(k)], set: (k, v) => { db[String(k)] = JSON.parse(JSON.stringify(v)); }, delete: (k) => { delete db[String(k)]; } };
+    const bot = createBot({ api, store, flow, nickId: '353195979', getListings: async () => rows });
+    const from = { id: 71, first_name: 'K', language_code: 'ja' };
+    await bot.handleUpdate({ update_id: 1, message: { message_id: 2, chat: { id: 71, type: 'private' }, from, text: '/buy' } });
+    await bot.handleUpdate({ update_id: 2, callback_query: { id: 'c', from, data: 'g:b1:1', message: { message_id: 5, chat: { id: 71, type: 'private' } } } });
+    await bot.handleUpdate({ update_id: 3, callback_query: { id: 'c', from, data: 'g:b2:2', message: { message_id: 5, chat: { id: 71, type: 'private' } } } });
+    const text = sent.find((x) => /Net Place/.test(x.body.text || '')).body.text;
+    assert.ok(/35㎡（専有）/.test(text) && /\$2,000\/㎡（専有）/.test(text), text);
+    assert.ok(/Gross Place[^]*50㎡（総面積）[^]*\$1,400\/㎡（総面積）/.test(text), 'gross is labelled and its own price per sqm');
+    const card = text.split('<blockquote>').find((x) => /Unknown Place/.test(x));
+    assert.ok(/50㎡/.test(card) && !/㎡（/.test(card) && !/\/㎡/.test(card), 'unknown basis: plain size and no price per sqm: ' + card);
+  });
   await t('quoted commas are read correctly and internal columns never reach the clean rows', () => {
     const a = rows.find((r) => r.id === 'A1');
     assert.strictEqual(a.noteJp, '静かな部屋, 眺め良好');

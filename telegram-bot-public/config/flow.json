@@ -1189,7 +1189,7 @@
    "id": "forget",
    "flow": "Privacy",
    "title": "Confirm delete my data",
-   "text": "<b>Delete my data</b>\n\nThis removes your saved searches, shortlist, alerts and enquiry history.\nTap Confirm to delete.",
+   "text": "<b>Delete my data</b>\n\nThis removes your saved searches, new listing alerts and enquiry history.\nTap Confirm to delete.",
    "buttons": [
     {
      "l": "Confirm",
@@ -1207,14 +1207,14 @@
    "big": true,
    "tr": {
     "jp": {
-     "t": "<b>データの削除</b>\n\n保存した検索条件、お気に入り、通知設定、相談履歴を削除します。\n「確認」をタップすると削除されます。",
+     "t": "<b>データの削除</b>\n\n保存した検索条件、新着通知の設定、相談履歴を削除します。\n「確認」をタップすると削除されます。",
      "b": [
       "確認",
       "キャンセル"
      ]
     },
     "kh": {
-     "t": "<b>លុបទិន្នន័យរបស់ខ្ញុំ</b>\n\nវានឹងលុបការស្វែងរកដែលបានរក្សាទុក បញ្ជីរក្សាទុក ការជូនដំណឹង និងប្រវត្តិសាកសួរ។\nចុច \"បញ្ជាក់\" ដើម្បីលុប។",
+     "t": "<b>លុបទិន្នន័យរបស់ខ្ញុំ</b>\n\nវានឹងលុបការស្វែងរកដែលបានរក្សាទុក ការជូនដំណឹងអំពីបញ្ជីថ្មី និងប្រវត្តិសាកសួរ។\nចុច \"បញ្ជាក់\" ដើម្បីលុប។",
      "b": [
       "បញ្ជាក់",
       "បោះបង់"
@@ -1292,7 +1292,7 @@
    "id": "unknown",
    "flow": "System messages",
    "title": "Did not understand",
-   "text": "<b>I did not catch that</b>\n\nPick an option below, or type a few words to search, for example <code>2 bedroom BKK1</code>.",
+   "text": "<b>I did not catch that</b>\n\nPlease pick an option below.",
    "buttons": [
     {
      "l": "Find a property to buy",
@@ -1316,7 +1316,7 @@
    "note": "Sent when someone types something the bot cannot match.",
    "tr": {
     "jp": {
-     "t": "<b>うまく理解できませんでした</b>\n\n下のメニューから選ぶか、キーワードを入力してください。例: <code>2 bedroom BKK1</code>",
+     "t": "<b>うまく理解できませんでした</b>\n\n下のメニューから選んでください。",
      "b": [
       "物件を購入する",
       "メインメニュー",
@@ -1324,7 +1324,7 @@
      ]
     },
     "kh": {
-     "t": "<b>ខ្ញុំមិនយល់ទេ</b>\n\nសូមជ្រើសរើសជម្រើសខាងក្រោម ឬវាយពាក្យខ្លះដើម្បីស្វែងរក ឧទាហរណ៍ <code>2 bedroom BKK1</code>។",
+     "t": "<b>ខ្ញុំមិនយល់ទេ</b>\n\nសូមជ្រើសរើសជម្រើសខាងក្រោម។",
      "b": [
       "រកអចលនទ្រព្យទិញ",
       "ម៉ឺនុយមេ",
