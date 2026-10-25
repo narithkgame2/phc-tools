@@ -66,7 +66,7 @@ async function api(method, body) {
 const listingsSource = process.env.LISTINGS_CSV_URL || path.join(__dirname, 'data', 'listings.csv');
 // The website feed: Active projects and units from propertyhubcambodia.com (public data, no key). Set WEBSITE_LISTINGS_URL=off to disable.
 const websiteFeed = process.env.WEBSITE_LISTINGS_URL === 'off' ? '' : (process.env.WEBSITE_LISTINGS_URL || 'https://www.propertyhubcambodia.com/api/bot-listings');
-const bot = createBot({ api, store, flow, nickId: NICK_ID, listingState, alertStore, testerIds, getListings: combine(makeLoader(listingsSource, 300000, places), makeWebsiteLoader(websiteFeed, 300000, { photos: process.env.SHOW_WEBSITE_PHOTOS === '1', places, boundaries })), onError: (e) => console.error('Handler error:', e.message) });
+const bot = createBot({ api, store, flow, nickId: NICK_ID, listingState, alertStore, testerIds, isPrivate: () => { try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'mode.json'), 'utf8')).private === true; } catch (e) { return false; } }, getListings: combine(makeLoader(listingsSource, 300000, places), makeWebsiteLoader(websiteFeed, 300000, { photos: process.env.SHOW_WEBSITE_PHOTOS === '1', places, boundaries })), onError: (e) => console.error('Handler error:', e.message) });
 
 async function setupProfile() {
   const cmds = {

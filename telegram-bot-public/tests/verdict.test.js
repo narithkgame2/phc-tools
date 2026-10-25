@@ -58,6 +58,21 @@ const alertOf = (r) => r.to(NICK).filter((s) => /Listing interest/.test(s.body.t
     await bot.handleUpdate({ update_id: 4, callback_query: { id: 'c', from: mk(777), data: 'v:n:TS7-5001:777', message: { message_id: 5, chat: { id: 777, type: 'private' } } } });
     assert.ok(!sent.some((s) => /成約済み/.test(s.body.text || '')), 'a tester must not be able to use Nick buttons');
   });
+  await t('private test mode: only Nick and testers can use the bot, everyone else gets one polite line', async () => {
+    const sent = []; const db = {}; let priv = true;
+    const api = async (m, b) => { sent.push({ method: m, body: b }); return { ok: true }; };
+    const store = { get: (k) => db[String(k)], set: (k, v) => { db[String(k)] = JSON.parse(JSON.stringify(v)); }, delete: (k) => { delete db[String(k)]; } };
+    const bot = createBot({ api, store, flow, nickId: String(NICK), testerIds: ['777'], isPrivate: () => priv, getListings: async () => [listing()] });
+    const say = (id, text, lang) => bot.handleUpdate({ update_id: 1, message: { message_id: 2, chat: { id, type: 'private' }, from: { id, first_name: 'X', language_code: lang || 'ja' }, text } });
+    await say(555, '/buy'); await say(555, '/start', 'en');
+    const outsider = sent.filter((s) => s.body.chat_id === 555);
+    assert.strictEqual(outsider.length, 2); assert.ok(/準備中/.test(outsider[0].body.text) && /getting ready/.test(outsider[1].body.text)); assert.ok(!outsider.some((s) => /ご予算/.test(s.body.text)));
+    await bot.handleUpdate({ update_id: 2, callback_query: { id: 'c', from: { id: 555, first_name: 'X' }, data: 'g:b1:1', message: { message_id: 5, chat: { id: 555, type: 'private' } } } });
+    assert.ok(!sent.some((s) => s.body.chat_id === 555 && /エリア/.test(s.body.text || '')));
+    sent.length = 0; await say(777, '/buy'); await say(NICK, '/buy');
+    assert.ok(sent.some((s) => s.body.chat_id === 777 && /ご予算/.test(s.body.text)) && sent.some((s) => s.body.chat_id === NICK && /ご予算/.test(s.body.text)));
+    priv = false; sent.length = 0; await say(555, '/buy'); assert.ok(sent.some((s) => s.body.chat_id === 555 && /ご予算/.test(s.body.text)), 'open again when the mode is switched off');
+  });
   await t('a rental alert shows the monthly rent', async () => {
     const r = rig([listing({ id: 'R-1', type: 'rent', price: 0, rent: 700 })]), k = r.user(1002);
     await r.say(k, '/rent'); await r.cb(k, 'g:rr1:1'); await r.cb(k, 'g:rr2:2'); await r.cb(k, 'q:R-1');

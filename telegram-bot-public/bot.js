@@ -58,6 +58,11 @@ const MSG = {
     kh: 'តើអ្នកនៅតែចង់បានការជូនដំណឹងទេ? សូមចុចប៊ូតុងខាងក្រោម។ បើមិនចុច វានឹងឈប់ដោយខ្លួនឯងក្នុងរយៈពេល 7 ថ្ងៃ។',
   },
   alertKeepBtn: { jp: '引き続き受け取る', en: 'Keep my alerts', kh: 'បន្តទទួលការជូនដំណឹង' },
+  closed: {
+    jp: '現在、公開に向けて準備中です。もうしばらくお待ちください。',
+    en: 'We are getting ready to open. Please check back soon.',
+    kh: 'កំពុងរៀបចំដើម្បីបើក។ សូមត្រឡប់មកវិញក្រោយ។',
+  },
   menuBtn: { jp: 'メインメニュー', en: 'Main menu', kh: 'ម៉ឺនុយមេ' },
   tenanted: { jp: 'テナント入居中', en: 'Tenanted', kh: 'មានអ្នកជួលរួចហើយ' },
   partner: {
@@ -90,7 +95,7 @@ function parseThree(text) {
   return { price, rent, costs };
 }
 
-function createBot({ api, store, flow, nickId, onError, getListings, listingState, alertStore, testerIds, now }) {
+function createBot({ api, store, flow, nickId, onError, getListings, listingState, alertStore, testerIds, isPrivate, now }) {
   const rawListings = getListings || (async () => []);
   const clock = now || (() => Date.now());
   const DAY = 86400000;
@@ -405,6 +410,19 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
 
   async function handleUpdate(update) {
     try {
+      // Private test mode: until Nick opens the bot, only he and his tester accounts can use it. Everyone else gets one polite line.
+      if (isPrivate && isPrivate()) {
+        const from = update.callback_query ? update.callback_query.from : update.message && update.message.from;
+        const chat = update.callback_query ? update.callback_query.message && update.callback_query.message.chat : update.message && update.message.chat;
+        if (from && !seesPreview(from.id)) {
+          if (update.callback_query) await api('answerCallbackQuery', { callback_query_id: update.callback_query.id });
+          if (chat && chat.type === 'private' && (!update.message || update.message.text)) {
+            const lang = (store.get(from.id) || {}).lang || (/^ja/i.test(from.language_code || '') ? 'jp' : 'en');
+            await api('sendMessage', { chat_id: chat.id, text: MSG.closed[lang] });
+          }
+          return;
+        }
+      }
       if (update.callback_query) return await handleCallback(update.callback_query);
       if (update.message) return await handleMessage(update.message);
     } catch (e) {
