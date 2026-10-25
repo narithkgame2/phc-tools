@@ -54,7 +54,8 @@ async function api(method, body) {
   try {
     const r = await fetch('https://api.telegram.org/bot' + token + '/' + method, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
     const j = await r.json();
-    if (!j.ok && !/message is not modified/i.test(j.description || '')) console.error('Telegram error on ' + method + ': ' + (j.description || 'unknown'));
+    if (!j.ok && /Conflict/i.test(j.description || '')) console.error('Another copy of this bot is already running with the same token. Stop one of them (only one may run at a time).');
+    else if (!j.ok && !/message is not modified/i.test(j.description || '')) console.error('Telegram error on ' + method + ': ' + (j.description || 'unknown'));
     return j;
   } catch (e) {
     console.error('Network error on ' + method + ': ' + e.message);
@@ -83,6 +84,8 @@ async function run() {
   const me = await api('getMe', {});
   console.log('Nick Cambodia bot started as @' + (me.result && me.result.username) + ' (Phase 1, clients only)');
   await setupProfile();
+  // Tell Nick where the bot is running each time it starts, so he knows whether the hosted copy or his Mac is answering.
+  if (NICK_ID) await api('sendMessage', { chat_id: NICK_ID, text: 'Bot started on ' + require('os').hostname() + ' (@' + ((me.result && me.result.username) || '?') + ').' });
   // Alerts are checked every 10 minutes; the bot itself keeps to one message a day and to 9:00 to 21:00 Japan time.
   setInterval(() => bot.runAlerts().catch((e) => console.error('Alert error:', e.message)), 10 * 60 * 1000);
   let offset = 0;
