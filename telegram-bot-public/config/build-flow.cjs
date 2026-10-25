@@ -65,23 +65,16 @@ by.calc1.await = 'calc'; by.check1.await = 'check';
     s.note = 'Five main areas. Other area asks the client to type an area or a project name.';
     const o = JSON.parse(JSON.stringify(s));
     o.id = other; o.title = id === 'b2' ? 'Buy 2: Other area (typed)' : 'Rent 2: Other area (typed)';
-    o.text = '<b>Other area</b>\n\nPlease type the area or the project name.';
+    o.text = '<b>Other area</b>\n\nType the area or the project name in the message box below, then press send.\n<i>Example: BKK3, Time Square 8</i>';
     o.buttons = [{ l: 'Back', to: id, half: false, url: '' }];
-    o.tr = { jp: { t: '<b>その他のエリア</b>\n\nエリアまたは物件名をご入力ください。', b: ['戻る'] }, kh: { t: '<b>តំបន់ផ្សេងទៀត</b>\n\nសូមវាយឈ្មោះតំបន់ ឬឈ្មោះគម្រោង។', b: ['ត្រឡប់ក្រោយ'] } };
+    o.tr = { jp: { t: '<b>その他のエリア</b>\n\n下のメッセージ欄に、エリア名または物件名を入力して送信してください。\n<i>例: BKK3、Time Square 8</i>', b: ['戻る'] }, kh: { t: '<b>តំបន់ផ្សេងទៀត</b>\n\nសូមវាយឈ្មោះតំបន់ ឬឈ្មោះគម្រោង នៅក្នុងប្រអប់សារខាងក្រោម រួចចុចផ្ញើ។\n<i>ឧទាហរណ៍៖ BKK3, Time Square 8</i>', b: ['ត្រឡប់ក្រោយ'] } };
     o.await = 'area:' + next + ':' + id; o.note = 'The next message the client types is saved as the area, then the search request is sent.';
     by[other] = o;
   }
   make('b2', 'bres', 'b2other'); make('rr2', 'rres', 'rr2other');
 })();
-// budget screens also accept a typed number (the next message is saved as the budget)
-(function () {
-  const hint = { en: '\nYou can also type your own budget.', jp: '\n金額をそのままご入力いただくこともできます。', kh: '\nអ្នកក៏អាចវាយចំនួនទឹកប្រាក់របស់អ្នកបានដែរ។' };
-  [['b1', 'b2'], ['rr1', 'rr2']].forEach(([id, next]) => {
-    const s = by[id];
-    s.text += hint.en; s.tr.jp.t += hint.jp; s.tr.kh.t += hint.kh;
-    s.await = 'area:' + next + ':' + id;
-  });
-})();
+// budget screens: buttons only on screen. If a client types a number anyway, the next message is saved as the budget.
+[['b1', 'b2'], ['rr1', 'rr2']].forEach(([id, next]) => { by[id].await = 'area:' + next + ':' + id; });
 // steps that tell Nick
 by.leaddone.notify = 'Ask Nick'; by.tourok.notify = 'Tour request'; by.check2.notify = 'Listing to check';
 const keep = Object.keys(by);

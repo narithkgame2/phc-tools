@@ -119,7 +119,7 @@
    "id": "b1",
    "flow": "Buy",
    "title": "Buy 1: Budget",
-   "text": "<b>Your budget</b>\n<i>Step 1 of 2</i>\n\nWhat range suits you?\nYou can also type your own budget.",
+   "text": "<b>Your budget</b>\n<i>Step 1 of 2</i>\n\nWhat range suits you?",
    "buttons": [
     {
      "l": "Under $50,000",
@@ -160,7 +160,7 @@
    ],
    "tr": {
     "jp": {
-     "t": "<b>ご予算</b>\n<i>ステップ1/2</i>\n\nご希望の価格帯をお選びください。\n金額をそのままご入力いただくこともできます。",
+     "t": "<b>ご予算</b>\n<i>ステップ1/2</i>\n\nご希望の価格帯をお選びください。",
      "b": [
       "5万ドル未満",
       "5万から10万ドル",
@@ -171,7 +171,7 @@
      ]
     },
     "kh": {
-     "t": "<b>ថវិការបស់អ្នក</b>\n<i>ជំហាន 1 ក្នុងចំណោម 2</i>\n\nតើថវិកាប៉ុន្មានសមស្រប?\nអ្នកក៏អាចវាយចំនួនទឹកប្រាក់របស់អ្នកបានដែរ។",
+     "t": "<b>ថវិការបស់អ្នក</b>\n<i>ជំហាន 1 ក្នុងចំណោម 2</i>\n\nតើថវិកាប៉ុន្មានសមស្រប?",
      "b": [
       "តិចជាង $50,000",
       "$50,000 ដល់ $100,000",
@@ -274,7 +274,7 @@
    "id": "b2other",
    "flow": "Buy",
    "title": "Buy 2: Other area (typed)",
-   "text": "<b>Other area</b>\n\nPlease type the area or the project name.",
+   "text": "<b>Other area</b>\n\nType the area or the project name in the message box below, then press send.\n<i>Example: BKK3, Time Square 8</i>",
    "buttons": [
     {
      "l": "Back",
@@ -285,13 +285,13 @@
    ],
    "tr": {
     "jp": {
-     "t": "<b>その他のエリア</b>\n\nエリアまたは物件名をご入力ください。",
+     "t": "<b>その他のエリア</b>\n\n下のメッセージ欄に、エリア名または物件名を入力して送信してください。\n<i>例: BKK3、Time Square 8</i>",
      "b": [
       "戻る"
      ]
     },
     "kh": {
-     "t": "<b>តំបន់ផ្សេងទៀត</b>\n\nសូមវាយឈ្មោះតំបន់ ឬឈ្មោះគម្រោង។",
+     "t": "<b>តំបន់ផ្សេងទៀត</b>\n\nសូមវាយឈ្មោះតំបន់ ឬឈ្មោះគម្រោង នៅក្នុងប្រអប់សារខាងក្រោម រួចចុចផ្ញើ។\n<i>ឧទាហរណ៍៖ BKK3, Time Square 8</i>",
      "b": [
       "ត្រឡប់ក្រោយ"
      ]
@@ -350,7 +350,7 @@
    "id": "rr1",
    "flow": "Rent",
    "title": "Rent 1: Monthly budget",
-   "text": "<b>Your monthly budget</b>\n<i>Step 1 of 2</i>\n\nWhat range suits you?\nYou can also type your own budget.",
+   "text": "<b>Your monthly budget</b>\n<i>Step 1 of 2</i>\n\nWhat range suits you?",
    "buttons": [
     {
      "l": "Under $500",
@@ -391,7 +391,7 @@
    ],
    "tr": {
     "jp": {
-     "t": "<b>月額のご予算</b>\n<i>ステップ1/2</i>\n\nご希望の価格帯をお選びください。\n金額をそのままご入力いただくこともできます。",
+     "t": "<b>月額のご予算</b>\n<i>ステップ1/2</i>\n\nご希望の価格帯をお選びください。",
      "b": [
       "500ドル未満",
       "500から800ドル",
@@ -402,7 +402,7 @@
      ]
     },
     "kh": {
-     "t": "<b>ថវិកាប្រចាំខែ</b>\n<i>ជំហាន 1 ក្នុងចំណោម 2</i>\n\nតើថវិកាប៉ុន្មានសមស្រប?\nអ្នកក៏អាចវាយចំនួនទឹកប្រាក់របស់អ្នកបានដែរ។",
+     "t": "<b>ថវិកាប្រចាំខែ</b>\n<i>ជំហាន 1 ក្នុងចំណោម 2</i>\n\nតើថវិកាប៉ុន្មានសមស្រប?",
      "b": [
       "តិចជាង $500",
       "$500 ដល់ $800",
@@ -504,7 +504,7 @@
    "id": "rr2other",
    "flow": "Rent",
    "title": "Rent 2: Other area (typed)",
-   "text": "<b>Other area</b>\n\nPlease type the area or the project name.",
+   "text": "<b>Other area</b>\n\nType the area or the project name in the message box below, then press send.\n<i>Example: BKK3, Time Square 8</i>",
    "buttons": [
     {
      "l": "Back",
@@ -515,13 +515,13 @@
    ],
    "tr": {
     "jp": {
-     "t": "<b>その他のエリア</b>\n\nエリアまたは物件名をご入力ください。",
+     "t": "<b>その他のエリア</b>\n\n下のメッセージ欄に、エリア名または物件名を入力して送信してください。\n<i>例: BKK3、Time Square 8</i>",
      "b": [
       "戻る"
      ]
     },
     "kh": {
-     "t": "<b>តំបន់ផ្សេងទៀត</b>\n\nសូមវាយឈ្មោះតំបន់ ឬឈ្មោះគម្រោង។",
+     "t": "<b>តំបន់ផ្សេងទៀត</b>\n\nសូមវាយឈ្មោះតំបន់ ឬឈ្មោះគម្រោង នៅក្នុងប្រអប់សារខាងក្រោម រួចចុចផ្ញើ។\n<i>ឧទាហរណ៍៖ BKK3, Time Square 8</i>",
      "b": [
       "ត្រឡប់ក្រោយ"
      ]

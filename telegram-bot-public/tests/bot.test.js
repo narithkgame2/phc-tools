@@ -125,7 +125,7 @@ const NICK = '353195979';
   });
   await t('Other area: the next message typed becomes the district and the request goes to Nick', async () => {
     const r = rig(), me = r.U(20, 'ja'); await r.say(me, '/buy'); await r.tap(me, r.firstLabel(20)); await r.tap(me, 'その他のエリア');
-    assert.ok(r.lastTo(20).body.text.includes('ご入力ください'));
+    assert.ok(r.lastTo(20).body.text.includes('メッセージ欄') && r.lastTo(20).body.text.includes('例:'));
     await r.say(me, 'Time Square 8 の周辺');
     assert.ok(r.lastTo(20).body.text.includes('承りました') && r.lastTo(20).body.text.includes('Time Square 8 の周辺'));
     const alert = r.sent.filter((s) => s.body.chat_id === NICK).pop().body.text;
@@ -147,7 +147,7 @@ const NICK = '353195979';
   await t('a sticker while waiting asks again instead of breaking', async () => {
     const r = rig(), me = r.U(23, 'ja'); await r.say(me, '/buy'); await r.tap(me, r.firstLabel(23)); await r.tap(me, 'その他のエリア');
     await r.say(me, '', { text: undefined, sticker: { file_id: 'x' } });
-    assert.ok(r.lastTo(23).body.text.includes('ご入力ください')); assert.strictEqual(r.db['23'].awaiting, 'area:bres:b2');
+    assert.ok(r.lastTo(23).body.text.includes('メッセージ欄')); assert.strictEqual(r.db['23'].awaiting, 'area:bres:b2');
   });
   await t('Back from Other area returns to the districts and stops capturing text', async () => {
     const r = rig(), me = r.U(24, 'ja'); await r.say(me, '/buy'); await r.tap(me, r.firstLabel(24)); await r.tap(me, 'その他のエリア'); await r.tap(me, '戻る');
@@ -160,7 +160,7 @@ const NICK = '353195979';
 
   await t('budget screens accept a typed amount and carry on to the district', async () => {
     const r = rig(), me = r.U(30, 'ja'); await r.say(me, '/buy');
-    assert.ok(r.lastTo(30).body.text.includes('ご入力いただくこともできます'));
+    assert.ok(!/ご入力いただくこともできます/.test(r.lastTo(30).body.text), 'no vague typing hint on the budget screen');
     await r.say(me, '約8万ドル');
     assert.ok(r.lastTo(30).body.text.includes('エリア') || r.lastTo(30).body.text.includes('Where'));
     assert.strictEqual(r.db['30'].answers.b1, '約8万ドル'); assert.strictEqual(r.db['30'].awaiting, null);
