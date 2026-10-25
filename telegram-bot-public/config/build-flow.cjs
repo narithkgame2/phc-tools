@@ -52,23 +52,27 @@ by.calc1.await = 'calc'; by.check1.await = 'check';
   r1.buttons = en.map(l => ({ l, to: 'rr2', half: false, url: '' })).concat([last]);
   r1.tr.jp.b = jp.concat([jpLast]); r1.tr.kh.b = kh.concat([khLast]);
 })();
-// districts (decided with Nick 2026-10-24): five main areas, "Other area" asks the client to type it, "Any area" skips.
+// districts (decided with Nick 2026-10-24): five main areas and ONE more button, "Other area or not sure".
+// That button opens a screen where the client types an area or a project name, or taps "No preference".
 (function () {
-  const en = ['Daun Penh', 'Tonle Bassac', 'BKK1', 'Toul Tompoung', 'Toul Kork', 'Other area'];
-  const jp = ['ダウンペン', 'トンレバサック', 'BKK1', 'トゥールトンポン', 'トゥールコック', 'その他のエリア'];
-  const kh = ['ដូនពេញ', 'ទន្លេបាសាក់', 'BKK1', 'ទួលទំពូង', 'ទួលគោក', 'តំបន់ផ្សេងទៀត'];
-  function make(id, next, other, backTo) {
+  const en = ['Daun Penh', 'Tonle Bassac', 'BKK1', 'Toul Tompoung', 'Toul Kork'];
+  const jp = ['ダウンペン', 'トンレバサック', 'BKK1', 'トゥールトンポン', 'トゥールコック'];
+  const kh = ['ដូនពេញ', 'ទន្លេបាសាក់', 'BKK1', 'ទួលទំពូង', 'ទួលគោក'];
+  function make(id, next, other) {
     const s = by[id], back = s.buttons[s.buttons.length - 1];
     const jpBack = s.tr.jp.b[s.tr.jp.b.length - 1], khBack = s.tr.kh.b[s.tr.kh.b.length - 1];
-    s.buttons = en.map((l, i) => ({ l, to: i === 5 ? other : next, half: true, url: '' })).concat([{ l: 'Any area', to: next, half: false, url: '' }, back]);
-    s.tr.jp.b = jp.concat(['エリアは問いません', jpBack]); s.tr.kh.b = kh.concat(['គ្រប់តំបន់', khBack]);
-    s.note = 'Five main areas. Other area asks the client to type an area or a project name.';
+    s.buttons = en.map(l => ({ l, to: next, half: true, url: '' })).concat([{ l: 'Other area or not sure', to: other, half: false, url: '' }, back]);
+    s.tr.jp.b = jp.concat(['その他・まだ決めていない', jpBack]); s.tr.kh.b = kh.concat(['តំបន់ផ្សេង ឬមិនទាន់សម្រេច', khBack]);
+    s.note = 'Five main areas and one more button. It opens a screen to type an area or project name, or to skip.';
     const o = JSON.parse(JSON.stringify(s));
     o.id = other; o.title = id === 'b2' ? 'Buy 2: Other area (typed)' : 'Rent 2: Other area (typed)';
-    o.text = '<b>Other area</b>\n\nType the area or the project name in the message box below, then press send.\n<i>Example: BKK3, Time Square 8</i>';
-    o.buttons = [{ l: 'Back', to: id, half: false, url: '' }];
-    o.tr = { jp: { t: '<b>その他のエリア</b>\n\n下のメッセージ欄に、エリア名または物件名を入力して送信してください。\n<i>例: BKK3、Time Square 8</i>', b: ['戻る'] }, kh: { t: '<b>តំបន់ផ្សេងទៀត</b>\n\nសូមវាយឈ្មោះតំបន់ ឬឈ្មោះគម្រោង នៅក្នុងប្រអប់សារខាងក្រោម រួចចុចផ្ញើ។\n<i>ឧទាហរណ៍៖ BKK3, Time Square 8</i>', b: ['ត្រឡប់ក្រោយ'] } };
-    o.await = 'area:' + next + ':' + id; o.note = 'The next message the client types is saved as the area, then the search request is sent.';
+    o.text = '<b>Other area</b>\n\nType the area or the project name in the message box below, then press send.\n<i>Example: BKK3, Time Square 8</i>\n\nNo preference? Tap the button.';
+    o.buttons = [{ l: 'No preference', to: next, half: false, url: '' }, { l: 'Back', to: id, half: false, url: '' }];
+    o.tr = {
+      jp: { t: '<b>その他のエリア</b>\n\n下のメッセージ欄に、エリア名または物件名を入力して送信してください。\n<i>例: BKK3、Time Square 8</i>\n\n特にご希望がなければ、下のボタンを押してください。', b: ['指定なし', '戻る'] },
+      kh: { t: '<b>តំបន់ផ្សេងទៀត</b>\n\nសូមវាយឈ្មោះតំបន់ ឬឈ្មោះគម្រោង នៅក្នុងប្រអប់សារខាងក្រោម រួចចុចផ្ញើ។\n<i>ឧទាហរណ៍៖ BKK3, Time Square 8</i>\n\nបើគ្មានចំណូលចិត្តពិសេស សូមចុចប៊ូតុងខាងក្រោម។', b: ['មិនកំណត់', 'ត្រឡប់ក្រោយ'] },
+    };
+    o.await = 'area:' + next + ':' + id; o.note = 'The next message the client types is saved as the area, then the search request is sent. No preference skips it.';
     by[other] = o;
   }
   make('b2', 'bres', 'b2other'); make('rr2', 'rres', 'rr2other');

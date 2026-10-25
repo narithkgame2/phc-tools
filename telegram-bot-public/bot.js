@@ -109,7 +109,8 @@ function createBot({ api, store, flow, nickId, onError }) {
     const step = byId[fromId], btn = step && step.buttons[Number(idx)];
     if (!btn || !btn.to) return;
     if (!u.lang) u.lang = 'jp';
-    u.answers[fromId] = R.labelOf(step, Number(idx), u.lang);
+    // remember what the client chose, except for Back, Main menu and Cancel; the typed-area screen answers for its parent step
+    if (!/^(back|main menu|cancel|language)/i.test(btn.l)) u.answers[fromId.replace(/other$/, '')] = R.labelOf(step, Number(idx), u.lang);
     return goto(chatId, from, u, btn.to, msg);
   }
 
