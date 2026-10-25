@@ -142,6 +142,13 @@ Client data from the Mac (`data/users.json`, `data/alerts.json`, `data/listing-s
 
 The service restarts itself after a crash or a reboot. If the server ever stops answering, restart it from the Google Cloud console (VM instances, three dots, Reset).
 
-## Fallback: a spare computer at home
+## Running on this Mac instead (start here, simpler)
 
-Works too and costs nothing, but it depends on your home power and internet. If you use it: install Node 20, copy the folder, put the token file in `~/.phc-secrets/`, keep the machine from sleeping, and start the bot with `caffeinate -i node index.js` (Mac). Run it on only one machine at a time.
+You can run the bot on your own Mac with no server and no card. Two ways:
+
+1. In a Terminal window: `cd ~/Desktop/PHC_Backup_2026/phc-tools/telegram-bot-public && caffeinate -i node index.js`. Keep the window open, the Mac plugged in and the lid open.
+2. As a background service (no Terminal window, starts at login, restarts after a crash): `bash ~/Desktop/PHC_Backup_2026/phc-tools/telegram-bot-public/deploy/mac/install-mac-service.sh`. Run the same line again after every code change or new listings.csv. Remove it with `deploy/mac/uninstall-mac-service.sh`.
+
+For either way, in System Settings, Battery (or Energy), Options, turn on "Prevent automatic sleeping on power adapter when the display is off". A closed lid still puts a laptop to sleep.
+
+Use the Google Cloud steps above when you want the bot to stay up with the Mac off. Run it on only one machine at a time.
