@@ -119,7 +119,7 @@
    "id": "b1",
    "flow": "Buy",
    "title": "Buy 1: Budget",
-   "text": "<b>Your budget</b>\n<i>Step 1 of 2</i>\n\nWhat range suits you?",
+   "text": "<b>Your budget</b>\n<i>Step 1 of 2</i>\n\nWhat range suits you?\nYou can also type your own budget.",
    "buttons": [
     {
      "l": "Under $50,000",
@@ -160,7 +160,7 @@
    ],
    "tr": {
     "jp": {
-     "t": "<b>ご予算</b>\n<i>ステップ1/2</i>\n\nご希望の価格帯をお選びください。",
+     "t": "<b>ご予算</b>\n<i>ステップ1/2</i>\n\nご希望の価格帯をお選びください。\n金額をそのままご入力いただくこともできます。",
      "b": [
       "5万ドル未満",
       "5万から10万ドル",
@@ -171,7 +171,7 @@
      ]
     },
     "kh": {
-     "t": "<b>ថវិការបស់អ្នក</b>\n<i>ជំហាន 1 ក្នុងចំណោម 2</i>\n\nតើថវិកាប៉ុន្មានសមស្រប?",
+     "t": "<b>ថវិការបស់អ្នក</b>\n<i>ជំហាន 1 ក្នុងចំណោម 2</i>\n\nតើថវិកាប៉ុន្មានសមស្រប?\nអ្នកក៏អាចវាយចំនួនទឹកប្រាក់របស់អ្នកបានដែរ។",
      "b": [
       "តិចជាង $50,000",
       "$50,000 ដល់ $100,000",
@@ -182,7 +182,8 @@
      ]
     }
    },
-   "note": "Four bands from what Nick's Japanese clients actually have, plus \"not decided\". Nick asks the exact budget on LINE."
+   "note": "Four bands from what Nick's Japanese clients actually have, plus \"not decided\". Nick asks the exact budget on LINE.",
+   "await": "area:b2:b1"
   },
   {
    "id": "b2",
@@ -349,7 +350,7 @@
    "id": "rr1",
    "flow": "Rent",
    "title": "Rent 1: Monthly budget",
-   "text": "<b>Your monthly budget</b>\n<i>Step 1 of 2</i>\n\nWhat range suits you?",
+   "text": "<b>Your monthly budget</b>\n<i>Step 1 of 2</i>\n\nWhat range suits you?\nYou can also type your own budget.",
    "buttons": [
     {
      "l": "Under $500",
@@ -390,7 +391,7 @@
    ],
    "tr": {
     "jp": {
-     "t": "<b>月額のご予算</b>\n<i>ステップ1/2</i>\n\nご希望の価格帯をお選びください。",
+     "t": "<b>月額のご予算</b>\n<i>ステップ1/2</i>\n\nご希望の価格帯をお選びください。\n金額をそのままご入力いただくこともできます。",
      "b": [
       "500ドル未満",
       "500から800ドル",
@@ -401,7 +402,7 @@
      ]
     },
     "kh": {
-     "t": "<b>ថវិកាប្រចាំខែ</b>\n<i>ជំហាន 1 ក្នុងចំណោម 2</i>\n\nតើថវិកាប៉ុន្មានសមស្រប?",
+     "t": "<b>ថវិកាប្រចាំខែ</b>\n<i>ជំហាន 1 ក្នុងចំណោម 2</i>\n\nតើថវិកាប៉ុន្មានសមស្រប?\nអ្នកក៏អាចវាយចំនួនទឹកប្រាក់របស់អ្នកបានដែរ។",
      "b": [
       "តិចជាង $500",
       "$500 ដល់ $800",
@@ -411,7 +412,8 @@
       "ម៉ឺនុយមេ"
      ]
     }
-   }
+   },
+   "await": "area:rr2:rr1"
   },
   {
    "id": "rr2",

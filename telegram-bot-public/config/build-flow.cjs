@@ -73,6 +73,15 @@ by.calc1.await = 'calc'; by.check1.await = 'check';
   }
   make('b2', 'bres', 'b2other'); make('rr2', 'rres', 'rr2other');
 })();
+// budget screens also accept a typed number (the next message is saved as the budget)
+(function () {
+  const hint = { en: '\nYou can also type your own budget.', jp: '\n金額をそのままご入力いただくこともできます。', kh: '\nអ្នកក៏អាចវាយចំនួនទឹកប្រាក់របស់អ្នកបានដែរ។' };
+  [['b1', 'b2'], ['rr1', 'rr2']].forEach(([id, next]) => {
+    const s = by[id];
+    s.text += hint.en; s.tr.jp.t += hint.jp; s.tr.kh.t += hint.kh;
+    s.await = 'area:' + next + ':' + id;
+  });
+})();
 // steps that tell Nick
 by.leaddone.notify = 'Ask Nick'; by.tourok.notify = 'Tour request'; by.check2.notify = 'Listing to check';
 const keep = Object.keys(by);

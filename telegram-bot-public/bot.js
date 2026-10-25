@@ -142,7 +142,7 @@ function createBot({ api, store, flow, nickId, onError }) {
     if (u.awaiting && u.awaiting.startsWith('area:')) {
       const [, nextId, stepId] = u.awaiting.split(':');
       const area = text.replace(/\s+/g, ' ').slice(0, 80);
-      if (!area) { save(u); return goto(chatId, from, u, stepId === 'b2' ? 'b2other' : 'rr2other'); }
+      if (!area) { save(u); return goto(chatId, from, u, { b2: 'b2other', rr2: 'rr2other' }[stepId] || stepId); }
       u.answers[stepId] = area;
       return goto(chatId, from, u, nextId);
     }

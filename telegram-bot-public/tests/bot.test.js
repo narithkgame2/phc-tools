@@ -158,6 +158,20 @@ const NICK = '353195979';
     await r.say(me, 'あ'.repeat(500)); assert.ok(r.db['25'].answers.b2.length === 80);
   });
 
+  await t('budget screens accept a typed amount and carry on to the district', async () => {
+    const r = rig(), me = r.U(30, 'ja'); await r.say(me, '/buy');
+    assert.ok(r.lastTo(30).body.text.includes('ご入力いただくこともできます'));
+    await r.say(me, '約8万ドル');
+    assert.ok(r.lastTo(30).body.text.includes('エリア') || r.lastTo(30).body.text.includes('Where'));
+    assert.strictEqual(r.db['30'].answers.b1, '約8万ドル'); assert.strictEqual(r.db['30'].awaiting, null);
+    await r.tap(me, r.firstLabel(30)); assert.ok(r.sent.filter((s) => s.body.chat_id === NICK).pop().body.text.includes('Budget: 約8万ドル'));
+  });
+  await t('typed rent budget works too, and a sticker at the budget screen just shows it again', async () => {
+    const r = rig(), me = r.U(31, 'en'); await r.say(me, '/start'); await r.tap(me, 'English'); await r.tap(me, 'Find a place to rent');
+    await r.say(me, '', { text: undefined, sticker: { file_id: 'x' } }); assert.ok(r.lastTo(31).body.text.includes('monthly budget'));
+    await r.say(me, 'about 700 a month'); assert.strictEqual(r.db['31'].answers.rr1, 'about 700 a month');
+  });
+
   console.log(`\nRESULTS: ${passed} / ${total} TESTS PASSED (${Math.round(passed / total * 100)}%)`);
   process.exit(passed === total ? 0 : 1);
 })();
