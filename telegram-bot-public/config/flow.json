@@ -191,31 +191,43 @@
    "text": "<b>Your district</b>\n<i>Step 2 of 2</i>\n\nWhere in Phnom Penh?",
    "buttons": [
     {
-     "l": "BKK1",
+     "l": "Daun Penh",
      "to": "bres",
-     "half": false,
+     "half": true,
      "url": ""
     },
     {
      "l": "Tonle Bassac",
      "to": "bres",
-     "half": false,
+     "half": true,
+     "url": ""
+    },
+    {
+     "l": "BKK1",
+     "to": "bres",
+     "half": true,
+     "url": ""
+    },
+    {
+     "l": "Toul Tompoung",
+     "to": "bres",
+     "half": true,
      "url": ""
     },
     {
      "l": "Toul Kork",
      "to": "bres",
-     "half": false,
+     "half": true,
      "url": ""
     },
     {
-     "l": "Chamkarmon",
-     "to": "bres",
-     "half": false,
+     "l": "Other area",
+     "to": "b2other",
+     "half": true,
      "url": ""
     },
     {
-     "l": "Any district",
+     "l": "Any area",
      "to": "bres",
      "half": false,
      "url": ""
@@ -231,10 +243,12 @@
     "jp": {
      "t": "<b>エリア</b>\n<i>ステップ2/2</i>\n\nプノンペンのどのエリアをご希望ですか？",
      "b": [
-      "BKK1",
+      "ダウンペン",
       "トンレバサック",
+      "BKK1",
+      "トゥールトンポン",
       "トゥールコック",
-      "チャムカールモン",
+      "その他のエリア",
       "エリアは問いません",
       "戻る"
      ]
@@ -242,15 +256,48 @@
     "kh": {
      "t": "<b>តំបន់របស់អ្នក</b>\n<i>ជំហាន 2 ក្នុងចំណោម 2</i>\n\nតើចង់បាននៅតំបន់ណាក្នុងភ្នំពេញ?",
      "b": [
-      "BKK1",
+      "ដូនពេញ",
       "ទន្លេបាសាក់",
+      "BKK1",
+      "ទួលទំពូង",
       "ទួលគោក",
-      "ចំការមន",
+      "តំបន់ផ្សេងទៀត",
       "គ្រប់តំបន់",
       "ត្រឡប់ក្រោយ"
      ]
     }
-   }
+   },
+   "note": "Five main areas. Other area asks the client to type an area or a project name."
+  },
+  {
+   "id": "b2other",
+   "flow": "Buy",
+   "title": "Buy 2: Other area (typed)",
+   "text": "<b>Other area</b>\n\nPlease type the area or the project name.",
+   "buttons": [
+    {
+     "l": "Back",
+     "to": "b2",
+     "half": false,
+     "url": ""
+    }
+   ],
+   "tr": {
+    "jp": {
+     "t": "<b>その他のエリア</b>\n\nエリアまたは物件名をご入力ください。",
+     "b": [
+      "戻る"
+     ]
+    },
+    "kh": {
+     "t": "<b>តំបន់ផ្សេងទៀត</b>\n\nសូមវាយឈ្មោះតំបន់ ឬឈ្មោះគម្រោង។",
+     "b": [
+      "ត្រឡប់ក្រោយ"
+     ]
+    }
+   },
+   "note": "The next message the client types is saved as the area, then the search request is sent.",
+   "await": "area:bres:b2"
   },
   {
    "id": "bres",
@@ -365,25 +412,43 @@
    "text": "<b>Your district</b>\n<i>Step 2 of 2</i>\n\nWhere in Phnom Penh?",
    "buttons": [
     {
-     "l": "BKK1",
+     "l": "Daun Penh",
      "to": "rres",
-     "half": false,
+     "half": true,
      "url": ""
     },
     {
      "l": "Tonle Bassac",
      "to": "rres",
-     "half": false,
+     "half": true,
+     "url": ""
+    },
+    {
+     "l": "BKK1",
+     "to": "rres",
+     "half": true,
+     "url": ""
+    },
+    {
+     "l": "Toul Tompoung",
+     "to": "rres",
+     "half": true,
      "url": ""
     },
     {
      "l": "Toul Kork",
      "to": "rres",
-     "half": false,
+     "half": true,
      "url": ""
     },
     {
-     "l": "Any district",
+     "l": "Other area",
+     "to": "rr2other",
+     "half": true,
+     "url": ""
+    },
+    {
+     "l": "Any area",
      "to": "rres",
      "half": false,
      "url": ""
@@ -399,9 +464,12 @@
     "jp": {
      "t": "<b>エリア</b>\n<i>ステップ2/2</i>\n\nプノンペンのどのエリアをご希望ですか？",
      "b": [
-      "BKK1",
+      "ダウンペン",
       "トンレバサック",
+      "BKK1",
+      "トゥールトンポン",
       "トゥールコック",
+      "その他のエリア",
       "エリアは問いません",
       "戻る"
      ]
@@ -409,14 +477,48 @@
     "kh": {
      "t": "<b>តំបន់របស់អ្នក</b>\n<i>ជំហាន 2 ក្នុងចំណោម 2</i>\n\nតើចង់បាននៅតំបន់ណាក្នុងភ្នំពេញ?",
      "b": [
-      "BKK1",
+      "ដូនពេញ",
       "ទន្លេបាសាក់",
+      "BKK1",
+      "ទួលទំពូង",
       "ទួលគោក",
+      "តំបន់ផ្សេងទៀត",
       "គ្រប់តំបន់",
       "ត្រឡប់ក្រោយ"
      ]
     }
-   }
+   },
+   "note": "Five main areas. Other area asks the client to type an area or a project name."
+  },
+  {
+   "id": "rr2other",
+   "flow": "Rent",
+   "title": "Rent 2: Other area (typed)",
+   "text": "<b>Other area</b>\n\nPlease type the area or the project name.",
+   "buttons": [
+    {
+     "l": "Back",
+     "to": "rr2",
+     "half": false,
+     "url": ""
+    }
+   ],
+   "tr": {
+    "jp": {
+     "t": "<b>その他のエリア</b>\n\nエリアまたは物件名をご入力ください。",
+     "b": [
+      "戻る"
+     ]
+    },
+    "kh": {
+     "t": "<b>តំបន់ផ្សេងទៀត</b>\n\nសូមវាយឈ្មោះតំបន់ ឬឈ្មោះគម្រោង។",
+     "b": [
+      "ត្រឡប់ក្រោយ"
+     ]
+    }
+   },
+   "note": "The next message the client types is saved as the area, then the search request is sent.",
+   "await": "area:rres:rr2"
   },
   {
    "id": "rres",

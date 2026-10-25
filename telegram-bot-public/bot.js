@@ -139,6 +139,13 @@ function createBot({ api, store, flow, nickId, onError }) {
     if (cmd === '/myid') { save(u); return api('sendMessage', { chat_id: chatId, text: MSG.myid[u.lang].replace('{id}', String(from.id)) }); }
     if (cmd) return goto(chatId, from, u, 'refused');
 
+    if (u.awaiting && u.awaiting.startsWith('area:')) {
+      const [, nextId, stepId] = u.awaiting.split(':');
+      const area = text.replace(/\s+/g, ' ').slice(0, 80);
+      if (!area) { save(u); return goto(chatId, from, u, stepId === 'b2' ? 'b2other' : 'rr2other'); }
+      u.answers[stepId] = area;
+      return goto(chatId, from, u, nextId);
+    }
     if (u.awaiting === 'calc') {
       const n = parseThree(text);
       if (!n) { save(u); return api('sendMessage', { chat_id: chatId, text: MSG.calcBad[u.lang], parse_mode: 'HTML' }); }

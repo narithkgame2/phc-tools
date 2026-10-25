@@ -42,10 +42,32 @@ by.calc1.await = 'calc'; by.check1.await = 'check';
   b1.tr.jp.b = jp.concat([jpLast]); b1.tr.kh.b = kh.concat([khLast]);
   b1.note = 'Four bands from what Nick\'s Japanese clients actually have, plus "not decided". Nick asks the exact budget on LINE.';
 })();
+// districts (decided with Nick 2026-10-24): five main areas, "Other area" asks the client to type it, "Any area" skips.
+(function () {
+  const en = ['Daun Penh', 'Tonle Bassac', 'BKK1', 'Toul Tompoung', 'Toul Kork', 'Other area'];
+  const jp = ['ダウンペン', 'トンレバサック', 'BKK1', 'トゥールトンポン', 'トゥールコック', 'その他のエリア'];
+  const kh = ['ដូនពេញ', 'ទន្លេបាសាក់', 'BKK1', 'ទួលទំពូង', 'ទួលគោក', 'តំបន់ផ្សេងទៀត'];
+  function make(id, next, other, backTo) {
+    const s = by[id], back = s.buttons[s.buttons.length - 1];
+    const jpBack = s.tr.jp.b[s.tr.jp.b.length - 1], khBack = s.tr.kh.b[s.tr.kh.b.length - 1];
+    s.buttons = en.map((l, i) => ({ l, to: i === 5 ? other : next, half: true, url: '' })).concat([{ l: 'Any area', to: next, half: false, url: '' }, back]);
+    s.tr.jp.b = jp.concat(['エリアは問いません', jpBack]); s.tr.kh.b = kh.concat(['គ្រប់តំបន់', khBack]);
+    s.note = 'Five main areas. Other area asks the client to type an area or a project name.';
+    const o = JSON.parse(JSON.stringify(s));
+    o.id = other; o.title = id === 'b2' ? 'Buy 2: Other area (typed)' : 'Rent 2: Other area (typed)';
+    o.text = '<b>Other area</b>\n\nPlease type the area or the project name.';
+    o.buttons = [{ l: 'Back', to: id, half: false, url: '' }];
+    o.tr = { jp: { t: '<b>その他のエリア</b>\n\nエリアまたは物件名をご入力ください。', b: ['戻る'] }, kh: { t: '<b>តំបន់ផ្សេងទៀត</b>\n\nសូមវាយឈ្មោះតំបន់ ឬឈ្មោះគម្រោង។', b: ['ត្រឡប់ក្រោយ'] } };
+    o.await = 'area:' + next + ':' + id; o.note = 'The next message the client types is saved as the area, then the search request is sent.';
+    by[other] = o;
+  }
+  make('b2', 'bres', 'b2other'); make('rr2', 'rres', 'rr2other');
+})();
 // steps that tell Nick
 by.leaddone.notify = 'Ask Nick'; by.tourok.notify = 'Tour request'; by.check2.notify = 'Listing to check';
 const keep = Object.keys(by);
-const steps = src.filter(s => by[s.id]).map(s => by[s.id]);
+const order = []; src.forEach(s => { if (by[s.id]) order.push(s.id); if (s.id === 'b2') order.push('b2other'); if (s.id === 'rr2') order.push('rr2other'); });
+const steps = order.map(id => by[id]);
 steps.forEach(s => s.buttons = s.buttons.filter(b => b.url || !b.to || keep.includes(b.to)));
 fs.writeFileSync(path.join(__dirname, 'flow.json'), JSON.stringify({ line: LINE, steps }, null, 1));
 console.log('flow.json written:', steps.length, 'steps');
