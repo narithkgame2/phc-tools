@@ -72,7 +72,8 @@ function clean(rows, now, places) {
     id: r.id, preview: String(r.status).trim().toLowerCase() === 'preview', type: kindOf(r.type), name: r.project_name, district: r.district,
     price: num(r.price_usd), rent: num(r.rent_usd_month), sqm: num(r.size_sqm), beds: r.bedrooms,
     basis: /net|専有|专有|internal/i.test(String(r.size_basis || '')) ? 'net' : /gross|総|延|total|built/i.test(String(r.size_basis || '')) ? 'gross' : '',
-    unit: r.unit_number || '', floor: r.floor || '', tenanted: /^(yes|y|true|1)$/i.test(String(r.tenanted || '').trim()), tenantNote: r.tenant_note || '',
+    // a dash or a word in the Floor column means no floor
+    unit: r.unit_number || '', floor: /\d/.test(r.floor || '') ? String(r.floor).trim() : '', tenanted: /^(yes|y|true|1)$/i.test(String(r.tenanted || '').trim()), tenantNote: r.tenant_note || '',
     partner: /reakh/i.test(String(r.source || '')), netYield: num(r.net_yield_pct), photo: /^https:\/\//.test(r.photo_url) ? r.photo_url : '', noteJp: r.note_jp, noteEn: r.note_en,
   }));
 }

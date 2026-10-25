@@ -149,6 +149,7 @@ function rig(rows) {
     const csv = 'Ref,Status,Listing type,Project,Area,Price (USD),Size (sqm),Size basis\nB1,Active,Resale,Net Place,BKK1,70000,35,Net\nB2,Active,Resale,Gross Place,BKK1,70000,50,Gross\nB3,Active,Resale,Unknown Place,BKK1,70000,50,\nB4,Active,Resale,Japanese Place,BKK1,90000,30,専有面積';
     const rows = L.clean(L.parseCsv(csv), NOW);
     assert.deepStrictEqual(rows.map((r) => r.basis), ['net', 'gross', '', 'net']);
+    assert.deepStrictEqual(L.clean(L.parseCsv('Ref,Status,Listing type,Project,Area,Price (USD),Floor\nF1,Active,Resale,Floor A,BKK1,50000,-\nF2,Active,Resale,Floor B,BKK1,50000,12\nF3,Active,Resale,Floor C,BKK1,50000,unknown'), NOW).map((r) => r.floor), ['', '12', '']);
     const sent = []; const db = {};
     const api = async (m, b) => { sent.push({ method: m, body: b }); return { ok: true }; };
     const store = { get: (k) => db[String(k)], set: (k, v) => { db[String(k)] = JSON.parse(JSON.stringify(v)); }, delete: (k) => { delete db[String(k)]; } };
