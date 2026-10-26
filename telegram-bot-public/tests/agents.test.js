@@ -284,7 +284,7 @@ async function submitted(r, agent, post) {
     const r = rig({ channels: [{ chat: '-1004372846355', name: 'Nick Test Lab', mode: 'confirm', lang: 'jp' }] });
     await submitted(r); await r.cb(NICK, 'ua:TS5-6001');
     const conf = r.last(NICK); assert.ok(r.labels(conf).includes('Also post to Nick Test Lab') && /Draft for Nick Test Lab/.test(conf.body.text), conf.body.text);
-    await r.cb(NICK, 'uc:TS5-6001:0'); assert.ok(r.to('-1004372846355').length && /Posted to Nick Test Lab/.test(r.last(NICK).body.text));
+    await r.cb(NICK, 'uc:TS5-6001:0'); assert.ok(r.to('-1004372846355').length && r.texts(NICK).some((x) => /Posted to Nick Test Lab/.test(x)), r.texts(NICK).slice(-2).join(' | '));
   });
   await t('the @NickREAKH post has only the Telegram button', async () => {
     const r = rig(); await submitted(r); await r.cb(NICK, 'ua:TS5-6001'); await r.cb(NICK, 'uc:TS5-6001:1');

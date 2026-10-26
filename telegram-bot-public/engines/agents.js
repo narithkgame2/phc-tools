@@ -581,7 +581,7 @@ function createAgentArea(ctx) {
         }
       } else if (kind === 'uc') {
         const ch = (ctx.channels || [])[Number(b)];
-        if (ch && unit.status === 'active') { const r = await postToChannel(ch, unit); await say(nickId, (r && r.ok === false) ? 'Could not post to ' + esc(chName(ch)) + ': ' + esc(r.description || 'unknown error') : 'Posted to ' + esc(ch.chat) + '.'); }
+        if (ch && unit.status === 'active') { const r = await postToChannel(ch, unit); await say(nickId, (r && r.ok === false) ? 'Could not post to ' + esc(chName(ch)) + ': ' + esc(r.description || 'unknown error') : 'Posted to ' + esc(chName(ch)) + '.'); }
       } else if (kind === 'pa' && unit.pendingPrice) {
         const old = unit.price; unit.price = unit.pendingPrice.value; unit.priceFrom = unit.price < old ? old : 0; unit.pendingPrice = null; unit.checked = iso(); unit.nextCheckAt = iso(clock() + CHECK_DAYS * DAY); unit.askedAt = ''; unit.reminders = 0; data.setUnit(unit.ref, unit);
         await say(unit.agentId, esc(unit.ref) + ' price is now ' + usd(unit.price) + '.');
