@@ -280,6 +280,12 @@ async function submitted(r, agent, post) {
     assert.ok(t2 && /物件情報/.test(t2.body.text) && t2.body.reply_markup.inline_keyboard[0].length === 2);
     assert.ok(/Posted to @Nick_Cambodia/.test(r.last(NICK).body.text));
   });
+  await t('a private channel shows its readable name on the buttons and messages', async () => {
+    const r = rig({ channels: [{ chat: '-1004372846355', name: 'Nick Test Lab', mode: 'confirm', lang: 'jp' }] });
+    await submitted(r); await r.cb(NICK, 'ua:TS5-6001');
+    const conf = r.last(NICK); assert.ok(r.labels(conf).includes('Also post to Nick Test Lab') && /Draft for Nick Test Lab/.test(conf.body.text), conf.body.text);
+    await r.cb(NICK, 'uc:TS5-6001:0'); assert.ok(r.to('-1004372846355').length && /Posted to Nick Test Lab/.test(r.last(NICK).body.text));
+  });
   await t('the @NickREAKH post has only the Telegram button', async () => {
     const r = rig(); await submitted(r); await r.cb(NICK, 'ua:TS5-6001'); await r.cb(NICK, 'uc:TS5-6001:1');
     const en = r.to('@NickREAKH').find((x) => x.method === 'sendMessage' && x.body.reply_markup);

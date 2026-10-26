@@ -228,6 +228,7 @@ function createAgentArea(ctx) {
 
   // ---- posting an approved unit to Nick's channels
   const lineUrl = () => (ctx.lineUrl || '');
+  const chName = (ch) => ch.name || ch.chat; // channels.json may give a readable name, e.g. "Nick Test Lab" for a private channel id
   // the post for a channel: Japanese from the glossary (facts only), English in the house style of Nick's channel
   function channelPost(unit, ch) {
     const l = toListing(unit), lang = ch.lang === 'en' ? 'en' : 'jp';
@@ -300,12 +301,12 @@ function createAgentArea(ctx) {
   async function afterApprove(unit) {
     const out = [], rows = [], left = { claims: [], unknown: [], machine: [] };
     for (const [i, ch] of (ctx.channels || []).entries()) {
-      if (ownSource(unit) && String(ch.chat).replace(/^@/, '').toLowerCase() === String(unit.source).toLowerCase()) { out.push(esc(ch.chat) + ' already has your original post, so I did not post it again.'); continue; }
+      if (ownSource(unit) && String(ch.chat).replace(/^@/, '').toLowerCase() === String(unit.source).toLowerCase()) { out.push(esc(chName(ch)) + ' already has your original post, so I did not post it again.'); continue; }
       if (ch.mode === 'auto') {
         const r = await postToChannel(ch, unit);
-        out.push((r && r.ok === false) ? 'Could not post to ' + esc(ch.chat) + ': ' + esc(r.description || 'unknown error') + ' (is the bot an administrator there?)' : 'Posted to ' + esc(ch.chat) + '.');
+        out.push((r && r.ok === false) ? 'Could not post to ' + esc(chName(ch)) + ': ' + esc(r.description || 'unknown error') + ' (is the bot an administrator there?)' : 'Posted to ' + esc(chName(ch)) + '.');
         if (r && r.left) { left.claims = left.claims.concat(r.left.claims || []); left.unknown = left.unknown.concat(r.left.unknown || []); left.machine = left.machine.concat(r.left.machine || []); }
-      } else { rows.push([btn('Also post to ' + ch.chat, 'uc:' + unit.ref + ':' + i)]); out.push('Draft for ' + esc(ch.chat) + ' is ready: tap the button to post it.'); }
+      } else { rows.push([btn('Also post to ' + chName(ch), 'uc:' + unit.ref + ':' + i)]); out.push('Draft for ' + esc(chName(ch)) + ' is ready: tap the button to post it.'); }
     }
     rows.push([btn('Prepare for the website draft', 'uw:' + unit.ref)]);
     const uniq = (a) => Array.from(new Set(a));
@@ -580,7 +581,7 @@ function createAgentArea(ctx) {
         }
       } else if (kind === 'uc') {
         const ch = (ctx.channels || [])[Number(b)];
-        if (ch && unit.status === 'active') { const r = await postToChannel(ch, unit); await say(nickId, (r && r.ok === false) ? 'Could not post to ' + esc(ch.chat) + ': ' + esc(r.description || 'unknown error') : 'Posted to ' + esc(ch.chat) + '.'); }
+        if (ch && unit.status === 'active') { const r = await postToChannel(ch, unit); await say(nickId, (r && r.ok === false) ? 'Could not post to ' + esc(chName(ch)) + ': ' + esc(r.description || 'unknown error') : 'Posted to ' + esc(ch.chat) + '.'); }
       } else if (kind === 'pa' && unit.pendingPrice) {
         const old = unit.price; unit.price = unit.pendingPrice.value; unit.priceFrom = unit.price < old ? old : 0; unit.pendingPrice = null; unit.checked = iso(); unit.nextCheckAt = iso(clock() + CHECK_DAYS * DAY); unit.askedAt = ''; unit.reminders = 0; data.setUnit(unit.ref, unit);
         await say(unit.agentId, esc(unit.ref) + ' price is now ' + usd(unit.price) + '.');
