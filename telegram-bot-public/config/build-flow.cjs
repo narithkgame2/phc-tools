@@ -131,13 +131,18 @@ by.calc1.await = 'calc'; by.check1.await = 'check';
       tr: { jp: { t: it[5], b: ['LINEでNickに相談', '戻る'] }, kh: { t: it[4], b: ['និយាយជាមួយ Nick តាម LINE', 'ត្រឡប់ក្រោយ'] } },
     };
   });
-  // Japanese FAQ pictures (Nick 2026-10-26): shown with the answer as the caption, for Japanese only (the pictures are in Japanese).
+  // FAQ pictures (Nick 2026-10-26): shown with the answer as the caption, per language. English since 2026-10-26.
+  // Khmer pictures exist as drafts (assets/faq/*-kh.png) and are switched on only after Nick has checked the Khmer: add 'kh' to LANGS_WITH_PICTURES.
   // v is a short fingerprint of the file, so Telegram fetches a changed picture again instead of a cached one.
-  const pics = { faq1: 'faq-01-ownership.png', faq2: 'faq-03-costs.png', faq3: 'faq-04-rental.png', faq4: 'faq-02-process.png', faq5: 'faq-05-abroad.png' };
+  const LANGS_WITH_PICTURES = { jp: '', en: '-en' };
+  const pics = { faq1: 'faq-01-ownership', faq2: 'faq-03-costs', faq3: 'faq-04-rental', faq4: 'faq-02-process', faq5: 'faq-05-abroad' };
   Object.keys(pics).forEach((id) => {
-    const file = path.join(__dirname, '..', 'assets', 'faq', pics[id]);
-    const v = require('crypto').createHash('sha1').update(fs.readFileSync(file)).digest('hex').slice(0, 8);
-    by[id].photo = { jp: 'faq/' + pics[id] + '?v=' + v };
+    by[id].photo = {};
+    Object.keys(LANGS_WITH_PICTURES).forEach((lang) => {
+      const name = pics[id] + LANGS_WITH_PICTURES[lang] + '.png';
+      const v = require('crypto').createHash('sha1').update(fs.readFileSync(path.join(__dirname, '..', 'assets', 'faq', name))).digest('hex').slice(0, 8);
+      by[id].photo[lang] = 'faq/' + name + '?v=' + v;
+    });
   });
   // the More menu gets the FAQ as its first button
   by.more.buttons.unshift({ l: 'Common questions', to: 'faq', half: false, url: '' });

@@ -1127,7 +1127,8 @@
     }
    },
    "photo": {
-    "jp": "faq/faq-01-ownership.png?v=5268d6d6"
+    "jp": "faq/faq-01-ownership.png?v=d90077d1",
+    "en": "faq/faq-01-ownership-en.png?v=2f215b81"
    }
   },
   {
@@ -1167,7 +1168,8 @@
     }
    },
    "photo": {
-    "jp": "faq/faq-03-costs.png?v=5b79a996"
+    "jp": "faq/faq-03-costs.png?v=e5345550",
+    "en": "faq/faq-03-costs-en.png?v=6c7abbf8"
    }
   },
   {
@@ -1207,7 +1209,8 @@
     }
    },
    "photo": {
-    "jp": "faq/faq-04-rental.png?v=76de9df2"
+    "jp": "faq/faq-04-rental.png?v=c5a34421",
+    "en": "faq/faq-04-rental-en.png?v=f4ab77a2"
    }
   },
   {
@@ -1247,7 +1250,8 @@
     }
    },
    "photo": {
-    "jp": "faq/faq-02-process.png?v=3a23045b"
+    "jp": "faq/faq-02-process.png?v=02da95e7",
+    "en": "faq/faq-02-process-en.png?v=3b9936bb"
    }
   },
   {
@@ -1287,7 +1291,8 @@
     }
    },
    "photo": {
-    "jp": "faq/faq-05-abroad.png?v=f62bd4a2"
+    "jp": "faq/faq-05-abroad.png?v=d3b46825",
+    "en": "faq/faq-05-abroad-en.png?v=8fb513a8"
    }
   },
   {
