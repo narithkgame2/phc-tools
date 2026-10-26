@@ -13,13 +13,13 @@ body{word-break:auto-phrase;line-break:strict;width:1080px;height:1350px;backgro
 h1{font-size:78px;line-height:1.2;font-weight:900;margin-top:20px}
 .lead{font-size:40px;color:#3E4B44;margin-top:20px;font-weight:700}
 .main{flex:1;display:flex;flex-direction:column;justify-content:center;gap:26px}
-.item{display:flex;align-items:center;gap:30px}
-.num{flex:none;width:84px;height:84px;border-radius:50%;background:#1F5641;color:#fff;font-size:42px;font-weight:900;display:flex;align-items:center;justify-content:center}
-.t{font-size:46px;font-weight:700;line-height:1.3}
-.v{font-size:34px;color:#5A6660;margin-top:4px}
-.row{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid #E2DBCB;padding:15px 4px}
-.row .l{font-size:40px;font-weight:700}
-.row .r{font-size:40px;font-weight:900;color:#1F5641}
+.item{display:flex;align-items:center;gap:28px;background:#FFFFFF;border-radius:24px;padding:24px 30px;box-shadow:0 3px 0 #E2DBCB}
+.num{flex:none;width:76px;height:76px;border-radius:50%;background:#1F5641;color:#fff;font-size:38px;font-weight:900;display:flex;align-items:center;justify-content:center}
+.t{font-size:42px;font-weight:700;line-height:1.3}
+.v{font-size:31px;color:#5A6660;margin-top:2px}
+.row{display:flex;justify-content:space-between;align-items:center;background:#FFFFFF;border-radius:18px;padding:18px 28px;margin-top:12px;box-shadow:0 3px 0 #E2DBCB}
+.row .l{font-size:36px;font-weight:700}
+.row .r{font-size:36px;font-weight:900;color:#1F5641}
 .sec{font-size:30px;font-weight:700;color:#9A7322;letter-spacing:.08em;margin-top:8px}
 .tile{background:#fff;border-radius:24px;padding:30px 36px;display:flex;justify-content:space-between;align-items:center}
 .tile .l{font-size:40px;font-weight:700}
@@ -27,7 +27,10 @@ h1{font-size:78px;line-height:1.2;font-weight:900;margin-top:20px}
 .tile .r small{display:block;font-size:28px;color:#5A6660;font-weight:400}
 .note{font-size:34px;color:#5A6660}
 .formula{background:#1F5641;color:#F6F3EC;border-radius:24px;padding:30px 36px;font-size:40px;font-weight:700;text-align:center}
-.foot{border-top:2px solid #D9D2C2;padding-top:22px;display:flex;flex-direction:column;gap:6px}
+.proc .item{padding:16px 28px}
+.proc .t{font-size:38px}
+.proc .v{font-size:29px}
+.foot{margin-top:24px;border-top:2px solid #D9D2C2;padding-top:20px;display:flex;flex-direction:column;gap:6px}
 .brand{font-size:32px;font-weight:900;color:#1F5641}
 .small{font-size:22px;color:#6A746F;line-height:1.5}
 `;
@@ -49,9 +52,8 @@ const pages = {
     </div>${foot(false)}`),
   'faq-02-process': page(`
     <div class="kicker">よくある質問 02</div>
-    <h1>購入の流れ</h1>
-    <div class="lead">6つのステップ</div>
-    <div class="main" style="gap:22px">
+    <h1 style="font-size:70px">購入の流れ <span style="font-size:40px;color:#3E4B44">6つのステップ</span></h1>
+    <div class="main proc" style="gap:14px;margin-top:24px">
       ${item(1, '予約', '予約金 500ドルから2,000ドル')}
       ${item(2, '頭金と契約', '価格の20%から30%')}
       ${item(3, '建設中の分割払い', '毎月など、物件ごとに決まります')}
@@ -61,15 +63,15 @@ const pages = {
     </div>${foot(true)}`),
   'faq-03-costs': page(`
     <div class="kicker">よくある質問 03</div>
-    <h1>物件価格<br>以外の費用</h1>
-    <div class="main" style="gap:0;justify-content:flex-start;margin-top:28px">
+    <h1 style="font-size:72px">物件価格以外の費用</h1>
+    <div class="main" style="gap:0;justify-content:flex-start;margin-top:30px">
       <div class="sec">購入時</div>
       ${row('予約金', '500から2,000ドル')}
       ${row('頭金', '20%から30%')}
       ${row('移転税', '4%')}
       ${row('弁護士', '0.5%から1%')}
       ${row('家具', '5,000ドルから')}
-      <div class="sec" style="margin-top:24px">保有中</div>
+      <div class="sec" style="margin-top:26px">保有中</div>
       ${row('固定資産税', '年0.1%')}
       ${row('建物の管理費', '月1から2ドル/㎡')}
     </div>${foot(true)}`),
