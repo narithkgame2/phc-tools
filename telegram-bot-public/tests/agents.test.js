@@ -223,6 +223,16 @@ async function submitted(r, agent, post) {
     assert.ok(jp && /^🟡 <b>商談中<\/b>/.test(jp.body.text), 'reserved banner');
     assert.strictEqual(r.units()[0].status, 'active');
   });
+  await t('just RESERVED (no Ref, no reply): the bot asks which unit, the tap marks it', async () => {
+    const r = rig(); await submitted(r); await r.cb(NICK, 'ua:TS5-6001'); r.sent.length = 0;
+    await r.say(NICK, 'RESERVED');
+    const ask = r.last(NICK); assert.ok(/Which unit do you want to mark reserved/.test(ask.body.text) && r.labels(ask)[0].startsWith('TS5-6001'), ask.body.text);
+    await r.cb(NICK, ask.body.reply_markup.inline_keyboard[0][0].callback_data);
+    assert.ok(r.sent.some((x) => x.method === 'editMessageText' && /商談中/.test(x.body.text)), 'reserved banner after the tap');
+    await r.say(NICK, 'reduced $79,000'); const ask2 = r.last(NICK); assert.ok(/change to \$79,000/.test(ask2.body.text));
+    await r.cb(NICK, ask2.body.reply_markup.inline_keyboard[0][0].callback_data);
+    assert.ok(/Change this price\?/.test(r.last(NICK).body.text), 'then the usual Confirm card');
+  });
   await t('the @NickREAKH post has only the Telegram button', async () => {
     const r = rig(); await submitted(r); await r.cb(NICK, 'ua:TS5-6001'); await r.cb(NICK, 'uc:TS5-6001:1');
     const en = r.to('@NickREAKH').find((x) => x.method === 'sendMessage' && x.body.reply_markup);

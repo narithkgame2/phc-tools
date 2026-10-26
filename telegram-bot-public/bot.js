@@ -442,7 +442,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
       }
       return api('sendMessage', { chat_id: chatId, text: MSG.askDone[u.lang], reply_markup: { inline_keyboard: [[{ text: MSG.nickBtn[u.lang], url: LINE }]] } });
     }
-    if (/^(aw|am|ac|ua|ur|uc|uw|pn|pa|pr):/.test(data)) { if (await agentArea.handleCallback(cb, u)) return; }
+    if (/^(aw|am|ac|ak|ua|ur|uc|uw|pn|pa|pr):/.test(data)) { if (await agentArea.handleCallback(cb, u)) return; }
     if (data.startsWith('ph:')) {
       const l = (await loadListings(from.id)).find((x) => x.id === data.slice(3));
       if (!l || !l.media || !l.media.length) return;

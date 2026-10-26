@@ -362,9 +362,24 @@ function createAgentArea(ctx) {
       const p = body.match(/^(?:price\s+)?(?:reduced\s+|changed\s+|now\s+)?(?:to\s+)?\$?\s*([\d,]{3,})$/i);
       if (p) return { kind: 'price', ref: rr[1], value: Number(p[1].replace(/,/g, '')) };
     }
+    // just the word, with no Ref and no reply: the bot asks which unit (buttons with the latest units)
+    if (/^(?:sold|rented)$/i.test(body)) return { kind: 'sold', ref: null };
+    if (/^reserved$/i.test(body)) return { kind: 'reserved', ref: null };
+    const bare = body.match(/^(?:price\s+)?(?:reduced|now|changed)\s+(?:to\s+)?\$\s*([\d,]{3,})$/i);
+    if (bare) return { kind: 'price', ref: null, value: Number(bare[1].replace(/,/g, '')) };
     return null;
   }
+  // "Which unit?": up to 6 live units, newest first (an agent sees only their own)
+  async function askWhichUnit(act, u, chat, from) {
+    const nick = isNick(from.id);
+    const live = data.allUnits().filter((x) => (x.status === 'active' || x.status === 'stale') && (nick || x.agentId === u.id))
+      .sort((a, b) => String(b.approvedAt || b.submittedAt).localeCompare(String(a.approvedAt || a.submittedAt))).slice(0, 6);
+    const word = act.kind === 'price' ? 'change to ' + usd(act.value) : act.kind === 'reserved' ? 'mark reserved' : 'mark sold';
+    if (!live.length) { await say(chat, 'There is no live unit to ' + word + '.'); return; }
+    await say(chat, 'Which unit do you want to ' + esc(word) + '?', live.map((x) => [btn(x.ref + ' ' + x.name + ', ' + usd(x.price), 'ak:' + act.kind + ':' + x.ref + ':' + (act.value || 0))]).concat([[btn('Cancel', 'ak:x')]]));
+  }
   async function doAction(act, u, chat, from) {
+    if (!act.ref) return askWhichUnit(act, u, chat, from);
     const unit = data.getUnit(act.ref), nick = isNick(from.id);
     if (act.kind === 'reserved') {
       if (!unit || (!nick && unit.agentId !== u.id)) { await say(chat, unit ? 'I can only change your own units.' : 'I do not know ' + esc(act.ref) + '. RESERVED works for units added through this bot.'); return; }
@@ -539,6 +554,13 @@ function createAgentArea(ctx) {
         await say(unit.agentId, 'The price change for ' + esc(unit.ref) + ' was not approved. The price stays ' + usd(unit.price) + '.');
         await say(nickId, 'Price change for ' + esc(unit.ref) + ' rejected.');
       }
+      return true;
+    }
+    if (kind === 'ak') {
+      if (!(isNick(from.id) || isAgent(from.id))) return true;
+      if (a === 'x') { await say(chat, 'Cancelled. Nothing was changed.'); return true; }
+      const parts = raw.split(':');
+      await doAction({ kind: a, ref: b, value: Number(parts[3]) || 0 }, u, chat, from);
       return true;
     }
     if (!isAgent(from.id)) return true;
