@@ -1094,7 +1094,7 @@
    "id": "faq1",
    "flow": "FAQ",
    "title": "FAQ: Foreign ownership",
-   "text": "<b>Can foreigners own property in Cambodia?</b>\n\nYes. Foreigners can own strata title condominium units above the ground floor. Foreign ownership is capped at 70% of the units in each building. The strata title is the ownership certificate for one unit.\n\nForeigners cannot own land. Before you buy, check how much of the foreign quota is left in that building.",
+   "text": "<b>Can foreigners own property in Cambodia?</b>\n\nYes, under 3 rules.\n1. From the first floor up, in your own name. The ground floor cannot be in a foreigner's own name.\n2. At most 70% of the units in one building can be owned by foreigners (the foreign quota). Check how much is left before you choose.\n3. The unit must have a strata title, registered with the national Ministry of Land Management. A soft title is for Cambodian citizens only.\n\nForeigners cannot own land in their own name. Buildings from before 2010, or without a strata licence, cannot give a strata title.",
    "buttons": [
     {
      "l": "Message Nick on LINE",
@@ -1112,14 +1112,14 @@
    "note": "Facts from the website FAQ. Japanese needs a native review. Khmer shows English for now.",
    "tr": {
     "jp": {
-     "t": "<b>外国人は不動産を所有できますか？</b>\n\nはい。外国人は、1階より上のコンドミニアム（ストラタタイトル）を所有できます。外国人の所有は、1棟の全戸数の70%までです。ストラタタイトルは、1戸ごとの所有権を示す権利証書です。\n\n土地そのものは、外国人は所有できません。購入前に、その建物の外国人枠の残りを必ず確認します。",
+     "t": "<b>外国人は不動産を所有できますか？</b>\n\nはい。3つのルールがあります。\n1. 地上階（グラウンドフロア）より上の部屋なら、ご本人の名義で所有できます。グラウンドフロアは外国人本人の名義にはできません。\n2. 外国人が所有できるのは、1棟の全戸数の70%までです（外国人枠）。購入前に残りの枠を確認します。\n3. ストラタタイトル（国の土地管理省に登録される区分所有の権利証）が必要です。ソフトタイトルはカンボジア国民のみが対象です。\n\n土地そのものは、外国人本人の名義では所有できません。2010年以前の建物や、ストラタの許可がない建物では、ストラタタイトルが発行されません。",
      "b": [
       "LINEでNickに相談",
       "戻る"
      ]
     },
     "kh": {
-     "t": "<b>Can foreigners own property in Cambodia?</b>\n\nYes. Foreigners can own strata title condominium units above the ground floor. Foreign ownership is capped at 70% of the units in each building. The strata title is the ownership certificate for one unit.\n\nForeigners cannot own land. Before you buy, check how much of the foreign quota is left in that building.",
+     "t": "<b>Can foreigners own property in Cambodia?</b>\n\nYes, under 3 rules.\n1. From the first floor up, in your own name. The ground floor cannot be in a foreigner's own name.\n2. At most 70% of the units in one building can be owned by foreigners (the foreign quota). Check how much is left before you choose.\n3. The unit must have a strata title, registered with the national Ministry of Land Management. A soft title is for Cambodian citizens only.\n\nForeigners cannot own land in their own name. Buildings from before 2010, or without a strata licence, cannot give a strata title.",
      "b": [
       "និយាយជាមួយ Nick តាម LINE",
       "ត្រឡប់ក្រោយ"
@@ -1131,7 +1131,7 @@
    "id": "faq2",
    "flow": "FAQ",
    "title": "FAQ: Extra costs",
-   "text": "<b>Costs beyond the purchase price</b>\n\nTransfer tax: 4% of the property value, paid when the title is transferred.\nStamp duty: 0.1% on registration.\nLegal fees: usually $500 to $2,000 if you use an independent lawyer.\nTranslation of the sales contract, if you need it.\n\nSome developers pay the transfer costs as a promotion. Nick confirms the exact breakdown for each project before you commit.",
+   "text": "<b>What you pay, start to finish</b>\n\nBooking fee: usually $500 to $2,000, counted toward the down payment\nDown payment: 20 to 30% of the price, when you sign the contract (SPA)\nTransfer tax: 4% of the value (exemptions may apply)\nLegal and contract review: 0.5 to 1% of the value\nFurniture and fit-out: varies, often $5,000 to $15,000\n\nAfter you buy:\nYearly property tax: 0.1% of 80% of the value, above the first $25,000 (about $95 a year on a $150,000 unit)\nBuilding management: $1 to $2 per sqm a month\n\nSome developers pay the transfer tax as a promotion. Nick confirms the exact figures for each project.",
    "buttons": [
     {
      "l": "Message Nick on LINE",
@@ -1149,14 +1149,14 @@
    "note": "Facts from the website FAQ. Japanese needs a native review. Khmer shows English for now.",
    "tr": {
     "jp": {
-     "t": "<b>購入価格のほかにかかる費用</b>\n\n移転税: 物件価格の4%（権利移転時）\n印紙税: 登記時に0.1%\n弁護士費用: 独立した弁護士に依頼する場合、通常500ドルから2,000ドル\n売買契約書の翻訳費用（必要な場合）\n\nデベロッパーが移転費用を負担するキャンペーンもあります。物件ごとに内訳を確認してお伝えします。",
+     "t": "<b>購入から保有までにかかる費用</b>\n\n予約金：通常500ドルから2,000ドル（頭金に充当）\n頭金：価格の20%から30%（売買契約書の署名時）\n移転税：物件価格の4%（免除の場合あり）\n弁護士・契約書の確認：物件価格の0.5%から1%\n家具・内装：物件により異なり、5,000ドルから15,000ドルが目安\n\n購入後の費用：\n固定資産税：評価額の80%のうち25,000ドルを超える部分に年0.1%（15万ドルの部屋で年約95ドル）\n建物の管理費：1㎡あたり月1ドルから2ドル\n\n移転税をデベロッパーが負担するキャンペーンもあります。物件ごとに正確な金額を確認してお伝えします。",
      "b": [
       "LINEでNickに相談",
       "戻る"
      ]
     },
     "kh": {
-     "t": "<b>Costs beyond the purchase price</b>\n\nTransfer tax: 4% of the property value, paid when the title is transferred.\nStamp duty: 0.1% on registration.\nLegal fees: usually $500 to $2,000 if you use an independent lawyer.\nTranslation of the sales contract, if you need it.\n\nSome developers pay the transfer costs as a promotion. Nick confirms the exact breakdown for each project before you commit.",
+     "t": "<b>What you pay, start to finish</b>\n\nBooking fee: usually $500 to $2,000, counted toward the down payment\nDown payment: 20 to 30% of the price, when you sign the contract (SPA)\nTransfer tax: 4% of the value (exemptions may apply)\nLegal and contract review: 0.5 to 1% of the value\nFurniture and fit-out: varies, often $5,000 to $15,000\n\nAfter you buy:\nYearly property tax: 0.1% of 80% of the value, above the first $25,000 (about $95 a year on a $150,000 unit)\nBuilding management: $1 to $2 per sqm a month\n\nSome developers pay the transfer tax as a promotion. Nick confirms the exact figures for each project.",
      "b": [
       "និយាយជាមួយ Nick តាម LINE",
       "ត្រឡប់ក្រោយ"
@@ -1168,7 +1168,7 @@
    "id": "faq3",
    "flow": "FAQ",
    "title": "FAQ: Rental tax and fees",
-   "text": "<b>Tax and fees on rental income</b>\n\nRental income is taxed at the source: 14% for non-resident individuals and 10% for residents. For overseas owners the property manager usually deducts the 14% before sending you the money.\n\nA practical estimate: rent, minus 14% tax, minus the management fee (usually 5% to 10%). Vacancy and repairs come on top, so keep a reserve for them.",
+   "text": "<b>Tax and costs on rental income</b>\n\nRental income tax: 14% for owners living abroad, 10% for residents. For overseas owners it is usually deducted before the rent reaches you.\n\nOther running costs: building management of $1 to $2 per sqm a month (often about $1.8), and empty months between tenants (plan for about 10% a year).\n\nA practical estimate of what you keep: rent, minus the tax, minus building management, minus about 10% for empty months.",
    "buttons": [
     {
      "l": "Message Nick on LINE",
@@ -1186,14 +1186,14 @@
    "note": "Facts from the website FAQ. Japanese needs a native review. Khmer shows English for now.",
    "tr": {
     "jp": {
-     "t": "<b>賃貸収入の税金と管理費</b>\n\n賃貸収入には源泉税がかかります。非居住者の個人は14%、居住者は10%です。海外のオーナーの場合、通常は管理会社が送金前に14%を差し引きます。\n\n手取りの目安は、家賃収入から源泉税14%と管理費（通常5%から10%）を引いて計算します。空室と修繕の費用は別に見込み、予備費を持っておくと安心です。",
+     "t": "<b>賃貸収入の税金と費用</b>\n\n賃貸収入の税金：海外在住のオーナーは14%、カンボジア居住者は10%です。海外オーナーの場合、通常は家賃が届く前に差し引かれます。\n\nそのほかの費用：建物の管理費（1㎡あたり月1ドルから2ドル、目安は約1.8ドル）と、入居者が入れ替わる間の空室（年に約10%を見込みます）。\n\n手取りの目安は、家賃から税金、建物の管理費、空室分の約10%を引いて計算します。",
      "b": [
       "LINEでNickに相談",
       "戻る"
      ]
     },
     "kh": {
-     "t": "<b>Tax and fees on rental income</b>\n\nRental income is taxed at the source: 14% for non-resident individuals and 10% for residents. For overseas owners the property manager usually deducts the 14% before sending you the money.\n\nA practical estimate: rent, minus 14% tax, minus the management fee (usually 5% to 10%). Vacancy and repairs come on top, so keep a reserve for them.",
+     "t": "<b>Tax and costs on rental income</b>\n\nRental income tax: 14% for owners living abroad, 10% for residents. For overseas owners it is usually deducted before the rent reaches you.\n\nOther running costs: building management of $1 to $2 per sqm a month (often about $1.8), and empty months between tenants (plan for about 10% a year).\n\nA practical estimate of what you keep: rent, minus the tax, minus building management, minus about 10% for empty months.",
      "b": [
       "និយាយជាមួយ Nick តាម LINE",
       "ត្រឡប់ក្រោយ"
@@ -1205,7 +1205,7 @@
    "id": "faq4",
    "flow": "FAQ",
    "title": "FAQ: How buying works",
-   "text": "<b>The buying process</b>\n\n1. Choose a project and a unit\n2. Reserve it with a deposit, usually $1,000 to $5,000\n3. Due diligence for 2 to 4 weeks: title, contract and legal checks\n4. Sign the Sales and Purchase Agreement\n5. Pay by the payment schedule, which depends on the developer and the stage\n6. Receive the strata title after full payment and handover",
+   "text": "<b>The buying process: 6 steps</b>\n\n1. Booking: choose a unit and pay a booking fee, usually $500 to $2,000, to hold it\n2. Down payment and contract (SPA): about 20 to 30% of the price when you sign. Have your own lawyer review the SPA first\n3. Instalments during construction: monthly, quarterly or by construction stage (for example 1% a month for 35 months)\n4. Balance at handover: the rest, often 40 to 50%, in cash or with a bank loan\n5. Handover: inspect the unit, list any defects for the developer, then collect the keys\n6. Title registration: once fully paid, the strata title is registered in your name with the Ministry of Land Management (MLMUPC)",
    "buttons": [
     {
      "l": "Message Nick on LINE",
@@ -1223,14 +1223,14 @@
    "note": "Facts from the website FAQ. Japanese needs a native review. Khmer shows English for now.",
    "tr": {
     "jp": {
-     "t": "<b>購入の流れ</b>\n\n1. 物件と部屋を選ぶ\n2. 予約金で部屋を確保（通常1,000ドルから5,000ドル）\n3. 2週間から4週間のデューデリジェンス（権利、契約書、法務の確認）\n4. 売買契約書（SPA）に署名\n5. 支払いスケジュールに沿って支払い（デベロッパーと進捗によって異なります）\n6. 全額の支払いと引き渡しの後、ストラタタイトルを受け取り",
+     "t": "<b>購入の流れ：6つのステップ</b>\n\n1. 予約：部屋を選び、予約金（通常500ドルから2,000ドル）を支払って確保\n2. 頭金と売買契約書（SPA）：署名時に価格の約20%から30%。署名前に、ご自身の弁護士による確認をおすすめします\n3. 建設中の分割払い：毎月、四半期ごと、または工事の段階ごと（例：月1%を35か月）\n4. 引き渡し時の残金：残りの40%から50%程度を、現金または銀行ローンで\n5. 引き渡し：完成した部屋を点検し、不具合をデベロッパーに伝えてから鍵を受け取り\n6. 権利の登記：全額の支払い後、ストラタタイトルが土地管理省（MLMUPC）でご本人の名義に登記",
      "b": [
       "LINEでNickに相談",
       "戻る"
      ]
     },
     "kh": {
-     "t": "<b>The buying process</b>\n\n1. Choose a project and a unit\n2. Reserve it with a deposit, usually $1,000 to $5,000\n3. Due diligence for 2 to 4 weeks: title, contract and legal checks\n4. Sign the Sales and Purchase Agreement\n5. Pay by the payment schedule, which depends on the developer and the stage\n6. Receive the strata title after full payment and handover",
+     "t": "<b>The buying process: 6 steps</b>\n\n1. Booking: choose a unit and pay a booking fee, usually $500 to $2,000, to hold it\n2. Down payment and contract (SPA): about 20 to 30% of the price when you sign. Have your own lawyer review the SPA first\n3. Instalments during construction: monthly, quarterly or by construction stage (for example 1% a month for 35 months)\n4. Balance at handover: the rest, often 40 to 50%, in cash or with a bank loan\n5. Handover: inspect the unit, list any defects for the developer, then collect the keys\n6. Title registration: once fully paid, the strata title is registered in your name with the Ministry of Land Management (MLMUPC)",
      "b": [
       "និយាយជាមួយ Nick តាម LINE",
       "ត្រឡប់ក្រោយ"
