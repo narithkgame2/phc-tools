@@ -2,6 +2,7 @@
 # Sets up the translator settings for @Nick_Cambodia_Bot without anyone opening the settings file.
 #   bash setup-translator.sh key        makes a private key, saves it, and copies it to the clipboard (it is never shown)
 #   bash setup-translator.sh url LINK   saves the Apps Script web app link
+#   bash setup-translator.sh reakh      copies the two translator settings into @Nick_REAKH_Bot's settings file (nothing is shown)
 FILE="$HOME/.phc-secrets/nick-cambodia-bot.env"
 mkdir -p "$HOME/.phc-secrets"; touch "$FILE"; chmod 600 "$FILE"
 case "$1" in
@@ -18,5 +19,13 @@ case "$1" in
     echo "TRANSLATE_URL=$2" >> "$FILE"
     echo "Done. The translator link is saved. Restart the bot."
     ;;
-  *) echo "Use: bash setup-translator.sh key   or   bash setup-translator.sh url LINK";;
+  reakh)
+    TO="$HOME/.phc-secrets/nick-reakh-bot.env"
+    if ! grep -q '^TRANSLATE_KEY=' "$FILE" || ! grep -q '^TRANSLATE_URL=' "$FILE"; then echo "Set up the translator for @Nick_Cambodia_Bot first (key and url)."; exit 1; fi
+    touch "$TO"; chmod 600 "$TO"
+    grep -v '^TRANSLATE_\(KEY\|URL\)=' "$TO" > "$TO.tmp" && mv "$TO.tmp" "$TO" && chmod 600 "$TO"
+    grep '^TRANSLATE_\(KEY\|URL\)=' "$FILE" >> "$TO"
+    echo "Done. @Nick_REAKH_Bot can now use the same translator. Restart that bot."
+    ;;
+  *) echo "Use: bash setup-translator.sh key   or   bash setup-translator.sh url LINK   or   bash setup-translator.sh reakh";;
 esac
