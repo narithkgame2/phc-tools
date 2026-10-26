@@ -130,6 +130,14 @@ by.calc1.await = 'calc'; by.check1.await = 'check';
       tr: { jp: { t: it[5], b: ['LINEでNickに相談', '戻る'] }, kh: { t: it[4], b: ['និយាយជាមួយ Nick តាម LINE', 'ត្រឡប់ក្រោយ'] } },
     };
   });
+  // Japanese FAQ pictures (Nick 2026-10-26): shown with the answer as the caption, for Japanese only (the pictures are in Japanese).
+  // v is a short fingerprint of the file, so Telegram fetches a changed picture again instead of a cached one.
+  const pics = { faq1: 'faq-01-ownership.png', faq2: 'faq-03-costs.png', faq3: 'faq-04-rental.png', faq4: 'faq-02-process.png' };
+  Object.keys(pics).forEach((id) => {
+    const file = path.join(__dirname, '..', 'assets', 'faq', pics[id]);
+    const v = require('crypto').createHash('sha1').update(fs.readFileSync(file)).digest('hex').slice(0, 8);
+    by[id].photo = { jp: 'faq/' + pics[id] + '?v=' + v };
+  });
   // the More menu gets the FAQ as its first button
   by.more.buttons.unshift({ l: 'Common questions', to: 'faq', half: false, url: '' });
   by.more.tr.jp.b.unshift('よくある質問'); by.more.tr.kh.b.unshift('សំណួរញឹកញាប់');

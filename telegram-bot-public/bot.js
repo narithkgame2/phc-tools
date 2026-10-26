@@ -141,6 +141,9 @@ function parseCalc(text) {
   return parseThree(text);
 }
 
+// Pictures used by screens (config/flow.json "photo"), served from the public repository so any copy of the bot can send them.
+const MEDIA_BASE = process.env.MEDIA_BASE_URL || 'https://raw.githubusercontent.com/narithkgame2/phc-tools/feat/bot-color-cards-and-guards/telegram-bot-public/assets/';
+
 function createBot({ api, store, flow, nickId, onError, getListings, listingState, alertStore, testerIds, isPrivate, agentData, channels, places, events, botUsername, now, translate }) {
   // Phase 2 agent units join the listings the Sheet and the website provide
   const baseListings = getListings || (async () => []);
@@ -199,6 +202,16 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
 
   async function send(chatId, u, step, vars, edit) {
     const body = R.render(step, u.lang || 'jp', vars);
+    // a screen with a picture: the picture carries the text as its caption and the buttons (a new message, a text message cannot become a photo)
+    const pic = step.photo && step.photo[u.lang || 'jp'];
+    if (pic) {
+      const photo = MEDIA_BASE + pic, short = body.text.replace(/<[^>]+>/g, '').length <= 1000;
+      const r = short
+        ? await api('sendPhoto', { chat_id: chatId, photo, caption: body.text, parse_mode: 'HTML', reply_markup: body.reply_markup })
+        : await api('sendPhoto', { chat_id: chatId, photo });
+      if (r && r.ok !== false) return short ? r : api('sendMessage', Object.assign({ chat_id: chatId }, body));
+      // the picture could not be sent: the answer still goes out as text
+    }
     if (edit && edit.message_id) {
       const r = await api('editMessageText', Object.assign({ chat_id: chatId, message_id: edit.message_id }, body));
       if (r && r.ok) return r;

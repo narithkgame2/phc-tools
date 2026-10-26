@@ -81,6 +81,15 @@ const NICK = '353195979';
     const r = rig(), me = r.U(7, 'en'); await r.say(me, '/estimate'); r.sent.length = 0; await r.say(me, '100000 700');
     const x = r.lastTo(7).body.text; assert.ok(/Gross yield: 8\.4%/.test(x) && /6\.4% to 6\.8%/.test(x) && /Vacancy and repairs are not included/.test(x) && /for reference only/.test(x), x);
   });
+  await t('the Japanese FAQ shows its picture with the answer and buttons; English stays text', async () => {
+    const r = rig(), jp = r.U(31, 'ja'); await r.say(jp, '/start');
+    await r.tap(jp, 'その他'); await r.tap(jp, 'よくある質問'); await r.tap(jp, '購入の流れ');
+    const ph = r.sent.filter((x) => x.method === 'sendPhoto').pop();
+    assert.ok(ph && /assets\/faq\/faq-02-process\.png\?v=[0-9a-f]{8}$/.test(ph.body.photo) && /購入の流れ/.test(ph.body.caption) && ph.body.reply_markup.inline_keyboard.length >= 2, ph && JSON.stringify(ph.body).slice(0, 200));
+    const en = r.U(32, 'en'); await r.say(en, '/start'); await r.tap(en, 'English'); const n0 = r.sent.length;
+    await r.tap(en, 'More'); await r.tap(en, 'Common questions'); await r.tap(en, 'How buying works');
+    const after = r.sent.slice(n0); assert.ok(!after.some((x) => x.method === 'sendPhoto') && after.some((x) => /The buying process/.test(x.body.text || '')));
+  });
   await t('parseThree accepts commas and decimals and rejects junk', () => {
     assert.deepStrictEqual(parseThree('68,000 650 1,800'), { price: 68000, rent: 650, costs: 1800 });
     assert.deepStrictEqual(parseThree('68000 650.5 0'), { price: 68000, rent: 650.5, costs: 0 });

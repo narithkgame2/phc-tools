@@ -17,6 +17,8 @@ function checkHtml(html, where) {
   assert.ok(!/<(?![a-z/])/i.test(html.replace(/<[^>]*>/g, '')), where + ' stray <');
 }
 function checkMessage(body, where) {
+  // a picture screen carries its text as a caption (Telegram allows 1,024 characters there)
+  if (body.photo) { assert.ok(body.caption && body.caption.replace(/<[^>]+>/g, '').length <= 1024, where + ' caption length'); body = Object.assign({}, body, { text: body.caption }); }
   assert.ok(body.text && body.text.length <= 4096, where + ' text length');
   if (body.parse_mode === 'HTML') checkHtml(body.text, where);
   const kb = body.reply_markup && body.reply_markup.inline_keyboard;
@@ -47,7 +49,7 @@ function checkMessage(body, where) {
       for (const [fromId, idx] of path) {
         await bot.handleUpdate({ update_id: 2, callback_query: { id: 'c', from, data: 'g:' + fromId + ':' + idx, message: { message_id: 5, chat: { id, type: 'private' } } } });
       }
-      last = sent.filter((s) => s.body.chat_id === id && (s.method === 'sendMessage' || s.method === 'editMessageText')).pop();
+      last = sent.filter((s) => s.body.chat_id === id && (s.method === 'sendMessage' || s.method === 'editMessageText' || s.method === 'sendPhoto')).pop();
       if (path.length === 0) { await bot.handleUpdate({ update_id: 1, message: { message_id: 2, chat: { id, type: 'private' }, from, text: '/menu' } }); last = sent.filter((s) => s.body.chat_id === id).pop(); }
       assert.ok(last, 'no reply on path ' + JSON.stringify(path));
       checkMessage(last.body, lang + ' ' + JSON.stringify(path));
