@@ -91,7 +91,7 @@ const pages = {
     <div class="main">
       ${item(1, 'やり取りはオンラインで', '物件選び、ご相談、送金まで')}
       ${item(2, '契約書は原本に署名', '電子署名は使えません')}
-      ${item(3, '原本は国際宅配便で', 'DHLなどで書類をやり取り')}
+      ${item(3, '原本は国際宅配便で', 'DHLなどで、売主側も原本に署名')}
       <div class="note">※ 価格と家賃は、通常、米ドルで取引されます</div>
     </div>${foot(false, true)}`), // facts from Nick, not from the guide
 };

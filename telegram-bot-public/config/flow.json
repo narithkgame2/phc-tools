@@ -1254,7 +1254,7 @@
    "id": "faq5",
    "flow": "FAQ",
    "title": "FAQ: Buying from abroad",
-   "text": "<b>You can buy from abroad</b>\n\n<b>1. Arranged online</b>\nChoosing the unit, questions and transfers\n\n<b>2. Original signatures on the contract</b>\nE-signatures are not accepted\n\n<b>3. Originals sent by courier</b>\nDHL or similar, both ways\n\n<i>Prices and rents are usually in US dollars.</i>",
+   "text": "<b>You can buy from abroad</b>\n\n<b>1. Arranged online</b>\nChoosing the unit, questions and transfers\n\n<b>2. Original signatures on the contract</b>\nE-signatures are not accepted\n\n<b>3. Originals sent by courier</b>\nDHL or similar, to the developer or the seller to sign too\n\n<i>Prices and rents are usually in US dollars.</i>",
    "buttons": [
     {
      "l": "Message Nick on LINE",
@@ -1272,14 +1272,14 @@
    "note": "Facts from the website FAQ. Japanese needs a native review. Khmer shows English for now.",
    "tr": {
     "jp": {
-     "t": "<b>海外からでも購入できます</b>\n\n<b>① やり取りはオンラインで</b>\n物件選び、ご相談、送金まで\n\n<b>② 契約書は原本に署名</b>\n電子署名は使えません\n\n<b>③ 原本は国際宅配便で</b>\nDHLなどで書類をやり取りします\n\n<i>価格と家賃は、通常、米ドルで取引されます。</i>",
+     "t": "<b>海外からでも購入できます</b>\n\n<b>① やり取りはオンラインで</b>\n物件選び、ご相談、送金まで\n\n<b>② 契約書は原本に署名</b>\n電子署名は使えません\n\n<b>③ 原本は国際宅配便で</b>\nDHLなどで、デベロッパーや売主とも原本に署名します\n\n<i>価格と家賃は、通常、米ドルで取引されます。</i>",
      "b": [
       "LINEでNickに相談",
       "戻る"
      ]
     },
     "kh": {
-     "t": "<b>You can buy from abroad</b>\n\n<b>1. Arranged online</b>\nChoosing the unit, questions and transfers\n\n<b>2. Original signatures on the contract</b>\nE-signatures are not accepted\n\n<b>3. Originals sent by courier</b>\nDHL or similar, both ways\n\n<i>Prices and rents are usually in US dollars.</i>",
+     "t": "<b>You can buy from abroad</b>\n\n<b>1. Arranged online</b>\nChoosing the unit, questions and transfers\n\n<b>2. Original signatures on the contract</b>\nE-signatures are not accepted\n\n<b>3. Originals sent by courier</b>\nDHL or similar, to the developer or the seller to sign too\n\n<i>Prices and rents are usually in US dollars.</i>",
      "b": [
       "និយាយជាមួយ Nick តាម LINE",
       "ត្រឡប់ក្រោយ"
@@ -1287,7 +1287,7 @@
     }
    },
    "photo": {
-    "jp": "faq/faq-05-abroad.png?v=39be4337"
+    "jp": "faq/faq-05-abroad.png?v=f62bd4a2"
    }
   },
   {

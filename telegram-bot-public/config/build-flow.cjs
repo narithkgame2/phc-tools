@@ -109,8 +109,8 @@ by.calc1.await = 'calc'; by.check1.await = 'check';
       '<b>購入の流れ（6ステップ）</b>\n\n<b>① 予約</b>\n予約金 500ドルから2,000ドル\n\n<b>② 頭金と契約</b>\n価格の20%から30%\n\n<b>③ 分割払い</b>\n建設中に支払います\n\n<b>④ 引き渡し時の残金</b>\n価格の40%から50%\n\n<b>⑤ 引き渡し</b>\n部屋を点検して鍵を受け取り\n\n<b>⑥ 登記</b>\nご本人の名義に'],
     // faq5 corrected by Nick 2026-10-26: no e-signature; the originals are signed and sent by courier (DHL or similar)
     ['faq5', 'Buying from abroad', '海外から購入', 'Buying from abroad',
-      '<b>You can buy from abroad</b>\n\n<b>1. Arranged online</b>\nChoosing the unit, questions and transfers\n\n<b>2. Original signatures on the contract</b>\nE-signatures are not accepted\n\n<b>3. Originals sent by courier</b>\nDHL or similar, both ways\n\n<i>Prices and rents are usually in US dollars.</i>',
-      '<b>海外からでも購入できます</b>\n\n<b>① やり取りはオンラインで</b>\n物件選び、ご相談、送金まで\n\n<b>② 契約書は原本に署名</b>\n電子署名は使えません\n\n<b>③ 原本は国際宅配便で</b>\nDHLなどで書類をやり取りします\n\n<i>価格と家賃は、通常、米ドルで取引されます。</i>'],
+      '<b>You can buy from abroad</b>\n\n<b>1. Arranged online</b>\nChoosing the unit, questions and transfers\n\n<b>2. Original signatures on the contract</b>\nE-signatures are not accepted\n\n<b>3. Originals sent by courier</b>\nDHL or similar, to the developer or the seller to sign too\n\n<i>Prices and rents are usually in US dollars.</i>',
+      '<b>海外からでも購入できます</b>\n\n<b>① やり取りはオンラインで</b>\n物件選び、ご相談、送金まで\n\n<b>② 契約書は原本に署名</b>\n電子署名は使えません\n\n<b>③ 原本は国際宅配便で</b>\nDHLなどで、デベロッパーや売主とも原本に署名します\n\n<i>価格と家賃は、通常、米ドルで取引されます。</i>'],
   ];
   const labels = ['Foreign ownership', 'Extra costs', 'Rental tax and fees', 'How buying works', 'Buying from abroad'];
   by.faq = {
