@@ -387,11 +387,20 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     return api('sendMessage', Object.assign({ chat_id: clientId }, composeListings([l], lang, head).body));
   }
   // a link such as t.me/Nick_Cambodia_Bot?start=TS5-5008 opens that unit directly (for LINE, Instagram and channel posts)
+  function sendMedia(chatId, media) {
+    const items = (media || []).slice(0, 10);
+    if (!items.length) return Promise.resolve(null);
+    if (items.length === 1) return items[0].t === 'video' ? api('sendVideo', { chat_id: chatId, video: items[0].id }) : api('sendPhoto', { chat_id: chatId, photo: items[0].id });
+    return api('sendMediaGroup', { chat_id: chatId, media: items.map((x) => ({ type: x.t === 'video' ? 'video' : 'photo', media: x.id })) });
+  }
   async function showRef(chatId, from, u, ref) {
     const l = (await loadListings(from.id)).find((x) => x.id.toLowerCase() === ref.toLowerCase());
     if (!isNick(u.id)) ops.track('deeplink', { ref });
     if (!l) return api('sendMessage', { chat_id: chatId, text: MSG.refGone[u.lang], reply_markup: { inline_keyboard: [[{ text: MSG.menuBtn[u.lang], callback_data: 'm:menu' }]] } });
+    // a unit opened from a channel link shows its photos first, then the card with the buttons
+    if (l.media && l.media.length) { ops.track('photos', { ref: l.id }); await sendMedia(chatId, l.media); }
     const body = composeListings([l], u.lang, MSG.listHead[u.lang]).body;
+    body.reply_markup.inline_keyboard = body.reply_markup.inline_keyboard.filter((row) => !row.some((b) => /^ph:/.test(b.callback_data || '')));
     body.reply_markup.inline_keyboard.push([{ text: MSG.menuBtn[u.lang], callback_data: 'm:menu' }]);
     return api('sendMessage', Object.assign({ chat_id: chatId }, body));
   }

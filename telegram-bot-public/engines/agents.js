@@ -203,15 +203,23 @@ function createAgentArea(ctx) {
     list = list.filter((b) => b && b.text && /^https?:\/\//.test(b.url || ''));
     return list.length ? [list.map((b) => ({ text: b.text, url: b.url }))] : null;
   }
-  // one clean post like the Content Bot: the cover photo or video carries the caption and the buttons
+  // The channel post: every photo and video as one album with the whole text as its caption. Telegram cannot put buttons on an
+  // album, so a single photo or video carries them itself, and an album gets one short line with the buttons right under it.
   async function postToChannel(ch, unit) {
-    const post = channelPost(unit, ch), text = post.text, media = unit.media || [], rows = channelRows(ch, unit);
+    const post = channelPost(unit, ch), text = post.text, media = (unit.media || []).slice(0, 10), rows = channelRows(ch, unit);
     const short = text.length <= 1000, mk = rows ? { reply_markup: kb(rows) } : {};
     let r;
-    if (media.length) {
+    if (media.length === 1) {
       const one = media[0], cap = short ? { caption: text, parse_mode: 'HTML' } : {};
       r = await (one.t === 'video' ? api('sendVideo', Object.assign({ chat_id: ch.chat, video: one.id }, cap, mk)) : api('sendPhoto', Object.assign({ chat_id: ch.chat, photo: one.id }, cap, mk)));
       if (r && r.ok !== false && !short) r = await say(ch.chat, text, rows);
+    } else if (media.length) {
+      r = await mediaTo(ch.chat, media, short ? text : null);
+      if (r && r.ok !== false && !short) r = await say(ch.chat, text);
+      if (r && r.ok !== false && rows) {
+        const first = Array.isArray(r.result) ? r.result[0] : r.result;
+        await api('sendMessage', Object.assign({ chat_id: ch.chat, text: ch.lang === 'jp' ? '👇 ご相談・お問い合わせはこちら' : '👇 Contact', disable_web_page_preview: true }, mk, first && first.message_id ? { reply_to_message_id: first.message_id, allow_sending_without_reply: true } : {}));
+      }
     } else r = await say(ch.chat, text, rows);
     if (r && r.ok !== false) r.left = post.left;
     return r;
