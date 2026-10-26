@@ -307,10 +307,27 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     }
     return others.length;
   }
+  // units already listed that look like the one an agent is adding: same project and floor and bedrooms, or the same net size
+  async function findDuplicates(d) {
+    const key = nk(d.name); if (!key) return [];
+    const beds = String(d.beds === 0 || d.beds === undefined ? '' : d.beds);
+    const same = (l) => nk(l.name) === key && ((l.floor && d.floor && String(l.floor) === String(d.floor) && String(l.beds || '') === beds) || (d.net && l.net && Math.abs(d.net - l.net) < 0.5 && String(l.beds || '') === beds));
+    return (await rawListings()).filter(same).slice(0, 3).map((l) => ({ id: l.id, name: l.name, floor: l.floor, price: l.type === 'rent' ? l.rent : l.price }));
+  }
+  // Nick marks any unit (from the Sheet, the website or an agent) as gone with "SOLD REF"
+  async function markUnavailable(ref) {
+    const l = (await baseListings()).find((x) => x.id.toLowerCase() === String(ref).toLowerCase());
+    if (!l) return null;
+    const st = state.get(l.id) || {};
+    state.set(l.id, Object.assign({}, st, { status: 'unavailable', at: new Date(clock()).toISOString(), prev: { status: st.status, at: st.at } }));
+    ops.closeRef(l.id);
+    return { name: l.name, told: await tellAskersGone(l.id, l.name) };
+  }
   agentArea = createAgentArea({ api, nickId, clock, esc: R.esc, L, places, lineUrl: LINE, findUserByUsername, channels: channels || [],
     data: agentData || (() => { const ag = {}, un = {}; let seq = 0; return { getAgent: (k) => ag[String(k)], setAgent: (k, v) => { ag[String(k)] = v; }, deleteAgent: (k) => { delete ag[String(k)]; }, allAgents: () => Object.keys(ag).map((k) => ag[k]),
       getUnit: (k) => un[k], setUnit: (k, v) => { un[k] = v; }, allUnits: () => Object.keys(un).map((k) => un[k]), nextSeq: () => ++seq }; })(),
-    getUser: (from) => user(from), saveUser: (u) => save(u), listingText: (l, lang) => listingText(l, lang), tellAskersGone });
+    getUser: (from) => user(from), saveUser: (u) => save(u), listingText: (l, lang) => listingText(l, lang), tellAskersGone,
+    track: (type, d) => ops.track(type, d), botLink, availLine: MSG.avail.jp, findDuplicates, markUnavailable });
 
   // Nick's buttons on a listing inquiry: v:<a|n|c|u>:<ref>[:<client id>]. Only Nick can use them.
   async function handleVerdict(cb) {
@@ -402,7 +419,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
       }
       return api('sendMessage', { chat_id: chatId, text: MSG.askDone[u.lang], reply_markup: { inline_keyboard: [[{ text: MSG.nickBtn[u.lang], url: LINE }]] } });
     }
-    if (/^(aw|am|ac|ua|ur|uc|pa|pr):/.test(data)) { if (await agentArea.handleCallback(cb, u)) return; }
+    if (/^(aw|am|ac|ua|ur|uc|uw|pn|pa|pr):/.test(data)) { if (await agentArea.handleCallback(cb, u)) return; }
     if (data.startsWith('ph:')) {
       const l = (await loadListings(from.id)).find((x) => x.id === data.slice(3));
       if (!l || !l.media || !l.media.length) return;

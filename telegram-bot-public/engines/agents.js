@@ -4,6 +4,7 @@
 // channels, and every 7 days the bot asks the agent whether each unit is still available. Agents see only their own units, never a client.
 // createAgentArea(ctx) -> { handleMessage, handleCallback, listings, runChecks, isAgent, toListing }. Everything Telegram goes through ctx.api.
 const { parsePost } = require('./postparse.js');
+const { composeJP, composeEN } = require('./compose.js');
 
 const DAY = 86400000;
 const CHECK_DAYS = 7, REMIND_HOURS = 24, MAX_REMINDS = 3, MAX_MEDIA = 10;
@@ -98,12 +99,24 @@ function createAgentArea(ctx) {
     if (step === 'media') rows = [[btn('Done', 'aw:media:done')], cancelRow];
     return say(chat, esc(q), rows);
   }
+  // a unit that looks like one already listed: same project and floor and bedrooms (or the same net size), from any source
+  async function dupes(d) {
+    const key = (x) => String(x || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    const mine = data.allUnits().filter((x) => ['pending', 'active', 'stale'].includes(x.status) && key(x.name) === key(d.name)
+      && ((x.floor && d.floor && String(x.floor) === String(d.floor) && x.beds === d.beds) || (d.net && x.net && Math.abs(d.net - x.net) < 0.5 && x.beds === d.beds)))
+      .map((x) => ({ id: x.ref, name: x.name, floor: x.floor, price: x.price }));
+    const others = ctx.findDuplicates ? await ctx.findDuplicates(d) : [];
+    const seen = new Set(), out = [];
+    mine.concat(others).forEach((x) => { if (!seen.has(x.id)) { seen.add(x.id); out.push(x); } });
+    return out.slice(0, 3);
+  }
+  const dupeLine = (list) => (list.length ? '\n<b>Possible duplicate:</b> ' + list.map((x) => esc(x.id + ' ' + x.name) + (x.floor ? ', floor ' + esc(x.floor) : '') + ', ' + usd(x.price)).join('; ') + '. Check it is not the same unit.' : '');
   async function advance(chat, u) {
     const s = missing(u.wiz);
     if (s) return ask(chat, u, s);
     u.wiz.step = 'confirm'; ctx.saveUser(u);
-    const d = u.wiz.d;
-    return say(chat, '<b>Check your unit</b>\n\n' + summary({ ...d, media: u.wiz.media }) + '\n\nSubmit it to Nick for approval?', [[btn('Submit', 'aw:submit'), btn('Cancel', 'aw:cancel')]]);
+    const d = u.wiz.d, dup = await dupes(d);
+    return say(chat, '<b>Check your unit</b>\n\n' + summary({ ...d, media: u.wiz.media }) + dupeLine(dup) + '\n\nSubmit it to Nick for approval?', [[btn('Submit', 'aw:submit'), btn('Cancel', 'aw:cancel')]]);
   }
   const newWiz = (mode) => ({ mode, step: mode === 'intake' ? 'collect' : 'name', d: {}, media: [], texts: [] });
 
@@ -129,6 +142,7 @@ function createAgentArea(ctx) {
     else if (r.price) { d.price = r.price; }
     if (r.net) d.net = r.net; if (r.gross) d.gross = r.gross; if (r.plain) d.sqm = r.plain;
     if (r.beds !== undefined) d.beds = r.beds; if (r.floor) d.floor = r.floor; if (r.area) d.area = r.area;
+    if (r.features && r.features.length) d.features = r.features;
     if (r.unit) d.unitNo = r.unit; if (r.tenanted) { d.tenanted = true; d.tenantNote = r.tenantNote; }
     const found = [r.name, r.type && (r.type === 'rent' ? 'rent ' + usd(r.price) : 'sale ' + usd(r.price)), (r.net || r.gross || r.plain) && 'size', r.beds !== undefined && 'bedrooms', r.floor && 'floor', r.area && 'area'].filter(Boolean);
     await say(chat, found.length ? 'I read your post. Found: ' + esc(found.join(', ')) + '. I will ask only what is missing.' : 'I could not read details from that post, so I will ask step by step.');
@@ -146,41 +160,53 @@ function createAgentArea(ctx) {
     for (const [type, price] of kinds) {
       const seq = data.nextSeq(), ref = refPrefix(d.name) + '-' + (6000 + seq);
       const unit = { ref, seq, agentId: u.id, agentName: (data.getAgent(u.id) || {}).name || 'Agent', status: 'pending', type, name: d.name, area: d.area, price, net: d.net || 0, gross: d.gross || 0, sqm: d.sqm || 0,
-        beds: d.beds, floor: d.floor || '', unitNo: d.unitNo || '', tenanted: !!d.tenanted, tenantNote: d.tenantNote || '', media: w.media || [], submittedAt: iso(), approvedAt: '', checked: '', nextCheckAt: '', askedAt: '', reminders: 0, pendingPrice: null };
+        beds: d.beds, floor: d.floor || '', unitNo: d.unitNo || '', features: d.features || [], tenanted: !!d.tenanted, tenantNote: d.tenantNote || '', media: w.media || [], submittedAt: iso(), approvedAt: '', checked: '', nextCheckAt: '', askedAt: '', reminders: 0, pendingPrice: null };
       data.setUnit(ref, unit); made.push(unit);
     }
     u.wiz = null; ctx.saveUser(u);
     await say(chat, 'Submitted as <b>' + made.map((x) => esc(x.ref)).join(' and ') + '</b>. Nick will review it and you will get a message here.');
     if (nickId) for (const unit of made) {
       await mediaTo(nickId, unit.media);
-      await say(nickId, '<b>New unit to approve</b>\nRef ' + esc(unit.ref) + '\nAgent: ' + esc(unit.agentName) + ' (' + unit.agentId + ')\n\n' + summary(unit), [[btn('Approve', 'ua:' + unit.ref), btn('Reject', 'ur:' + unit.ref)]]);
+      const dup = (await dupes(Object.assign({}, unit, { floor: unit.floor }))).filter((x) => x.id !== unit.ref);
+      await say(nickId, '<b>New unit to approve</b>\nRef ' + esc(unit.ref) + '\nAgent: ' + esc(unit.agentName) + ' (' + unit.agentId + ')\n\n' + summary(unit) + dupeLine(dup), [[btn('Approve', 'ua:' + unit.ref), btn('Reject', 'ur:' + unit.ref)]]);
+      if (ctx.track) ctx.track('agent_submit', { ref: unit.ref });
     }
   }
 
   // ---- posting an approved unit to Nick's channels
   const lineUrl = () => (ctx.lineUrl || '');
-  function channelText(l, lang) {
-    const head = lang === 'jp' ? '<b>新着物件</b>' : '<b>New listing</b>';
-    const avail = lang === 'jp' ? '※空室状況と価格は、お問い合わせいただいた時点で最新情報を確認します。' : 'Availability and price are confirmed when you ask.';
-    const line = lang === 'jp' ? '\n<a href="' + lineUrl() + '">LINEでNickに相談</a>' : '';
-    return head + '\n\n' + ctx.listingText(l, lang) + '\n\n<i>' + avail + '</i>' + line;
+  // the post for a channel: Japanese from the glossary (facts only), English in the house style of Nick's channel
+  function channelPost(unit, ch) {
+    const l = toListing(unit), lang = ch.lang === 'en' ? 'en' : 'jp';
+    if (lang === 'jp') {
+      const r = composeJP({ card: ctx.listingText(l, 'jp'), features: unit.features, availLine: ctx.availLine || '', lineUrl: lineUrl(), botLink: ctx.botLink ? ctx.botLink(unit.ref) : '' });
+      return { text: r.text, left: r.left };
+    }
+    const r = composeEN(unit, { khan: l.khan, footer: ch.footer || '' });
+    return { text: esc(r.text), left: r.left };
   }
   async function postToChannel(ch, unit) {
-    const text = channelText(toListing(unit), ch.lang === 'en' ? 'en' : 'jp');
-    const media = unit.media || [];
+    const post = channelPost(unit, ch), text = post.text, media = unit.media || [];
     let r;
     if (media.length) { r = await mediaTo(ch.chat, media, text.length <= 1000 ? text : null); if (r && r.ok !== false && text.length > 1000) r = await say(ch.chat, text); }
     else r = await say(ch.chat, text);
+    if (r && r.ok !== false) r.left = post.left;
     return r;
   }
   async function afterApprove(unit) {
-    const out = [], rows = [];
+    const out = [], rows = [], left = { claims: [], unknown: [] };
     for (const [i, ch] of (ctx.channels || []).entries()) {
       if (ch.mode === 'auto') {
         const r = await postToChannel(ch, unit);
         out.push((r && r.ok === false) ? 'Could not post to ' + esc(ch.chat) + ': ' + esc(r.description || 'unknown error') + ' (is the bot an administrator there?)' : 'Posted to ' + esc(ch.chat) + '.');
+        if (r && r.left) { left.claims = left.claims.concat(r.left.claims || []); left.unknown = left.unknown.concat(r.left.unknown || []); }
       } else { rows.push([btn('Also post to ' + ch.chat, 'uc:' + unit.ref + ':' + i)]); out.push('Draft for ' + esc(ch.chat) + ' is ready: tap the button to post it.'); }
     }
+    rows.push([btn('Prepare for the website draft', 'uw:' + unit.ref)]);
+    const uniq = (a) => Array.from(new Set(a));
+    if (left.claims.length) out.push('Left out on purpose (promotional claims): ' + esc(uniq(left.claims).join('; ')) + '.');
+    if (left.unknown.length) out.push('Not translated (please translate by hand if you want them): ' + esc(uniq(left.unknown).join('; ')) + '.');
+    if (ctx.botLink) out.push('Link to this unit: ' + esc(ctx.botLink(unit.ref)));
     return { text: out.join('\n'), rows };
   }
 
@@ -214,6 +240,59 @@ function createAgentArea(ctx) {
     return say(chat, '<b>Your units</b>\n\n' + (lines.join('\n') || 'No units yet.') + '\n\nTo add a unit, just send me the post.', mine.map((u) => [btn('Manage ' + u.ref, 'am:' + u.ref)]).concat([[btn('Add a unit', 'aw:start')]]));
   }
 
+  // a unit leaves the market: hidden, clients who asked are told, Nick and the agent are informed
+  async function retire(unit, actor) {
+    unit.status = 'sold'; data.setUnit(unit.ref, unit);
+    const told = await ctx.tellAskersGone(unit.ref, unit.name);
+    if (ctx.track) ctx.track('agent_sold', { ref: unit.ref });
+    if (actor !== 'agent') await say(unit.agentId, esc(unit.ref) + ' was marked sold by Nick and is hidden from clients.');
+    else await say(unit.agentId, esc(unit.ref) + ' is marked sold and hidden from clients. Thank you.');
+    if (nickId && actor !== 'nick') await say(nickId, '<b>' + esc(unit.ref) + '</b> ' + esc(unit.name) + ' was marked sold by ' + esc(unit.agentName) + '. Hidden from clients' + (told ? '; ' + told + ' client(s) who asked were told' : '') + '.');
+    return told;
+  }
+  // "SOLD TS5-6001", "TS5-6001 price reduced to $79,000", or a reply to a message that carries the Ref
+  function parseAction(m, body) {
+    const REF = '([A-Za-z0-9]{1,8}-\\d{3,5})';
+    let mm = body.match(new RegExp('^(?:sold|rented)\\s+' + REF + '\\b', 'i'));
+    if (mm) return { kind: 'sold', ref: mm[1].toUpperCase() };
+    mm = body.match(new RegExp('^' + REF + '\\s+(?:price\\s+)?(?:reduced\\s+|changed\\s+|now\\s+)?(?:to\\s+)?\\$?\\s*([\\d,]{3,})\\s*$', 'i'));
+    if (mm) return { kind: 'price', ref: mm[1].toUpperCase(), value: Number(mm[2].replace(/,/g, '')) };
+    const rr = m.reply_to_message && String(m.reply_to_message.text || m.reply_to_message.caption || '').match(/\b([A-Z0-9]{1,8}-\d{3,5})\b/);
+    if (rr) {
+      if (/^(?:sold|rented)\b/i.test(body)) return { kind: 'sold', ref: rr[1] };
+      const p = body.match(/^(?:price\s+)?(?:reduced\s+|changed\s+|now\s+)?(?:to\s+)?\$?\s*([\d,]{3,})$/i);
+      if (p) return { kind: 'price', ref: rr[1], value: Number(p[1].replace(/,/g, '')) };
+    }
+    return null;
+  }
+  async function doAction(act, u, chat, from) {
+    const unit = data.getUnit(act.ref), nick = isNick(from.id);
+    if (act.kind === 'sold') {
+      if (unit) {
+        if (!nick && unit.agentId !== u.id) { await say(chat, 'I can only change your own units.'); return; }
+        if (!(unit.status === 'active' || unit.status === 'stale')) { await say(chat, esc(unit.ref) + ' is ' + esc(unit.status) + ', so there is nothing to mark sold.'); return; }
+        const told = await retire(unit, nick ? 'nick' : 'agent');
+        if (nick) await say(chat, '<b>' + esc(unit.ref) + '</b> marked sold and hidden from clients' + (told ? '; ' + told + ' client(s) who asked were told' : '') + '.');
+        return;
+      }
+      if (nick && ctx.markUnavailable) {
+        const r = await ctx.markUnavailable(act.ref);
+        await say(chat, r ? '<b>' + esc(act.ref) + '</b> ' + esc(r.name) + ' is hidden from clients' + (r.told ? '; ' + r.told + ' client(s) who asked were told' : '') + '.\nPlease also set it to Sold or Rented in the Sheet or on the website.' : 'I do not know ' + esc(act.ref) + '.');
+        return;
+      }
+      await say(chat, 'I can only change your own units.'); return;
+    }
+    if (!unit) { await say(chat, nick ? 'Prices of Sheet or website units are changed in the Sheet or on the website. Here I can change units that agents added.' : 'I can only change your own units.'); return; }
+    if (!nick && unit.agentId !== u.id) { await say(chat, 'I can only change your own units.'); return; }
+    if (!(unit.status === 'active' || unit.status === 'stale')) { await say(chat, esc(unit.ref) + ' is ' + esc(unit.status) + ', so its price cannot be changed.'); return; }
+    const price = act.value, pct = Math.round(((price - unit.price) / unit.price) * 100);
+    const line = esc(unit.ref) + ' ' + esc(unit.name) + '\n' + usd(unit.price) + ' to ' + usd(price) + ' (' + (pct > 0 ? '+' : '') + pct + '%)' + (Math.abs(pct) > 15 ? '\nMore than 15 percent: please check it is right.' : '');
+    if (nick) { await say(chat, '<b>Change this price?</b>\n' + line, [[btn('Confirm', 'pn:' + unit.ref + ':' + price), btn('Cancel', 'aw:cancel')]]); return; }
+    unit.pendingPrice = { value: price, at: iso() }; data.setUnit(unit.ref, unit);
+    await say(chat, 'Sent to Nick: ' + esc(unit.ref) + ' from ' + usd(unit.price) + ' to ' + usd(price) + '. The old price stays until he approves.');
+    if (nickId) await say(nickId, '<b>Price change to approve</b>\n' + line + '\nAgent: ' + esc(unit.agentName), [[btn('Approve', 'pa:' + unit.ref), btn('Reject', 'pr:' + unit.ref)]]);
+  }
+
   // ---- messages
   async function handleMessage(m, u, text, cmd) {
     const from = m.from, chat = m.chat.id, body = (m.text || m.caption || '').trim();
@@ -242,6 +321,7 @@ function createAgentArea(ctx) {
         return true;
       }
     }
+    if (isNick(from.id) || isAgent(from.id)) { const act = parseAction(m, body); if (act && !(u.wiz && u.wiz.step === 'newprice')) { await doAction(act, u, chat, from); return true; } }
     if (!isAgent(from.id)) {
       // Nick sending a post from his admin account: explain instead of showing the client screen
       const mediaMsg = !!((m.photo && m.photo.length) || (m.video && m.video.file_id));
@@ -299,12 +379,13 @@ function createAgentArea(ctx) {
   async function handleCallback(cb, u) {
     const raw = cb.data || '', from = cb.from, chat = cb.message && cb.message.chat && cb.message.chat.id;
     const [kind, a, b] = raw.split(':');
-    if (kind === 'ua' || kind === 'ur' || kind === 'pa' || kind === 'pr' || kind === 'uc') {
+    if (kind === 'ua' || kind === 'ur' || kind === 'pa' || kind === 'pr' || kind === 'uc' || kind === 'uw' || kind === 'pn') {
       if (!isNick(from.id)) return true;
       const unit = data.getUnit(a);
       if (!unit) return true;
       if (kind === 'ua' && unit.status === 'pending') {
         unit.status = 'active'; unit.approvedAt = iso(); unit.checked = iso(); unit.nextCheckAt = iso(clock() + CHECK_DAYS * DAY); data.setUnit(unit.ref, unit);
+        if (ctx.track) ctx.track('agent_approve', { ref: unit.ref });
         await say(unit.agentId, '<b>' + esc(unit.ref) + '</b> is approved and now shows to clients. I will ask you every ' + CHECK_DAYS + ' days whether it is still available.');
         const res = await afterApprove(unit);
         await say(nickId, '<b>' + esc(unit.ref) + '</b> approved and live for clients.' + (res.text ? '\n' + res.text : ''), res.rows.length ? res.rows : null);
@@ -312,6 +393,21 @@ function createAgentArea(ctx) {
         unit.status = 'rejected'; data.setUnit(unit.ref, unit);
         await say(unit.agentId, esc(unit.ref) + ' was not approved. Nick may contact you.');
         await say(nickId, esc(unit.ref) + ' rejected. The agent was told.');
+      } else if (kind === 'uw') {
+        // a ready-made post for @PHC_Content_Bot: its "#unit" line sends a post straight to a website draft
+        const post = composeEN(unit, { khan: (toListing(unit).khan || ''), footer: '' }).text;
+        let cap = '#unit\n' + post;
+        if (cap.length > 1000) cap = '#unit\n' + post.slice(0, 960).replace(/\n[^\n]*$/, '');
+        await mediaTo(nickId, unit.media, esc(cap));
+        if (!(unit.media || []).length) await say(nickId, esc(cap));
+        await say(nickId, 'Forward the post above to @PHC_Content_Bot. Its #unit line takes it straight to a website draft, where you publish it.');
+      } else if (kind === 'pn') {
+        const price = Number(b);
+        if (unit.status === 'active' || unit.status === 'stale') {
+          const old = unit.price; unit.price = price; unit.checked = iso(); unit.nextCheckAt = iso(clock() + CHECK_DAYS * DAY); unit.askedAt = ''; unit.reminders = 0; data.setUnit(unit.ref, unit);
+          await say(unit.agentId, esc(unit.ref) + ' price is now ' + usd(price) + ' (set by Nick).');
+          await say(nickId, esc(unit.ref) + ' price changed from ' + usd(old) + ' to ' + usd(price) + '.');
+        }
       } else if (kind === 'uc') {
         const ch = (ctx.channels || [])[Number(b)];
         if (ch && unit.status === 'active') { const r = await postToChannel(ch, unit); await say(nickId, (r && r.ok === false) ? 'Could not post to ' + esc(ch.chat) + ': ' + esc(r.description || 'unknown error') : 'Posted to ' + esc(ch.chat) + '.'); }
@@ -338,10 +434,7 @@ function createAgentArea(ctx) {
       if (!unit || unit.agentId !== u.id || !(unit.status === 'active' || unit.status === 'stale')) return true; // an agent can only act on their own live unit
       if (b === 'y') await confirmAvailable(unit, chat);
       else if (b === 's') {
-        unit.status = 'sold'; data.setUnit(unit.ref, unit);
-        const told = await ctx.tellAskersGone(unit.ref, unit.name);
-        await say(chat, esc(unit.ref) + ' is marked sold and hidden from clients. Thank you.');
-        if (nickId) await say(nickId, '<b>' + esc(unit.ref) + '</b> ' + esc(unit.name) + ' was marked sold by ' + esc(unit.agentName) + '. Hidden from clients' + (told ? '; ' + told + ' client(s) who asked were told' : '') + '.');
+        await retire(unit, 'agent');
       } else if (b === 'p') { u.wiz = { step: 'newprice', ref: unit.ref }; ctx.saveUser(u); await say(chat, 'What is the new price in USD for ' + esc(unit.ref) + '? Current: ' + usd(unit.price), [cancelRow]); }
       return true;
     }

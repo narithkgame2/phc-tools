@@ -137,7 +137,24 @@ async function submitted(r, agent) {
   await t('the one tap posts the English draft to @NickREAKH, and only Nick can tap it', async () => {
     const r = rig(); await submitted(r); await r.cb(NICK, 'ua:TS5-6001');
     await r.cb(A, 'uc:TS5-6001:1'); assert.ok(!r.to('@NickREAKH').length); await r.cb(NICK, 'uc:TS5-6001:1');
-    const en = r.to('@NickREAKH').find((s) => s.method === 'sendMediaGroup'); assert.ok(en && /New listing/.test(en.body.media[0].caption) && /32 sqm net \/ 41 sqm gross/.test(en.body.media[0].caption));
+    const en = r.to('@NickREAKH').find((s) => s.method === 'sendMediaGroup'); assert.ok(en && /^#ForSale \$82,000/.test(en.body.media[0].caption) && /41㎡ Gross \| 32㎡ Net/.test(en.body.media[0].caption) && /Selling Price: \$82,000/.test(en.body.media[0].caption));
+  });
+  await t('sold by message: an agent retires their own unit, not another agent\'s; Nick confirms price changes', async () => {
+    const r = rig(); await submitted(r); await r.cb(NICK, 'ua:TS5-6001');
+    await r.say(CLIENT, 'SOLD TS5-6001'); assert.strictEqual(r.units()[0].status, 'active', 'a client cannot retire a unit');
+    await r.say(A, 'TS5-6001 price reduced to $79,000');
+    assert.ok(/Sent to Nick/.test(r.texts(A).pop()) && r.units()[0].price === 82000, 'old price stays until approved');
+    await r.cb(NICK, 'pa:TS5-6001'); assert.strictEqual(r.units()[0].price, 79000);
+    await r.say(NICK, 'TS5-6001 now 75000'); const c = r.last(NICK); assert.ok(/Change this price/.test(c.body.text) && r.labels(c).includes('Confirm'));
+    await r.cb(NICK, 'pn:TS5-6001:75000'); assert.strictEqual(r.units()[0].price, 75000);
+    await r.say(A, 'sold ts5-6001'); assert.strictEqual(r.units()[0].status, 'sold'); assert.ok(/marked sold/.test(r.texts(A).pop()));
+    assert.ok(r.texts(NICK).some((x) => /was marked sold by/.test(x)));
+  });
+  await t('the website-draft helper sends Nick a #unit caption to forward', async () => {
+    const r = rig(); await submitted(r); await r.cb(NICK, 'ua:TS5-6001'); r.sent.length = 0;
+    await r.cb(NICK, 'uw:TS5-6001');
+    const g = r.to(NICK).find((s) => s.method === 'sendMediaGroup'); assert.ok(g && /^#unit\n#ForSale/.test(g.body.media[0].caption) && g.body.media[0].caption.length <= 1024);
+    assert.ok(r.texts(NICK).some((x) => /@PHC_Content_Bot/.test(x)));
   });
   await t('a channel the bot cannot post to is reported to Nick, the unit still goes live', async () => {
     const r = rig({ reply: (m, b) => (b.chat_id === '@Nick_Cambodia' ? { ok: false, description: 'Forbidden: bot is not a member of the channel chat' } : null) });

@@ -21,6 +21,7 @@ function createOps(ctx) {
     delete o[k]; saveAsks(o); track('reply', { ref, ms: clock() - a.at });
     return clock() - a.at;
   }
+  function closeRef(ref) { const o = asks(); Object.keys(o).forEach((k) => { if (o[k].ref === ref) delete o[k]; }); saveAsks(o); }
   async function runSla() {
     const t = clock(), hour = ict(t).getUTCHours();
     if (!nickId || hour < 7 || hour >= 21) return 0; // no reminders at night in Phnom Penh
@@ -108,6 +109,6 @@ function createOps(ctx) {
     return n;
   }
 
-  return { track, askOpened, askClosed, runSla, digestText, runDigest, runPriceDrops, weekCounts };
+  return { track, askOpened, askClosed, closeRef, runSla, digestText, runDigest, runPriceDrops, weekCounts };
 }
 module.exports = { createOps };
