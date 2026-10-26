@@ -246,6 +246,29 @@ async function submitted(r, agent, post) {
     const back = r.sent.find((x) => x.method === 'editMessageText' && x.body.chat_id === '@Nick_Cambodia');
     assert.ok(back && !/掲載終了/.test(back.body.text) && /TIME SQUARE 5/.test(back.body.text), 'post restored without the banner');
   });
+  await t('AVAILABLE brings a sold unit back with a new price; the channel post shows 再掲載 and the old price crossed out', async () => {
+    const r = rig(); await submitted(r); await r.cb(NICK, 'ua:TS5-6001'); await r.say(NICK, 'SOLD TS5-6001');
+    assert.strictEqual(r.units()[0].status, 'sold');
+    await r.say(A, 'AVAILABLE TS5-6001'); assert.ok(/Only Nick can bring a sold unit back/.test(r.texts(A).pop()), 'an agent cannot');
+    r.sent.length = 0; await r.say(NICK, 'AVAILABLE TS5-6001 $78,000');
+    const u0 = r.units()[0]; assert.strictEqual(u0.status, 'active'); assert.strictEqual(u0.price, 78000); assert.strictEqual(u0.priceFrom, 82000);
+    const jp = r.sent.find((x) => x.method === 'editMessageText' && x.body.chat_id === '@Nick_Cambodia');
+    assert.ok(jp && /^🟢 <b>再掲載<\/b>/.test(jp.body.text) && /<s>\$82,000<\/s> → \$78,000/.test(jp.body.text), jp && jp.body.text);
+    await r.say(CLIENT, '/buy'); await r.cb(CLIENT, 'g:b1:1'); await r.cb(CLIENT, 'g:b2:2');
+    assert.ok(r.texts(CLIENT).some((x) => /Time Square 5/.test(x)), 'clients see it again');
+  });
+  await t('just AVAILABLE lists the sold units to pick from', async () => {
+    const r = rig(); await submitted(r); await r.cb(NICK, 'ua:TS5-6001'); await r.say(NICK, 'SOLD TS5-6001');
+    await r.say(NICK, 'AVAILABLE'); const ask = r.last(NICK);
+    assert.ok(/make available again/.test(ask.body.text) && r.labels(ask)[0].startsWith('TS5-6001'), ask.body.text);
+  });
+  await t('a new post of a unit that sold before shows the sold history on the check screen and the approval card', async () => {
+    const r = rig(); await submitted(r); await r.cb(NICK, 'ua:TS5-6001'); await r.say(NICK, 'SOLD TS5-6001');
+    await r.photo(A, 'F9', 'g9', POST.replace('$82,000', '$85,000')); await r.cb(A, 'aw:collectdone');
+    const check = r.texts(A).filter((x) => /Check your unit/.test(x)).pop(); assert.ok(/Sold before:<\/b> TS5-6001, \$82,000, sold on/.test(check), check);
+    await r.cb(A, 'aw:submit');
+    const card = r.texts(NICK).filter((x) => /New unit to approve/.test(x)).pop(); assert.ok(/Sold before/.test(card) && /AVAILABLE TS5-6001/.test(card), card);
+  });
   await t('the @NickREAKH post has only the Telegram button', async () => {
     const r = rig(); await submitted(r); await r.cb(NICK, 'ua:TS5-6001'); await r.cb(NICK, 'uc:TS5-6001:1');
     const en = r.to('@NickREAKH').find((x) => x.method === 'sendMessage' && x.body.reply_markup);

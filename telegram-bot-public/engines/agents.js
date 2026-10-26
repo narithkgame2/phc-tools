@@ -111,13 +111,22 @@ function createAgentArea(ctx) {
     mine.concat(others).forEach((x) => { if (!seen.has(x.id)) { seen.add(x.id); out.push(x); } });
     return out.slice(0, 3);
   }
+  // the same unit sold or taken off before: shown on the check screen and the approval card, with its last price and date
+  function soldBefore(d) {
+    const key = (x) => String(x || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    return data.allUnits().filter((x) => (x.status === 'sold' || x.status === 'unavailable') && key(x.name) === key(d.name) && x.ref !== d.ref
+      && ((x.floor && d.floor && String(x.floor) === String(d.floor) && x.beds === d.beds) || (d.net && x.net && Math.abs(d.net - x.net) < 0.5 && x.beds === d.beds)))
+      .sort((a, b) => String(b.soldAt || '').localeCompare(String(a.soldAt || ''))).slice(0, 2);
+  }
+  const dayText = (t) => (t ? new Date(t).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Phnom_Penh' }) : '');
+  const pastLine = (list) => (list.length ? '\n<b>Sold before:</b> ' + list.map((x) => esc(x.ref) + ', ' + usd(x.price) + ', ' + (x.status === 'sold' ? 'sold' : 'taken off') + (x.soldAt ? ' on ' + dayText(x.soldAt) : '')).join('; ') + '. If it is the same listing coming back, send AVAILABLE ' + esc(list[0].ref) + ' instead.' : '');
   const dupeLine = (list) => (list.length ? '\n<b>Possible duplicate:</b> ' + list.map((x) => esc(x.id + ' ' + x.name) + (x.floor ? ', floor ' + esc(x.floor) : '') + ', ' + usd(x.price)).join('; ') + '. Check it is not the same unit.' : '');
   async function advance(chat, u) {
     const s = missing(u.wiz);
     if (s) return ask(chat, u, s);
     u.wiz.step = 'confirm'; ctx.saveUser(u);
     const d = u.wiz.d, dup = await dupes(d);
-    return say(chat, '<b>Check your unit</b>\n\n' + summary({ ...d, media: u.wiz.media }) + dupeLine(dup) + '\n\nSubmit it to Nick for approval?', [[btn('Submit', 'aw:submit'), btn('Cancel', 'aw:cancel')]]);
+    return say(chat, '<b>Check your unit</b>\n\n' + summary({ ...d, media: u.wiz.media }) + dupeLine(dup) + pastLine(soldBefore(d)) + '\n\nSubmit it to Nick for approval?', [[btn('Submit', 'aw:submit'), btn('Cancel', 'aw:cancel')]]);
   }
   const newWiz = (mode) => ({ mode, step: mode === 'intake' ? 'collect' : 'name', d: {}, media: [], texts: [] });
 
@@ -209,7 +218,7 @@ function createAgentArea(ctx) {
       if ((lf.unknown || []).length) notes.push('<b>Left in English (no translation):</b> ' + esc(lf.unknown.join('; ')));
       if ((lf.claims || []).length) notes.push('<b>Left out on purpose (promotional claims):</b> ' + esc(lf.claims.join('; ')));
       if (ownSource(unit)) notes.push('Forwarded from @' + esc(unit.source) + ': that channel already has your original, so it is not posted there again.');
-      let card = '<b>New unit to approve</b>\nRef ' + esc(unit.ref) + '\nAgent: ' + esc(unit.agentName) + ' (' + unit.agentId + ')\n\n' + summary(unit) + dupeLine(dup) +
+      let card = '<b>New unit to approve</b>\nRef ' + esc(unit.ref) + '\nAgent: ' + esc(unit.agentName) + ' (' + unit.agentId + ')\n\n' + summary(unit) + dupeLine(dup) + pastLine(soldBefore(unit)) +
         '\n\n<b>The Japanese post:</b>\n\n' + pv.text + (notes.length ? '\n\n' + notes.join('\n\n') : '');
       if (card.length > 4000) card = card.slice(0, 3990) + '…';
       await say(nickId, card, [[btn('Approve', 'ua:' + unit.ref), btn('Reject', 'ur:' + unit.ref)]]);
@@ -269,6 +278,7 @@ function createAgentArea(ctx) {
   // a sale or a new price: the posts already in the channels are edited (banner on top, text rebuilt), buttons kept
   function banner(unit, ch, what, old) {
     const jp = ch.lang !== 'en', rent = unit.type === 'rent';
+    if (what === 'back') return jp ? '🟢 <b>再掲載</b>' : '🟢 <b>BACK ON THE MARKET</b>';
     if (what === 'gone') return jp ? '🔴 <b>掲載終了</b>' : '🔴 <b>NO LONGER AVAILABLE</b>';
     if (!what) return '';
     if (what === 'reserved') return jp ? '🟡 <b>商談中</b>' : '🟡 <b>RESERVED / Under Offer</b>';
@@ -338,7 +348,7 @@ function createAgentArea(ctx) {
 
   // a unit leaves the market: hidden, clients who asked are told, Nick and the agent are informed
   async function retire(unit, actor) {
-    unit.status = 'sold'; data.setUnit(unit.ref, unit);
+    unit.status = 'sold'; unit.soldAt = iso(); data.setUnit(unit.ref, unit);
     const told = await ctx.tellAskersGone(unit.ref, unit.name);
     const edited = await updatePosts(unit, 'sold');
     if (ctx.track) ctx.track('agent_sold', { ref: unit.ref });
@@ -351,7 +361,9 @@ function createAgentArea(ctx) {
   // "SOLD TS5-6001", "TS5-6001 price reduced to $79,000", or a reply to a message that carries the Ref
   function parseAction(m, body) {
     const REF = '([A-Za-z0-9]{1,8}-\\d{3,5})';
-    let mm = body.match(new RegExp('^reserved\\s+' + REF + '\\b', 'i'));
+    let mm = body.match(new RegExp('^available\\s+' + REF + '(?:\\s+(?:at\\s+|for\\s+)?\\$?\\s*([\\d,]{3,}))?\\s*$', 'i'));
+    if (mm) return { kind: 'available', ref: mm[1].toUpperCase(), value: mm[2] ? Number(mm[2].replace(/,/g, '')) : 0 };
+    mm = body.match(new RegExp('^reserved\\s+' + REF + '\\b', 'i'));
     if (mm) return { kind: 'reserved', ref: mm[1].toUpperCase() };
     mm = body.match(new RegExp('^(?:sold|rented)\\s+' + REF + '\\b', 'i'));
     if (mm) return { kind: 'sold', ref: mm[1].toUpperCase() };
@@ -359,6 +371,8 @@ function createAgentArea(ctx) {
     if (mm) return { kind: 'price', ref: mm[1].toUpperCase(), value: Number(mm[2].replace(/,/g, '')) };
     const rr = m.reply_to_message && String(m.reply_to_message.text || m.reply_to_message.caption || '').match(/\b([A-Z0-9]{1,8}-\d{3,5})\b/);
     if (rr) {
+      const av = body.match(/^available(?:\s+(?:at\s+|for\s+)?\$?\s*([\d,]{3,}))?$/i);
+      if (av) return { kind: 'available', ref: rr[1], value: av[1] ? Number(av[1].replace(/,/g, '')) : 0 };
       if (/^reserved\b/i.test(body)) return { kind: 'reserved', ref: rr[1] };
       if (/^(?:sold|rented)\b/i.test(body)) return { kind: 'sold', ref: rr[1] };
       const p = body.match(/^(?:price\s+)?(?:reduced\s+|changed\s+|now\s+)?(?:to\s+)?\$?\s*([\d,]{3,})$/i);
@@ -367,6 +381,8 @@ function createAgentArea(ctx) {
     // just the word, with no Ref and no reply: the bot asks which unit (buttons with the latest units)
     if (/^(?:sold|rented)$/i.test(body)) return { kind: 'sold', ref: null };
     if (/^reserved$/i.test(body)) return { kind: 'reserved', ref: null };
+    const avb = body.match(/^available(?:\s+(?:at\s+|for\s+)?\$?\s*([\d,]{3,}))?$/i);
+    if (avb) return { kind: 'available', ref: null, value: avb[1] ? Number(avb[1].replace(/,/g, '')) : 0 };
     const bare = body.match(/^(?:price\s+)?(?:reduced|now|changed)\s+(?:to\s+)?\$\s*([\d,]{3,})$/i);
     if (bare) return { kind: 'price', ref: null, value: Number(bare[1].replace(/,/g, '')) };
     return null;
@@ -374,15 +390,34 @@ function createAgentArea(ctx) {
   // "Which unit?": up to 6 live units, newest first (an agent sees only their own)
   async function askWhichUnit(act, u, chat, from) {
     const nick = isNick(from.id);
-    const live = data.allUnits().filter((x) => (x.status === 'active' || x.status === 'stale') && (nick || x.agentId === u.id))
-      .sort((a, b) => String(b.approvedAt || b.submittedAt).localeCompare(String(a.approvedAt || a.submittedAt))).slice(0, 6);
-    const word = act.kind === 'price' ? 'change to ' + usd(act.value) : act.kind === 'reserved' ? 'mark reserved' : 'mark sold';
-    if (!live.length) { await say(chat, 'There is no live unit to ' + word + '.'); return; }
+    const want = act.kind === 'available' ? (x) => x.status === 'sold' || x.status === 'unavailable' || ((x.status === 'active' || x.status === 'stale') && x.reserved) : (x) => x.status === 'active' || x.status === 'stale';
+    const live = data.allUnits().filter((x) => want(x) && (nick || x.agentId === u.id))
+      .sort((a, b) => String(b.soldAt || b.approvedAt || b.submittedAt).localeCompare(String(a.soldAt || a.approvedAt || a.submittedAt))).slice(0, 6);
+    const word = act.kind === 'available' ? 'make available again' + (act.value ? ' at ' + usd(act.value) : '') : act.kind === 'price' ? 'change to ' + usd(act.value) : act.kind === 'reserved' ? 'mark reserved' : 'mark sold';
+    if (!live.length) { await say(chat, act.kind === 'available' ? 'There is no sold, taken off or reserved unit to make available again.' : 'There is no live unit to ' + word + '.'); return; }
     await say(chat, 'Which unit do you want to ' + esc(word) + '?', live.map((x) => [btn(x.ref + ' ' + x.name + ', ' + usd(x.price), 'ak:' + act.kind + ':' + x.ref + ':' + (act.value || 0))]).concat([[btn('Cancel', 'ak:x')]]));
   }
   async function doAction(act, u, chat, from) {
     if (!act.ref) return askWhichUnit(act, u, chat, from);
     const unit = data.getUnit(act.ref), nick = isNick(from.id);
+    if (act.kind === 'available') {
+      if (!unit) { await say(chat, 'I do not know ' + esc(act.ref) + '. AVAILABLE works for units added through this bot.'); return; }
+      const off = unit.status === 'sold' || unit.status === 'unavailable';
+      // a reserved unit can be freed by its agent; a sold or taken off unit comes back only through Nick
+      if (!nick && (off || unit.agentId !== u.id)) { await say(chat, off ? 'Only Nick can bring a sold unit back. Send him the details, or send the new post as a new listing.' : 'I can only change your own units.'); return; }
+      if (!off && !unit.reserved) { await say(chat, esc(unit.ref) + ' is already available.'); return; }
+      const old = unit.price;
+      unit.status = 'active'; delete unit.goneFrom; delete unit.soldAt; unit.reserved = '';
+      if (act.value && act.value !== old) { unit.priceFrom = act.value < old ? old : 0; unit.price = act.value; }
+      unit.checked = iso(); unit.nextCheckAt = iso(clock() + CHECK_DAYS * DAY); unit.askedAt = ''; unit.reminders = 0; data.setUnit(unit.ref, unit);
+      if (ctx.reopen) ctx.reopen(unit.ref); // the client side forgets an earlier "Not available"
+      const n = await updatePosts(unit, off ? 'back' : null);
+      if (ctx.track) ctx.track('agent_back', { ref: unit.ref });
+      await say(chat, '<b>' + esc(unit.ref) + '</b> ' + esc(unit.name) + ' is available again' + (act.value && act.value !== old ? ' at ' + usd(unit.price) + ' (was ' + usd(old) + ')' : ' at ' + usd(unit.price)) + ' and shows to clients.' + (n ? ' ' + n + ' channel post(s) updated' + (off ? ' with 🟢 再掲載' : '') + '.' : '') + ' The weekly check starts again.');
+      if (!isNick(unit.agentId) && nick) await say(unit.agentId, esc(unit.ref) + ' is available again (set by Nick). I will ask you every ' + CHECK_DAYS + ' days whether it is still available.');
+      if (!nick && nickId) await say(nickId, '<b>' + esc(unit.ref) + '</b> is no longer reserved (set by ' + esc(unit.agentName) + ').');
+      return;
+    }
     if (act.kind === 'reserved') {
       if (!unit || (!nick && unit.agentId !== u.id)) { await say(chat, unit ? 'I can only change your own units.' : 'I do not know ' + esc(act.ref) + '. RESERVED works for units added through this bot.'); return; }
       if (!(unit.status === 'active' || unit.status === 'stale')) { await say(chat, esc(unit.ref) + ' is ' + esc(unit.status) + ', so it cannot be reserved.'); return; }
@@ -607,7 +642,7 @@ function createAgentArea(ctx) {
   async function markGone(ref) {
     const unit = data.getUnit(ref);
     if (!unit || !(unit.status === 'active' || unit.status === 'stale')) return null;
-    unit.goneFrom = unit.status; unit.status = 'unavailable'; data.setUnit(unit.ref, unit);
+    unit.goneFrom = unit.status; unit.status = 'unavailable'; unit.soldAt = iso(); data.setUnit(unit.ref, unit);
     if (ctx.track) ctx.track('agent_gone', { ref: unit.ref });
     if (!isNick(unit.agentId)) await say(unit.agentId, esc(unit.ref) + ' was marked not available by Nick and is hidden from clients.');
     return updatePosts(unit, 'gone');

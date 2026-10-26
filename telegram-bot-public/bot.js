@@ -341,7 +341,8 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     data: agentData || (() => { const ag = {}, un = {}; let seq = 0; return { getAgent: (k) => ag[String(k)], setAgent: (k, v) => { ag[String(k)] = v; }, deleteAgent: (k) => { delete ag[String(k)]; }, allAgents: () => Object.keys(ag).map((k) => ag[k]),
       getUnit: (k) => un[k], setUnit: (k, v) => { un[k] = v; }, allUnits: () => Object.keys(un).map((k) => un[k]), nextSeq: () => ++seq }; })(),
     getUser: (from) => user(from), saveUser: (u) => save(u), listingText: (l, lang) => listingText(l, lang), tellAskersGone,
-    track: (type, d) => ops.track(type, d), translate: translate || null, botLink, availLine: MSG.avail.jp, findDuplicates, markUnavailable });
+    track: (type, d) => ops.track(type, d), translate: translate || null, botLink, availLine: MSG.avail.jp, findDuplicates, markUnavailable,
+    reopen: (ref) => { const st = state.get(ref); if (st && st.status === 'unavailable') state.set(ref, Object.assign({}, st, { status: 'available', at: new Date(clock()).toISOString(), prev: { status: st.status, at: st.at } })); } });
 
   // Nick's buttons on a listing inquiry: v:<a|n|c|u>:<ref>[:<client id>]. Only Nick can use them.
   async function handleVerdict(cb) {
