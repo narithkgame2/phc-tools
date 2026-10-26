@@ -70,6 +70,17 @@ function parsePost(raw, places) {
   const place = name ? placeFor(name, places) : null;
   const area = place ? place.area : (f.district ? (BUTTONS.includes(f.district) ? f.district : 'Others') : '');
   return { name, type, price, rentAlso: buy && rent ? rent : 0, net: f.net, gross: f.gross, plain: f.plain, beds: f.beds !== undefined ? f.beds : (f.studio ? 0 : undefined),
-    floor: f.floor, unit: f.unit, area, tenanted: f.tenanted, tenantNote: f.tenantNote, faraway: f.faraway, check: f.check, district: f.district, buy, rent };
+    features: extractFeatures(raw), floor: f.floor, unit: f.unit, area, tenanted: f.tenanted, tenantNote: f.tenantNote, faraway: f.faraway, check: f.check, district: f.district, buy, rent };
 }
-module.exports = { parsePost, facts, clean, DISTRICTS, BUTTONS };
+// the checklist lines of a post that describe the unit (furnished, pool, strata title ...), without the structured facts
+function extractFeatures(raw) {
+  const { FEATURE_SKIP } = require('./compose.js');
+  const seen = new Set(), out = [];
+  clean(raw).split('\n').map((l) => l.trim()).filter((l) => /^[✅▫️•\-–]/.test(l)).forEach((l) => {
+    const t = l.replace(/^[✅▫️•\-–\s]+/, '').trim();
+    if (!t || t.length > 80 || FEATURE_SKIP.test(t) || seen.has(t.toLowerCase())) return;
+    seen.add(t.toLowerCase()); out.push(t);
+  });
+  return out.slice(0, 14);
+}
+module.exports = { extractFeatures, parsePost, facts, clean, DISTRICTS, BUTTONS };

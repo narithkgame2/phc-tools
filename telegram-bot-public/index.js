@@ -63,6 +63,15 @@ const agentData = {
 let channels = [];
 try { channels = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'channels.json'), 'utf8')); } catch (e) { channels = []; } // [{ "chat": "@Nick_Cambodia", "mode": "auto" | "confirm", "lang": "jp" | "en" }]
 
+// Counts of what happened (new clients, searches, asks, replies ...) for the Monday numbers. Kept to the last 30000 events.
+const EVENTS_FILE = path.join(__dirname, 'data', 'events.json');
+let evlist = [];
+try { evlist = JSON.parse(fs.readFileSync(EVENTS_FILE, 'utf8')); } catch (e) { evlist = []; }
+const eventStore = {
+  add: (e) => { evlist.push(e); if (evlist.length > 30000) evlist = evlist.slice(-30000); try { const tmp = EVENTS_FILE + '.tmp'; fs.writeFileSync(tmp, JSON.stringify(evlist)); fs.renameSync(tmp, EVENTS_FILE); } catch (err) { /* counting must never stop the bot */ } },
+  since: (t) => evlist.filter((e) => e.t >= t),
+};
+
 async function api(method, body) {
   try {
     const r = await fetch('https://api.telegram.org/bot' + token + '/' + method, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
@@ -80,7 +89,7 @@ async function api(method, body) {
 const listingsSource = process.env.LISTINGS_CSV_URL || path.join(__dirname, 'data', 'listings.csv');
 // The website feed: Active projects and units from propertyhubcambodia.com (public data, no key). Set WEBSITE_LISTINGS_URL=off to disable.
 const websiteFeed = process.env.WEBSITE_LISTINGS_URL === 'off' ? '' : (process.env.WEBSITE_LISTINGS_URL || 'https://www.propertyhubcambodia.com/api/bot-listings');
-const bot = createBot({ api, store, flow, nickId: NICK_ID, listingState, alertStore, testerIds, agentData, channels, places, isPrivate: () => { try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'mode.json'), 'utf8')).private === true; } catch (e) { return false; } }, getListings: combine(makeLoader(listingsSource, 300000, places), makeWebsiteLoader(websiteFeed, 300000, { photos: process.env.SHOW_WEBSITE_PHOTOS === '1', places, boundaries })), onError: (e) => console.error('Handler error:', e.message) });
+const bot = createBot({ api, store, flow, nickId: NICK_ID, listingState, alertStore, testerIds, agentData, channels, places, events: eventStore, botUsername: process.env.BOT_USERNAME || 'Nick_Cambodia_Bot', isPrivate: () => { try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'mode.json'), 'utf8')).private === true; } catch (e) { return false; } }, getListings: combine(makeLoader(listingsSource, 300000, places), makeWebsiteLoader(websiteFeed, 300000, { photos: process.env.SHOW_WEBSITE_PHOTOS === '1', places, boundaries })), onError: (e) => console.error('Handler error:', e.message) });
 
 async function setupProfile() {
   const cmds = {
@@ -100,6 +109,7 @@ async function run() {
   // Tell Nick where the bot is running each time it starts, so he knows whether the hosted copy or his Mac is answering.
   if (NICK_ID) await api('sendMessage', { chat_id: NICK_ID, text: 'Bot started on ' + require('os').hostname() + ' (@' + ((me.result && me.result.username) || '?') + ').' });
   // Alerts are checked every 10 minutes; the bot itself keeps to one message a day and to 9:00 to 21:00 Japan time.
+  setInterval(() => bot.runOps().catch((e) => console.error('Ops error:', e.message)), 10 * 60 * 1000);
   setInterval(() => bot.runAgentChecks().catch((e) => console.error('Agent check error:', e.message)), 10 * 60 * 1000);
   setInterval(() => bot.runAlerts().catch((e) => console.error('Alert error:', e.message)), 10 * 60 * 1000);
   let offset = 0;

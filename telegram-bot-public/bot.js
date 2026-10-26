@@ -3,6 +3,8 @@
 const R = require('./engines/render.js');
 const L = require('./engines/listings.js');
 const { createAgentArea } = require('./engines/agents.js');
+const { createOps } = require('./engines/ops.js');
+const { compareText } = require('./engines/compare.js');
 
 const DISCLAIMER = {
   jp: '※利回り・価格は参考値であり、将来の収益を保証するものではありません。',
@@ -65,6 +67,13 @@ const MSG = {
     kh: 'កំពុងរៀបចំដើម្បីបើក។ សូមត្រឡប់មកវិញក្រោយ។',
   },
   photoBtn: { jp: '写真を見る {id}', en: 'Photos {id}', kh: 'រូបថត {id}' },
+  cmpBtn: { jp: '3件を比較する', en: 'Compare these', kh: 'ប្រៀបធៀប' },
+  dropHead: { jp: '<b>値下げのお知らせ</b>', en: '<b>Price drop</b>', kh: '<b>តម្លៃបានថយចុះ</b>' },
+  refGone: {
+    jp: 'この物件は現在ご案内できません。条件に近い物件はメインメニューからお探しいただけます。',
+    en: 'This unit is not available now. You can look for similar units from the main menu.',
+    kh: 'ឯកតានេះមិនមានទៀតទេ។ សូមស្វែងរកឯកតាស្រដៀងគ្នាពីម៉ឺនុយមេ។',
+  },
   menuBtn: { jp: 'メインメニュー', en: 'Main menu', kh: 'ម៉ឺនុយមេ' },
   tenanted: { jp: 'テナント入居中', en: 'Tenanted', kh: 'មានអ្នកជួលរួចហើយ' },
   partner: {
@@ -118,7 +127,7 @@ function parseThree(text) {
   return { price, rent, costs };
 }
 
-function createBot({ api, store, flow, nickId, onError, getListings, listingState, alertStore, testerIds, isPrivate, agentData, channels, places, now }) {
+function createBot({ api, store, flow, nickId, onError, getListings, listingState, alertStore, testerIds, isPrivate, agentData, channels, places, events, botUsername, now }) {
   // Phase 2 agent units join the listings the Sheet and the website provide
   const baseListings = getListings || (async () => []);
   let agentArea = null;
@@ -131,6 +140,8 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
   const state = listingState || { get: (k) => mem[k], set: (k, v) => { mem[k] = v; }, delete: (k) => { delete mem[k]; } };
   const amem = {};
   const alerts = alertStore || { get: (k) => amem[k], set: (k, v) => { amem[k] = v; }, delete: (k) => { delete amem[k]; }, all: () => Object.keys(amem).map((k) => amem[k]) };
+  const evlog = [];
+  const eventStore = events || { add: (e) => { evlog.push(e); }, since: (t) => evlog.filter((e) => e.t >= t) };
   const isNick = (id) => !!nickId && String(id) === String(nickId);
   const isTester = (id) => (testerIds || []).map(String).includes(String(id)); // Nick's own second accounts: they may see Preview listings
   const seesPreview = (id) => isNick(id) || isTester(id);
@@ -144,6 +155,8 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     return true;
   }
   const loadListings = async (viewerId) => (await rawListings()).filter((l) => visible(l, viewerId));
+  const ops = createOps({ api, nickId, clock, state, events: eventStore, rawListings, alerts, L, esc: R.esc });
+  const botLink = (ref) => 'https://t.me/' + (botUsername || 'Nick_Cambodia_Bot') + (ref ? '?start=' + ref : '');
   const byId = {};
   flow.steps.forEach((s) => { byId[s.id] = s; });
   const LINE = flow.line;
@@ -181,7 +194,8 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
 
   async function notifyNick(u, from, step) {
     if (!nickId || !step.notify) return;
-    if (isNick(u.id)) return; // Nick testing his own bot does not need an alert about himself
+    if (isNick(u.id)) return;
+    if (step.id === 'leaddone') ops.track('lead'); if (step.id === 'tourok') ops.track('tour'); // Nick testing his own bot does not need an alert about himself
     const lines = ['<b>' + R.esc(step.notify) + '</b>', 'Client: ' + R.esc(nameOf(from)) + (from.username ? ' (@' + R.esc(from.username) + ')' : '') + ' (' + u.id + ')',
       'Language: ' + String(u.lang || '-').toUpperCase()];
     const a = u.answers;
@@ -216,15 +230,17 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     if (found.some((l) => l.netYield)) text += '\n\n<i>*' + DISCLAIMER[lang].replace(/^※/, '') + '</i>';
     const kb = [];
     found.forEach((l) => { kb.push([{ text: MSG.ask[lang].replace('{id}', l.id), callback_data: 'q:' + l.id }]); if (l.media && l.media.length) kb.push([{ text: MSG.photoBtn[lang].replace('{id}', l.id), callback_data: 'ph:' + l.id }]); });
+    if (found.length >= 2) kb.push([{ text: MSG.cmpBtn[lang], callback_data: 'cmp:' + found.slice(0, 3).map((l) => l.id).join(',') }]);
     if (stopRow) kb.push([{ text: MSG.alertStopBtn[lang], callback_data: 'al:off' }]);
     return { chat: null, body: { text, parse_mode: 'HTML', disable_web_page_preview: true, reply_markup: { inline_keyboard: kb } } };
   }
   async function sendListings(chatId, u, kind) {
     const k = u.keys || {};
     const found = L.match(await loadListings(u.id), kind, kind === 'buy' ? { budget: k.b1, district: k.b2 } : { budget: k.rr1, district: k.rr2 });
-    if (!found.length) return false;
+    if (!isNick(u.id)) ops.track('search', { kind, n: found.length });
+    if (!found.length) return 0;
     await api('sendMessage', Object.assign({ chat_id: chatId }, composeListings(found, u.lang || 'jp', MSG.listHead[u.lang || 'jp']).body));
-    return true;
+    return found.length;
   }
 
   // Client alerts: one saved search per client. A message goes out only when a NEW matching listing appears, at most once a day,
@@ -260,7 +276,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
           const found = L.match(fresh, a.kind, a.keys, 3);
           if (!found.length) continue;
           r = await api('sendMessage', Object.assign({ chat_id: a.id }, composeListings(found, lang, MSG.alertHead[lang], true).body));
-          a.seen = (a.seen || []).concat(found.map((l) => l.id)); a.lastDay = day;
+          a.seen = (a.seen || []).concat(found.map((l) => l.id)); a.lastDay = day; ops.track('alert_sent', { n: found.length });
         }
         if (r && r.ok === false && r.error_code === 403) { alerts.delete(a.id); continue; } // the client blocked the bot
         alerts.set(a.id, a); sent++;
@@ -308,6 +324,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     const lang = (asker && asker.lang) || (store.get(clientId) || {}).lang || 'jp';
     const tellNick = (text, kb) => api('sendMessage', Object.assign({ chat_id: nickId, text, parse_mode: 'HTML' }, kb ? { reply_markup: kb } : {}));
     const at = new Date(clock()).toISOString();
+    if (act === 'c' || act === 'a' || act === 'n') ops.askClosed(ref, clientId);
     if (act === 'c') {
       await api('sendMessage', { chat_id: clientId, text: MSG.checkingMsg[lang] });
       return tellNick('Holding message sent to the client for ' + R.esc(ref) + '.');
@@ -335,6 +352,26 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     }
   }
 
+  async function sendPriceDrop(clientId, lang, l, old) {
+    const now = l.type === 'buy' ? l.price : l.rent, pct = Math.round(((old - now) / old) * 100);
+    const head = MSG.dropHead[lang] + '\n<b>' + fmtUsd(old) + ' → ' + fmtUsd(now) + '</b> (-' + pct + '%)';
+    return api('sendMessage', Object.assign({ chat_id: clientId }, composeListings([l], lang, head).body));
+  }
+  // a link such as t.me/Nick_Cambodia_Bot?start=TS5-5008 opens that unit directly (for LINE, Instagram and channel posts)
+  async function showRef(chatId, from, u, ref) {
+    const l = (await loadListings(from.id)).find((x) => x.id.toLowerCase() === ref.toLowerCase());
+    if (!isNick(u.id)) ops.track('deeplink', { ref });
+    if (!l) return api('sendMessage', { chat_id: chatId, text: MSG.refGone[u.lang], reply_markup: { inline_keyboard: [[{ text: MSG.menuBtn[u.lang], callback_data: 'm:menu' }]] } });
+    const body = composeListings([l], u.lang, MSG.listHead[u.lang]).body;
+    body.reply_markup.inline_keyboard.push([{ text: MSG.menuBtn[u.lang], callback_data: 'm:menu' }]);
+    return api('sendMessage', Object.assign({ chat_id: chatId }, body));
+  }
+  async function runOps() {
+    let n = 0;
+    n += await ops.runSla(); n += await ops.runDigest(); n += await ops.runPriceDrops(sendPriceDrop);
+    return n;
+  }
+
   async function handleCallback(cb) {
     const from = cb.from, data = cb.data || '', msg = cb.message;
     await api('answerCallbackQuery', { callback_query_id: cb.id });
@@ -342,7 +379,11 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     const chatId = msg.chat.id, u = user(from);
     if (data.startsWith('l:')) {
       const lang = data.slice(2);
-      if (R.LANGS.includes(lang)) { u.lang = lang; return goto(chatId, from, u, 'menu', msg); }
+      if (R.LANGS.includes(lang)) {
+        u.lang = lang;
+        if (u.pendingRef) { const r = u.pendingRef; delete u.pendingRef; save(u); return showRef(chatId, from, u, r); }
+        return goto(chatId, from, u, 'menu', msg);
+      }
       return;
     }
     if (data.startsWith('q:')) {
@@ -353,6 +394,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
       const st = state.get(l.id) || {};
       st.askers = (st.askers || []).filter((x) => x.id !== u.id).concat([{ id: u.id, lang: u.lang, at: new Date(clock()).toISOString() }]).slice(-50);
       state.set(l.id, st);
+      if (!isNick(u.id)) { ops.track('ask', { ref: l.id }); ops.askOpened(l.id, u.id, l.name, nameOf(from) + (from.username ? ' (@' + from.username + ')' : '')); }
       if (nickId) {
         const rent = l.type === 'rent';
         await api('sendMessage', { chat_id: nickId, text: '<b>Listing interest</b>' + (isNick(u.id) ? ' <i>(your own test)</i>' : isTester(u.id) ? ' <i>(tester account)</i>' : '') + '\nClient: ' + R.esc(nameOf(from)) + (from.username ? ' (@' + R.esc(from.username) + ')' : '') + ' (' + u.id + ')\nListing: ' + R.esc(l.id + ' ' + l.name) + (areaText(l) ? ', ' + R.esc(areaText(l)) : '') + ', ' + fmtUsd(rent ? l.rent : l.price) + (rent ? '/month' : '') + '\nOpen chat: tg://user?id=' + u.id, parse_mode: 'HTML', disable_web_page_preview: true,
@@ -364,14 +406,25 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     if (data.startsWith('ph:')) {
       const l = (await loadListings(from.id)).find((x) => x.id === data.slice(3));
       if (!l || !l.media || !l.media.length) return;
+      ops.track('photos', { ref: l.id });
       const items = l.media.slice(0, 10);
       if (items.length === 1) return items[0].t === 'video' ? api('sendVideo', { chat_id: chatId, video: items[0].id }) : api('sendPhoto', { chat_id: chatId, photo: items[0].id });
       return api('sendMediaGroup', { chat_id: chatId, media: items.map((x) => ({ type: x.t === 'video' ? 'video' : 'photo', media: x.id })) });
+    }
+    if (data.startsWith('cmp:')) {
+      const ids = data.slice(4).split(',').slice(0, 3), all = await loadListings(from.id);
+      const picked = ids.map((id) => all.find((x) => x.id === id)).filter(Boolean);
+      if (picked.length < 2) return api('sendMessage', { chat_id: chatId, text: MSG.refGone[u.lang || 'jp'] });
+      if (!u.lang) u.lang = 'jp';
+      if (!isNick(u.id)) ops.track('compare');
+      return api('sendMessage', { chat_id: chatId, text: compareText(picked, u.lang, { fmtUsd, esc: R.esc, areaText }), parse_mode: 'HTML', disable_web_page_preview: true,
+        reply_markup: { inline_keyboard: picked.map((l) => [{ text: MSG.ask[u.lang].replace('{id}', l.id), callback_data: 'q:' + l.id }]) } });
     }
     if (data === 'al:on') {
       if (!u.lang) u.lang = 'jp';
       save(u);
       if (!(await setAlert(u))) return;
+      if (!isNick(u.id)) ops.track('alert_on');
       return api('sendMessage', { chat_id: chatId, text: MSG.alertOn[u.lang], reply_markup: { inline_keyboard: [[{ text: MSG.alertStopBtn[u.lang], callback_data: 'al:off' }]] } });
     }
     if (data === 'al:off') {
@@ -404,18 +457,27 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     const from = m.from, chatId = m.chat.id;
     if (m.chat.type !== 'private') return; // the bot only talks in private chats
     const text = (m.text || '').trim();
+    const existed = !!store.get(from.id);
     const u = user(from);
+    if (!existed && !isNick(u.id)) ops.track('new');
     const cmd = text.startsWith('/') ? text.split(/\s+/)[0].split('@')[0].toLowerCase() : '';
 
     if (cmd === '/start' || cmd === '/menu') {
+      const payload = cmd === '/start' ? (text.split(/\s+/)[1] || '') : '';
+      const ref = /^[A-Za-z0-9_-]{3,40}$/.test(payload) ? payload : '';
       if (!u.lang) {
         if (/^ja/i.test(from.language_code || '')) u.lang = 'jp';
-        else { save(u); return goto(chatId, from, u, 'start'); }
+        else { if (ref) u.pendingRef = ref; save(u); return goto(chatId, from, u, 'start'); }
       }
+      if (ref) { save(u); return showRef(chatId, from, u, ref); }
       return goto(chatId, from, u, 'menu');
     }
     if (await agentArea.handleMessage(m, u, text, cmd)) return; // Phase 2: agent area and Nick's agent commands
     if (!u.lang) u.lang = /^ja/i.test(from.language_code || '') ? 'jp' : 'en';
+    if (cmd === '/link' && isNick(from.id)) {
+      const ref = (text.split(/\s+/)[1] || '').trim();
+      return api('sendMessage', { chat_id: chatId, text: ref ? 'Link for ' + ref + ':\n' + botLink(ref) : 'Bot link:\n' + botLink() + '\n\nFor one unit send /link REF, for example /link TS5-5008', disable_web_page_preview: true });
+    }
     if (cmd === '/stop') {
       const had = !!alerts.get(u.id); alerts.delete(u.id); save(u);
       return api('sendMessage', { chat_id: chatId, text: (had ? MSG.alertOff : MSG.alertNone)[u.lang] });
@@ -489,7 +551,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
       } catch (e2) { /* nothing more to do */ }
     }
   }
-  return { handleUpdate, byId, runAlerts, runAgentChecks: () => agentArea.runChecks() };
+  return { handleUpdate, byId, runAlerts, runOps, runAgentChecks: () => agentArea.runChecks(), botLink, ops };
 }
 
 module.exports = { createBot, parseThree, DISCLAIMER, MSG };
