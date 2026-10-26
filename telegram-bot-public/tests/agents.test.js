@@ -157,6 +157,11 @@ async function submitted(r, agent) {
     const g = r.to(NICK).find((s) => s.method === 'sendMediaGroup'); assert.ok(g && /^#unit\n#ForSale/.test(g.body.media[0].caption) && g.body.media[0].caption.length <= 1024);
     assert.ok(r.texts(NICK).some((x) => /@PHC_Content_Bot/.test(x)));
   });
+  await t('the Japanese channel post gets a LINE button under the album', async () => {
+    const r = rig(); await submitted(r); await r.cb(NICK, 'ua:TS5-6001');
+    const i = r.sent.findIndex((x) => x.method === 'sendMediaGroup' && x.body.chat_id === '@Nick_Cambodia'); assert.ok(i >= 0);
+    const b = r.sent[i + 1]; assert.ok(b && b.method === 'sendMessage' && b.body.chat_id === '@Nick_Cambodia' && b.body.reply_markup.inline_keyboard[0][0].url === 'https://line.me/ti/p/@615ueovq', JSON.stringify(b));
+  });
   await t('a channel the bot cannot post to is reported to Nick, the unit still goes live', async () => {
     const r = rig({ reply: (m, b) => (b.chat_id === '@Nick_Cambodia' ? { ok: false, description: 'Forbidden: bot is not a member of the channel chat' } : null) });
     await submitted(r); await r.cb(NICK, 'ua:TS5-6001');

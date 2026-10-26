@@ -191,11 +191,29 @@ function createAgentArea(ctx) {
     const r = composeEN(unit, { khan: l.khan, footer: ch.footer || '' });
     return { text: esc(r.text), left: r.left };
   }
+  // link buttons under a channel post, from channels.json "buttons": [{ "text": "...", "url": "https://..." }]
+  // (Telegram buttons only open web or t.me links: a phone number needs a link such as https://wa.me/855...)
+  function channelRows(ch) {
+    let list = Array.isArray(ch.buttons) ? ch.buttons.slice() : [];
+    if (!list.length && ch.lang === 'jp' && lineUrl()) list = [{ text: 'LINEでNickに相談', url: lineUrl() }];
+    list = list.filter((b) => b && b.text && /^https?:\/\//.test(b.url || ''));
+    return list.length ? [list.map((b) => ({ text: b.text, url: b.url }))] : null;
+  }
   async function postToChannel(ch, unit) {
-    const post = channelPost(unit, ch), text = post.text, media = unit.media || [];
+    const post = channelPost(unit, ch), text = post.text, media = unit.media || [], rows = channelRows(ch);
+    const short = text.length <= 1000;
     let r;
-    if (media.length) { r = await mediaTo(ch.chat, media, text.length <= 1000 ? text : null); if (r && r.ok !== false && text.length > 1000) r = await say(ch.chat, text); }
-    else r = await say(ch.chat, text);
+    if (media.length === 1) {
+      // one photo or video can carry the buttons itself
+      const one = media[0], cap = short ? { caption: text, parse_mode: 'HTML' } : {}, mk = rows ? { reply_markup: kb(rows) } : {};
+      r = await (one.t === 'video' ? api('sendVideo', Object.assign({ chat_id: ch.chat, video: one.id }, cap, mk)) : api('sendPhoto', Object.assign({ chat_id: ch.chat, photo: one.id }, cap, mk)));
+      if (r && r.ok !== false && !short) r = await say(ch.chat, text, rows);
+    } else if (media.length) {
+      // an album cannot carry buttons, so they go in a short message right under it
+      r = await mediaTo(ch.chat, media, short ? text : null);
+      if (r && r.ok !== false && !short) r = await say(ch.chat, text, rows);
+      else if (r && r.ok !== false && rows) await say(ch.chat, ch.lang === 'jp' ? 'ご相談はこちら' : 'Contact Nick', rows);
+    } else r = await say(ch.chat, text, rows);
     if (r && r.ok !== false) r.left = post.left;
     return r;
   }
