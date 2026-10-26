@@ -12,6 +12,8 @@ const DISCLAIMER = {
   kh: 'ផលចំណេញ និងតម្លៃគឺសម្រាប់ជាឯកសារយោងប៉ុណ្ណោះ ហើយមិនធានាប្រាក់ចំណូលនាពេលអនាគតទេ។',
 };
 const MSG = {
+  // a unit opened from a channel link: the client did not search, so no "close to your search"
+  refHead: { jp: '<b>物件の詳細</b>', en: '<b>Listing details</b>', kh: '<b>ព័ត៌មានលម្អិតអំពីអចលនទ្រព្យ</b>' },
   calcTwo: {
     jp: (v) => '<b>試算結果</b>\nお送りいただいた数値のみに基づきます\n\n年間家賃: ' + v.rent + '\n表面利回り: ' + v.gross + '%\n手取り利回りの目安: ' + v.lo + '%から' + v.hi + '%\n\n手取りは、家賃から非居住者の源泉税14%と管理費5%から10%を引いた場合です。空室と修繕の費用は含まれません。',
     en: (v) => '<b>Estimate</b>\nBased only on the numbers you sent\n\nYearly rent: ' + v.rent + '\nGross yield: ' + v.gross + '%\nNet yield, roughly: ' + v.lo + '% to ' + v.hi + '%\n\nNet means rent minus 14% non-resident tax and a 5% to 10% management fee. Vacancy and repairs are not included.',
@@ -399,7 +401,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     if (!l) return api('sendMessage', { chat_id: chatId, text: MSG.refGone[u.lang], reply_markup: { inline_keyboard: [[{ text: MSG.menuBtn[u.lang], callback_data: 'm:menu' }]] } });
     // a unit opened from a channel link shows its photos first, then the card with the buttons
     if (l.media && l.media.length) { ops.track('photos', { ref: l.id }); await sendMedia(chatId, l.media); }
-    const body = composeListings([l], u.lang, MSG.listHead[u.lang]).body;
+    const body = composeListings([l], u.lang, MSG.refHead[u.lang]).body;
     body.reply_markup.inline_keyboard = body.reply_markup.inline_keyboard.filter((row) => !row.some((b) => /^ph:/.test(b.callback_data || '')));
     body.reply_markup.inline_keyboard.push([{ text: MSG.menuBtn[u.lang], callback_data: 'm:menu' }]);
     return api('sendMessage', Object.assign({ chat_id: chatId }, body));
