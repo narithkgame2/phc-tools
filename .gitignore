@@ -1,2 +1,10 @@
 .DS_Store
 node_modules/
+
+# Secrets
+.env
+telegram-bot-staging/.env
+
+# Client data in showcase mode
+telegram-bot-staging/data/showcase/
+data/showcase/

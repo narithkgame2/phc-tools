@@ -49,6 +49,34 @@ const { syncAllChannels, searchInventory } = require('./engines/channel-syncer.j
 const { handleSearchCallback, handleSearchCommand, isSearchCallback } = require('./engines/search-concierge.js');
 const projectEngine = require('./engines/project-advisor.js');
 const roleGate = require('./engines/role-gate.js');
+const showcase = require('./engines/showcase.js');
+
+async function telegramApi(method, body) {
+  try {
+    const r = await fetch('https://api.telegram.org/bot' + token + '/' + method, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const j = await r.json();
+    if (!j.ok && /Conflict/i.test(j.description || '')) {
+      console.error('Another copy of this bot is already running with the same token.');
+    } else if (!j.ok && !/message is not modified/i.test(j.description || '')) {
+      console.error('Telegram error on ' + method + ': ' + (j.description || 'unknown'));
+    }
+    return j;
+  } catch (e) {
+    console.error('Network error on ' + method + ': ' + e.message);
+    return { ok: false };
+  }
+}
+
+const showcaseEngine = showcase.createShowcaseEngine(telegramApi);
+
+// Run showcase engine background checks every 10 minutes
+setInterval(() => showcaseEngine.runOps().catch((e) => console.error('Showcase Ops error:', e.message)), 10 * 60 * 1000);
+setInterval(() => showcaseEngine.runAgentChecks().catch((e) => console.error('Showcase Agent check error:', e.message)), 10 * 60 * 1000);
+setInterval(() => showcaseEngine.runAlerts().catch((e) => console.error('Showcase Alert error:', e.message)), 10 * 60 * 1000);
 
 // Periodic Multi-Channel Sync (every 30 minutes)
 setInterval(() => {
@@ -105,6 +133,7 @@ const ownerListingState = {};
 const leadSlaTracker = {};
 const registeredDeals = {};
 const userLanguages = {};
+const userShowcaseMode = {};
 const digestSchedule = {
   autoBroadcast: true,
   lastBroadcastWeek: null,
@@ -124,6 +153,7 @@ function loadState() {
       if (data.registeredDeals) Object.assign(registeredDeals, data.registeredDeals);
       if (data.leadSlaTracker) Object.assign(leadSlaTracker, data.leadSlaTracker);
       if (data.userLanguages) Object.assign(userLanguages, data.userLanguages);
+      if (data.userShowcaseMode) Object.assign(userShowcaseMode, data.userShowcaseMode);
       if (data.digestSchedule) Object.assign(digestSchedule, data.digestSchedule);
       console.log('💾 Loaded persistent bot state from disk successfully.');
     }
@@ -147,6 +177,7 @@ function saveState() {
       registeredDeals,
       leadSlaTracker,
       userLanguages,
+      userShowcaseMode,
       digestSchedule,
       updatedAt: new Date().toISOString()
     };
@@ -1422,6 +1453,27 @@ async function pollUpdates() {
       offset = update.update_id + 1;
 
       // ───────────────────────────────────────────────────────────
+      // 0. SHOWCASE MODE ROUTING (Public Nick_Cambodia_Bot Engine)
+      // ───────────────────────────────────────────────────────────
+      const routeResult = await showcase.handleShowcaseRoute(update, {
+        showcaseEngine,
+        userShowcaseMode,
+        userLanguages,
+        saveState,
+        getMainMenu,
+        sendTelegramMessage: async (chatId, text, reply_markup) => {
+          return fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML', reply_markup })
+          });
+        }
+      });
+      if (routeResult && routeResult.handled) {
+        continue;
+      }
+
+      // ───────────────────────────────────────────────────────────
       // 1. HANDLE INCOMING CHAT MESSAGES (/start, /inquire, text)
       // ───────────────────────────────────────────────────────────
       if (update.message && (update.message.text || update.message.caption)) {
@@ -1452,7 +1504,7 @@ async function pollUpdates() {
           return;
         }
 
-        if (text === '/showcase' || text === '/card') {
+        if (text === '/card') {
           const userLang = userLanguages[chatId] || 'EN';
           const card = getTS8Card(userLang);
           await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
