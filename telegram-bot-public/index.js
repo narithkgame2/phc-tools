@@ -107,7 +107,7 @@ async function setupProfile() {
 
 async function run() {
   const me = await api('getMe', {});
-  console.log('Nick Cambodia bot started as @' + (me.result && me.result.username) + ' (Phase 1, clients only)');
+  console.log('Nick Cambodia bot started as @' + (me.result && me.result.username) + '');
   await setupProfile();
   // Tell Nick where the bot is running each time it starts, so he knows whether the hosted copy or his Mac is answering.
   if (NICK_ID) await api('sendMessage', { chat_id: NICK_ID, text: 'Bot started on ' + require('os').hostname() + ' (@' + ((me.result && me.result.username) || '?') + ').' });

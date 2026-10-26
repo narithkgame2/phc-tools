@@ -194,7 +194,7 @@ function createAgentArea(ctx) {
   function channelPost(unit, ch) {
     const l = toListing(unit), lang = ch.lang === 'en' ? 'en' : 'jp';
     if (lang === 'jp') {
-      const r = composeJPPost(unit, { khan: l.khan, availLine: ctx.availLine || '', phone: ch.phone || '', mt: unit.mt || {} });
+      const r = composeJPPost(unit, { khan: l.khan, availLine: '', phone: ch.phone || '', mt: unit.mt || {} });
       return { text: r.text, left: r.left };
     }
     const r = composeEN(unit, { khan: l.khan, footer: ch.footer || '' });
