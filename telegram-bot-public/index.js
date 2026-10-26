@@ -89,7 +89,10 @@ async function api(method, body) {
 const listingsSource = process.env.LISTINGS_CSV_URL || path.join(__dirname, 'data', 'listings.csv');
 // The website feed: Active projects and units from propertyhubcambodia.com (public data, no key). Set WEBSITE_LISTINGS_URL=off to disable.
 const websiteFeed = process.env.WEBSITE_LISTINGS_URL === 'off' ? '' : (process.env.WEBSITE_LISTINGS_URL || 'https://www.propertyhubcambodia.com/api/bot-listings');
-const bot = createBot({ api, store, flow, nickId: NICK_ID, listingState, alertStore, testerIds, agentData, channels, places, events: eventStore, botUsername: process.env.BOT_USERNAME || 'Nick_Cambodia_Bot', isPrivate: () => { try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'mode.json'), 'utf8')).private === true; } catch (e) { return false; } }, getListings: combine(makeLoader(listingsSource, 300000, places), makeWebsiteLoader(websiteFeed, 300000, { photos: process.env.SHOW_WEBSITE_PHOTOS === '1', places, boundaries })), onError: (e) => console.error('Handler error:', e.message) });
+const { createTranslator } = require('./engines/translate.js');
+const translate = createTranslator({ url: process.env.TRANSLATE_URL, key: process.env.TRANSLATE_KEY });
+console.log('Translator for unknown lines: ' + (translate ? 'on' : 'off (set TRANSLATE_URL and TRANSLATE_KEY to switch it on)'));
+const bot = createBot({ api, translate, store, flow, nickId: NICK_ID, listingState, alertStore, testerIds, agentData, channels, places, events: eventStore, botUsername: process.env.BOT_USERNAME || 'Nick_Cambodia_Bot', isPrivate: () => { try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'mode.json'), 'utf8')).private === true; } catch (e) { return false; } }, getListings: combine(makeLoader(listingsSource, 300000, places), makeWebsiteLoader(websiteFeed, 300000, { photos: process.env.SHOW_WEBSITE_PHOTOS === '1', places, boundaries })), onError: (e) => console.error('Handler error:', e.message) });
 
 async function setupProfile() {
   const cmds = {

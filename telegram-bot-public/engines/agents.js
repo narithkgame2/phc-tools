@@ -4,7 +4,7 @@
 // channels, and every 7 days the bot asks the agent whether each unit is still available. Agents see only their own units, never a client.
 // createAgentArea(ctx) -> { handleMessage, handleCallback, listings, runChecks, isAgent, toListing }. Everything Telegram goes through ctx.api.
 const { parsePost } = require('./postparse.js');
-const { composeJP, composeJPPost, composeEN } = require('./compose.js');
+const { composeJP, composeJPPost, composeEN, sortFeatures } = require('./compose.js');
 
 const DAY = 86400000;
 const CHECK_DAYS = 7, REMIND_HOURS = 24, MAX_REMINDS = 3, MAX_MEDIA = 10;
@@ -169,12 +169,21 @@ function createAgentArea(ctx) {
         beds: d.beds, floor: d.floor || '', unitNo: d.unitNo || '', features: d.features || [], tenanted: !!d.tenanted, tenantNote: d.tenantNote || '', media: w.media || [], submittedAt: iso(), approvedAt: '', checked: '', nextCheckAt: '', askedAt: '', reminders: 0, pendingPrice: null };
       data.setUnit(ref, unit); made.push(unit);
     }
+    // lines the glossary does not know: Google translates them now, so Nick sees them on the approval card before anything is posted
+    if (ctx.translate) {
+      const unknown = sortFeatures(d.features || []).unknown;
+      if (unknown.length) {
+        const mt = await ctx.translate(unknown, [d.name, d.area]);
+        made.forEach((x) => { x.mt = mt; data.setUnit(x.ref, x); });
+      }
+    }
     u.wiz = null; ctx.saveUser(u);
     await say(chat, 'Submitted as <b>' + made.map((x) => esc(x.ref)).join(' and ') + '</b>. Nick will review it and you will get a message here.');
     if (nickId) for (const unit of made) {
       await mediaTo(nickId, unit.media);
       const dup = (await dupes(Object.assign({}, unit, { floor: unit.floor }))).filter((x) => x.id !== unit.ref);
-      await say(nickId, '<b>New unit to approve</b>\nRef ' + esc(unit.ref) + '\nAgent: ' + esc(unit.agentName) + ' (' + unit.agentId + ')\n\n' + summary(unit) + dupeLine(dup), [[btn('Approve', 'ua:' + unit.ref), btn('Reject', 'ur:' + unit.ref)]]);
+      const mtl = Object.keys(unit.mt || {}).map((en) => '• ' + esc(en) + ' → ' + esc(unit.mt[en]));
+      await say(nickId, '<b>New unit to approve</b>\nRef ' + esc(unit.ref) + '\nAgent: ' + esc(unit.agentName) + ' (' + unit.agentId + ')\n\n' + summary(unit) + dupeLine(dup) + (mtl.length ? '\n\n<b>Google translated (please check):</b>\n' + mtl.join('\n') : ''), [[btn('Approve', 'ua:' + unit.ref), btn('Reject', 'ur:' + unit.ref)]]);
       if (ctx.track) ctx.track('agent_submit', { ref: unit.ref });
     }
   }
@@ -185,7 +194,7 @@ function createAgentArea(ctx) {
   function channelPost(unit, ch) {
     const l = toListing(unit), lang = ch.lang === 'en' ? 'en' : 'jp';
     if (lang === 'jp') {
-      const r = composeJPPost(unit, { khan: l.khan, availLine: ctx.availLine || '', phone: ch.phone || '' });
+      const r = composeJPPost(unit, { khan: l.khan, availLine: ctx.availLine || '', phone: ch.phone || '', mt: unit.mt || {} });
       return { text: r.text, left: r.left };
     }
     const r = composeEN(unit, { khan: l.khan, footer: ch.footer || '' });
@@ -216,21 +225,48 @@ function createAgentArea(ctx) {
       if (media.length) r = await mediaTo(ch.chat, media, null);
       if (!media.length || (r && r.ok !== false)) r = await say(ch.chat, text, rows);
     }
-    if (r && r.ok !== false) r.left = post.left;
+    if (r && r.ok !== false) {
+      r.left = post.left;
+      // remember the message that carries the text, so a sale or a new price can update the post later
+      const msg = r.result && !Array.isArray(r.result) ? r.result : null;
+      if (msg && msg.message_id) {
+        unit.posts = (unit.posts || []).filter((x) => x.chat !== ch.chat).concat([{ chat: ch.chat, id: msg.message_id, kind: media.length === 1 && short ? 'caption' : 'text' }]);
+        data.setUnit(unit.ref, unit);
+      }
+    }
     return r;
   }
+  // a sale or a new price: the posts already in the channels are edited (banner on top, text rebuilt), buttons kept
+  function banner(unit, ch, what, old) {
+    const jp = ch.lang !== 'en', rent = unit.type === 'rent';
+    if (what === 'sold') return jp ? '🔴 <b>' + (rent ? '成約済み（賃貸）' : '成約済み') + '</b>' : '🔴 <b>' + (rent ? 'RENTED' : 'SOLD') + '</b>';
+    const down = unit.price < old;
+    return jp ? '🟢 <b>' + (down ? '価格改定' : '価格変更') + '</b>（旧価格 ' + usd(old) + '）' : '🟢 <b>' + (down ? 'PRICE REDUCED' : 'PRICE UPDATED') + '</b> (was ' + usd(old) + ')';
+  }
+  async function updatePosts(unit, what, old) {
+    let n = 0;
+    for (const p of unit.posts || []) {
+      const ch = (ctx.channels || []).find((c) => c.chat === p.chat); if (!ch) continue;
+      const text = banner(unit, ch, what, old) + '\n\n' + channelPost(unit, ch).text, rows = channelRows(ch, unit);
+      const body = Object.assign({ chat_id: p.chat, message_id: p.id, parse_mode: 'HTML' }, rows ? { reply_markup: kb(rows) } : {});
+      const r = p.kind === 'caption' ? await api('editMessageCaption', Object.assign(body, { caption: text.slice(0, 1024) })) : await api('editMessageText', Object.assign(body, { text, disable_web_page_preview: true }));
+      if (r && r.ok !== false) n++;
+    }
+    return n;
+  }
   async function afterApprove(unit) {
-    const out = [], rows = [], left = { claims: [], unknown: [] };
+    const out = [], rows = [], left = { claims: [], unknown: [], machine: [] };
     for (const [i, ch] of (ctx.channels || []).entries()) {
       if (ch.mode === 'auto') {
         const r = await postToChannel(ch, unit);
         out.push((r && r.ok === false) ? 'Could not post to ' + esc(ch.chat) + ': ' + esc(r.description || 'unknown error') + ' (is the bot an administrator there?)' : 'Posted to ' + esc(ch.chat) + '.');
-        if (r && r.left) { left.claims = left.claims.concat(r.left.claims || []); left.unknown = left.unknown.concat(r.left.unknown || []); }
+        if (r && r.left) { left.claims = left.claims.concat(r.left.claims || []); left.unknown = left.unknown.concat(r.left.unknown || []); left.machine = left.machine.concat(r.left.machine || []); }
       } else { rows.push([btn('Also post to ' + ch.chat, 'uc:' + unit.ref + ':' + i)]); out.push('Draft for ' + esc(ch.chat) + ' is ready: tap the button to post it.'); }
     }
     rows.push([btn('Prepare for the website draft', 'uw:' + unit.ref)]);
     const uniq = (a) => Array.from(new Set(a));
     if (left.claims.length) out.push('Left out on purpose (promotional claims): ' + esc(uniq(left.claims).join('; ')) + '.');
+    if (left.machine.length) out.push('Google translated, in the Japanese post: ' + esc(uniq(left.machine).join('; ')) + '.');
     if (left.unknown.length) out.push('Not translated (please translate by hand if you want them): ' + esc(uniq(left.unknown).join('; ')) + '.');
     if (ctx.botLink) out.push('Link to this unit: ' + esc(ctx.botLink(unit.ref)));
     return { text: out.join('\n'), rows };
@@ -270,10 +306,12 @@ function createAgentArea(ctx) {
   async function retire(unit, actor) {
     unit.status = 'sold'; data.setUnit(unit.ref, unit);
     const told = await ctx.tellAskersGone(unit.ref, unit.name);
+    const edited = await updatePosts(unit, 'sold');
     if (ctx.track) ctx.track('agent_sold', { ref: unit.ref });
     if (actor !== 'agent') await say(unit.agentId, esc(unit.ref) + ' was marked sold by Nick and is hidden from clients.');
     else await say(unit.agentId, esc(unit.ref) + ' is marked sold and hidden from clients. Thank you.');
-    if (nickId && actor !== 'nick') await say(nickId, '<b>' + esc(unit.ref) + '</b> ' + esc(unit.name) + ' was marked sold by ' + esc(unit.agentName) + '. Hidden from clients' + (told ? '; ' + told + ' client(s) who asked were told' : '') + '.');
+    if (nickId && actor !== 'nick') await say(nickId, '<b>' + esc(unit.ref) + '</b> ' + esc(unit.name) + ' was marked sold by ' + esc(unit.agentName) + '. Hidden from clients' + (told ? '; ' + told + ' client(s) who asked were told' : '') + (edited ? '; ' + edited + ' channel post(s) marked sold' : '') + '.');
+    unit.editedPosts = edited;
     return told;
   }
   // "SOLD TS5-6001", "TS5-6001 price reduced to $79,000", or a reply to a message that carries the Ref
@@ -298,7 +336,7 @@ function createAgentArea(ctx) {
         if (!nick && unit.agentId !== u.id) { await say(chat, 'I can only change your own units.'); return; }
         if (!(unit.status === 'active' || unit.status === 'stale')) { await say(chat, esc(unit.ref) + ' is ' + esc(unit.status) + ', so there is nothing to mark sold.'); return; }
         const told = await retire(unit, nick ? 'nick' : 'agent');
-        if (nick) await say(chat, '<b>' + esc(unit.ref) + '</b> marked sold and hidden from clients' + (told ? '; ' + told + ' client(s) who asked were told' : '') + '.');
+        if (nick) await say(chat, '<b>' + esc(unit.ref) + '</b> marked sold and hidden from clients' + (told ? '; ' + told + ' client(s) who asked were told' : '') + (unit.editedPosts ? '; ' + unit.editedPosts + ' channel post(s) marked sold' : '') + '.');
         return;
       }
       if (nick && ctx.markUnavailable) {
@@ -441,7 +479,8 @@ function createAgentArea(ctx) {
         if (unit.status === 'active' || unit.status === 'stale') {
           const old = unit.price; unit.price = price; unit.checked = iso(); unit.nextCheckAt = iso(clock() + CHECK_DAYS * DAY); unit.askedAt = ''; unit.reminders = 0; data.setUnit(unit.ref, unit);
           await say(unit.agentId, esc(unit.ref) + ' price is now ' + usd(price) + ' (set by Nick).');
-          await say(nickId, esc(unit.ref) + ' price changed from ' + usd(old) + ' to ' + usd(price) + '.');
+          const ed = await updatePosts(unit, 'price', old);
+          await say(nickId, esc(unit.ref) + ' price changed from ' + usd(old) + ' to ' + usd(price) + '.' + (ed ? ' ' + ed + ' channel post(s) updated.' : ''));
         }
       } else if (kind === 'uc') {
         const ch = (ctx.channels || [])[Number(b)];
@@ -449,7 +488,8 @@ function createAgentArea(ctx) {
       } else if (kind === 'pa' && unit.pendingPrice) {
         const old = unit.price; unit.price = unit.pendingPrice.value; unit.pendingPrice = null; unit.checked = iso(); unit.nextCheckAt = iso(clock() + CHECK_DAYS * DAY); unit.askedAt = ''; unit.reminders = 0; data.setUnit(unit.ref, unit);
         await say(unit.agentId, esc(unit.ref) + ' price is now ' + usd(unit.price) + '.');
-        await say(nickId, esc(unit.ref) + ' price changed from ' + usd(old) + ' to ' + usd(unit.price) + '.');
+        const ed = await updatePosts(unit, 'price', old);
+        await say(nickId, esc(unit.ref) + ' price changed from ' + usd(old) + ' to ' + usd(unit.price) + '.' + (ed ? ' ' + ed + ' channel post(s) updated.' : ''));
       } else if (kind === 'pr' && unit.pendingPrice) {
         unit.pendingPrice = null; data.setUnit(unit.ref, unit);
         await say(unit.agentId, 'The price change for ' + esc(unit.ref) + ' was not approved. The price stays ' + usd(unit.price) + '.');

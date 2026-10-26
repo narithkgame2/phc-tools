@@ -139,7 +139,7 @@ function parseCalc(text) {
   return parseThree(text);
 }
 
-function createBot({ api, store, flow, nickId, onError, getListings, listingState, alertStore, testerIds, isPrivate, agentData, channels, places, events, botUsername, now }) {
+function createBot({ api, store, flow, nickId, onError, getListings, listingState, alertStore, testerIds, isPrivate, agentData, channels, places, events, botUsername, now, translate }) {
   // Phase 2 agent units join the listings the Sheet and the website provide
   const baseListings = getListings || (async () => []);
   let agentArea = null;
@@ -339,7 +339,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     data: agentData || (() => { const ag = {}, un = {}; let seq = 0; return { getAgent: (k) => ag[String(k)], setAgent: (k, v) => { ag[String(k)] = v; }, deleteAgent: (k) => { delete ag[String(k)]; }, allAgents: () => Object.keys(ag).map((k) => ag[k]),
       getUnit: (k) => un[k], setUnit: (k, v) => { un[k] = v; }, allUnits: () => Object.keys(un).map((k) => un[k]), nextSeq: () => ++seq }; })(),
     getUser: (from) => user(from), saveUser: (u) => save(u), listingText: (l, lang) => listingText(l, lang), tellAskersGone,
-    track: (type, d) => ops.track(type, d), botLink, availLine: MSG.avail.jp, findDuplicates, markUnavailable });
+    track: (type, d) => ops.track(type, d), translate: translate || null, botLink, availLine: MSG.avail.jp, findDuplicates, markUnavailable });
 
   // Nick's buttons on a listing inquiry: v:<a|n|c|u>:<ref>[:<client id>]. Only Nick can use them.
   async function handleVerdict(cb) {

@@ -70,11 +70,13 @@ function composeJPPost(u, o) {
   if (u.gross || u.net) lines.push('✅ ' + [u.net ? u.net + '㎡（専有）' : '', u.gross ? u.gross + '㎡（総面積）' : ''].filter(Boolean).join(' | '));
   else if (u.sqm) lines.push('✅ ' + u.sqm + '㎡');
   if (u.tenanted) lines.push('✅ 入居者あり（賃貸中）' + (u.tenantNote ? '：' + esc(u.tenantNote) : ''));
-  f.facts.slice(0, 10).forEach((x) => lines.push('✅ ' + esc(x)));
+  // glossary lines first, then lines Google translated (o.mt: English line to Japanese), marked in Nick's approval card
+  const mt = o.mt || {}, machine = f.unknown.filter((x) => mt[x]);
+  f.facts.concat(machine.map((x) => mt[x])).slice(0, 12).forEach((x) => lines.push('✅ ' + esc(x)));
   lines.push('', '💰 ' + (rent ? '月額家賃：' : '販売価格：') + usd(u.price));
   if (o.availLine) lines.push('', '<i>' + esc(o.availLine) + '</i>');
   if (o.phone) lines.push('', '――――――――――', '📞 ' + esc(o.phone));
-  return { text: lines.join('\n'), left: { claims: f.claims, unknown: f.unknown } };
+  return { text: lines.join('\n'), left: { claims: f.claims, unknown: f.unknown.filter((x) => !mt[x]), machine } };
 }
 
 // ---- English house style

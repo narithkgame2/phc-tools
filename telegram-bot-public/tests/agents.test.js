@@ -21,7 +21,7 @@ function rig(opts) {
   const ag = {}, un = {}; let seq = 0;
   const agentData = { getAgent: (k) => ag[String(k)], setAgent: (k, v) => { ag[String(k)] = JSON.parse(JSON.stringify(v)); }, deleteAgent: (k) => { delete ag[String(k)]; }, allAgents: () => Object.keys(ag).map((k) => ag[k]),
     getUnit: (k) => (un[k] ? JSON.parse(JSON.stringify(un[k])) : undefined), setUnit: (k, v) => { un[k] = JSON.parse(JSON.stringify(v)); }, allUnits: () => Object.keys(un).map((k) => JSON.parse(JSON.stringify(un[k]))), nextSeq: () => ++seq };
-  const bot = createBot({ api, store, flow, nickId: String(NICK), agentData, channels: CHANNELS, places, getListings: async () => [], now: () => time });
+  const bot = createBot({ api, store, flow, nickId: String(NICK), agentData, channels: CHANNELS, places, getListings: async () => [], now: () => time, translate: opts.translate });
   const user = (id, lang, username) => ({ id, first_name: 'U' + id, language_code: lang || 'en', username });
   const msg = (id, extra, username) => bot.handleUpdate({ update_id: 1, message: Object.assign({ message_id: 2, chat: { id, type: 'private' }, from: user(id, 'en', username) }, extra) });
   const say = (id, text, username) => msg(id, { text }, username);
@@ -36,10 +36,10 @@ function rig(opts) {
 }
 
 // the agent sends the post (two photos with the description, plus a video), taps Done and Submit: TS5-6001 is pending
-async function submitted(r, agent) {
+async function submitted(r, agent, post) {
   agent = agent || A;
   await r.say(NICK, '/addagent ' + agent + ' Dara');
-  await r.photo(agent, 'F1', 'g1', POST); await r.photo(agent, 'F2', 'g1'); await r.video(agent, 'V1');
+  await r.photo(agent, 'F1', 'g1', post || POST); await r.photo(agent, 'F2', 'g1'); await r.video(agent, 'V1');
   await r.cb(agent, 'aw:collectdone'); await r.cb(agent, 'aw:submit');
 }
 
@@ -163,6 +163,35 @@ async function submitted(r, agent) {
     await r.say(CLIENT, '/start TS5-6001'); await r.cb(CLIENT, 'l:jp');
     const to = r.to(CLIENT), gi = to.findIndex((x) => x.method === 'sendMediaGroup'), ci = to.findIndex((x) => /TS5-6001/.test(x.body.text || ''));
     assert.ok(gi >= 0 && ci > gi, 'album before card: ' + to.map((x) => x.method).join(','));
+  });
+  await t('lines the glossary does not know are Google translated, shown to Nick before approval, and used in the Japanese post', async () => {
+    const asked = [];
+    const r = rig({ translate: async (lines) => { asked.push(...lines); return { 'Walk-in closet': 'ウォークインクローゼット' }; } });
+    await submitted(r, A, POST + '\n✅ Walk-in closet\n✅ Fully furnished');
+    assert.deepStrictEqual(asked, ['Walk-in closet'], 'only the unknown line is sent, never a known one');
+    const card = r.texts(NICK).find((x) => /New unit to approve/.test(x)); assert.ok(/Google translated \(please check\)/.test(card) && /ウォークインクローゼット/.test(card), card);
+    await r.cb(NICK, 'ua:TS5-6001');
+    const post = r.to('@Nick_Cambodia').find((x) => x.method === 'sendMessage' && x.body.reply_markup).body.text;
+    assert.ok(/✅ 家具付き/.test(post) && /✅ ウォークインクローゼット/.test(post), post);
+  });
+  await t('without a translator the line is reported, not posted', async () => {
+    const r = rig(); await submitted(r, A, POST + '\n✅ Walk-in closet'); await r.cb(NICK, 'ua:TS5-6001');
+    assert.ok(/Not translated.*Walk-in closet/.test(r.texts(NICK).join('\n')));
+  });
+  await t('sold: the posts already in the channels get a SOLD banner, buttons kept', async () => {
+    const r = rig(); await submitted(r); await r.cb(NICK, 'ua:TS5-6001'); await r.cb(NICK, 'uc:TS5-6001:1'); r.sent.length = 0;
+    await r.say(A, 'SOLD TS5-6001');
+    const ed = r.sent.filter((x) => x.method === 'editMessageText');
+    const jp = ed.find((x) => x.body.chat_id === '@Nick_Cambodia'), en = ed.find((x) => x.body.chat_id === '@NickREAKH');
+    assert.ok(jp && /^🔴 <b>成約済み<\/b>/.test(jp.body.text) && jp.body.reply_markup, 'Japanese post edited');
+    assert.ok(en && /^🔴 <b>SOLD<\/b>/.test(en.body.text), 'English post edited');
+    assert.ok(r.texts(NICK).some((x) => /2 channel post\(s\) marked sold/.test(x)));
+  });
+  await t('a new price updates the channel posts with the old price shown', async () => {
+    const r = rig(); await submitted(r); await r.cb(NICK, 'ua:TS5-6001'); r.sent.length = 0;
+    await r.say(A, 'TS5-6001 price reduced to $79,000'); await r.cb(NICK, 'pa:TS5-6001');
+    const jp = r.sent.find((x) => x.method === 'editMessageText' && x.body.chat_id === '@Nick_Cambodia');
+    assert.ok(jp && /価格改定/.test(jp.body.text) && /旧価格 \$82,000/.test(jp.body.text) && /販売価格：\$79,000/.test(jp.body.text), jp && jp.body.text);
   });
   await t('a channel the bot cannot post to is reported to Nick, the unit still goes live', async () => {
     const r = rig({ reply: (m, b) => (b.chat_id === '@Nick_Cambodia' ? { ok: false, description: 'Forbidden: bot is not a member of the channel chat' } : null) });
