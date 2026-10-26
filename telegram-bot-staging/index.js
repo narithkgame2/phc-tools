@@ -467,19 +467,23 @@ function getPurchaseGuide(lang = 'EN') {
       text: 
         `📖 <b>プノンペン コンドミニアム購入手順・諸費用ガイド</b>\n` +
         `カンボジア最大の不動産ポータル「Realestate.com.kh」公式ガイド\n\n` +
-        `外国人個人名義でのコンドミニアム（分層所有権ハードタイトル）購入は、明快な4ステップで完了します：\n\n` +
+        `外国人個人名義でのコンドミニアム（分層所有権ハードタイトル）購入手順：\n\n` +
         `<blockquote><b>【購入の4ステップ】</b>\n` +
-        `1️⃣ <b>予約（Booking）：</b> $1,000〜$2,000 USD（手付金）\n` +
-        `2️⃣ <b>契約（Contract Signing）：</b> 10%〜20%（頭金）\n` +
-        `3️⃣ <b>分割払い（Installments）：</b> 工事進捗または月額分割\n` +
-        `4️⃣ <b>所有権移転（Ownership transfer）：</b> パスポート名義で本登記</blockquote>\n\n` +
-        `<blockquote><b>【購入時の諸費用一覧（Associated Costs）】</b>\n` +
-        `▫️ <b>所有権移転税（印紙税）：</b> 4%（名義書換登記時に1回のみ）\n` +
+        `① <b>予約（Booking）：</b> 手付金 $1,000〜$2,000 USDで部屋を確保\n` +
+        `② <b>契約（Contract）：</b> 頭金 10%〜20%の支払いで売買契約を締結\n` +
+        `③ <b>分割払（Installments）：</b> 工事進捗または所定のマイルストーン払\n` +
+        `④ <b>引渡・登記（Ownership）：</b> パスポート名義でハードタイトル本登記</blockquote>\n\n` +
+        `<blockquote><b>【海外からの遠隔購入について】</b>\n` +
+        `▫️ <b>原本署名：</b> 電子署名は不可。現物原本に手書き署名を行います\n` +
+        `▫️ <b>国際クーリエ便：</b> DHL等で原本を郵送し、売主・開発会社も署名・捺印\n` +
+        `▫️ <b>委任状（POA）：</b> 代理人による署名も可能ですが手続きが増えます</blockquote>\n\n` +
+        `<blockquote><b>【購入時の諸費用一覧】</b>\n` +
+        `▫️ <b>所有権移転税（印紙税）：</b> 4%（名義書換登記時に1回のみ納付）\n` +
         `▫️ <b>登記行政諸手数料：</b> 約 $500〜$1,000 USD\n` +
-        `▫️ <b>管理準備金・修繕積立金：</b> 約 $10〜$20/㎡（引渡し時一括）\n` +
+        `▫️ <b>管理準備金・修繕積立金：</b> 約 $10〜$20/㎡（引渡時一括）\n` +
         `▫️ <b>仲介手数料（買主側）：</b> <b>0円・完全無料</b>（売主/開発元負担）\n` +
-        `▫️ <b>キャピタルゲイン税：</b> 外国人個人名義は現在 <b>0%（非課税）</b></blockquote>\n\n` +
-        `💡 <i>Realestate.com.khの専任チームが契約書の確認から現地登記までワンストップで伴走いたします。</i>`,
+        `▫️ <b>キャピタルゲイン税：</b> 譲渡益に対し20%（2027年1月予定、現在施行延期中）</blockquote>\n\n` +
+        `専任チームが契約書の確認から現地登記まで伴走いたします。`,
       reply_markup: {
         inline_keyboard: [
           [{ text: '💬 Nickへ購入相談 (Telegram)', url: 'https://t.me/Nick_REAKH' }],
@@ -500,17 +504,21 @@ function getPurchaseGuide(lang = 'EN') {
       `Official Step-by-Step Purchasing Guide from Realestate.com.kh\n\n` +
       `Buying foreign freehold strata property in Cambodia is straightforward across 4 defined stages:\n\n` +
       `<blockquote><b>【4-STEP PURCHASE PROCESS】</b>\n` +
-      `1️⃣ <b>Booking:</b> $1,000 – $2,000 USD deposit\n` +
-      `2️⃣ <b>Contract Signing:</b> 10% – 20% down payment\n` +
-      `3️⃣ <b>Installments:</b> Construction stage or cash flow\n` +
-      `4️⃣ <b>Ownership transfer:</b> Issued under your personal passport</blockquote>\n\n` +
+      `① <b>Booking:</b> $1,000 – $2,000 USD deposit to secure the unit\n` +
+      `② <b>Contract:</b> 10% – 20% down payment upon contract signing\n` +
+      `③ <b>Installments:</b> Milestone or construction stage schedule\n` +
+      `④ <b>Ownership:</b> Hard title registered under your passport</blockquote>\n\n` +
+      `<blockquote><b>【BUYING REMOTELY FROM ABROAD】</b>\n` +
+      `▫️ <b>Physical Signature:</b> Signed by hand on original documents (no e-signature)\n` +
+      `▫️ <b>International Courier:</b> Sent via courier such as DHL for developer signature\n` +
+      `▫️ <b>Power of Attorney:</b> Optional via legal proxy, but requires formal notarization</blockquote>\n\n` +
       `<blockquote><b>【ASSOCIATED CLOSING COSTS】</b>\n` +
       `▫️ <b>Property Transfer Tax (Stamp Duty):</b> 4% (paid once upon title transfer)\n` +
-      `▫️ <b>Cadastral Legal & Registration Fee:</b> ~$500 – $1,000 USD\n` +
+      `▫️ <b>Cadastral Registration Fee:</b> ~$500 – $1,000 USD\n` +
       `▫️ <b>Maintenance Sinking Fund:</b> ~$10 – $20/sqm (one-time upon handover)\n` +
       `▫️ <b>Buyer Commission:</b> <b>$0 (Zero Fee)</b> — 100% developer/seller paid\n` +
-      `▫️ <b>Capital Gains Tax:</b> 20% of the taxable gain, scheduled from January 2027 (may change)</blockquote>\n\n` +
-      `💡 <i>Realestate.com.kh coordinates complete contract verification, escrow transfers, and Cadastral title registration.</i>`,
+      `▫️ <b>Capital Gains Tax:</b> 20% of taxable gain, scheduled from January 2027 (postponed)</blockquote>\n\n` +
+      `Our advisory desk assists with contract review and Cadastral title registration.`,
     reply_markup: {
       inline_keyboard: [
         [{ text: '💬 Consult with us', url: 'https://t.me/Nick_REAKH' }],
@@ -540,10 +548,13 @@ function getLegalGuideMenu(lang = 'EN') {
             { text: '🏷️ 税制・登記費用（印紙税4%）', callback_data: 'legal_taxes' }
           ],
           [
-            { text: '💸 国際送金・米ドル決済', callback_data: 'legal_transfers' },
-            { text: '🔑 現地賃貸管理・家賃送金', callback_data: 'legal_management' }
+            { text: '✈️ 海外からの遠隔購入手順', callback_data: 'legal_abroad' },
+            { text: '💸 国際送金・米ドル決済', callback_data: 'legal_transfers' }
           ],
-          [{ text: '🔙 メインメニュー', callback_data: 'menu_main' }]
+          [
+            { text: '🔑 現地賃貸管理・家賃送金', callback_data: 'legal_management' },
+            { text: '🔙 メインメニュー', callback_data: 'menu_main' }
+          ]
         ]
       }
     };
@@ -562,10 +573,13 @@ function getLegalGuideMenu(lang = 'EN') {
           { text: '🏷️ Taxes & Fees', callback_data: 'legal_taxes' }
         ],
         [
-          { text: '💸 Bank Wires & USDT', callback_data: 'legal_transfers' },
-          { text: '🔑 Turnkey Management', callback_data: 'legal_management' }
+          { text: '✈️ Buying from Abroad', callback_data: 'legal_abroad' },
+          { text: '💸 Bank Wires & Currency', callback_data: 'legal_transfers' }
         ],
-        [{ text: '🔙 Main Menu', callback_data: 'menu_main' }]
+        [
+          { text: '🔑 Turnkey Management', callback_data: 'legal_management' },
+          { text: '🔙 メインメニュー', callback_data: 'menu_main' }
+        ]
       ]
     }
   };
@@ -1320,6 +1334,13 @@ async function checkSlaEscalations() {
 
   for (const [id, lead] of Object.entries(leadSlaTracker)) {
     if (lead && lead.status === 'pending' && !lead.escalated && (now - lead.createdAt >= SLA_LIMIT_MS)) {
+      // Do not send SLA escalations for Nick's own test inquiries (client id 353195979)
+      if (String(lead.userId) === '353195979') {
+        lead.escalated = true;
+        saveState();
+        continue;
+      }
+
       lead.escalated = true;
       saveState();
 
@@ -1331,7 +1352,7 @@ async function checkSlaEscalations() {
         `▫️ <b>Inquiry Type:</b> ${lead.type || 'Buyer Inquiry'}\n` +
         `▫️ <b>Pending Since:</b> ${elapsedMins} minutes ago\n` +
         `▫️ <b>Current Status:</b> Response Required\n\n` +
-        `<blockquote>Speed-to-lead benchmark: Contacts initiated within 5 minutes convert at 78%. After 15 minutes, conversion drops below 12%.</blockquote>\n\n` +
+        `<blockquote>Inquiry is pending direct outreach. Early response ensures the highest engagement.</blockquote>\n\n` +
         `Tap below to message the client:`;
 
       const keyboard = {
@@ -1860,7 +1881,7 @@ async function pollUpdates() {
             `▫️ <b>Target Budget:</b> $99,000 USD\n` +
             `▫️ <b>Elapsed:</b> 17 minutes (Benchmark: &lt; 15 mins)\n` +
             `▫️ <b>Status:</b> Response Required\n\n` +
-            `<blockquote>Speed-to-lead benchmark: contacts initiated within 5 minutes convert at 78%. After 15 minutes, conversion drops below 12%.</blockquote>`;
+            `<blockquote>Inquiry is pending direct outreach. Early response ensures the highest engagement.</blockquote>`;
 
           const urgentKeyboard = {
             inline_keyboard: [
@@ -4287,17 +4308,17 @@ async function pollUpdates() {
             `<blockquote>💰 <b>公定税務スケジュール：</b>\n` +
             `▫️ <b>所有権移転税（印紙税）：</b> 4%（ハードタイトル名義書換時に1回のみ納付）\n` +
             `▫️ <b>固定資産税：</b> 年0.1%（物件評価額の80%に対して課税。2LDKコンドミニアムで年間約$50〜$100程度）\n` +
-            `▫️ <b>キャピタルゲイン税：</b> 外国人個人名義は現在 <b>0%（非課税）</b>\n` +
+            `▫️ <b>キャピタルゲイン税：</b> 譲渡益に対し20%（2027年1月導入予定、現在施行延期中）\n` +
             `▫️ <b>賃料源泉税：</b> 非居住者は14%（通常テナント負担または管理経費控除で相殺）</blockquote>\n\n` +
-            `💡 <i>Realestate.com.khが納税申告および名義書換手続きをワンストップで代行します。</i>` :
+            `専任スタッフが納税申告および名義書換手続きを確実にサポートいたします。` :
             `🏷️ <b>TAXES & GOVERNMENT CLOSING FEES</b>\n\n` +
             `Cambodia offers one of the most investor-friendly tax regimes globally:\n\n` +
             `<blockquote>💰 <b>Official Tax Schedule:</b>\n` +
             `▫️ <b>Property Transfer Tax (Stamp Duty):</b> 4% of Cadastral assessed value (paid once upon hard title transfer).\n` +
             `▫️ <b>Annual Property Tax:</b> 0.1% on properties valued above ~$25,000 USD (typically only $50–$100/yr for a 2BR condo).\n` +
-            `▫️ <b>Capital Gains Tax:</b> 20% of the taxable gain, scheduled from January 2027 (may change).\n` +
+            `▫️ <b>Capital Gains Tax:</b> 20% of taxable gain, scheduled from January 2027 (postponed).\n` +
             `▫️ <b>Rental Withholding Tax:</b> Non-residents pay 14% withholding.</blockquote>\n\n` +
-            `💡 <i>Realestate.com.kh prepares complete tax clearance paperwork on your behalf.</i>`;
+            `Our advisory desk prepares complete tax clearance paperwork on your behalf.`;
 
           const keyboard = isJP ? {
             inline_keyboard: [
@@ -4334,6 +4355,69 @@ async function pollUpdates() {
           });
         }
 
+        else if (dataStr === 'legal_abroad') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+
+          const userLang = userLanguages[msg.chat.id] || 'EN';
+          const isJP = userLang === 'JP';
+          const text = isJP ?
+            `✈️ <b>海外からの遠隔購入手順（日本・海外在住の方向け）</b>\n\n` +
+            `カンボジアにお越しいただくことなく、日本や海外から安心してご購入いただけます：\n\n` +
+            `<blockquote><b>【原本署名と送付の流れ】</b>\n` +
+            `① <b>売買契約書の作成：</b> 部屋の選定・予約後、開発元または売主が契約書を作成\n` +
+            `② <b>原本への手書き自筆署名：</b> 電子署名は認められていません。届いた原本書類に自筆で署名します\n` +
+            `③ <b>国際クーリエ送付：</b> DHL等で原本をカンボジアへ返送し、開発元・売主も原本に署名・捺印\n` +
+            `④ <b>ハードタイトル本登記：</b> 竣工・引渡時に個人パスポート番号で国土省に登記</blockquote>\n\n` +
+            `<blockquote>委任状（Power of Attorney）による代理人署名も可能ですが、手続きがより煩雑になるため原本郵送が一般的です。</blockquote>\n\n` +
+            `専任スタッフが原本の手配から国際郵送まで確実にサポートいたします。` :
+            `✈️ <b>BUYING FROM ABROAD (REMOTE ACQUISITION GUIDE)</b>\n\n` +
+            `You can purchase verified strata freehold property in Phnom Penh from anywhere in the world:\n\n` +
+            `<blockquote><b>【Original Document Execution Process】</b>\n` +
+            `① <b>Sales Agreement Issued:</b> Once unit is reserved, developer or seller drafts formal contract\n` +
+            `② <b>Physical Hand Signature:</b> Signed by hand on original documents. Cambodian property law does not accept electronic signatures\n` +
+            `③ <b>International Courier:</b> Original contracts sent via courier such as DHL, and developer or seller signs them too\n` +
+            `④ <b>Title Registration:</b> Hard title is registered directly under your personal passport at handover</blockquote>\n\n` +
+            `<blockquote>A Power of Attorney (POA) can appoint a local legal proxy to sign on your behalf, but is more involved due to notarization requirements. Direct courier of original documents is the standard method.</blockquote>\n\n` +
+            `Our advisory desk assists with contract handling and courier coordination at every step.`;
+
+          const keyboard = isJP ? {
+            inline_keyboard: [
+              [{ text: '💬 Nickへ直接相談', url: 'https://t.me/Nick_REAKH' }],
+              [
+                { text: '📜 外国人所有法', callback_data: 'legal_strata' },
+                { text: '🏷️ 税制・登記費用', callback_data: 'legal_taxes' }
+              ],
+              [
+                { text: '🔙 法務ガイド目次', callback_data: 'legal_back' },
+                { text: 'メインメニュー', callback_data: 'menu_main' }
+              ]
+            ]
+          } : {
+            inline_keyboard: [
+              [{ text: '💬 Consult with us', url: 'https://t.me/Nick_REAKH' }],
+              [
+                { text: '📜 Strata Title Law', callback_data: 'legal_strata' },
+                { text: '🏷️ Taxes & Fees', callback_data: 'legal_taxes' }
+              ],
+              [
+                { text: '🔙 Legal Guide Menu', callback_data: 'legal_back' },
+                { text: 'Main Menu', callback_data: 'menu_main' }
+              ]
+            ]
+          };
+
+          await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id, message_id: msg.message_id, text, parse_mode: 'HTML',
+              reply_markup: keyboard
+            })
+          });
+        }
+
         else if (dataStr === 'legal_transfers') {
           await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -4346,14 +4430,14 @@ async function pollUpdates() {
             `💸 <b>国際銀行送金および米ドル決済（為替リスクゼロ）</b>\n\n` +
             `<blockquote>🌐 <b>送金および通貨決済フレームワーク：</b>\n` +
             `▫️ <b>米ドル流通経済：</b> カンボジアは国内全域で米ドル（USD）が実質基軸通貨として流通。為替損失や現地通貨下落のリスクがありません。\n` +
-            `▫️ <b>SWIFT国際電信送金：</b> 売買契約書に基づき、大手商業銀行（ABA Bank、カナディア銀行等）の開発業者エスクロー口座へ直接海外送金可能。\n` +
-            `▫️ <b>暗号資産（USDT）決済：</b> 法令を遵守したステーブルコイン（USDT）によるエスクロー決済もサポート。\n` +
+            `▫️ <b>SWIFT国際電信送金：</b> 売買契約書に基づき、大手商業銀行（ABA Bank、カナディア銀行等）の開発業者プロジェクト口座へ直接海外送金可能。\n` +
+            `▫️ <b>暗号資産（USDT）決済：</b> 一部開発業者でステーブルコイン（USDT）による決済も相談可能。\n` +
             `▫️ <b>資金の海外回収：</b> 外国為替法に基づき、家賃収入や売却益は商業銀行を通じて自由かつ無制限に日本や海外口座へ送金・回収可能です。</blockquote>` :
             `💸 <b>INTERNATIONAL BANK WIRE & DIGITAL ASSETS</b>\n\n` +
             `<blockquote>🌐 <b>Remittance & Currency Framework:</b>\n` +
             `▫️ <b>USD-Based Economy:</b> Cambodia operates in United States Dollars (USD) with zero currency depreciation risk.\n` +
-            `▫️ <b>Telegraphic Transfers (SWIFT):</b> Overseas investors can wire purchase funds directly to developer escrow accounts or Realestate.com.kh partner commercial banks (ABA Bank, Canadia Bank) with your sales contract.\n` +
-            `▫️ <b>Digital Currency / USDT:</b> Compliant escrow settlements via USDT (Tether) supported.\n` +
+            `▫️ <b>Telegraphic Transfers (SWIFT):</b> Overseas investors can wire purchase funds directly to developer project accounts or partner commercial banks (ABA Bank, Canadia Bank) with your sales contract.\n` +
+            `▫️ <b>Digital Currency / USDT:</b> Compliant settlements via USDT supported by select developers.\n` +
             `▫️ <b>Fund Repatriation:</b> Under the Law on Foreign Exchange, capital, rental income, and profits can be freely remitted abroad.</blockquote>`;
 
           const keyboard = isJP ? {
