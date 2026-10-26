@@ -16,7 +16,7 @@ const POST = 'Time Square 5, 1 bedroom corner unit. 32 sqm net / 41 sqm gross. F
 function rig(opts) {
   opts = opts || {};
   const sent = [], db = {}; let time = T0;
-  const api = async (method, body) => { sent.push({ method, body }); return (opts.reply && opts.reply(method, body)) || { ok: true }; };
+  const api = async (method, body) => { sent.push({ method, body }); return (opts.reply && opts.reply(method, body)) || { ok: true, result: { message_id: sent.length + 100 } }; };
   const store = { get: (k) => db[String(k)], set: (k, v) => { db[String(k)] = JSON.parse(JSON.stringify(v)); }, delete: (k) => { delete db[String(k)]; }, all: () => Object.keys(db).map((k) => db[k]) };
   const ag = {}, un = {}; let seq = 0;
   const agentData = { getAgent: (k) => ag[String(k)], setAgent: (k, v) => { ag[String(k)] = JSON.parse(JSON.stringify(v)); }, deleteAgent: (k) => { delete ag[String(k)]; }, allAgents: () => Object.keys(ag).map((k) => ag[k]),
@@ -70,8 +70,9 @@ async function submitted(r, agent) {
   await t('send the post: an album is acknowledged once, the bot reads it and asks nothing when everything is there', async () => {
     const r = rig(); await r.say(NICK, '/addagent 700001 Dara');
     await r.photo(A, 'F1', 'g1', POST); await r.photo(A, 'F2', 'g1'); await r.video(A, 'V1');
-    const got = r.texts(A).filter((x) => /Received/.test(x)); assert.strictEqual(got.length, 2, 'one reply for the album, one for the video: ' + got.join('|'));
-    assert.ok(/Received: 2 photos and 1 video and the description/.test(got.pop()));
+    const got = r.sent.filter((x) => x.method === 'sendMessage' && x.body.chat_id === A && /Received/.test(x.body.text)).map((x) => x.body.text); assert.strictEqual(got.length, 2, 'one summary for the album, one for the video: ' + got.join('|'));
+    const edits = r.sent.filter((x) => x.method === 'editMessageText' && x.body.chat_id === A); assert.ok(edits.length === 1 && /Received: 2 photos and the description/.test(edits[0].body.text), 'the album summary is updated, not left stale');
+    assert.ok(/Received: 1 photo and 1 video and the description|Received: 2 photos and 1 video and the description/.test(r.texts(A).filter((x) => /Received/.test(x)).pop()));
     await r.cb(A, 'aw:collectdone');
     const read = r.texts(A).find((x) => /I read your post/.test(x)); assert.ok(/Time Square 5/.test(read) && /sale \$82,000/.test(read), read);
     const confirm = r.last(A); assert.ok(/Check your unit/.test(confirm.body.text) && /32 sqm net \/ 41 sqm gross/.test(confirm.body.text) && /floor 15/.test(confirm.body.text) && /1 bedroom/.test(confirm.body.text) && /Area: BKK1/.test(confirm.body.text) && /2 photos and 1 video/.test(confirm.body.text));

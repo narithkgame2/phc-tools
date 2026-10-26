@@ -126,11 +126,17 @@ function createAgentArea(ctx) {
     if (m.photo && m.photo.length && room > 0) { w.media.push({ t: 'photo', id: m.photo[m.photo.length - 1].file_id }); added = true; }
     if (m.video && m.video.file_id && w.media.length < MAX_MEDIA) { w.media.push({ t: 'video', id: m.video.file_id }); added = true; }
     if (body) w.texts.push(body);
-    const quiet = m.media_group_id && w.lastGroup === m.media_group_id && w.media.length < MAX_MEDIA;
+    const same = m.media_group_id && w.lastGroup === m.media_group_id;
     w.lastGroup = m.media_group_id || '';
-    ctx.saveUser(u);
-    if (quiet) return;
-    return say(chat, 'Received: ' + counts(w.media) + (w.texts.length ? ' and the description' : '') + '. Send more if you have it, then tap Done.' + (added || body ? '' : ''), [[btn('Done', 'aw:collectdone')], cancelRow]);
+    const text = 'Received: ' + counts(w.media) + (w.texts.length ? ' and the description' : '') + '. Send more if you have it, then tap Done.';
+    const rows = [[btn('Done', 'aw:collectdone')], cancelRow];
+    // the rest of an album arrives as separate messages: update the one summary instead of sending a stale count
+    if (same && w.sumMsg) {
+      ctx.saveUser(u);
+      return api('editMessageText', { chat_id: chat, message_id: w.sumMsg, text, parse_mode: 'HTML', reply_markup: kb(rows) }).catch(() => {});
+    }
+    const sent = await say(chat, text, rows);
+    w.sumMsg = sent && sent.result && sent.result.message_id; ctx.saveUser(u);
   }
   async function readPost(chat, u) {
     const w = u.wiz, r = parsePost(w.texts.join('\n'), places);
