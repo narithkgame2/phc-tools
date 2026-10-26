@@ -158,15 +158,17 @@ function planLine(l, o, state) {
 }
 function mapTitleWords(words) {
   if (!words) return '';
+  // the words keep the order Nick wrote them in ("Studio for Sale" is スタジオ・売出)
   let w = ' ' + words.toLowerCase().replace(/\s+/g, ' ') + ' ';
-  const out = [];
-  const bed = w.match(/\s(\d+)\s*-?\s*(?:br|bed(?:room)?s?)\s/);
-  if (bed) { out.push(bed[1] + 'ベッドルーム'); w = w.replace(bed[0], ' '); }
-  Object.keys(TITLE_WORDS).sort((a, b) => b.length - a.length).forEach((k) => {
-    const re = new RegExp('\\s' + k.replace(/[-]/g, '\\-') + '\\s');
-    if (re.test(w)) { if (TITLE_WORDS[k]) out.push(TITLE_WORDS[k]); w = w.replace(re, ' '); }
+  const hits = [];
+  const bed = w.match(/\s(\d+)\s*-?\s*(?:br|bed(?:room)?s?)(?=\s)/);
+  if (bed) { hits.push([bed.index, bed[1] + 'ベッドルーム']); w = w.slice(0, bed.index) + ' '.repeat(bed[0].length) + w.slice(bed.index + bed[0].length); }
+  Object.keys(TITLE_WORDS).sort((x, y) => y.length - x.length).forEach((k) => {
+    const re = new RegExp('\\s' + k.replace(/[-]/g, '\\-') + '(?=\\s)');
+    const m = w.match(re);
+    if (m) { if (TITLE_WORDS[k]) hits.push([m.index, TITLE_WORDS[k]]); w = w.slice(0, m.index) + ' '.repeat(m[0].length) + w.slice(m.index + m[0].length); }
   });
-  return w.trim() ? null : out.join('・');
+  return w.trim() ? null : hits.sort((x, y) => x[0] - y[0]).map((h) => h[1]).join('・');
 }
 
 // Lines that need the translator (for the Apps Script call), before the post can be built.

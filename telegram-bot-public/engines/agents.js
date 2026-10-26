@@ -340,7 +340,7 @@ function createAgentArea(ctx) {
     const told = await ctx.tellAskersGone(unit.ref, unit.name);
     const edited = await updatePosts(unit, 'sold');
     if (ctx.track) ctx.track('agent_sold', { ref: unit.ref });
-    if (actor !== 'agent') await say(unit.agentId, esc(unit.ref) + ' was marked sold by Nick and is hidden from clients.');
+    if (actor !== 'agent' && !isNick(unit.agentId)) await say(unit.agentId, esc(unit.ref) + ' was marked sold by Nick and is hidden from clients.');
     else await say(unit.agentId, esc(unit.ref) + ' is marked sold and hidden from clients. Thank you.');
     if (nickId && actor !== 'nick') await say(nickId, '<b>' + esc(unit.ref) + '</b> ' + esc(unit.name) + ' was marked sold by ' + esc(unit.agentName) + '. Hidden from clients' + (told ? '; ' + told + ' client(s) who asked were told' : '') + (edited ? '; ' + edited + ' channel post(s) marked sold' : '') + '.');
     unit.editedPosts = edited;
