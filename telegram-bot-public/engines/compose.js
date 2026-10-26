@@ -49,6 +49,7 @@ function composeJP(o) {
   if (f.facts.length) parts.push('', '<b>特徴</b>', f.facts.map((x) => '・' + x).join('\n'));
   parts.push('', '<i>' + o.availLine + '</i>');
   const links = [];
+  if (o.phone) links.push('📞 ' + o.phone);
   if (o.botLink) links.push('<a href="' + o.botLink + '">ボットで条件に合う物件を探す</a>');
   if (o.lineUrl) links.push('<a href="' + o.lineUrl + '">LINEでNickに相談</a>');
   if (links.length) parts.push(links.join('\n'));

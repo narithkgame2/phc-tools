@@ -185,7 +185,7 @@ function createAgentArea(ctx) {
   function channelPost(unit, ch) {
     const l = toListing(unit), lang = ch.lang === 'en' ? 'en' : 'jp';
     if (lang === 'jp') {
-      const r = composeJP({ card: ctx.listingText(l, 'jp'), features: unit.features, availLine: ctx.availLine || '', lineUrl: lineUrl(), botLink: ctx.botLink ? ctx.botLink(unit.ref) : '' });
+      const r = composeJP({ card: ctx.listingText(l, 'jp'), features: unit.features, availLine: ctx.availLine || '', lineUrl: lineUrl(), phone: ch.phone || '', botLink: ctx.botLink ? ctx.botLink(unit.ref) : '' });
       return { text: r.text, left: r.left };
     }
     const r = composeEN(unit, { khan: l.khan, footer: ch.footer || '' });
