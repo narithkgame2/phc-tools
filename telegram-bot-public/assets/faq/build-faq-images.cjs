@@ -34,7 +34,7 @@ h1{font-size:78px;line-height:1.2;font-weight:900;margin-top:20px}
 .brand{font-size:32px;font-weight:900;color:#1F5641}
 .small{font-size:22px;color:#6A746F;line-height:1.5}
 `;
-const foot = (disc) => `<div class="foot"><div class="brand">NICK | カンボジア不動産投資</div><div class="small">${SRC}</div>${disc ? `<div class="small">${DISC}</div>` : ''}</div>`;
+const foot = (disc, noSource) => `<div class="foot"><div class="brand">NICK | カンボジア不動産投資</div>${noSource ? '' : `<div class="small">${SRC}</div>`}${disc ? `<div class="small">${DISC}</div>` : ''}</div>`;
 const page = (body) => `<!doctype html><html lang="ja"><head><meta charset="utf-8"><style>${css}</style></head><body>${body}</body></html>`;
 const item = (n, t, v) => `<div class="item"><div class="num">${n}</div><div><div class="t">${t}</div>${v ? `<div class="v">${v}</div>` : ''}</div></div>`;
 const row = (l, r) => `<div class="row"><span class="l">${l}</span><span class="r">${r}</span></div>`;
@@ -84,6 +84,16 @@ const pages = {
       <div class="tile"><span class="l">空室</span><span class="r">年に約10%<small>入居者の入れ替わり</small></span></div>
       <div class="formula">手取り ＝ 家賃 － 税金 － 管理費 － 空室</div>
     </div>${foot(true)}`),
+  'faq-05-abroad': page(`
+    <div class="kicker">よくある質問 05</div>
+    <h1>海外からでも<br>購入できます</h1>
+    <div class="lead">現地に来なくても大丈夫です</div>
+    <div class="main">
+      ${item(1, 'やり取りはオンラインで', '物件選び、ご相談、送金まで')}
+      ${item(2, '契約書は原本に署名', '電子署名は使えません')}
+      ${item(3, '原本は国際宅配便で', 'DHLなどで書類をやり取り')}
+      <div class="note">※ 価格と家賃は、通常、米ドルで取引されます</div>
+    </div>${foot(false, true)}`), // facts from Nick, not from the guide
 };
 
 (async () => {
