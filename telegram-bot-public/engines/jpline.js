@@ -135,7 +135,7 @@ function planLine(l, o, state) {
     const [name, ...rest] = t.split('|');
     const words = rest.join(' ').trim();
     const mapped = mapTitleWords(words);
-    return mapped !== null ? { out: name.trim() + (mapped ? ' | ' + mapped : '') } : { name: name.trim(), google: words, title: true };
+    return mapped !== null ? { out: name.trim() + (mapped ? ' | ' + mapped : ''), heading: true } : { name: name.trim(), google: words, title: true, heading: true };
   }
   const bm = t.match(BULLET);
   const icon = bm ? (TICKS.test(bm[1]) ? (o.bullet || '✅') : bm[1]) : '';
