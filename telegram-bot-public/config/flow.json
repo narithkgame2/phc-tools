@@ -1094,7 +1094,7 @@
    "id": "faq1",
    "flow": "FAQ",
    "title": "FAQ: Foreign ownership",
-   "text": "<b>Foreigners can own property</b>\nThere are 3 rules.\n\n<b>1. A unit above the ground floor</b>\nThe ground floor cannot be in a foreigner's name\n\n<b>2. Up to 70% of a building</b>\nCheck how much foreign quota is left\n\n<b>3. A strata title is required</b>\nThe national ownership certificate\n\n<i>Foreigners cannot own land in their own name.</i>",
+   "text": "<b>Foreigners can own property</b>\n\n▫️ <b>Floor:</b> a unit above the ground floor\n▫️ <b>Foreign quota:</b> up to 70% of a building\n▫️ <b>Title:</b> a strata title is required\n\n<blockquote>Foreigners cannot own land in their own name.</blockquote>\nAsk Nick on LINE for the details.",
    "buttons": [
     {
      "l": "Message Nick on LINE",
@@ -1112,14 +1112,14 @@
    "note": "Facts from the website FAQ. Japanese needs a native review. Khmer shows English for now.",
    "tr": {
     "jp": {
-     "t": "<b>外国人も所有できます</b>\n3つのルールがあります。\n\n<b>① 地上階より上の部屋</b>\n地上階は、本人名義にできません\n\n<b>② 外国人枠は1棟の70%まで</b>\n購入前に、残りの枠を確認します\n\n<b>③ ストラタタイトルが必要</b>\n国に登録される権利証です\n\n<i>※ 土地は、外国人の名義では所有できません</i>",
+     "t": "<b>外国人も所有できます</b>\n\n▫️ <b>階数：</b>地上階より上の部屋\n▫️ <b>外国人枠：</b>1棟の70%まで\n▫️ <b>権利証：</b>ストラタタイトルが必要\n\n<blockquote>土地は、外国人の名義では所有できません。</blockquote>\n詳しくはLINEでご相談ください。",
      "b": [
       "LINEでNickに相談",
       "戻る"
      ]
     },
     "kh": {
-     "t": "<b>Foreigners can own property</b>\nThere are 3 rules.\n\n<b>1. A unit above the ground floor</b>\nThe ground floor cannot be in a foreigner's name\n\n<b>2. Up to 70% of a building</b>\nCheck how much foreign quota is left\n\n<b>3. A strata title is required</b>\nThe national ownership certificate\n\n<i>Foreigners cannot own land in their own name.</i>",
+     "t": "<b>Foreigners can own property</b>\n\n▫️ <b>Floor:</b> a unit above the ground floor\n▫️ <b>Foreign quota:</b> up to 70% of a building\n▫️ <b>Title:</b> a strata title is required\n\n<blockquote>Foreigners cannot own land in their own name.</blockquote>\nAsk Nick on LINE for the details.",
      "b": [
       "និយាយជាមួយ Nick តាម LINE",
       "ត្រឡប់ក្រោយ"
@@ -1134,7 +1134,7 @@
    "id": "faq2",
    "flow": "FAQ",
    "title": "FAQ: Extra costs",
-   "text": "<b>Costs beyond the price</b>\n\n<blockquote><b>When you buy</b>\nBooking fee: <b>$500 to $2,000</b>\nDown payment: <b>20% to 30%</b>\nTransfer tax: <b>4%</b>\nLawyer: <b>0.5% to 1%</b>\nFurniture: <b>from $5,000</b></blockquote>\n<blockquote><b>While you own it</b>\nProperty tax: <b>0.1% a year</b>\nBuilding management: <b>$1 to $2 per sqm a month</b></blockquote>\n<i>Nick confirms the exact figures for each project.</i>",
+   "text": "<b>Costs beyond the price</b>\n\n<b>When you buy</b>\n▫️ <b>Booking fee:</b> $500 to $2,000\n▫️ <b>Down payment:</b> 20% to 30%\n▫️ <b>Transfer tax:</b> 4%\n▫️ <b>Lawyer:</b> 0.5% to 1%\n▫️ <b>Furniture:</b> from $5,000\n\n<b>While you own it</b>\n▫️ <b>Property tax:</b> 0.1% a year\n▫️ <b>Building management:</b> $1 to $2 per sqm a month\n\n<blockquote>Some developers pay the transfer tax as a promotion.</blockquote>\nNick confirms the exact figures for each project.",
    "buttons": [
     {
      "l": "Message Nick on LINE",
@@ -1152,14 +1152,14 @@
    "note": "Facts from the website FAQ. Japanese needs a native review. Khmer shows English for now.",
    "tr": {
     "jp": {
-     "t": "<b>物件価格以外の費用</b>\n\n<blockquote><b>購入時</b>\n予約金：<b>500ドルから2,000ドル</b>\n頭金：<b>20%から30%</b>\n移転税：<b>4%</b>\n弁護士：<b>0.5%から1%</b>\n家具：<b>5,000ドルから</b></blockquote>\n<blockquote><b>保有中</b>\n固定資産税：<b>年0.1%</b>\n建物の管理費：<b>1㎡あたり月1ドルから2ドル</b></blockquote>\n<i>金額は物件ごとに確認してお伝えします。</i>",
+     "t": "<b>物件価格以外の費用</b>\n\n<b>購入時</b>\n▫️ <b>予約金：</b>500ドルから2,000ドル\n▫️ <b>頭金：</b>20%から30%\n▫️ <b>移転税：</b>4%\n▫️ <b>弁護士：</b>0.5%から1%\n▫️ <b>家具：</b>5,000ドルから\n\n<b>保有中</b>\n▫️ <b>固定資産税：</b>年0.1%\n▫️ <b>建物の管理費：</b>1㎡あたり月1ドルから2ドル\n\n<blockquote>移転税をデベロッパーが負担するキャンペーンもあります。</blockquote>\n金額は物件ごとに確認してお伝えします。",
      "b": [
       "LINEでNickに相談",
       "戻る"
      ]
     },
     "kh": {
-     "t": "<b>Costs beyond the price</b>\n\n<blockquote><b>When you buy</b>\nBooking fee: <b>$500 to $2,000</b>\nDown payment: <b>20% to 30%</b>\nTransfer tax: <b>4%</b>\nLawyer: <b>0.5% to 1%</b>\nFurniture: <b>from $5,000</b></blockquote>\n<blockquote><b>While you own it</b>\nProperty tax: <b>0.1% a year</b>\nBuilding management: <b>$1 to $2 per sqm a month</b></blockquote>\n<i>Nick confirms the exact figures for each project.</i>",
+     "t": "<b>Costs beyond the price</b>\n\n<b>When you buy</b>\n▫️ <b>Booking fee:</b> $500 to $2,000\n▫️ <b>Down payment:</b> 20% to 30%\n▫️ <b>Transfer tax:</b> 4%\n▫️ <b>Lawyer:</b> 0.5% to 1%\n▫️ <b>Furniture:</b> from $5,000\n\n<b>While you own it</b>\n▫️ <b>Property tax:</b> 0.1% a year\n▫️ <b>Building management:</b> $1 to $2 per sqm a month\n\n<blockquote>Some developers pay the transfer tax as a promotion.</blockquote>\nNick confirms the exact figures for each project.",
      "b": [
       "និយាយជាមួយ Nick តាម LINE",
       "ត្រឡប់ក្រោយ"
@@ -1174,7 +1174,7 @@
    "id": "faq3",
    "flow": "FAQ",
    "title": "FAQ: Rental tax and fees",
-   "text": "<b>What comes off the rent</b>\n\n<b>1. Tax</b>\n<b>14%</b> if you live abroad, <b>10%</b> if resident\n\n<b>2. Building management</b>\n<b>$1 to $2</b> per sqm a month\n\n<b>3. Empty months</b>\nPlan for <b>about 10%</b> a year\n\n<blockquote><b>What you keep = rent minus tax, management and empty months</b></blockquote>",
+   "text": "<b>What comes off the rent</b>\n\n▫️ <b>Tax:</b> 14% if you live abroad, 10% if resident\n▫️ <b>Building management:</b> $1 to $2 per sqm a month\n▫️ <b>Empty months:</b> plan for about 10% a year\n\n<blockquote>What you keep = rent minus tax, management and empty months</blockquote>\nAsk Nick for an estimate on a real unit.",
    "buttons": [
     {
      "l": "Message Nick on LINE",
@@ -1192,14 +1192,14 @@
    "note": "Facts from the website FAQ. Japanese needs a native review. Khmer shows English for now.",
    "tr": {
     "jp": {
-     "t": "<b>家賃から引かれるもの</b>\n\n<b>① 税金</b>\n海外在住 <b>14%</b>、居住者 <b>10%</b>\n\n<b>② 建物の管理費</b>\n1㎡あたり <b>月1ドルから2ドル</b>\n\n<b>③ 空室</b>\n年に <b>約10%</b> を見込みます\n\n<blockquote><b>手取り ＝ 家賃 － 税金 － 管理費 － 空室</b></blockquote>",
+     "t": "<b>家賃から引かれるもの</b>\n\n▫️ <b>税金：</b>海外在住14%、居住者10%\n▫️ <b>建物の管理費：</b>1㎡あたり月1ドルから2ドル\n▫️ <b>空室：</b>年に約10%を見込みます\n\n<blockquote>手取り ＝ 家賃 － 税金 － 管理費 － 空室</blockquote>\n実際の物件での試算はLINEでどうぞ。",
      "b": [
       "LINEでNickに相談",
       "戻る"
      ]
     },
     "kh": {
-     "t": "<b>What comes off the rent</b>\n\n<b>1. Tax</b>\n<b>14%</b> if you live abroad, <b>10%</b> if resident\n\n<b>2. Building management</b>\n<b>$1 to $2</b> per sqm a month\n\n<b>3. Empty months</b>\nPlan for <b>about 10%</b> a year\n\n<blockquote><b>What you keep = rent minus tax, management and empty months</b></blockquote>",
+     "t": "<b>What comes off the rent</b>\n\n▫️ <b>Tax:</b> 14% if you live abroad, 10% if resident\n▫️ <b>Building management:</b> $1 to $2 per sqm a month\n▫️ <b>Empty months:</b> plan for about 10% a year\n\n<blockquote>What you keep = rent minus tax, management and empty months</blockquote>\nAsk Nick for an estimate on a real unit.",
      "b": [
       "និយាយជាមួយ Nick តាម LINE",
       "ត្រឡប់ក្រោយ"
@@ -1214,7 +1214,7 @@
    "id": "faq4",
    "flow": "FAQ",
    "title": "FAQ: How buying works",
-   "text": "<b>The buying process: 6 steps</b>\n\n<b>1. Booking</b>\nBooking fee $500 to $2,000\n\n<b>2. Down payment and contract</b>\n20% to 30% of the price\n\n<b>3. Instalments</b>\nDuring construction\n\n<b>4. Balance at handover</b>\n40% to 50% of the price\n\n<b>5. Handover</b>\nInspect the unit, collect the keys\n\n<b>6. Title registration</b>\nIn your own name",
+   "text": "<b>The buying process: 6 steps</b>\n\n① <b>Booking:</b> fee of $500 to $2,000\n② <b>Down payment and contract:</b> 20% to 30%\n③ <b>Instalments:</b> during construction\n④ <b>Balance:</b> 40% to 50% at handover\n⑤ <b>Handover:</b> inspect the unit, collect the keys\n⑥ <b>Title:</b> registered in your name\n\n<blockquote>The steps are almost always the same. What changes is the amount and timing of each payment.</blockquote>\nAsk Nick for the plan of a specific project.",
    "buttons": [
     {
      "l": "Message Nick on LINE",
@@ -1232,14 +1232,14 @@
    "note": "Facts from the website FAQ. Japanese needs a native review. Khmer shows English for now.",
    "tr": {
     "jp": {
-     "t": "<b>購入の流れ（6ステップ）</b>\n\n<b>① 予約</b>\n予約金 500ドルから2,000ドル\n\n<b>② 頭金と契約</b>\n価格の20%から30%\n\n<b>③ 分割払い</b>\n建設中に支払います\n\n<b>④ 引き渡し時の残金</b>\n価格の40%から50%\n\n<b>⑤ 引き渡し</b>\n部屋を点検して鍵を受け取り\n\n<b>⑥ 登記</b>\nご本人の名義に",
+     "t": "<b>購入の流れ（6ステップ）</b>\n\n① <b>予約：</b>予約金 500ドルから2,000ドル\n② <b>頭金と契約：</b>価格の20%から30%\n③ <b>分割払い：</b>建設中に支払い\n④ <b>残金：</b>引き渡し時に40%から50%\n⑤ <b>引き渡し：</b>部屋を点検して鍵を受け取り\n⑥ <b>登記：</b>ご本人の名義に\n\n<blockquote>手順はほぼ共通です。違うのは、各段階の金額と期間です。</blockquote>\n物件ごとの支払い計画はLINEでお伝えします。",
      "b": [
       "LINEでNickに相談",
       "戻る"
      ]
     },
     "kh": {
-     "t": "<b>The buying process: 6 steps</b>\n\n<b>1. Booking</b>\nBooking fee $500 to $2,000\n\n<b>2. Down payment and contract</b>\n20% to 30% of the price\n\n<b>3. Instalments</b>\nDuring construction\n\n<b>4. Balance at handover</b>\n40% to 50% of the price\n\n<b>5. Handover</b>\nInspect the unit, collect the keys\n\n<b>6. Title registration</b>\nIn your own name",
+     "t": "<b>The buying process: 6 steps</b>\n\n① <b>Booking:</b> fee of $500 to $2,000\n② <b>Down payment and contract:</b> 20% to 30%\n③ <b>Instalments:</b> during construction\n④ <b>Balance:</b> 40% to 50% at handover\n⑤ <b>Handover:</b> inspect the unit, collect the keys\n⑥ <b>Title:</b> registered in your name\n\n<blockquote>The steps are almost always the same. What changes is the amount and timing of each payment.</blockquote>\nAsk Nick for the plan of a specific project.",
      "b": [
       "និយាយជាមួយ Nick តាម LINE",
       "ត្រឡប់ក្រោយ"
@@ -1254,7 +1254,7 @@
    "id": "faq5",
    "flow": "FAQ",
    "title": "FAQ: Buying from abroad",
-   "text": "<b>You can buy from abroad</b>\n\n<b>1. Arranged online</b>\nChoosing the unit, questions and transfers\n\n<b>2. Original signatures on the contract</b>\nE-signatures are not accepted\n\n<b>3. Originals sent by courier</b>\nDHL or similar, to the developer or the seller to sign too\n\n<i>A power of attorney is also possible, but the process is more involved.\nPrices and rents are usually in US dollars.</i>",
+   "text": "<b>You can buy from abroad</b>\n\n① <b>Online:</b> choosing the unit, questions and transfers\n② <b>Contract:</b> signed by hand on the originals (no e-signature)\n③ <b>Courier:</b> originals go by DHL or similar, and the developer or seller signs them too\n\n<blockquote>A power of attorney is also possible, but the process is more involved.</blockquote>\nPrices and rents are usually in US dollars.",
    "buttons": [
     {
      "l": "Message Nick on LINE",
@@ -1272,14 +1272,14 @@
    "note": "Facts from the website FAQ. Japanese needs a native review. Khmer shows English for now.",
    "tr": {
     "jp": {
-     "t": "<b>海外からでも購入できます</b>\n\n<b>① やり取りはオンラインで</b>\n物件選び、ご相談、送金まで\n\n<b>② 契約書は原本に署名</b>\n電子署名は使えません\n\n<b>③ 原本は国際宅配便で</b>\nDHLなどで、デベロッパーや売主とも原本に署名します\n\n<i>委任状による購入も可能ですが、手続きが複雑になります。\n価格と家賃は、通常、米ドルで取引されます。</i>",
+     "t": "<b>海外からでも購入できます</b>\n\n① <b>オンライン：</b>物件選び、ご相談、送金まで\n② <b>契約書：</b>原本に手書きで署名（電子署名は不可）\n③ <b>国際宅配便：</b>DHLなどで原本を送り、デベロッパーや売主も署名します\n\n<blockquote>委任状による購入も可能ですが、手続きが複雑になります。</blockquote>\n価格と家賃は、通常、米ドルで取引されます。",
      "b": [
       "LINEでNickに相談",
       "戻る"
      ]
     },
     "kh": {
-     "t": "<b>You can buy from abroad</b>\n\n<b>1. Arranged online</b>\nChoosing the unit, questions and transfers\n\n<b>2. Original signatures on the contract</b>\nE-signatures are not accepted\n\n<b>3. Originals sent by courier</b>\nDHL or similar, to the developer or the seller to sign too\n\n<i>A power of attorney is also possible, but the process is more involved.\nPrices and rents are usually in US dollars.</i>",
+     "t": "<b>You can buy from abroad</b>\n\n① <b>Online:</b> choosing the unit, questions and transfers\n② <b>Contract:</b> signed by hand on the originals (no e-signature)\n③ <b>Courier:</b> originals go by DHL or similar, and the developer or seller signs them too\n\n<blockquote>A power of attorney is also possible, but the process is more involved.</blockquote>\nPrices and rents are usually in US dollars.",
      "b": [
       "និយាយជាមួយ Nick តាម LINE",
       "ត្រឡប់ក្រោយ"
