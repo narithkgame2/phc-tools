@@ -372,14 +372,16 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
       let told = 0;
       for (const x of others) { await api('sendMessage', { chat_id: x.id, text: MSG.goneMsg[x.lang || 'jp'].replace('{name}', name), parse_mode: 'HTML', reply_markup: kb(x.lang || 'jp') }); if (String(x.id) !== String(clientId)) told++; }
       if (!others.some((x) => String(x.id) === String(clientId))) await api('sendMessage', { chat_id: clientId, text: MSG.goneMsg[lang].replace('{name}', name), parse_mode: 'HTML', reply_markup: kb(lang) });
-      return tellNick('<b>' + R.esc(ref) + '</b> is now hidden from every client. ' + told + ' other client(s) who asked in the last 7 days were told.\nPlease also set it to Sold or Rented in the Sheet or on the website.', { inline_keyboard: [[{ text: 'Undo', callback_data: 'v:u:' + ref }]] });
+      const posts = agentArea && agentArea.markGone ? await agentArea.markGone(ref) : null; // a unit this bot posted: its channel posts show 🔴 掲載終了
+      return tellNick('<b>' + R.esc(ref) + '</b> is now hidden from every client. ' + told + ' other client(s) who asked in the last 7 days were told.' + (posts !== null ? (posts ? '\n' + posts + ' channel post(s) now show 🔴 no longer available.' : '') : '\nPlease also set it to Sold or Rented in the Sheet or on the website.'), { inline_keyboard: [[{ text: 'Undo', callback_data: 'v:u:' + ref }]] });
     }
     if (act === 'u') {
       const prev = st.prev;
       const next = Object.assign({}, st); delete next.prev;
       if (prev && prev.status) { next.status = prev.status; next.at = prev.at; } else { delete next.status; delete next.at; }
       state.set(ref, next);
-      return tellNick('<b>' + R.esc(ref) + '</b> is back to how it was before your last tap.');
+      const back = agentArea && agentArea.undoGone ? await agentArea.undoGone(ref) : null;
+      return tellNick('<b>' + R.esc(ref) + '</b> is back to how it was before your last tap.' + (back ? ' ' + back + ' channel post(s) restored.' : ''));
     }
   }
 

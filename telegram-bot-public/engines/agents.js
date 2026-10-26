@@ -269,6 +269,8 @@ function createAgentArea(ctx) {
   // a sale or a new price: the posts already in the channels are edited (banner on top, text rebuilt), buttons kept
   function banner(unit, ch, what, old) {
     const jp = ch.lang !== 'en', rent = unit.type === 'rent';
+    if (what === 'gone') return jp ? '🔴 <b>掲載終了</b>' : '🔴 <b>NO LONGER AVAILABLE</b>';
+    if (!what) return '';
     if (what === 'reserved') return jp ? '🟡 <b>商談中</b>' : '🟡 <b>RESERVED / Under Offer</b>';
     if (what === 'sold') return jp ? '🔴 <b>' + (rent ? '成約済み（賃貸）' : '成約済み') + '</b>' : '🔴 <b>' + (rent ? 'RENTED' : 'SOLD') + '</b>';
     const down = unit.price < old;
@@ -278,7 +280,7 @@ function createAgentArea(ctx) {
     let n = 0;
     for (const p of unit.posts || []) {
       const ch = (ctx.channels || []).find((c) => c.chat === p.chat); if (!ch) continue;
-      const text = banner(unit, ch, what, old) + '\n\n' + channelPost(unit, ch).text, rows = channelRows(ch, unit);
+      const top = banner(unit, ch, what, old), text = (top ? top + '\n\n' : '') + channelPost(unit, ch).text, rows = channelRows(ch, unit);
       const body = Object.assign({ chat_id: p.chat, message_id: p.id, parse_mode: 'HTML' }, rows ? { reply_markup: kb(rows) } : {});
       const r = p.kind === 'caption' ? await api('editMessageCaption', Object.assign(body, { caption: text.slice(0, 1024) })) : await api('editMessageText', Object.assign(body, { text, disable_web_page_preview: true }));
       if (r && r.ok !== false) n++;
@@ -601,7 +603,23 @@ function createAgentArea(ctx) {
     return false;
   }
 
-  return { handleMessage, handleCallback, listings, runChecks, isAgent, toListing };
+  // Nick tapped "Not available" on a client's question: a unit this bot posted also gets the banner in the channels
+  async function markGone(ref) {
+    const unit = data.getUnit(ref);
+    if (!unit || !(unit.status === 'active' || unit.status === 'stale')) return null;
+    unit.goneFrom = unit.status; unit.status = 'unavailable'; data.setUnit(unit.ref, unit);
+    if (ctx.track) ctx.track('agent_gone', { ref: unit.ref });
+    if (!isNick(unit.agentId)) await say(unit.agentId, esc(unit.ref) + ' was marked not available by Nick and is hidden from clients.');
+    return updatePosts(unit, 'gone');
+  }
+  // Undo: the unit and its channel posts go back to how they were
+  async function undoGone(ref) {
+    const unit = data.getUnit(ref);
+    if (!unit || unit.status !== 'unavailable') return null;
+    unit.status = unit.goneFrom || 'active'; delete unit.goneFrom; data.setUnit(unit.ref, unit);
+    return updatePosts(unit, unit.reserved ? 'reserved' : null);
+  }
+  return { handleMessage, handleCallback, listings, runChecks, isAgent, toListing, markGone, undoGone };
 }
 
 module.exports = { createAgentArea, refPrefix };

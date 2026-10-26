@@ -233,6 +233,19 @@ async function submitted(r, agent, post) {
     await r.cb(NICK, ask2.body.reply_markup.inline_keyboard[0][0].callback_data);
     assert.ok(/Change this price\?/.test(r.last(NICK).body.text), 'then the usual Confirm card');
   });
+  await t('Not available on a client question: the unit hides and its channel posts show the banner; Undo restores both', async () => {
+    const r = rig(); await submitted(r); await r.cb(NICK, 'ua:TS5-6001');
+    await r.say(CLIENT, '/start TS5-6001'); await r.cb(CLIENT, 'l:en'); await r.cb(CLIENT, 'q:TS5-6001'); r.sent.length = 0;
+    await r.cb(NICK, 'v:n:TS5-6001:' + CLIENT);
+    const jp = r.sent.find((x) => x.method === 'editMessageText' && x.body.chat_id === '@Nick_Cambodia');
+    assert.ok(jp && /^🔴 <b>掲載終了<\/b>/.test(jp.body.text), 'banner on the channel post');
+    assert.strictEqual(r.units()[0].status, 'unavailable');
+    assert.ok(/1 channel post\(s\) now show/.test(r.last(NICK).body.text), r.last(NICK).body.text);
+    r.sent.length = 0; await r.cb(NICK, 'v:u:TS5-6001');
+    assert.strictEqual(r.units()[0].status, 'active');
+    const back = r.sent.find((x) => x.method === 'editMessageText' && x.body.chat_id === '@Nick_Cambodia');
+    assert.ok(back && !/掲載終了/.test(back.body.text) && /TIME SQUARE 5/.test(back.body.text), 'post restored without the banner');
+  });
   await t('the @NickREAKH post has only the Telegram button', async () => {
     const r = rig(); await submitted(r); await r.cb(NICK, 'ua:TS5-6001'); await r.cb(NICK, 'uc:TS5-6001:1');
     const en = r.to('@NickREAKH').find((x) => x.method === 'sendMessage' && x.body.reply_markup);
