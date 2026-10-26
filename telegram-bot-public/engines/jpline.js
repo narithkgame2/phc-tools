@@ -21,7 +21,9 @@ function fromBold(s) {
 
 const DIVIDER = /^[―\-_=⎯—─]{3,}$/;
 const CONTACT = /^(?:📞|📱|☎|✆|🏠|📧|✉|🌐|🔗)|t\.me\/|wa\.me\/|whatsapp|https?:\/\/|@[A-Za-z0-9_]{4,}/iu;
-const BULLET = /^(✅|☑️|☑|✔️|✔|✓|•|●|▪️|▪|■|★|➡️|⁃|💧|⚡|🚗|💼|💳|🔑|🏢|🛏️?|🛁)\s*/u;
+const BULLET = /^(✅|☑️|☑|✔️|✔|✓|▫️|▫|•|●|▪️|▪|■|★|➡️|⁃|💧|⚡|🚗|💼|💳|🔑|🏢|🛏️?|🛁)\s*/u;
+// the tick-style markers of a source post all become the channel's own bullet (▫️ for @Nick_Cambodia, Nick 2026-10-26); utility icons stay
+const TICKS = /^(✅|☑️|☑|✔️|✔|✓|▫️|▫|•|●|▪️|▪|■|★|➡️|⁃|🛏️?|🛁)$/u;
 const HEADINGS = {
   'unit details': '物件情報', 'details': '物件情報', 'property details': '物件情報', 'features': '特徴', 'key features': '特徴', 'highlights': '特徴',
   'facilities': '共用施設', 'amenities': '共用施設', 'payment plan': 'お支払いプラン', 'payment plans': 'お支払いプラン', 'payment terms': 'お支払い条件',
@@ -136,7 +138,7 @@ function planLine(l, o, state) {
     return mapped !== null ? { out: name.trim() + (mapped ? ' | ' + mapped : '') } : { name: name.trim(), google: words, title: true };
   }
   const bm = t.match(BULLET);
-  const icon = bm ? (/^[🛏🛁]/u.test(bm[1]) ? '✅' : bm[1]) : '';
+  const icon = bm ? (TICKS.test(bm[1]) ? (o.bullet || '✅') : bm[1]) : '';
   const body = bm ? t.slice(bm[0].length).trim() : t;
   if (!body) return { drop: true };
   const pre = icon ? icon + ' ' : '';

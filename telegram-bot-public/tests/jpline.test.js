@@ -40,6 +40,10 @@ t('without a translation the English line stays and is reported', () => {
   const r = buildJP('X | 1BR UNIT\n✅ Walk-in closet', [], {});
   assert.ok(r.text.includes('✅ Walk-in closet')); assert.deepStrictEqual(r.left.unknown, ['Walk-in closet']);
 });
+t('the channel bullet replaces the ticks, utility icons stay', () => {
+  const r = buildJP('X | 1BR UNIT\n✅ Fully furnished\n• 57 sqm\n💧 Water: $1/m3', [], { bullet: '▫️' });
+  assert.ok(r.text.includes('▫️ 家具付き') && r.text.includes('▫️ 57㎡') && /💧 /.test(r.text) && !/✅|•/.test(r.text), r.text);
+});
 t('dates and answered sizes come from the tables', () => {
   const { dateText } = require('../engines/jpline.js');
   assert.strictEqual(dateText('Early 2027'), '2027年初頭'); assert.strictEqual(dateText('Q3 2028'), '2028年第3四半期'); assert.strictEqual(dateText('December 2027'), '2027年12月'); assert.strictEqual(dateText('2027'), '2027年');

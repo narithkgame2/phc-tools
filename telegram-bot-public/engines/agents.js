@@ -224,7 +224,7 @@ function createAgentArea(ctx) {
     const l = toListing(unit), lang = ch.lang === 'en' ? 'en' : 'jp';
     if (lang === 'jp') {
       const src = jpSource(unit);
-      const r = buildJP(src.text, src.ents, { mt: unit.mt || {}, price: unit.price, priceFrom: unit.priceFrom, rent: unit.type === 'rent', phone: ch.phone || '', net: unit.net, gross: unit.gross });
+      const r = buildJP(src.text, src.ents, { mt: unit.mt || {}, price: unit.price, priceFrom: unit.priceFrom, rent: unit.type === 'rent', phone: ch.phone || '', net: unit.net, gross: unit.gross, bullet: ch.bullet || '▫️' });
       return { text: r.text, left: r.left };
     }
     const r = composeEN(unit, { khan: l.khan, footer: ch.footer || '' });

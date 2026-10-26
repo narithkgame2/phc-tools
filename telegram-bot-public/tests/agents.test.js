@@ -172,7 +172,7 @@ async function submitted(r, agent, post) {
     const card = r.texts(NICK).find((x) => /New unit to approve/.test(x)); assert.ok(/Google translated, please check/.test(card) && /ウォークインクローゼット/.test(card), card);
     await r.cb(NICK, 'ua:TS5-6001');
     const post = r.to('@Nick_Cambodia').find((x) => x.method === 'sendMessage' && x.body.reply_markup).body.text;
-    assert.ok(/✅ 家具付き/.test(post) && /✅ ウォークインクローゼット/.test(post), post);
+    assert.ok(/▫️ 家具付き/.test(post) && /▫️ ウォークインクローゼット/.test(post), post);
   });
   await t('without a translator the line is reported, not posted', async () => {
     const r = rig(); await submitted(r, A, POST + '\n✅ Walk-in closet'); await r.cb(NICK, 'ua:TS5-6001');
@@ -208,7 +208,7 @@ async function submitted(r, agent, post) {
     const card = r.texts(NICK).find((x) => /New unit to approve/.test(x)); assert.ok(/not posted there again/.test(card), card);
     r.sent.length = 0; await r.cb(NICK, 'ua:' + unit.ref);
     const post = r.to('@Nick_Cambodia').find((x) => x.method === 'sendMessage' && x.body.reply_markup).body.text;
-    const want = ['<b>TIME SQUARE 6 | 1ベッドルーム・リセール</b>', '💰 <s>$98,000</s> → $94,000', '📍 BKK1、プノンペン', '<b>物件情報</b>', '✅ 1ベッドルーム | 1バスルーム', '✅ 57㎡（総面積）', '✅ 26階', '✅ 北向き', '✅ 家具付き', '✅ 引き渡し：2027年初頭', '📞 096 96 61 555'];
+    const want = ['<b>TIME SQUARE 6 | 1ベッドルーム・リセール</b>', '💰 <s>$98,000</s> → $94,000', '📍 BKK1、プノンペン', '<b>物件情報</b>', '▫️ 1ベッドルーム | 1バスルーム', '▫️ 57㎡（総面積）', '▫️ 26階', '▫️ 北向き', '▫️ 家具付き', '▫️ 引き渡し：2027年初頭', '📞 096 96 61 555'];
     assert.deepStrictEqual(asked, [], 'everything in this post comes from the tables: nothing sent to Google');
     want.forEach((w) => assert.ok(post.includes(w), 'missing ' + w + ' in\n' + post));
     assert.ok(!/t\.me\/NickREAKH/.test(post), 'the source contact block is replaced');
