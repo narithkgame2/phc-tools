@@ -21,7 +21,7 @@ function rig(opts) {
   const ag = {}, un = {}; let seq = 0;
   const agentData = { getAgent: (k) => ag[String(k)], setAgent: (k, v) => { ag[String(k)] = JSON.parse(JSON.stringify(v)); }, deleteAgent: (k) => { delete ag[String(k)]; }, allAgents: () => Object.keys(ag).map((k) => ag[k]),
     getUnit: (k) => (un[k] ? JSON.parse(JSON.stringify(un[k])) : undefined), setUnit: (k, v) => { un[k] = JSON.parse(JSON.stringify(v)); }, allUnits: () => Object.keys(un).map((k) => JSON.parse(JSON.stringify(un[k]))), nextSeq: () => ++seq };
-  const bot = createBot({ api, store, flow, nickId: String(NICK), agentData, channels: CHANNELS, places, getListings: async () => [], now: () => time, translate: opts.translate });
+  const bot = createBot({ api, store, flow, nickId: String(NICK), agentData, channels: opts.channels || CHANNELS, places, getListings: async () => [], now: () => time, translate: opts.translate });
   const user = (id, lang, username) => ({ id, first_name: 'U' + id, language_code: lang || 'en', username });
   const msg = (id, extra, username) => bot.handleUpdate({ update_id: 1, message: Object.assign({ message_id: 2, chat: { id, type: 'private' }, from: user(id, 'en', username) }, extra) });
   const say = (id, text, username) => msg(id, { text }, username);
@@ -268,6 +268,17 @@ async function submitted(r, agent, post) {
     const check = r.texts(A).filter((x) => /Check your unit/.test(x)).pop(); assert.ok(/Sold before:<\/b> TS5-6001, \$82,000, sold on/.test(check), check);
     await r.cb(A, 'aw:submit');
     const card = r.texts(NICK).filter((x) => /New unit to approve/.test(x)).pop(); assert.ok(/Sold before/.test(card) && /AVAILABLE TS5-6001/.test(card), card);
+  });
+  await t('one tap mode for @Nick_Cambodia: nothing posts on approval, the tap posts the album and the Japanese post with its buttons', async () => {
+    const r = rig({ channels: [Object.assign({}, CHANNELS[0], { mode: 'confirm' }), CHANNELS[1]] });
+    await submitted(r); await r.cb(NICK, 'ua:TS5-6001');
+    assert.ok(!r.to('@Nick_Cambodia').length, 'not posted on approval');
+    const conf = r.last(NICK); assert.ok(r.labels(conf).includes('Also post to @Nick_Cambodia') && r.labels(conf).includes('Also post to @NickREAKH'), r.labels(conf).join(','));
+    await r.cb(NICK, 'uc:TS5-6001:0');
+    assert.ok(r.to('@Nick_Cambodia').some((x) => x.method === 'sendMediaGroup'));
+    const t2 = r.to('@Nick_Cambodia').find((x) => x.method === 'sendMessage' && x.body.reply_markup);
+    assert.ok(t2 && /物件情報/.test(t2.body.text) && t2.body.reply_markup.inline_keyboard[0].length === 2);
+    assert.ok(/Posted to @Nick_Cambodia/.test(r.last(NICK).body.text));
   });
   await t('the @NickREAKH post has only the Telegram button', async () => {
     const r = rig(); await submitted(r); await r.cb(NICK, 'ua:TS5-6001'); await r.cb(NICK, 'uc:TS5-6001:1');
