@@ -31,6 +31,7 @@ const store = {
   get: (id) => users[String(id)],
   set: (id, v) => { users[String(id)] = v; persist(); },
   delete: (id) => { delete users[String(id)]; persist(); },
+  all: () => Object.keys(users).map((k) => users[k]),
 };
 
 // What Nick decided about each listing (Available / Not available) and who asked, kept in one small file next to the client store.

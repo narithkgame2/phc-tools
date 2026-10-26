@@ -151,8 +151,10 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
   const user = (from) => {
     let u = store.get(from.id);
     if (!u) { u = { id: from.id, lang: null, answers: {}, awaiting: null, firstSeen: new Date().toISOString() }; }
+    if (from.username && u.username !== from.username.toLowerCase()) { u.username = from.username.toLowerCase(); store.set(u.id, u); } // lets Nick add an agent by @username
     return u;
   };
+  const findUserByUsername = (name) => (store.all ? store.all().find((x) => x.username === String(name).toLowerCase()) : null) || null;
   const save = (u) => store.set(u.id, u);
   const nameOf = (from) => [from.first_name, from.last_name].filter(Boolean).join(' ') || 'Client';
 
@@ -213,7 +215,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     if (found.some((l) => l.partner)) text += '\n<i>' + MSG.partner[lang] + '</i>';
     if (found.some((l) => l.netYield)) text += '\n\n<i>*' + DISCLAIMER[lang].replace(/^※/, '') + '</i>';
     const kb = [];
-    found.forEach((l) => { kb.push([{ text: MSG.ask[lang].replace('{id}', l.id), callback_data: 'q:' + l.id }]); if (l.photos && l.photos.length) kb.push([{ text: MSG.photoBtn[lang].replace('{id}', l.id), callback_data: 'ph:' + l.id }]); });
+    found.forEach((l) => { kb.push([{ text: MSG.ask[lang].replace('{id}', l.id), callback_data: 'q:' + l.id }]); if (l.media && l.media.length) kb.push([{ text: MSG.photoBtn[lang].replace('{id}', l.id), callback_data: 'ph:' + l.id }]); });
     if (stopRow) kb.push([{ text: MSG.alertStopBtn[lang], callback_data: 'al:off' }]);
     return { chat: null, body: { text, parse_mode: 'HTML', disable_web_page_preview: true, reply_markup: { inline_keyboard: kb } } };
   }
@@ -289,7 +291,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     }
     return others.length;
   }
-  agentArea = createAgentArea({ api, nickId, clock, esc: R.esc, L, places, lineUrl: LINE, channels: channels || [],
+  agentArea = createAgentArea({ api, nickId, clock, esc: R.esc, L, places, lineUrl: LINE, findUserByUsername, channels: channels || [],
     data: agentData || (() => { const ag = {}, un = {}; let seq = 0; return { getAgent: (k) => ag[String(k)], setAgent: (k, v) => { ag[String(k)] = v; }, deleteAgent: (k) => { delete ag[String(k)]; }, allAgents: () => Object.keys(ag).map((k) => ag[k]),
       getUnit: (k) => un[k], setUnit: (k, v) => { un[k] = v; }, allUnits: () => Object.keys(un).map((k) => un[k]), nextSeq: () => ++seq }; })(),
     getUser: (from) => user(from), saveUser: (u) => save(u), listingText: (l, lang) => listingText(l, lang), tellAskersGone });
@@ -361,10 +363,10 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     if (/^(aw|am|ac|ua|ur|uc|pa|pr):/.test(data)) { if (await agentArea.handleCallback(cb, u)) return; }
     if (data.startsWith('ph:')) {
       const l = (await loadListings(from.id)).find((x) => x.id === data.slice(3));
-      if (!l || !l.photos || !l.photos.length) return;
-      const ids = l.photos.slice(0, 10);
-      if (ids.length === 1) return api('sendPhoto', { chat_id: chatId, photo: ids[0] });
-      return api('sendMediaGroup', { chat_id: chatId, media: ids.map((id) => ({ type: 'photo', media: id })) });
+      if (!l || !l.media || !l.media.length) return;
+      const items = l.media.slice(0, 10);
+      if (items.length === 1) return items[0].t === 'video' ? api('sendVideo', { chat_id: chatId, video: items[0].id }) : api('sendPhoto', { chat_id: chatId, photo: items[0].id });
+      return api('sendMediaGroup', { chat_id: chatId, media: items.map((x) => ({ type: x.t === 'video' ? 'video' : 'photo', media: x.id })) });
     }
     if (data === 'al:on') {
       if (!u.lang) u.lang = 'jp';

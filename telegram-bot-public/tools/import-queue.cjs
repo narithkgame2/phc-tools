@@ -5,43 +5,16 @@ const fs = require('fs');
 const { parseCsv } = require('../engines/listings.js');
 const { parseSizes } = require('../engines/sizes.js');
 
-const DISTRICTS = [['bkk1', 'BKK1'], ['bkk 1', 'BKK1'], ['bkk2', 'BKK2'], ['bkk3', 'BKK3'], ['toul kork', 'Toul Kork'], ['tuol kork', 'Toul Kork'], ['tonle bassac', 'Tonle Bassac'],
-  ['daun penh', 'Daun Penh'], ['toul tompoung', 'TTP'], ['tuol tompoung', 'TTP'], ['ttp', 'TTP'], ['chroy changvar', 'Chroy Changvar'], ['sen sok', 'Sen Sok'], ['boeung tumpun', 'Boeung Tumpun'], ['koh pich', 'Koh Pich']];
-const BUTTONS = ['Daun Penh', 'Tonle Bassac', 'BKK1', 'TTP', 'Toul Kork'];
+const { facts: rawFacts, clean, BUTTONS } = require('../engines/postparse.js');
 
 const q = (v) => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
 const HEAD = 'Ref,Status,Source,Buy or Rent,Project,Area,Price (USD),Monthly rent (USD),Size (sqm),Net size (sqm),Gross size (sqm),Bedrooms,Net yield (%),Photo link,Note (Japanese),Note (English),Last checked,To check,Source link,Posted on,Tenanted,Tenancy note,Floor,Unit number';
 
-function clean(content) {
-  return String(content || '').normalize('NFKC') // styled bold letters become plain letters
-    .split(/\r?\n/).filter((l) => !/(📞|🏠|📱|t\.me\/|^\s*[―\-─]{3,}\s*$)/.test(l)).join('\n');
-}
+// the importer writes strings into CSV cells
 function facts(text) {
-  const lines = text.split('\n').map((l) => l.trim());
-  const priceBuy = (text.match(/#ForSale[^\d$]*\$\s*([\d,]+)/i) || [])[1];
-  const priceRent = (text.match(/#ForRent[^\d$]*\$\s*([\d,]+)/i) || [])[1];
-  const titleLine = lines.find((l) => l && !l.startsWith('#') && !l.startsWith('📍') && !/^(UNIT DETAILS|FEATURES|PAYMENT PLAN|RESALE HIGHLIGHTS)$/i.test(l)) || '';
-  const pinLine = (lines.find((l) => l.startsWith('📍')) || '').replace(/^📍\s*/, '').trim();
-  const titleHead = titleLine.split('|')[0].trim();
-  const hay = (titleLine + ' ' + pinLine).toLowerCase();
-  const d = DISTRICTS.find(([k]) => hay.includes(k));
-  const BY_PROJECT = [['time square 7', 'Toul Kork'], ['time square 9', 'BKK1'], ['time square 5', 'BKK1'], ['odom', 'Tonle Bassac'], ['j tower 3', 'Tonle Bassac'], ['norea', 'Tonle Bassac'], ['diamond bay', 'Tonle Bassac'], ['gato', 'BKK1'], ['picasso', 'BKK1'], ['le conde', 'BKK1']];
-  const byProject = BY_PROJECT.find(([k]) => hay.includes(k));
-  const district = d ? d[1] : (byProject ? byProject[1] : '');
-  const isArea = (s) => !s || DISTRICTS.some(([k]) => s.toLowerCase().includes(k)) || /phnom penh|district|blvd|street|st\./i.test(s);
-  const junk = (s) => !/[A-Za-z]{3}/.test(s) || /^(key features|\d+\s?br\b)/i.test(s.replace(/^[^A-Za-z0-9]+/, '')) || /^[^A-Za-z0-9]/.test(s) || /sihanoukville|siem reap|beachfront/i.test(s);
-  const name = [pinLine, titleHead].find((s) => s && !isArea(s) && !junk(s)) || '';
-  const faraway = /sihanoukville|siem reap|kampot|kep\b|beachfront|time square 10|otres/i.test(titleLine + ' ' + pinLine);
-  const sizes = parseSizes(text); // net and gross come from the post's own labels; an unlabelled size goes to Size (sqm) for a person to decide
-  const floorM = /\d+(?:st|nd|rd|th)\s*[–-]\s*\d+/.test(text) ? null : (text.match(/floor\s*[:#]?\s*(\d{1,2})(?:st|nd|rd|th)?\b/i) || text.match(/(\d{1,2})(?:st|nd|rd|th)\s*floor/i));
-  const unitM = text.match(/unit\s+([A-Z]?\d[\w-]*\d)\b/i) || text.match(/floor:\s*\d+(?:st|nd|rd|th)\s*\((\w+)\)/i);
-  const tenantM = /\btenanted\b/i.test(text) ? (text.match(/(\d+-?\s*year lease[^\n]*)/i) || [])[1] : null;
-  const beds = (text.match(/(\d)\s*(?:bedrooms?|BR\b|Schlafzimmer)/i) || text.match(/bedrooms?:\s*(\d)/i) || [])[1];
-  return {
-    faraway, buy: priceBuy && Number(priceBuy.replace(/,/g, '')) >= 1000 ? priceBuy.replace(/,/g, '') : '', rent: priceRent && Number(priceRent.replace(/,/g, '')) >= 100 ? priceRent.replace(/,/g, '') : '', name, district,
-    sqm: sizes.plain ? String(sizes.plain) : '', net: sizes.net ? String(sizes.net) : '', gross: sizes.gross ? String(sizes.gross) : '',
-    floor: floorM ? floorM[1] : '', unit: unitM ? unitM[1] : '', tenanted: /\btenanted\b/i.test(text), tenantNote: tenantM ? tenantM.replace(/^✅\s*/, '').trim() : '', beds: beds || '', check: [titleLine, pinLine].filter(Boolean).join(' | '),
-  };
+  const f = rawFacts(text);
+  return { faraway: f.faraway, buy: f.buy ? String(f.buy) : '', rent: f.rent ? String(f.rent) : '', name: f.name, district: f.district, sqm: f.plain ? String(f.plain) : '', net: f.net ? String(f.net) : '', gross: f.gross ? String(f.gross) : '',
+    floor: f.floor, unit: f.unit, tenanted: f.tenanted, tenantNote: f.tenantNote, beds: f.beds === undefined ? '' : String(f.beds), check: f.check };
 }
 
 const [file, want = 'Posted'] = process.argv.slice(2);
