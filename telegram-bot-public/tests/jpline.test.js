@@ -40,5 +40,11 @@ t('without a translation the English line stays and is reported', () => {
   const r = buildJP('X | 1BR UNIT\n✅ Walk-in closet', [], {});
   assert.ok(r.text.includes('✅ Walk-in closet')); assert.deepStrictEqual(r.left.unknown, ['Walk-in closet']);
 });
+t('dates and answered sizes come from the tables', () => {
+  const { dateText } = require('../engines/jpline.js');
+  assert.strictEqual(dateText('Early 2027'), '2027年初頭'); assert.strictEqual(dateText('Q3 2028'), '2028年第3四半期'); assert.strictEqual(dateText('December 2027'), '2027年12月'); assert.strictEqual(dateText('2027'), '2027年');
+  const r = buildJP('X | 1BR UNIT\n✅ 57㎡\n✅ Handover: Late 2026', [], { gross: 57 });
+  assert.ok(r.text.includes('✅ 57㎡（総面積）') && r.text.includes('✅ 引き渡し：2026年後半'), r.text);
+});
 console.log('\nRESULTS: ' + passed + ' / ' + total + ' TESTS PASSED (' + Math.round(passed / total * 100) + '%)');
 process.exit(passed === total ? 0 : 1);

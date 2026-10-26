@@ -193,7 +193,7 @@ function createAgentArea(ctx) {
     // the lines the tables and the glossary do not know are translated now, so Nick sees the finished Japanese post before approving
     if (ctx.translate) {
       for (const x of made) {
-        const src = jpSource(x), need = linesToTranslate(src.text, src.ents, { price: x.price, priceFrom: x.priceFrom });
+        const src = jpSource(x), need = linesToTranslate(src.text, src.ents, { price: x.price, priceFrom: x.priceFrom, net: x.net, gross: x.gross });
         if (need.length) { x.mt = await ctx.translate(need, [x.name, x.area]); data.setUnit(x.ref, x); }
       }
     }
@@ -224,7 +224,7 @@ function createAgentArea(ctx) {
     const l = toListing(unit), lang = ch.lang === 'en' ? 'en' : 'jp';
     if (lang === 'jp') {
       const src = jpSource(unit);
-      const r = buildJP(src.text, src.ents, { mt: unit.mt || {}, price: unit.price, priceFrom: unit.priceFrom, rent: unit.type === 'rent', phone: ch.phone || '' });
+      const r = buildJP(src.text, src.ents, { mt: unit.mt || {}, price: unit.price, priceFrom: unit.priceFrom, rent: unit.type === 'rent', phone: ch.phone || '', net: unit.net, gross: unit.gross });
       return { text: r.text, left: r.left };
     }
     const r = composeEN(unit, { khan: l.khan, footer: ch.footer || '' });

@@ -38,24 +38,39 @@ const TITLE_WORDS = { resale: 'リセール', unit: '', units: '', condo: 'コ�
   sale: '売出', rent: '賃貸', rental: '賃貸', loft: 'ロフト', 'sky villa': 'スカイヴィラ', villa: 'ヴィラ', office: 'オフィス', shophouse: 'ショップハウス', 'new': '新築', 'off-plan': '建設中', 'off plan': '建設中' };
 
 // "1 Bedroom | 1 Bathroom", "57㎡", "32 sqm net / 41 sqm gross", "26th Floor", "Studio": a line made only of facts like these
-function factSegment(seg) {
-  const s = seg.trim(); let m;
+function factSegment(seg, o) {
+  const s = seg.trim(); let m; o = o || {};
   if (/^studio$/i.test(s)) return 'スタジオ';
   if ((m = s.match(/^(\d+)\s*[- ]?(?:bed(?:room)?s?|br)$/i))) return m[1] + 'ベッドルーム';
   if ((m = s.match(/^(\d+(?:[.,]\d+)?)\s*[- ]?bath(?:room)?s?$/i))) return m[1] + 'バスルーム';
   if ((m = s.match(/^(?:(gross|net)\s*(?:size|area)?\s*[:：]?\s*)?(\d+(?:[.,]\d+)?)\s*(?:㎡|m²|m2|sqm|sq\.?\s?m)(?:\s*(gross|net))?(?:\s*(?:size|area))?$/i))) {
-    const kind = (m[1] || m[3] || '').toLowerCase();
+    let kind = (m[1] || m[3] || '').toLowerCase();
+    // the post says only "57㎡": the answer to the bot's net or gross question labels it
+    const v = Number(m[2].replace(',', '.'));
+    if (!kind && o.gross && v === Number(o.gross)) kind = 'gross'; else if (!kind && o.net && v === Number(o.net)) kind = 'net';
     return m[2] + '㎡' + (kind === 'gross' ? '（総面積）' : kind === 'net' ? '（専有）' : '');
   }
   if ((m = s.match(/^(\d{1,3})(?:st|nd|rd|th)?\s*floor$/i)) || (m = s.match(/^floor\s*[:#]?\s*(\d{1,3})(?:st|nd|rd|th)?$/i))) return m[1] + '階';
   if (/^(?:ground floor|floor\s*g)$/i.test(s)) return '1階（グラウンドフロア）';
   return null;
 }
-function factLine(t) {
+function factLine(t, o) {
   const segs = t.split(/\s*\|\s*|\s+\/\s+/).filter(Boolean);
   if (!segs.length) return null;
-  const out = segs.map(factSegment);
+  const out = segs.map((x) => factSegment(x, o));
   return out.every(Boolean) ? out.join(' | ') : null;
+}
+const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+function dateText(v) {
+  const s = v.trim().toLowerCase().replace(/,/g, ''); let m;
+  if ((m = s.match(/^(20\d\d)$/))) return m[1] + '年';
+  if ((m = s.match(/^(early|beginning of|start of)\s+(20\d\d)$/))) return m[2] + '年初頭';
+  if ((m = s.match(/^(mid|middle of|mid-)\s*-?\s*(20\d\d)$/))) return m[2] + '年半ば';
+  if ((m = s.match(/^(late|end of)\s+(20\d\d)$/))) return m[2] + '年後半';
+  if ((m = s.match(/^q([1-4])\s*(20\d\d)$/)) || (m = s.match(/^(20\d\d)\s*q([1-4])$/))) { const q = /^q/.test(s) ? m[1] : m[2], y = /^q/.test(s) ? m[2] : m[1]; return y + '年第' + q + '四半期'; }
+  if ((m = s.match(/^([a-z]+)\s+(20\d\d)$/)) && MONTHS.indexOf(m[1]) !== -1) return m[2] + '年' + (MONTHS.indexOf(m[1]) + 1) + '月';
+  if (/^(ready|now|immediately|completed)$/.test(s)) return '完成済み';
+  return null;
 }
 // "$98,000 → $94,000": the old price crossed out, the new one after the arrow
 function priceText(s, current, from) {
@@ -125,13 +140,13 @@ function planLine(l, o, state) {
   const body = bm ? t.slice(bm[0].length).trim() : t;
   if (!body) return { drop: true };
   const pre = icon ? icon + ' ' : '';
-  const fl = factLine(body);
+  const fl = factLine(body, o);
   if (fl) return { out: pre + fl };
   // "Handover: Early 2027": the label from the table, the value as written when it is a number or a name, else translated
   const lv = body.match(/^([A-Za-z][A-Za-z .\/&]{1,24}?)\s*[:：]\s*(\S.*)$/);
   if (lv && LABELS[lv[1].trim().toLowerCase()]) {
     const label = LABELS[lv[1].trim().toLowerCase()], value = lv[2].trim();
-    const fv = factLine(value) || (/^[\d$.,%\s\-–\/]+$/.test(value) ? value : null) || (translateFeature(value).kind === 'fact' ? translateFeature(value).jp : null);
+    const fv = factLine(value, o) || dateText(value) || (/^[\d$.,%\s\-–\/]+$/.test(value) ? value : null) || (translateFeature(value).kind === 'fact' ? translateFeature(value).jp : null);
     return fv ? { out: pre + label + '：' + fv } : { pre: pre + label + '：', google: value };
   }
   const r = translateFeature(body);
@@ -183,4 +198,4 @@ function buildJP(text, entities, o) {
   return { text: out.join('\n'), left };
 }
 
-module.exports = { buildJP, linesToTranslate, sourceLines, fromBold, priceText, mapTitleWords, factLine };
+module.exports = { buildJP, linesToTranslate, sourceLines, fromBold, priceText, mapTitleWords, factLine, dateText };

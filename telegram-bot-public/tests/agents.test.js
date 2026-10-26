@@ -195,7 +195,7 @@ async function submitted(r, agent, post) {
   });
   await t('a post forwarded from @NickREAKH: the Japanese post follows it line by line, old price crossed out, nothing posted back to @NickREAKH', async () => {
     const own = 'TIME SQUARE 6 | 1BR RESALE\n\n💰 $98,000 → $94,000\n\n📍 BKK1, Phnom Penh\n\n――――――――――\n\nUNIT DETAILS\n✅ 1 Bedroom | 1 Bathroom\n✅ 57㎡\n✅ 26th Floor\n✅ North Facing\n✅ Fully Furnished\n✅ Handover: Early 2027\n\n――――――――――\n📞 096 96 61 555\n🏠 t.me/NickREAKH\n📱 t.me/Nick_REAKH';
-    const r = rig({ translate: async (lines) => ({ 'Early 2027': '2027年初め' }) });
+    const asked = []; const r = rig({ translate: async (lines) => { asked.push(...lines); return {}; } });
     await r.say(NICK, '/addagent 700001 Dara');
     const fwd = { forward_origin: { type: 'channel', chat: { id: -100, type: 'channel', username: 'NickREAKH' } }, caption_entities: [{ type: 'bold', offset: 0, length: 26 }] };
     await r.bot.handleUpdate({ update_id: 1, message: Object.assign({ message_id: 3, chat: { id: A, type: 'private' }, from: { id: A, first_name: 'A', language_code: 'en' }, photo: [{ file_id: 'F1' }], media_group_id: 'g7', caption: own }, fwd) });
@@ -208,7 +208,8 @@ async function submitted(r, agent, post) {
     const card = r.texts(NICK).find((x) => /New unit to approve/.test(x)); assert.ok(/not posted there again/.test(card), card);
     r.sent.length = 0; await r.cb(NICK, 'ua:' + unit.ref);
     const post = r.to('@Nick_Cambodia').find((x) => x.method === 'sendMessage' && x.body.reply_markup).body.text;
-    const want = ['<b>TIME SQUARE 6 | 1ベッドルーム・リセール</b>', '💰 <s>$98,000</s> → $94,000', '📍 BKK1、プノンペン', '<b>物件情報</b>', '✅ 1ベッドルーム | 1バスルーム', '✅ 57㎡', '✅ 26階', '✅ 北向き', '✅ 家具付き', '✅ 引き渡し：2027年初め', '📞 096 96 61 555'];
+    const want = ['<b>TIME SQUARE 6 | 1ベッドルーム・リセール</b>', '💰 <s>$98,000</s> → $94,000', '📍 BKK1、プノンペン', '<b>物件情報</b>', '✅ 1ベッドルーム | 1バスルーム', '✅ 57㎡（総面積）', '✅ 26階', '✅ 北向き', '✅ 家具付き', '✅ 引き渡し：2027年初頭', '📞 096 96 61 555'];
+    assert.deepStrictEqual(asked, [], 'everything in this post comes from the tables: nothing sent to Google');
     want.forEach((w) => assert.ok(post.includes(w), 'missing ' + w + ' in\n' + post));
     assert.ok(!/t\.me\/NickREAKH/.test(post), 'the source contact block is replaced');
     assert.ok(!r.to('@NickREAKH').length, 'nothing posted back to @NickREAKH');
