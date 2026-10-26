@@ -375,7 +375,16 @@ function createAgentArea(ctx) {
       if (!quiet) await say(chat, 'Added (' + counts(w.media) + ').', [[btn('Done', 'aw:media:done')], cancelRow]);
       return true;
     }
-    if (!body) { if (hasMedia) await say(chat, 'Please answer the question above first, or tap Cancel.'); return true; }
+    if (!body) {
+      if (hasMedia) {
+        // media sent while a question is open is kept, and the reminder is sent once per album, not once per photo
+        if (m.photo && m.photo.length && w.media.length < MAX_MEDIA) w.media.push({ t: 'photo', id: m.photo[m.photo.length - 1].file_id });
+        if (m.video && m.video.file_id && w.media.length < MAX_MEDIA) w.media.push({ t: 'video', id: m.video.file_id });
+        const same = m.media_group_id && w.lastGroup === m.media_group_id; w.lastGroup = m.media_group_id || ''; ctx.saveUser(u);
+        if (!same) await say(chat, 'Added to your media (' + counts(w.media) + '). Please answer the question above, or tap Cancel.');
+      }
+      return true;
+    }
     const step = w.step;
     if (step === 'name') {
       const name = body.replace(/\s+/g, ' ').slice(0, 60);

@@ -162,6 +162,12 @@ async function submitted(r, agent) {
     const i = r.sent.findIndex((x) => x.method === 'sendMediaGroup' && x.body.chat_id === '@Nick_Cambodia'); assert.ok(i >= 0);
     const b = r.sent[i + 1]; assert.ok(b && b.method === 'sendMessage' && b.body.chat_id === '@Nick_Cambodia' && b.body.reply_markup.inline_keyboard[0][0].url === 'https://line.me/ti/p/@615ueovq', JSON.stringify(b));
   });
+  await t('media sent while a question is open is kept and answered once per album', async () => {
+    const r = rig(); await r.say(NICK, '/addagent 700001 Dara');
+    await r.say(A, 'Time Square 6, 4 bedroom duplex, 190 sqm, floor 41, $395,000, BKK1'); await r.cb(A, 'aw:collectdone'); r.sent.length = 0;
+    await r.photo(A, 'F1', 'g9'); await r.photo(A, 'F2', 'g9'); await r.photo(A, 'F3', 'g9');
+    const n = r.sent.filter((x) => x.method === 'sendMessage' && x.body.chat_id === A).length; assert.strictEqual(n, 1, 'one reminder for the album');
+  });
   await t('a channel the bot cannot post to is reported to Nick, the unit still goes live', async () => {
     const r = rig({ reply: (m, b) => (b.chat_id === '@Nick_Cambodia' ? { ok: false, description: 'Forbidden: bot is not a member of the channel chat' } : null) });
     await submitted(r); await r.cb(NICK, 'ua:TS5-6001');
