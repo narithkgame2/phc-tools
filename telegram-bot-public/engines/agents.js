@@ -242,7 +242,12 @@ function createAgentArea(ctx) {
         return true;
       }
     }
-    if (!isAgent(from.id)) return false;
+    if (!isAgent(from.id)) {
+      // Nick sending a post from his admin account: explain instead of showing the client screen
+      const mediaMsg = !!((m.photo && m.photo.length) || (m.video && m.video.file_id));
+      if (isNick(from.id) && (mediaMsg || looksLikePost(body))) { await say(chat, 'You are the admin, so I did not treat this as a unit. To add units from this account too, send: /addagent ' + from.id + ' Nick\nOr send the post from an agent account.'); return true; }
+      return false;
+    }
     if (cmd === '/myunits') { u.wiz = null; ctx.saveUser(u); await myUnits(chat, u.id); return true; }
     if (cmd === '/addunit') { await startIntake(chat, u); return true; }
     const w = u.wiz, hasMedia = !!((m.photo && m.photo.length) || (m.video && m.video.file_id));

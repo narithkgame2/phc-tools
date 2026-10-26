@@ -52,6 +52,12 @@ async function submitted(r, agent) {
     await r.photo(CLIENT, 'X1', 'g', POST); assert.ok(!r.texts(CLIENT).some((x) => /Received/.test(x)), 'a client sending a post is not an agent');
     await r.cb(CLIENT, 'aw:start'); assert.ok(!r.texts(CLIENT).some((x) => /Add a unit/.test(x)));
   });
+  await t('Nick sending a post from his admin account is told how to become an agent, and then it works', async () => {
+    const r = rig();
+    await r.photo(NICK, 'F1', 'g1', POST); assert.ok(/You are the admin/.test(r.last(NICK).body.text) && new RegExp('/addagent ' + NICK + ' Nick').test(r.last(NICK).body.text));
+    await r.say(NICK, '/addagent ' + NICK + ' Nick'); await r.photo(NICK, 'F2', 'g2', POST);
+    assert.ok(/Received: 1 photo and the description/.test(r.last(NICK).body.text), 'the admin can now send posts like an agent');
+  });
   await t('Nick adds agents by id or by @username (once they have opened the bot), lists and removes them', async () => {
     const r = rig();
     await r.say(NICK, '/addagent abc'); assert.ok(/Send: \/addagent/.test(r.texts(NICK).pop()));
