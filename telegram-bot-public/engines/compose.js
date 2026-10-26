@@ -100,7 +100,7 @@ function composeEN(u, o) {
   const all = (u.features || []).map((x) => String(x).replace(/^[✅▫️•\-–\s]+/, '').trim()).filter((x) => x && !FEATURE_SKIP.test(x));
   const claims = all.filter((x) => CLAIM.test(x)); // promotional claims stay out of the draft; Nick may add one back by hand
   all.filter((x) => !CLAIM.test(x)).slice(0, 10).forEach((x) => lines.push('✅ ' + x));
-  lines.push('', '💰 ' + (rent ? 'Monthly Rent: ' : 'Selling Price: ') + usd(u.price) + (rent ? '' : ''));
+  lines.push('', '💰 ' + (rent ? 'Monthly Rent: ' : 'Selling Price: ') + (u.priceFrom && u.priceFrom !== u.price ? usd(u.priceFrom) + ' → ' : '') + usd(u.price));
   if (o.footer) lines.push('', '――――――――――', o.footer);
   return { text: lines.join('\n'), left: { claims } };
 }

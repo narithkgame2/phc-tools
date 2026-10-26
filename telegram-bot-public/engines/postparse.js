@@ -54,6 +54,14 @@ function parsePost(raw, places) {
     if (sale) buy = money(sale[1], 1000);
     if (!buy && !rent && any) { const n = money(any[1], 1); if (/for rent|#forrent|rental/i.test(text)) rent = n >= 100 ? n : 0; else if (/for sale|#forsale|selling|resale/i.test(text) || n >= 10000) buy = n >= 1000 ? n : 0; }
   }
+  // "$98,000 → $94,000": the price after the arrow is the price now, the first one is the old price (as the Content Bot reads it)
+  let priceFrom = 0;
+  const arrow = text.match(/\$\s*([\d,]+)\s*(?:→|->|=>|➡️?|➜)\s*\$\s*([\d,]+)/);
+  if (arrow) {
+    const a = money(arrow[1], 1), b = money(arrow[2], 1);
+    if (buy === a || (!buy && !rent && b >= 1000)) buy = b; else if (rent === a) rent = b;
+    if (buy === b || rent === b) priceFrom = a;
+  }
   const wantsRent = /#forrent|for rent|rental|to rent/i.test(text), wantsSale = /#forsale|for sale|selling|resale|for buy/i.test(text);
   let type = '';
   if (buy && !rent) type = 'buy'; else if (rent && !buy) type = 'rent';
@@ -67,9 +75,12 @@ function parsePost(raw, places) {
   const looksLikeName = (n) => n && n.length <= 40 && !/\$/.test(n) && n.split(',').length <= 2 && !/\d\s*(?:sqm|㎡|m2)/i.test(n) && !/,/.test(n) && !/\b(call|contact|please|near|nice|beautiful|available|sale|rent|price|bedroom)\b/i.test(n);
   if (known) name = known.replace(/\(.*?\)/g, '').replace(/\s+-\s+.*$/, '').trim(); // the verified map beats the title heuristics
   else if (!looksLikeName(name)) name = '';
+  // "TIME SQUARE 6" from a title in capitals is stored as "Time Square 6" (the Content Bot's titleCaseBuilding)
+  if (name && name === name.toUpperCase() && /[A-Z]{3}/.test(name)) name = name.toLowerCase().split(' ').map((w) => (/\d/.test(w) || w.length <= 2 ? w.toUpperCase() : w.charAt(0).toUpperCase() + w.slice(1))).join(' ');
   const place = name ? placeFor(name, places) : null;
   const area = place ? place.area : (f.district ? (BUTTONS.includes(f.district) ? f.district : 'Others') : '');
-  return { name, type, price, rentAlso: buy && rent ? rent : 0, net: f.net, gross: f.gross, plain: f.plain, beds: f.beds !== undefined ? f.beds : (f.studio ? 0 : undefined),
+  const bathM = text.match(/(\d+(?:\.\d)?)\s*-?\s*(?:bathrooms?|baths?)\b/i);
+  return { priceFrom, baths: bathM ? Number(bathM[1]) : undefined, name, type, price, rentAlso: buy && rent ? rent : 0, net: f.net, gross: f.gross, plain: f.plain, beds: f.beds !== undefined ? f.beds : (f.studio ? 0 : undefined),
     features: extractFeatures(raw), floor: f.floor, unit: f.unit, area, tenanted: f.tenanted, tenantNote: f.tenantNote, faraway: f.faraway, check: f.check, district: f.district, buy, rent };
 }
 // the checklist lines of a post that describe the unit (furnished, pool, strata title ...), without the structured facts

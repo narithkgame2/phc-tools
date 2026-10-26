@@ -10,7 +10,7 @@ const T0 = Date.parse('2026-10-26T03:00:00Z'); // 10:00 in Phnom Penh
 const places = { places: [
   { name: 'Time Square 5 (306) - BKK1', khan: 'Boeng Keng Kang', sangkat: 'Boeung Keng Kang 1 (BKK1)', area: 'BKK1' },
   { name: 'Agile Sky Residence', khan: 'Boeng Keng Kang', sangkat: 'Boeung Keng Kang 3 (BKK3)', area: 'Others' }] };
-const CHANNELS = [{ chat: '@Nick_Cambodia', mode: 'auto', lang: 'jp' }, { chat: '@NickREAKH', mode: 'confirm', lang: 'en' }];
+const CHANNELS = [{ chat: '@Nick_Cambodia', mode: 'auto', lang: 'jp', phone: '096 96 61 555' }, { chat: '@NickREAKH', mode: 'confirm', lang: 'en', footer: '📞 096 96 61 555', buttons: [{ text: 'Telegram', url: 'https://t.me/Nick_REAKH' }] }];
 const POST = 'Time Square 5, 1 bedroom corner unit. 32 sqm net / 41 sqm gross. Floor 15. Selling price $82,000. BKK1';
 
 function rig(opts) {
@@ -131,7 +131,7 @@ async function submitted(r, agent, post) {
     await r.cb(A, 'ua:TS5-6001'); await r.cb(CLIENT, 'ua:TS5-6001'); assert.strictEqual(r.units()[0].status, 'pending', 'an agent or a client cannot approve');
     await r.cb(NICK, 'ua:TS5-6001'); assert.strictEqual(r.units()[0].status, 'active'); assert.ok(/approved and now shows to clients/.test(r.texts(A).pop()));
     const jp = r.to('@Nick_Cambodia').find((s) => s.method === 'sendMediaGroup'); assert.ok(jp, 'posted to the channel as one album'); assert.strictEqual(jp.body.media.length, 3, 'every photo and the video are posted'); assert.ok(!jp.body.media[0].caption, 'the album carries no caption'); const tm = r.to('@Nick_Cambodia').find((x) => x.method === 'sendMessage' && x.body.reply_markup); const cap = tm.body.text;
-    assert.ok(/^#売出中 \$82,000/.test(cap) && /32㎡（専有） \| 41㎡（総面積）/.test(cap) && /096 96 61 555|物件情報/.test(cap) && !/\+855|phc/i.test(cap), cap);
+    assert.ok(/^#売出中 \$82,000/.test(cap) && /41㎡（総面積） \| 32㎡（専有）/.test(cap) && /096 96 61 555|物件情報/.test(cap) && !/\+855|phc/i.test(cap), cap);
     const urls = tm.body.reply_markup.inline_keyboard[0].map((b) => b.url); assert.ok(urls[0] === 'https://line.me/ti/p/@615ueovq' && /start=TS5-6001/.test(urls[1]), urls.join(' '));
     const conf = r.last(NICK); assert.ok(/approved and live/.test(conf.body.text) && r.labels(conf).includes('Also post to @NickREAKH'));
     assert.ok(!r.to('@NickREAKH').length, 'the REAKH channel is not posted without Nick\'s tap');
@@ -169,14 +169,14 @@ async function submitted(r, agent, post) {
     const r = rig({ translate: async (lines) => { asked.push(...lines); return { 'Walk-in closet': 'ウォークインクローゼット' }; } });
     await submitted(r, A, POST + '\n✅ Walk-in closet\n✅ Fully furnished');
     assert.deepStrictEqual(asked, ['Walk-in closet'], 'only the unknown line is sent, never a known one');
-    const card = r.texts(NICK).find((x) => /New unit to approve/.test(x)); assert.ok(/Google translated \(please check\)/.test(card) && /ウォークインクローゼット/.test(card), card);
+    const card = r.texts(NICK).find((x) => /New unit to approve/.test(x)); assert.ok(/Google translated, please check/.test(card) && /ウォークインクローゼット/.test(card), card);
     await r.cb(NICK, 'ua:TS5-6001');
     const post = r.to('@Nick_Cambodia').find((x) => x.method === 'sendMessage' && x.body.reply_markup).body.text;
     assert.ok(/✅ 家具付き/.test(post) && /✅ ウォークインクローゼット/.test(post), post);
   });
   await t('without a translator the line is reported, not posted', async () => {
     const r = rig(); await submitted(r, A, POST + '\n✅ Walk-in closet'); await r.cb(NICK, 'ua:TS5-6001');
-    assert.ok(/Not translated.*Walk-in closet/.test(r.texts(NICK).join('\n')));
+    assert.ok(/Left in English.*Walk-in closet/.test(r.texts(NICK).join('\n')));
   });
   await t('sold: the posts already in the channels get a SOLD banner, buttons kept', async () => {
     const r = rig(); await submitted(r); await r.cb(NICK, 'ua:TS5-6001'); await r.cb(NICK, 'uc:TS5-6001:1'); r.sent.length = 0;
@@ -191,7 +191,41 @@ async function submitted(r, agent, post) {
     const r = rig(); await submitted(r); await r.cb(NICK, 'ua:TS5-6001'); r.sent.length = 0;
     await r.say(A, 'TS5-6001 price reduced to $79,000'); await r.cb(NICK, 'pa:TS5-6001');
     const jp = r.sent.find((x) => x.method === 'editMessageText' && x.body.chat_id === '@Nick_Cambodia');
-    assert.ok(jp && /価格改定/.test(jp.body.text) && /旧価格 \$82,000/.test(jp.body.text) && /販売価格：\$79,000/.test(jp.body.text), jp && jp.body.text);
+    assert.ok(jp && /価格改定/.test(jp.body.text) && /旧価格 \$82,000/.test(jp.body.text) && /販売価格：<s>\$82,000<\/s> → \$79,000/.test(jp.body.text), jp && jp.body.text);
+  });
+  await t('a post forwarded from @NickREAKH: the Japanese post follows it line by line, old price crossed out, nothing posted back to @NickREAKH', async () => {
+    const own = 'TIME SQUARE 6 | 1BR RESALE\n\n💰 $98,000 → $94,000\n\n📍 BKK1, Phnom Penh\n\n――――――――――\n\nUNIT DETAILS\n✅ 1 Bedroom | 1 Bathroom\n✅ 57㎡\n✅ 26th Floor\n✅ North Facing\n✅ Fully Furnished\n✅ Handover: Early 2027\n\n――――――――――\n📞 096 96 61 555\n🏠 t.me/NickREAKH\n📱 t.me/Nick_REAKH';
+    const r = rig({ translate: async (lines) => ({ 'Early 2027': '2027年初め' }) });
+    await r.say(NICK, '/addagent 700001 Dara');
+    const fwd = { forward_origin: { type: 'channel', chat: { id: -100, type: 'channel', username: 'NickREAKH' } }, caption_entities: [{ type: 'bold', offset: 0, length: 26 }] };
+    await r.bot.handleUpdate({ update_id: 1, message: Object.assign({ message_id: 3, chat: { id: A, type: 'private' }, from: { id: A, first_name: 'A', language_code: 'en' }, photo: [{ file_id: 'F1' }], media_group_id: 'g7', caption: own }, fwd) });
+    await r.bot.handleUpdate({ update_id: 2, message: Object.assign({ message_id: 4, chat: { id: A, type: 'private' }, from: { id: A, first_name: 'A', language_code: 'en' }, photo: [{ file_id: 'F2' }], media_group_id: 'g7' }, fwd) });
+    await r.cb(A, 'aw:collectdone');
+    await r.cb(A, 'aw:plain:gross');
+    const confirm = r.texts(A).find((x) => /Check your unit/.test(x)); assert.ok(confirm && /\$94,000/.test(confirm), 'the price after the arrow: ' + confirm);
+    await r.cb(A, 'aw:submit');
+    const unit = r.units()[0]; assert.strictEqual(unit.price, 94000); assert.strictEqual(unit.priceFrom, 98000); assert.strictEqual(unit.source, 'NickREAKH');
+    const card = r.texts(NICK).find((x) => /New unit to approve/.test(x)); assert.ok(/not posted there again/.test(card), card);
+    r.sent.length = 0; await r.cb(NICK, 'ua:' + unit.ref);
+    const post = r.to('@Nick_Cambodia').find((x) => x.method === 'sendMessage' && x.body.reply_markup).body.text;
+    const want = ['<b>TIME SQUARE 6 | 1ベッドルーム・リセール</b>', '💰 <s>$98,000</s> → $94,000', '📍 BKK1、プノンペン', '<b>物件情報</b>', '✅ 1ベッドルーム | 1バスルーム', '✅ 57㎡', '✅ 26階', '✅ 北向き', '✅ 家具付き', '✅ 引き渡し：2027年初め', '📞 096 96 61 555'];
+    want.forEach((w) => assert.ok(post.includes(w), 'missing ' + w + ' in\n' + post));
+    assert.ok(!/t\.me\/NickREAKH/.test(post), 'the source contact block is replaced');
+    assert.ok(!r.to('@NickREAKH').length, 'nothing posted back to @NickREAKH');
+    const conf = r.last(NICK); assert.ok(!r.labels(conf).includes('Also post to @NickREAKH') && /already has your original/.test(conf.body.text), conf.body.text);
+  });
+  await t('reply RESERVED to the approval card: the channel posts get the reserved banner, the unit stays live', async () => {
+    const r = rig(); await submitted(r); await r.cb(NICK, 'ua:TS5-6001'); r.sent.length = 0;
+    const card = r.to(NICK).filter((x) => /New unit to approve/.test(x.body.text || '')).pop();
+    await r.bot.handleUpdate({ update_id: 9, message: { message_id: 50, chat: { id: NICK, type: 'private' }, from: { id: NICK, first_name: 'N', language_code: 'en' }, text: 'RESERVED', reply_to_message: { message_id: 7, text: card ? card.body.text : 'Ref TS5-6001' } } });
+    const jp = r.sent.find((x) => x.method === 'editMessageText' && x.body.chat_id === '@Nick_Cambodia');
+    assert.ok(jp && /^🟡 <b>商談中<\/b>/.test(jp.body.text), 'reserved banner');
+    assert.strictEqual(r.units()[0].status, 'active');
+  });
+  await t('the @NickREAKH post has only the Telegram button', async () => {
+    const r = rig(); await submitted(r); await r.cb(NICK, 'ua:TS5-6001'); await r.cb(NICK, 'uc:TS5-6001:1');
+    const en = r.to('@NickREAKH').find((x) => x.method === 'sendMessage' && x.body.reply_markup);
+    assert.deepStrictEqual(en.body.reply_markup.inline_keyboard[0].map((b) => b.text), ['Telegram']);
   });
   await t('a channel the bot cannot post to is reported to Nick, the unit still goes live', async () => {
     const r = rig({ reply: (m, b) => (b.chat_id === '@Nick_Cambodia' ? { ok: false, description: 'Forbidden: bot is not a member of the channel chat' } : null) });

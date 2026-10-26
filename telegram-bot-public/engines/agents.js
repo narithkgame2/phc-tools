@@ -4,7 +4,8 @@
 // channels, and every 7 days the bot asks the agent whether each unit is still available. Agents see only their own units, never a client.
 // createAgentArea(ctx) -> { handleMessage, handleCallback, listings, runChecks, isAgent, toListing }. Everything Telegram goes through ctx.api.
 const { parsePost } = require('./postparse.js');
-const { composeJP, composeJPPost, composeEN, sortFeatures } = require('./compose.js');
+const { composeEN } = require('./compose.js');
+const { buildJP, linesToTranslate } = require('./jpline.js');
 
 const DAY = 86400000;
 const CHECK_DAYS = 7, REMIND_HOURS = 24, MAX_REMINDS = 3, MAX_MEDIA = 10;
@@ -120,12 +121,30 @@ function createAgentArea(ctx) {
   }
   const newWiz = (mode) => ({ mode, step: mode === 'intake' ? 'collect' : 'name', d: {}, media: [], texts: [] });
 
+  // the channel a post was forwarded from (both the old and the new Telegram shapes)
+  function fwdChannel(m) {
+    const o = m.forward_origin || {};
+    const c = m.forward_from_chat || o.chat || o.sender_chat;
+    return c && c.username ? String(c.username) : '';
+  }
+  // a post forwarded from one of Nick's own channels is already final: it is translated, never rebuilt, and not posted back there
+  const ownSource = (unit) => !!unit.source && (ctx.channels || []).some((c) => String(c.chat).replace(/^@/, '').toLowerCase() === String(unit.source).toLowerCase());
+  // what the Japanese post is translated from: Nick's own post as written, or (for any other source) the house template in English
+  function jpSource(unit) {
+    if (ownSource(unit) && unit.post && unit.post.text) return { text: unit.post.text, ents: unit.post.ents || [] };
+    return { text: composeEN(unit, { khan: toListing(unit).khan || '', footer: '' }).text, ents: [] };
+  }
   async function collect(m, body, u, chat) {
     const w = u.wiz; let added = false;
     const room = MAX_MEDIA - w.media.length;
     if (m.photo && m.photo.length && room > 0) { w.media.push({ t: 'photo', id: m.photo[m.photo.length - 1].file_id }); added = true; }
     if (m.video && m.video.file_id && w.media.length < MAX_MEDIA) { w.media.push({ t: 'video', id: m.video.file_id }); added = true; }
-    if (body) w.texts.push(body);
+    if (body) {
+      w.texts.push(body);
+      // the post itself is the master (the Content Bot way): its text and its bold marks are kept as they are
+      if (!w.post || body.length > w.post.text.length) w.post = { text: body, ents: m.caption_entities || m.entities || [] };
+    }
+    const src = fwdChannel(m); if (src) w.source = src;
     const same = m.media_group_id && w.lastGroup === m.media_group_id;
     w.lastGroup = m.media_group_id || '';
     const text = 'Received: ' + counts(w.media) + (w.texts.length ? ' and the description' : '') + '. Send more if you have it, then tap Done.';
@@ -147,6 +166,7 @@ function createAgentArea(ctx) {
     else if (r.buy && r.rent) { d.buyPrice = r.buy; d.rentPrice = r.rent; }
     else if (r.price) { d.price = r.price; }
     if (r.net) d.net = r.net; if (r.gross) d.gross = r.gross; if (r.plain) d.sqm = r.plain;
+    if (r.priceFrom) d.priceFrom = r.priceFrom; if (r.baths !== undefined) d.baths = r.baths;
     if (r.beds !== undefined) d.beds = r.beds; if (r.floor) d.floor = r.floor; if (r.area) d.area = r.area;
     if (r.features && r.features.length) d.features = r.features;
     if (r.unit) d.unitNo = r.unit; if (r.tenanted) { d.tenanted = true; d.tenantNote = r.tenantNote; }
@@ -166,15 +186,15 @@ function createAgentArea(ctx) {
     for (const [type, price] of kinds) {
       const seq = data.nextSeq(), ref = refPrefix(d.name) + '-' + (6000 + seq);
       const unit = { ref, seq, agentId: u.id, agentName: (data.getAgent(u.id) || {}).name || 'Agent', status: 'pending', type, name: d.name, area: d.area, price, net: d.net || 0, gross: d.gross || 0, sqm: d.sqm || 0,
-        beds: d.beds, floor: d.floor || '', unitNo: d.unitNo || '', features: d.features || [], tenanted: !!d.tenanted, tenantNote: d.tenantNote || '', media: w.media || [], submittedAt: iso(), approvedAt: '', checked: '', nextCheckAt: '', askedAt: '', reminders: 0, pendingPrice: null };
+        beds: d.beds, baths: d.baths, priceFrom: type === (d.type === 'both' ? 'buy' : d.type) ? (d.priceFrom || 0) : 0, source: w.source || '', post: w.post || null,
+        floor: d.floor || '', unitNo: d.unitNo || '', features: d.features || [], tenanted: !!d.tenanted, tenantNote: d.tenantNote || '', media: w.media || [], submittedAt: iso(), approvedAt: '', checked: '', nextCheckAt: '', askedAt: '', reminders: 0, pendingPrice: null };
       data.setUnit(ref, unit); made.push(unit);
     }
-    // lines the glossary does not know: Google translates them now, so Nick sees them on the approval card before anything is posted
+    // the lines the tables and the glossary do not know are translated now, so Nick sees the finished Japanese post before approving
     if (ctx.translate) {
-      const unknown = sortFeatures(d.features || []).unknown;
-      if (unknown.length) {
-        const mt = await ctx.translate(unknown, [d.name, d.area]);
-        made.forEach((x) => { x.mt = mt; data.setUnit(x.ref, x); });
+      for (const x of made) {
+        const src = jpSource(x), need = linesToTranslate(src.text, src.ents, { price: x.price, priceFrom: x.priceFrom });
+        if (need.length) { x.mt = await ctx.translate(need, [x.name, x.area]); data.setUnit(x.ref, x); }
       }
     }
     u.wiz = null; ctx.saveUser(u);
@@ -182,8 +202,17 @@ function createAgentArea(ctx) {
     if (nickId) for (const unit of made) {
       await mediaTo(nickId, unit.media);
       const dup = (await dupes(Object.assign({}, unit, { floor: unit.floor }))).filter((x) => x.id !== unit.ref);
-      const mtl = Object.keys(unit.mt || {}).map((en) => '• ' + esc(en) + ' → ' + esc(unit.mt[en]));
-      await say(nickId, '<b>New unit to approve</b>\nRef ' + esc(unit.ref) + '\nAgent: ' + esc(unit.agentName) + ' (' + unit.agentId + ')\n\n' + summary(unit) + dupeLine(dup) + (mtl.length ? '\n\n<b>Google translated (please check):</b>\n' + mtl.join('\n') : ''), [[btn('Approve', 'ua:' + unit.ref), btn('Reject', 'ur:' + unit.ref)]]);
+      const jpCh = (ctx.channels || []).find((c) => c.lang !== 'en') || { lang: 'jp' };
+      const pv = channelPost(unit, jpCh), lf = pv.left || {};
+      const notes = [];
+      if ((lf.machine || []).length) notes.push('<b>Google translated, please check:</b>\n' + lf.machine.map((en) => '• ' + esc(en) + ' → ' + esc((unit.mt || {})[en])).join('\n'));
+      if ((lf.unknown || []).length) notes.push('<b>Left in English (no translation):</b> ' + esc(lf.unknown.join('; ')));
+      if ((lf.claims || []).length) notes.push('<b>Left out on purpose (promotional claims):</b> ' + esc(lf.claims.join('; ')));
+      if (ownSource(unit)) notes.push('Forwarded from @' + esc(unit.source) + ': that channel already has your original, so it is not posted there again.');
+      let card = '<b>New unit to approve</b>\nRef ' + esc(unit.ref) + '\nAgent: ' + esc(unit.agentName) + ' (' + unit.agentId + ')\n\n' + summary(unit) + dupeLine(dup) +
+        '\n\n<b>The Japanese post:</b>\n\n' + pv.text + (notes.length ? '\n\n' + notes.join('\n\n') : '');
+      if (card.length > 4000) card = card.slice(0, 3990) + '…';
+      await say(nickId, card, [[btn('Approve', 'ua:' + unit.ref), btn('Reject', 'ur:' + unit.ref)]]);
       if (ctx.track) ctx.track('agent_submit', { ref: unit.ref });
     }
   }
@@ -194,7 +223,8 @@ function createAgentArea(ctx) {
   function channelPost(unit, ch) {
     const l = toListing(unit), lang = ch.lang === 'en' ? 'en' : 'jp';
     if (lang === 'jp') {
-      const r = composeJPPost(unit, { khan: l.khan, availLine: '', phone: ch.phone || '', mt: unit.mt || {} });
+      const src = jpSource(unit);
+      const r = buildJP(src.text, src.ents, { mt: unit.mt || {}, price: unit.price, priceFrom: unit.priceFrom, rent: unit.type === 'rent', phone: ch.phone || '' });
       return { text: r.text, left: r.left };
     }
     const r = composeEN(unit, { khan: l.khan, footer: ch.footer || '' });
@@ -239,6 +269,7 @@ function createAgentArea(ctx) {
   // a sale or a new price: the posts already in the channels are edited (banner on top, text rebuilt), buttons kept
   function banner(unit, ch, what, old) {
     const jp = ch.lang !== 'en', rent = unit.type === 'rent';
+    if (what === 'reserved') return jp ? '🟡 <b>商談中</b>' : '🟡 <b>RESERVED / Under Offer</b>';
     if (what === 'sold') return jp ? '🔴 <b>' + (rent ? '成約済み（賃貸）' : '成約済み') + '</b>' : '🔴 <b>' + (rent ? 'RENTED' : 'SOLD') + '</b>';
     const down = unit.price < old;
     return jp ? '🟢 <b>' + (down ? '価格改定' : '価格変更') + '</b>（旧価格 ' + usd(old) + '）' : '🟢 <b>' + (down ? 'PRICE REDUCED' : 'PRICE UPDATED') + '</b> (was ' + usd(old) + ')';
@@ -257,6 +288,7 @@ function createAgentArea(ctx) {
   async function afterApprove(unit) {
     const out = [], rows = [], left = { claims: [], unknown: [], machine: [] };
     for (const [i, ch] of (ctx.channels || []).entries()) {
+      if (ownSource(unit) && String(ch.chat).replace(/^@/, '').toLowerCase() === String(unit.source).toLowerCase()) { out.push(esc(ch.chat) + ' already has your original post, so I did not post it again.'); continue; }
       if (ch.mode === 'auto') {
         const r = await postToChannel(ch, unit);
         out.push((r && r.ok === false) ? 'Could not post to ' + esc(ch.chat) + ': ' + esc(r.description || 'unknown error') + ' (is the bot an administrator there?)' : 'Posted to ' + esc(ch.chat) + '.');
@@ -266,8 +298,8 @@ function createAgentArea(ctx) {
     rows.push([btn('Prepare for the website draft', 'uw:' + unit.ref)]);
     const uniq = (a) => Array.from(new Set(a));
     if (left.claims.length) out.push('Left out on purpose (promotional claims): ' + esc(uniq(left.claims).join('; ')) + '.');
-    if (left.machine.length) out.push('Google translated, in the Japanese post: ' + esc(uniq(left.machine).join('; ')) + '.');
-    if (left.unknown.length) out.push('Not translated (please translate by hand if you want them): ' + esc(uniq(left.unknown).join('; ')) + '.');
+    if (left.machine.length) out.push('Google translated in the Japanese post: ' + esc(uniq(left.machine).join('; ')) + '.');
+    if (left.unknown.length) out.push('Left in English in the Japanese post (no translation): ' + esc(uniq(left.unknown).join('; ')) + '.');
     if (ctx.botLink) out.push('Link to this unit: ' + esc(ctx.botLink(unit.ref)));
     return { text: out.join('\n'), rows };
   }
@@ -317,12 +349,15 @@ function createAgentArea(ctx) {
   // "SOLD TS5-6001", "TS5-6001 price reduced to $79,000", or a reply to a message that carries the Ref
   function parseAction(m, body) {
     const REF = '([A-Za-z0-9]{1,8}-\\d{3,5})';
-    let mm = body.match(new RegExp('^(?:sold|rented)\\s+' + REF + '\\b', 'i'));
+    let mm = body.match(new RegExp('^reserved\\s+' + REF + '\\b', 'i'));
+    if (mm) return { kind: 'reserved', ref: mm[1].toUpperCase() };
+    mm = body.match(new RegExp('^(?:sold|rented)\\s+' + REF + '\\b', 'i'));
     if (mm) return { kind: 'sold', ref: mm[1].toUpperCase() };
     mm = body.match(new RegExp('^' + REF + '\\s+(?:price\\s+)?(?:reduced\\s+|changed\\s+|now\\s+)?(?:to\\s+)?\\$?\\s*([\\d,]{3,})\\s*$', 'i'));
     if (mm) return { kind: 'price', ref: mm[1].toUpperCase(), value: Number(mm[2].replace(/,/g, '')) };
     const rr = m.reply_to_message && String(m.reply_to_message.text || m.reply_to_message.caption || '').match(/\b([A-Z0-9]{1,8}-\d{3,5})\b/);
     if (rr) {
+      if (/^reserved\b/i.test(body)) return { kind: 'reserved', ref: rr[1] };
       if (/^(?:sold|rented)\b/i.test(body)) return { kind: 'sold', ref: rr[1] };
       const p = body.match(/^(?:price\s+)?(?:reduced\s+|changed\s+|now\s+)?(?:to\s+)?\$?\s*([\d,]{3,})$/i);
       if (p) return { kind: 'price', ref: rr[1], value: Number(p[1].replace(/,/g, '')) };
@@ -331,6 +366,15 @@ function createAgentArea(ctx) {
   }
   async function doAction(act, u, chat, from) {
     const unit = data.getUnit(act.ref), nick = isNick(from.id);
+    if (act.kind === 'reserved') {
+      if (!unit || (!nick && unit.agentId !== u.id)) { await say(chat, unit ? 'I can only change your own units.' : 'I do not know ' + esc(act.ref) + '. RESERVED works for units added through this bot.'); return; }
+      if (!(unit.status === 'active' || unit.status === 'stale')) { await say(chat, esc(unit.ref) + ' is ' + esc(unit.status) + ', so it cannot be reserved.'); return; }
+      unit.reserved = iso(); data.setUnit(unit.ref, unit);
+      const n = await updatePosts(unit, 'reserved');
+      await say(chat, '<b>' + esc(unit.ref) + '</b> marked reserved' + (n ? '; ' + n + ' channel post(s) show 🟡 RESERVED' : '') + '. It still shows to clients until it is sold. Send SOLD ' + esc(unit.ref) + ' when it is done.');
+      if (!nick && nickId) await say(nickId, '<b>' + esc(unit.ref) + '</b> ' + esc(unit.name) + ' was marked reserved by ' + esc(unit.agentName) + '.');
+      return;
+    }
     if (act.kind === 'sold') {
       if (unit) {
         if (!nick && unit.agentId !== u.id) { await say(chat, 'I can only change your own units.'); return; }
@@ -477,7 +521,7 @@ function createAgentArea(ctx) {
       } else if (kind === 'pn') {
         const price = Number(b);
         if (unit.status === 'active' || unit.status === 'stale') {
-          const old = unit.price; unit.price = price; unit.checked = iso(); unit.nextCheckAt = iso(clock() + CHECK_DAYS * DAY); unit.askedAt = ''; unit.reminders = 0; data.setUnit(unit.ref, unit);
+          const old = unit.price; unit.priceFrom = price < old ? old : 0; unit.price = price; unit.checked = iso(); unit.nextCheckAt = iso(clock() + CHECK_DAYS * DAY); unit.askedAt = ''; unit.reminders = 0; data.setUnit(unit.ref, unit);
           await say(unit.agentId, esc(unit.ref) + ' price is now ' + usd(price) + ' (set by Nick).');
           const ed = await updatePosts(unit, 'price', old);
           await say(nickId, esc(unit.ref) + ' price changed from ' + usd(old) + ' to ' + usd(price) + '.' + (ed ? ' ' + ed + ' channel post(s) updated.' : ''));
@@ -486,7 +530,7 @@ function createAgentArea(ctx) {
         const ch = (ctx.channels || [])[Number(b)];
         if (ch && unit.status === 'active') { const r = await postToChannel(ch, unit); await say(nickId, (r && r.ok === false) ? 'Could not post to ' + esc(ch.chat) + ': ' + esc(r.description || 'unknown error') : 'Posted to ' + esc(ch.chat) + '.'); }
       } else if (kind === 'pa' && unit.pendingPrice) {
-        const old = unit.price; unit.price = unit.pendingPrice.value; unit.pendingPrice = null; unit.checked = iso(); unit.nextCheckAt = iso(clock() + CHECK_DAYS * DAY); unit.askedAt = ''; unit.reminders = 0; data.setUnit(unit.ref, unit);
+        const old = unit.price; unit.price = unit.pendingPrice.value; unit.priceFrom = unit.price < old ? old : 0; unit.pendingPrice = null; unit.checked = iso(); unit.nextCheckAt = iso(clock() + CHECK_DAYS * DAY); unit.askedAt = ''; unit.reminders = 0; data.setUnit(unit.ref, unit);
         await say(unit.agentId, esc(unit.ref) + ' price is now ' + usd(unit.price) + '.');
         const ed = await updatePosts(unit, 'price', old);
         await say(nickId, esc(unit.ref) + ' price changed from ' + usd(old) + ' to ' + usd(unit.price) + '.' + (ed ? ' ' + ed + ' channel post(s) updated.' : ''));

@@ -8,7 +8,7 @@ const pick = (r) => ({ name: r.name, type: r.type, price: r.price, net: r.net, g
 
 t('a channel-format post is read completely, including both sizes, the unit number and the floor', () => {
   const r = parsePost('#ForSale $35,000\n\n𝗥𝗘𝗦𝗜𝗗𝗘𝗡𝗖𝗘 𝗟 | 𝟭𝗕𝗥 𝗨𝗡𝗜𝗧\n📍 Boeung Tumpun, Phnom Penh\n\n――――――――――\n✅ Unit G10-09 | 9th Floor\n✅ 1 Bedroom | 1 Bathroom\n✅ 47㎡ Gross | 38㎡ Net\n📞 096 96 61 555\n🏠 t.me/NickREAKH', places);
-  assert.deepStrictEqual(pick(r), { name: 'RESIDENCE L', type: 'buy', price: 35000, net: 38, gross: 47, plain: 0, beds: 1, floor: '9', area: 'Others', unit: 'G10-09' });
+  assert.deepStrictEqual(pick(r), { name: 'Residence L', type: 'buy', price: 35000, net: 38, gross: 47, plain: 0, beds: 1, floor: '9', area: 'Others', unit: 'G10-09' });
 });
 t('an agent\'s own wording: no hashtags, "selling price", per month, a project from the verified map wins over a sentence', () => {
   assert.deepStrictEqual(pick(parsePost('Odom Living 2BR for rent $1,200 per month, 90 sqm, floor 20', places)), { name: 'Odom Living', type: 'rent', price: 1200, net: 0, gross: 0, plain: 90, beds: 2, floor: '20', area: 'Tonle Bassac', unit: '' });
