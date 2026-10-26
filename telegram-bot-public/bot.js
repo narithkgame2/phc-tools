@@ -12,10 +12,15 @@ const DISCLAIMER = {
   kh: 'ផលចំណេញ និងតម្លៃគឺសម្រាប់ជាឯកសារយោងប៉ុណ្ណោះ ហើយមិនធានាប្រាក់ចំណូលនាពេលអនាគតទេ។',
 };
 const MSG = {
+  calcTwo: {
+    jp: (v) => '<b>試算結果</b>\nお送りいただいた数値のみに基づきます\n\n年間家賃: ' + v.rent + '\n表面利回り: ' + v.gross + '%\n手取り利回りの目安: ' + v.lo + '%から' + v.hi + '%\n\n手取りは、家賃から非居住者の源泉税14%と管理費5%から10%を引いた場合です。空室と修繕の費用は含まれません。',
+    en: (v) => '<b>Estimate</b>\nBased only on the numbers you sent\n\nYearly rent: ' + v.rent + '\nGross yield: ' + v.gross + '%\nNet yield, roughly: ' + v.lo + '% to ' + v.hi + '%\n\nNet means rent minus 14% non-resident tax and a 5% to 10% management fee. Vacancy and repairs are not included.',
+    kh: (v) => '<b>លទ្ធផលប៉ាន់ស្មាន</b>\nផ្អែកលើលេខដែលអ្នកផ្ញើប៉ុណ្ណោះ\n\nថ្លៃជួលប្រចាំឆ្នាំ៖ ' + v.rent + '\nផលចំណេញដុល៖ ' + v.gross + '%\nផលចំណេញសុទ្ធប្រហែល៖ ' + v.lo + '% ដល់ ' + v.hi + '%\n\nសុទ្ធ គឺថ្លៃជួល ដកពន្ធ 14% សម្រាប់អ្នកមិនមែនមានលំនៅដ្ឋាន និងថ្លៃគ្រប់គ្រង 5% ដល់ 10%។ មិនរាប់បញ្ចូលការទំនេរ និងការជួសជុលទេ។',
+  },
   calcBad: {
-    jp: '数字を読み取れませんでした。価格、月額家賃、年間費用の3つを、スペースで区切って送ってください。\n例: <code>68000 650 1800</code>',
-    en: 'I could not read the numbers. Send three numbers separated by spaces: price, monthly rent, yearly costs.\nExample: <code>68000 650 1800</code>',
-    kh: 'មិនអាចអានលេខបានទេ។ សូមផ្ញើលេខបីដោយដកឃ្លា៖ តម្លៃ ថ្លៃជួលប្រចាំខែ និងចំណាយប្រចាំឆ្នាំ។\nឧទាហរណ៍៖ <code>68000 650 1800</code>',
+    jp: '数字を読み取れませんでした。価格と月額家賃の2つ（年間費用が分かれば3つ）を、スペースで区切って送ってください。\n例: <code>68000 650</code>',
+    en: 'I could not read the numbers. Send two numbers separated by a space: price and monthly rent (a third number, yearly costs, is optional).\nExample: <code>68000 650</code>',
+    kh: 'មិនអាចអានលេខបានទេ។ សូមផ្ញើលេខពីរដោយដកឃ្លា៖ តម្លៃ និងថ្លៃជួលប្រចាំខែ (លេខទីបី ចំណាយប្រចាំឆ្នាំ គឺជាជម្រើស)។\nឧទាហរណ៍៖ <code>68000 650</code>',
   },
   calcCheck: {
     jp: '※数字をもう一度ご確認ください。',
@@ -125,6 +130,13 @@ function parseThree(text) {
   const [price, rent, costs] = nums.map(Number);
   if (!(price > 0) || !(rent > 0) || costs < 0) return null;
   return { price, rent, costs };
+}
+
+// two numbers (price, monthly rent) or three (plus yearly costs)
+function parseCalc(text) {
+  const nums = String(text || '').replace(/[,，]/g, '').match(/-?\d+(?:\.\d+)?/g);
+  if (nums && nums.length === 2) { const [price, rent] = nums.map(Number); return price > 0 && rent > 0 ? { price, rent, costs: null } : null; }
+  return parseThree(text);
 }
 
 function createBot({ api, store, flow, nickId, onError, getListings, listingState, alertStore, testerIds, isPrivate, agentData, channels, places, events, botUsername, now }) {
@@ -519,8 +531,17 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
       return goto(chatId, from, u, nextId);
     }
     if (u.awaiting === 'calc') {
-      const n = parseThree(text);
+      const n = parseCalc(text);
       if (!n) { save(u); return api('sendMessage', { chat_id: chatId, text: MSG.calcBad[u.lang], parse_mode: 'HTML' }); }
+      if (n.costs === null) {
+        const yr = n.rent * 12, pct = (x) => ((x / n.price) * 100).toFixed(1);
+        const v = { rent: R.esc(fmtUsd(yr)), gross: pct(yr), lo: pct(yr * (1 - 0.14 - 0.10)), hi: pct(yr * (1 - 0.14 - 0.05)) };
+        u.awaiting = null; save(u);
+        const body2 = R.render(byId.calc2, u.lang, {});
+        let t2 = MSG.calcTwo[u.lang](v) + '\n\n<i>' + DISCLAIMER[u.lang] + '</i>';
+        if (Number(v.gross) > 25) t2 += '\n\n' + MSG.calcCheck[u.lang];
+        return api('sendMessage', Object.assign({ chat_id: chatId }, body2, { text: t2 }));
+      }
       const yearlyRent = n.rent * 12, net = yearlyRent - n.costs, yld = (net / n.price) * 100;
       u.awaiting = null;
       const step = byId.calc2, body = R.render(step, u.lang, {});
@@ -571,4 +592,4 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
   return { handleUpdate, byId, runAlerts, runOps, runAgentChecks: () => agentArea.runChecks(), botLink, ops };
 }
 
-module.exports = { createBot, parseThree, DISCLAIMER, MSG };
+module.exports = { createBot, parseThree, parseCalc, DISCLAIMER, MSG };

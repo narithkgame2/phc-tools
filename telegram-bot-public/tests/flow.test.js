@@ -32,7 +32,7 @@ t('every screen that shows a yield carries the standard disclaimer', () => steps
   const x = R.textOf(s, l); if (/yield|利回り/i.test(x)) assert.ok(/for reference only|参考値/.test(x), s.id + ' ' + l);
 })));
 t('no invented numbers: only the estimate screen shows a percentage', () => steps.forEach((s) => {
-  if (s.id === 'calc2') return; ['en', 'jp'].forEach((l) => assert.ok(!/\d\s*[%％]/.test(R.textOf(s, l)), s.id + ' ' + l));
+  if (s.id === 'calc2' || /^faq/.test(s.id)) return; ['en', 'jp'].forEach((l) => assert.ok(!/\d\s*[%％]/.test(R.textOf(s, l)), s.id + ' ' + l));
 }));
 t('the reply promise is 1 business day wherever one is made', () => steps.forEach((s) => {
   const en = R.textOf(s, 'en'); if (/within/i.test(en)) assert.ok(/1 business day/.test(en), s.id);

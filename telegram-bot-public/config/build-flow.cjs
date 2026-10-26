@@ -89,10 +89,58 @@ by.calc1.await = 'calc'; by.check1.await = 'check';
 })();
 // budget screens: buttons only on screen. If a client types a number anyway, the next message is saved as the budget.
 [['b1', 'b2'], ['rr1', 'rr2']].forEach(([id, next]) => { by[id].await = 'area:' + next + ':' + id; });
+// FAQ (Part 4): facts from the website FAQ, no company names, no contact channels other than the LINE button.
+// Japanese wording needs a native review before launch. Khmer uses the English text for now (placeholder).
+(function () {
+  const LINEBTN = { l: 'Message Nick on LINE', to: '', half: false, url: LINE };
+  const items = [
+    ['faq1', 'Foreign ownership', '外国人の所有', 'Foreign ownership',
+      '<b>Can foreigners own property in Cambodia?</b>\n\nYes. Foreigners can own strata title condominium units above the ground floor. Foreign ownership is capped at 70% of the units in each building. The strata title is the ownership certificate for one unit.\n\nForeigners cannot own land. Before you buy, check how much of the foreign quota is left in that building.',
+      '<b>外国人は不動産を所有できますか？</b>\n\nはい。外国人は、1階より上のコンドミニアム（ストラタタイトル）を所有できます。外国人の所有は、1棟の全戸数の70%までです。ストラタタイトルは、1戸ごとの所有権を示す権利証書です。\n\n土地そのものは、外国人は所有できません。購入前に、その建物の外国人枠の残りを必ず確認します。'],
+    ['faq2', 'Extra costs', '購入にかかる費用', 'Extra costs',
+      '<b>Costs beyond the purchase price</b>\n\nTransfer tax: 4% of the property value, paid when the title is transferred.\nStamp duty: 0.1% on registration.\nLegal fees: usually $500 to $2,000 if you use an independent lawyer.\nTranslation of the sales contract, if you need it.\n\nSome developers pay the transfer costs as a promotion. Nick confirms the exact breakdown for each project before you commit.',
+      '<b>購入価格のほかにかかる費用</b>\n\n移転税: 物件価格の4%（権利移転時）\n印紙税: 登記時に0.1%\n弁護士費用: 独立した弁護士に依頼する場合、通常500ドルから2,000ドル\n売買契約書の翻訳費用（必要な場合）\n\nデベロッパーが移転費用を負担するキャンペーンもあります。物件ごとに内訳を確認してお伝えします。'],
+    ['faq3', 'Rental tax and fees', '賃貸収入の税金', 'Rental tax and fees',
+      '<b>Tax and fees on rental income</b>\n\nRental income is taxed at the source: 14% for non-resident individuals and 10% for residents. For overseas owners the property manager usually deducts the 14% before sending you the money.\n\nA practical estimate: rent, minus 14% tax, minus the management fee (usually 5% to 10%). Vacancy and repairs come on top, so keep a reserve for them.',
+      '<b>賃貸収入の税金と管理費</b>\n\n賃貸収入には源泉税がかかります。非居住者の個人は14%、居住者は10%です。海外のオーナーの場合、通常は管理会社が送金前に14%を差し引きます。\n\n手取りの目安は、家賃収入から源泉税14%と管理費（通常5%から10%）を引いて計算します。空室と修繕の費用は別に見込み、予備費を持っておくと安心です。'],
+    ['faq4', 'How buying works', '購入の流れ', 'How buying works',
+      '<b>The buying process</b>\n\n1. Choose a project and a unit\n2. Reserve it with a deposit, usually $1,000 to $5,000\n3. Due diligence for 2 to 4 weeks: title, contract and legal checks\n4. Sign the Sales and Purchase Agreement\n5. Pay by the payment schedule, which depends on the developer and the stage\n6. Receive the strata title after full payment and handover',
+      '<b>購入の流れ</b>\n\n1. 物件と部屋を選ぶ\n2. 予約金で部屋を確保（通常1,000ドルから5,000ドル）\n3. 2週間から4週間のデューデリジェンス（権利、契約書、法務の確認）\n4. 売買契約書（SPA）に署名\n5. 支払いスケジュールに沿って支払い（デベロッパーと進捗によって異なります）\n6. 全額の支払いと引き渡しの後、ストラタタイトルを受け取り'],
+    ['faq5', 'Buying from abroad', '海外から購入', 'Buying from abroad',
+      '<b>Can I buy from abroad?</b>\n\nYes. The Sales and Purchase Agreement can be signed digitally or through a notarised power of attorney, so you do not have to be in Cambodia.\n\nPurchase prices and rents are almost always in US dollars, so there is no currency exchange step in the deal itself.',
+      '<b>海外から購入できますか？</b>\n\nはい。売買契約書は電子署名、または公証された委任状で締結できるため、現地に来なくても購入できます。\n\n購入価格も家賃も、ほぼすべて米ドルで取引されます。'],
+  ];
+  const labels = ['Foreign ownership', 'Extra costs', 'Rental tax and fees', 'How buying works', 'Buying from abroad'];
+  by.faq = {
+    id: 'faq', flow: 'FAQ', title: 'Common questions',
+    text: '<b>Common questions</b>\n\nPick a topic.',
+    buttons: items.map((it) => ({ l: it[1], to: it[0], half: false, url: '' })).concat([{ l: 'Back', to: 'more', half: false, url: '' }]),
+    note: 'Facts come from the website FAQ. No company names, no WhatsApp. Japanese wording needs a native review. Khmer shows English for now.',
+    tr: {
+      jp: { t: '<b>よくある質問</b>\n\n知りたい項目をお選びください。', b: items.map((it) => it[2]).concat(['戻る']) },
+      kh: { t: '<b>សំណួរញឹកញាប់</b>\n\nសូមជ្រើសរើសប្រធានបទ។', b: items.map((it) => it[3]).concat(['ត្រឡប់ក្រោយ']) },
+    },
+  };
+  items.forEach((it) => {
+    by[it[0]] = {
+      id: it[0], flow: 'FAQ', title: 'FAQ: ' + it[1], text: it[4],
+      buttons: [Object.assign({}, LINEBTN), { l: 'Back', to: 'faq', half: false, url: '' }],
+      note: 'Facts from the website FAQ. Japanese needs a native review. Khmer shows English for now.',
+      tr: { jp: { t: it[5], b: ['LINEでNickに相談', '戻る'] }, kh: { t: it[4], b: ['និយាយជាមួយ Nick តាម LINE', 'ត្រឡប់ក្រោយ'] } },
+    };
+  });
+  // the More menu gets the FAQ as its first button
+  by.more.buttons.unshift({ l: 'Common questions', to: 'faq', half: false, url: '' });
+  by.more.tr.jp.b.unshift('よくある質問'); by.more.tr.kh.b.unshift('សំណួរញឹកញាប់');
+  // the estimate screen now takes two numbers (quick estimate) or three
+  by.calc1.text = '<b>Estimate with my numbers</b>\n\nSend two numbers: the price and the monthly rent. You get the gross yield and a net range after tax and the management fee.\nExample: <code>68000 650</code>\n\nIf you know your yearly costs, add them as a third number: <code>68000 650 1800</code>\n\n<i>Yields and prices are for reference only and do not guarantee future income.</i>';
+  by.calc1.tr.jp.t = '<b>ご自身の数値で試算</b>\n\n2つの数字を送ってください。価格と月額家賃です。表面利回りと、税金と管理費を引いた手取りの目安が分かります。\n例: <code>68000 650</code>\n\n年間費用が分かる場合は、3つ目の数字として加えてください。<code>68000 650 1800</code>\n\n<i>※利回り・価格は参考値であり、将来の収益を保証するものではありません。</i>';
+  by.calc1.tr.kh.t = '<b>ប៉ាន់ស្មានតាមលេខរបស់ខ្ញុំ</b>\n\nសូមផ្ញើលេខពីរ៖ តម្លៃ និងថ្លៃជួលប្រចាំខែ។\nឧទាហរណ៍: <code>68000 650</code>\n\nបើអ្នកដឹងចំណាយប្រចាំឆ្នាំ សូមបន្ថែមជាលេខទីបី៖ <code>68000 650 1800</code>\n\n<i>ផលចំណេញ និងតម្លៃគឺសម្រាប់ជាឯកសារយោងប៉ុណ្ណោះ ហើយមិនធានាប្រាក់ចំណូលនាពេលអនាគតទេ។</i>';
+})();
 // steps that tell Nick
 by.leaddone.notify = 'Ask Nick'; by.tourok.notify = 'Tour request'; by.check2.notify = 'Listing to check';
 const keep = Object.keys(by);
-const order = []; src.forEach(s => { if (by[s.id]) order.push(s.id); if (s.id === 'b2') order.push('b2other'); if (s.id === 'rr2') order.push('rr2other'); });
+const order = []; src.forEach(s => { if (by[s.id]) order.push(s.id); if (s.id === 'more') ['faq','faq1','faq2','faq3','faq4','faq5'].forEach(i => order.push(i)); if (s.id === 'b2') order.push('b2other'); if (s.id === 'rr2') order.push('rr2other'); });
 const steps = order.map(id => by[id]);
 steps.forEach(s => s.buttons = s.buttons.filter(b => b.url || !b.to || keep.includes(b.to)));
 fs.writeFileSync(path.join(__dirname, 'flow.json'), JSON.stringify({ line: LINE, steps }, null, 1));

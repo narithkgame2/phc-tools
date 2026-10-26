@@ -75,7 +75,11 @@ const NICK = '353195979';
   });
   await t('bad estimate input gets a gentle retry, not a result', async () => {
     const r = rig(), me = r.U(8, 'ja'); await r.say(me, '/estimate');
-    for (const bad of ['hello', '1 2', '1 2 3 4', '0 650 100', '-5 600 10']) { await r.say(me, bad); assert.ok(r.lastTo(8).body.text.includes('読み取れませんでした'), bad); }
+    for (const bad of ['hello', '1 0', '1 2 3 4', '0 650 100', '-5 600 10']) { await r.say(me, bad); assert.ok(r.lastTo(8).body.text.includes('読み取れませんでした'), bad); }
+  });
+  await t('two numbers give gross yield and a net range after 14% tax and 5 to 10% fees, with the limits stated', async () => {
+    const r = rig(), me = r.U(7, 'en'); await r.say(me, '/estimate'); r.sent.length = 0; await r.say(me, '100000 700');
+    const x = r.lastTo(7).body.text; assert.ok(/Gross yield: 8\.4%/.test(x) && /6\.4% to 6\.8%/.test(x) && /Vacancy and repairs are not included/.test(x) && /for reference only/.test(x), x);
   });
   await t('parseThree accepts commas and decimals and rejects junk', () => {
     assert.deepStrictEqual(parseThree('68,000 650 1,800'), { price: 68000, rent: 650, costs: 1800 });
