@@ -31,27 +31,27 @@ const MSG = {
   },
   nick: {
     jp: 'ご相談は公式LINEで承ります。Nick本人が1営業日以内にお答えします。',
-    en: 'Nick answers on LINE. He replies within 1 business day.',
-    kh: 'Nick ឆ្លើយតបតាម LINE។ គាត់ឆ្លើយក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។',
+    en: 'Nick answers on Telegram. He replies within 1 business day.',
+    kh: 'Nick ឆ្លើយតបតាម Telegram។ គាត់ឆ្លើយក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។',
   },
-  nickBtn: { jp: 'LINEでNickに相談', en: 'Message Nick on LINE', kh: 'និយាយជាមួយ Nick តាម LINE' },
+  nickBtn: { jp: 'LINEでNickに相談', en: 'Message Nick on Telegram', kh: 'និយាយជាមួយ Nick តាម Telegram' },
   listHead: { jp: '<b>ご希望に近い物件</b>', en: '<b>Available now, close to your search</b>', kh: '<b>ជម្រើសដែលសមនឹងការស្វែងរករបស់អ្នក</b>' },
   ask: { jp: 'この物件について聞く {id}', en: 'Ask about {id}', kh: 'សួរអំពី {id}' },
   askDone: {
     jp: 'Nickに伝えました。詳細は公式LINEでご案内します。',
-    en: 'I told Nick. He will share details on LINE.',
-    kh: 'ខ្ញុំបានប្រាប់ Nick ហើយ។ គាត់នឹងផ្តល់ព័ត៌មានលម្អិតតាម LINE។',
+    en: 'I told Nick. He will share details on Telegram.',
+    kh: 'ខ្ញុំបានប្រាប់ Nick ហើយ។ គាត់នឹងផ្តល់ព័ត៌មានលម្អិតតាម Telegram។',
   },
   checkingMsg: { jp: '確認中です。分かり次第お知らせします。', en: 'I am checking this for you. I will tell you as soon as I know.', kh: 'កំពុងពិនិត្យ។ ខ្ញុំនឹងប្រាប់អ្នកភ្លាមៗនៅពេលដឹង។' },
   availableMsg: {
     jp: '確認が取れました。{name}は現在ご案内可能です。詳細と内覧のご相談は公式LINEで承ります。',
-    en: 'Confirmed. {name} is available now. Details and viewings are arranged on LINE.',
-    kh: 'បានបញ្ជាក់ហើយ។ {name} នៅទំនេរឥឡូវនេះ។ ព័ត៌មានលម្អិត និងការមើលជាក់ស្តែងតាម LINE។',
+    en: 'Confirmed. {name} is available now. Details and viewings are arranged on Telegram.',
+    kh: 'បានបញ្ជាក់ហើយ។ {name} នៅទំនេរឥឡូវនេះ។ ព័ត៌មានលម្អិត និងការមើលជាក់ស្តែងតាម Telegram។',
   },
   goneMsg: {
     jp: 'お問い合わせありがとうございます。{name}は成約済みまたは募集終了と確認しました。近い条件の物件をお探ししますので、メインメニューから条件を変えてご覧になるか、LINEでご相談ください。',
-    en: 'Thank you for asking. {name} is no longer available. Go to the main menu to look again with other options, or message Nick on LINE.',
-    kh: 'អរគុណសម្រាប់ការសួរ។ {name} លែងមានហើយ។ សូមត្រឡប់ទៅម៉ឺនុយមេដើម្បីស្វែងរកម្តងទៀត ឬផ្ញើសារទៅ Nick តាម LINE។',
+    en: 'Thank you for asking. {name} is no longer available. Go to the main menu to look again with other options, or message Nick on Telegram.',
+    kh: 'អរគុណសម្រាប់ការសួរ។ {name} លែងមានហើយ។ សូមត្រឡប់ទៅម៉ឺនុយមេដើម្បីស្វែងរកម្តងទៀត ឬផ្ញើសារទៅ Nick តាម Telegram។',
   },
   alertOn: {
     jp: '登録しました。条件に合う新着物件があれば、1日1回までまとめてお知らせします（日本時間の朝9時以降）。停止はいつでも /stop と送信してください。保存する情報は、TelegramのID、言語、検索条件のみです。',
@@ -177,6 +177,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
   const byId = {};
   flow.steps.forEach((s) => { byId[s.id] = s; });
   const LINE = flow.line;
+  const contactUrl = (lang) => (lang && lang !== 'jp' && flow.telegram) || LINE; // Japanese clients: LINE; English and Khmer: Nick's Telegram
 
   const user = (from) => {
     let u = store.get(from.id);
@@ -330,7 +331,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     const others = (st.askers || []).filter((x) => (clock() - Date.parse(x.at)) / DAY <= 7);
     for (const x of others) {
       const lg = x.lang || 'jp';
-      await api('sendMessage', { chat_id: x.id, text: MSG.goneMsg[lg].replace('{name}', R.esc(name)), parse_mode: 'HTML', reply_markup: { inline_keyboard: [[{ text: MSG.nickBtn[lg], url: LINE }], [{ text: MSG.menuBtn[lg], callback_data: 'm:menu' }]] } });
+      await api('sendMessage', { chat_id: x.id, text: MSG.goneMsg[lg].replace('{name}', R.esc(name)), parse_mode: 'HTML', reply_markup: { inline_keyboard: [[{ text: MSG.nickBtn[lg], url: contactUrl(lg) }], [{ text: MSG.menuBtn[lg], callback_data: 'm:menu' }]] } });
     }
     return others.length;
   }
@@ -363,7 +364,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     const [, act, ref, clientId] = (cb.data || '').split(':');
     const listing = (await rawListings()).find((x) => x.id === ref);
     const name = R.esc(listing ? listing.name : ref);
-    const lineKb = (lang) => ({ inline_keyboard: [[{ text: MSG.nickBtn[lang], url: LINE }]] });
+    const lineKb = (lang) => ({ inline_keyboard: [[{ text: MSG.nickBtn[lang], url: contactUrl(lang) }]] });
     const st = state.get(ref) || {};
     const asker = (st.askers || []).find((x) => String(x.id) === String(clientId));
     const lang = (asker && asker.lang) || (store.get(clientId) || {}).lang || 'jp';
@@ -382,7 +383,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     if (act === 'n') {
       state.set(ref, Object.assign({}, st, { status: 'unavailable', at, prev: { status: st.status, at: st.at } }));
       const others = (st.askers || []).filter((x) => (clock() - Date.parse(x.at)) / DAY <= 7);
-      const kb = (l) => ({ inline_keyboard: [[{ text: MSG.nickBtn[l], url: LINE }], [{ text: MSG.menuBtn[l], callback_data: 'm:menu' }]] });
+      const kb = (l) => ({ inline_keyboard: [[{ text: MSG.nickBtn[l], url: contactUrl(l) }], [{ text: MSG.menuBtn[l], callback_data: 'm:menu' }]] });
       let told = 0;
       for (const x of others) { await api('sendMessage', { chat_id: x.id, text: MSG.goneMsg[x.lang || 'jp'].replace('{name}', name), parse_mode: 'HTML', reply_markup: kb(x.lang || 'jp') }); if (String(x.id) !== String(clientId)) told++; }
       if (!others.some((x) => String(x.id) === String(clientId))) await api('sendMessage', { chat_id: clientId, text: MSG.goneMsg[lang].replace('{name}', name), parse_mode: 'HTML', reply_markup: kb(lang) });
@@ -456,7 +457,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
         await api('sendMessage', { chat_id: nickId, text: '<b>Listing interest</b>' + (isNick(u.id) ? ' <i>(your own test)</i>' : isTester(u.id) ? ' <i>(tester account)</i>' : '') + '\nClient: ' + R.esc(nameOf(from)) + (from.username ? ' (@' + R.esc(from.username) + ')' : '') + ' (' + u.id + ')\nListing: ' + R.esc(l.id + ' ' + l.name) + (areaText(l) ? ', ' + R.esc(areaText(l)) : '') + ', ' + fmtUsd(rent ? l.rent : l.price) + (rent ? '/month' : '') + '\nOpen chat: tg://user?id=' + u.id, parse_mode: 'HTML', disable_web_page_preview: true,
           reply_markup: { inline_keyboard: [[{ text: 'Available', callback_data: 'v:a:' + l.id + ':' + u.id }, { text: 'Not available', callback_data: 'v:n:' + l.id + ':' + u.id }], [{ text: 'Checking now', callback_data: 'v:c:' + l.id + ':' + u.id }]] } });
       }
-      return api('sendMessage', { chat_id: chatId, text: MSG.askDone[u.lang], reply_markup: { inline_keyboard: [[{ text: MSG.nickBtn[u.lang], url: LINE }]] } });
+      return api('sendMessage', { chat_id: chatId, text: MSG.askDone[u.lang], reply_markup: { inline_keyboard: [[{ text: MSG.nickBtn[u.lang], url: contactUrl(u.lang) }]] } });
     }
     if (/^(aw|am|ac|ak|ua|ur|uc|uw|pn|pa|pr):/.test(data)) { if (await agentArea.handleCallback(cb, u)) return; }
     if (data.startsWith('ph:')) {
@@ -544,7 +545,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     if (cmd === '/estimate') return goto(chatId, from, u, 'calc1');
     if (cmd === '/nick') {
       save(u);
-      return api('sendMessage', { chat_id: chatId, text: MSG.nick[u.lang], reply_markup: { inline_keyboard: [[{ text: MSG.nickBtn[u.lang], url: LINE }]] } });
+      return api('sendMessage', { chat_id: chatId, text: MSG.nick[u.lang], reply_markup: { inline_keyboard: [[{ text: MSG.nickBtn[u.lang], url: contactUrl(u.lang) }]] } });
     }
     if (cmd === '/myid') { save(u); return api('sendMessage', { chat_id: chatId, text: MSG.myid[u.lang].replace('{id}', String(from.id)) }); }
     if (cmd) return goto(chatId, from, u, 'refused');

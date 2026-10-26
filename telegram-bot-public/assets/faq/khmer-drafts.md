@@ -3,6 +3,8 @@
 Written by Claude on 2026-10-26. Not live yet: Khmer users still see the English answers until Nick approves these.
 Pictures: `faq-0N-*-kh.png` in this folder. Same facts as the Japanese and English versions.
 
+Khmer clients contact Nick on Telegram (t.me/Nick_REAKH), not LINE (Nick, 2026-10-26).
+
 Please check: the wording, "ជាន់ទី ១" for the first floor above the ground floor, "Strata Title" (or a Khmer term you prefer), and the numbers.
 
 ## 1. Foreign ownership
@@ -13,7 +15,7 @@ Please check: the wording, "ជាន់ទី ១" for the first floor above th
 ▫️ <b>ប្លង់៖</b> ត្រូវមាន Strata Title
 
 <blockquote>ជនបរទេសមិនអាចកាន់កាប់ដីក្នុងនាមខ្លួនបានទេ។</blockquote>
-សូមសួរ Nick តាម LINE សម្រាប់ព័ត៌មានលម្អិត។
+សូមសួរ Nick តាម Telegram សម្រាប់ព័ត៌មានលម្អិត។
 
 ## 2. Costs beyond the price
 <b>ចំណាយក្រៅពីតម្លៃ</b>

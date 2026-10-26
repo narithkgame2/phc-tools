@@ -1,5 +1,6 @@
 {
  "line": "https://line.me/ti/p/@615ueovq",
+ "telegram": "https://t.me/Nick_REAKH",
  "steps": [
   {
    "id": "start",
@@ -86,7 +87,11 @@
      "l": "Talk to Nick",
      "to": "",
      "half": true,
-     "url": "https://line.me/ti/p/@615ueovq"
+     "url": "https://line.me/ti/p/@615ueovq",
+     "urls": {
+      "en": "https://t.me/Nick_REAKH",
+      "kh": "https://t.me/Nick_REAKH"
+     }
     }
    ],
    "note": "Four jobs on the first screen, everything else under More. Brand decided by Nick: the display name NICK | カンボジア不動産投資 in every language, like every other channel. Subtitle and tagline come from the channel plan.",
@@ -304,13 +309,17 @@
    "id": "bres",
    "flow": "Buy",
    "title": "Buy request",
-   "text": "<b>Your search is saved</b>\n<i>[search summary]</i>\n\nNick will check availability and send you the three best options for this search within 1 business day.\nYou can also message him now on LINE.",
+   "text": "<b>Your search is saved</b>\n<i>[search summary]</i>\n\nNick will check availability and send you the three best options for this search within 1 business day.\nYou can also message him now on Telegram.",
    "buttons": [
     {
-     "l": "Message Nick on LINE",
+     "l": "Message Nick on Telegram",
      "to": "",
      "half": false,
-     "url": "https://line.me/ti/p/@615ueovq"
+     "url": "https://line.me/ti/p/@615ueovq",
+     "urls": {
+      "en": "https://t.me/Nick_REAKH",
+      "kh": "https://t.me/Nick_REAKH"
+     }
     },
     {
      "l": "Alert me to new matches",
@@ -344,9 +353,9 @@
      ]
     },
     "kh": {
-     "t": "<b>យើងបានទទួលលក្ខខណ្ឌស្វែងរករបស់អ្នក</b>\n<i>[search summary]</i>\n\nNick នឹងពិនិត្យភាពអាចរកបាន ហើយផ្ញើជម្រើសល្អបំផុតចំនួន 3 ជូនអ្នកក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។\nអ្នកក៏អាចផ្ញើសារទៅគាត់តាម LINE ភ្លាមៗបានដែរ។",
+     "t": "<b>យើងបានទទួលលក្ខខណ្ឌស្វែងរករបស់អ្នក</b>\n<i>[search summary]</i>\n\nNick នឹងពិនិត្យភាពអាចរកបាន ហើយផ្ញើជម្រើសល្អបំផុតចំនួន 3 ជូនអ្នកក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។\nអ្នកក៏អាចផ្ញើសារទៅគាត់តាម Telegram ភ្លាមៗបានដែរ។",
      "b": [
-      "និយាយជាមួយ Nick តាម LINE",
+      "និយាយជាមួយ Nick តាម Telegram",
       "ជូនដំណឹងពេលមានថ្មី",
       "ប្តូរលក្ខខណ្ឌ",
       "ម៉ឺនុយមេ"
@@ -543,13 +552,17 @@
    "id": "rres",
    "flow": "Rent",
    "title": "Rent request",
-   "text": "<b>Your search is saved</b>\n<i>[search summary]</i>\n\nNick will check availability and send you the three best rental options for this search within 1 business day.\nYou can also message him now on LINE.",
+   "text": "<b>Your search is saved</b>\n<i>[search summary]</i>\n\nNick will check availability and send you the three best rental options for this search within 1 business day.\nYou can also message him now on Telegram.",
    "buttons": [
     {
-     "l": "Message Nick on LINE",
+     "l": "Message Nick on Telegram",
      "to": "",
      "half": false,
-     "url": "https://line.me/ti/p/@615ueovq"
+     "url": "https://line.me/ti/p/@615ueovq",
+     "urls": {
+      "en": "https://t.me/Nick_REAKH",
+      "kh": "https://t.me/Nick_REAKH"
+     }
     },
     {
      "l": "Alert me to new matches",
@@ -582,9 +595,9 @@
      ]
     },
     "kh": {
-     "t": "<b>យើងបានទទួលលក្ខខណ្ឌស្វែងរករបស់អ្នក</b>\n<i>[search summary]</i>\n\nNick នឹងពិនិត្យភាពអាចរកបាន ហើយផ្ញើជម្រើសសម្រាប់ជួលល្អបំផុតចំនួន 3 ជូនអ្នកក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។\nអ្នកក៏អាចផ្ញើសារទៅគាត់តាម LINE ភ្លាមៗបានដែរ។",
+     "t": "<b>យើងបានទទួលលក្ខខណ្ឌស្វែងរករបស់អ្នក</b>\n<i>[search summary]</i>\n\nNick នឹងពិនិត្យភាពអាចរកបាន ហើយផ្ញើជម្រើសសម្រាប់ជួលល្អបំផុតចំនួន 3 ជូនអ្នកក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។\nអ្នកក៏អាចផ្ញើសារទៅគាត់តាម Telegram ភ្លាមៗបានដែរ។",
      "b": [
-      "និយាយជាមួយ Nick តាម LINE",
+      "និយាយជាមួយ Nick តាម Telegram",
       "ជូនដំណឹងពេលមានថ្មី",
       "ប្តូរលក្ខខណ្ឌ",
       "ម៉ឺនុយមេ"
@@ -705,13 +718,17 @@
    "text": "<b>Ask Nick</b>\n<i>Step 3 of 3</i>\n\nHow should Nick reply?",
    "buttons": [
     {
-     "l": "LINE",
+     "l": "I will message Nick now",
      "to": "",
      "half": false,
-     "url": "https://line.me/ti/p/@615ueovq"
+     "url": "https://line.me/ti/p/@615ueovq",
+     "urls": {
+      "en": "https://t.me/Nick_REAKH",
+      "kh": "https://t.me/Nick_REAKH"
+     }
     },
     {
-     "l": "Telegram",
+     "l": "Nick messages me first",
      "to": "leaddone",
      "half": false,
      "url": ""
@@ -735,8 +752,8 @@
     "kh": {
      "t": "<b>សួរ Nick</b>\n<i>ជំហាន 3 ក្នុងចំណោម 3</i>\n\nតើ Nick គួរឆ្លើយតបអ្នកតាមវិធីណា?",
      "b": [
-      "LINE",
-      "Telegram",
+      "ផ្ញើសារទៅ Nick ឥឡូវនេះ",
+      "ឲ្យ Nick ផ្ញើសារមកខ្ញុំមុន",
       "ត្រឡប់ក្រោយ"
      ]
     }
@@ -1094,13 +1111,17 @@
    "id": "faq1",
    "flow": "FAQ",
    "title": "FAQ: Foreign ownership",
-   "text": "<b>Foreigners can own property</b>\n\n▫️ <b>Floor:</b> a unit above the ground floor\n▫️ <b>Foreign quota:</b> up to 70% of a building\n▫️ <b>Title:</b> a strata title is required\n\n<blockquote>Foreigners cannot own land in their own name.</blockquote>\nAsk Nick on LINE for the details.",
+   "text": "<b>Foreigners can own property</b>\n\n▫️ <b>Floor:</b> a unit above the ground floor\n▫️ <b>Foreign quota:</b> up to 70% of a building\n▫️ <b>Title:</b> a strata title is required\n\n<blockquote>Foreigners cannot own land in their own name.</blockquote>\nAsk Nick on Telegram for the details.",
    "buttons": [
     {
-     "l": "Message Nick on LINE",
+     "l": "Message Nick on Telegram",
      "to": "",
      "half": false,
-     "url": "https://line.me/ti/p/@615ueovq"
+     "url": "https://line.me/ti/p/@615ueovq",
+     "urls": {
+      "en": "https://t.me/Nick_REAKH",
+      "kh": "https://t.me/Nick_REAKH"
+     }
     },
     {
      "l": "Back",
@@ -1119,9 +1140,9 @@
      ]
     },
     "kh": {
-     "t": "<b>Foreigners can own property</b>\n\n▫️ <b>Floor:</b> a unit above the ground floor\n▫️ <b>Foreign quota:</b> up to 70% of a building\n▫️ <b>Title:</b> a strata title is required\n\n<blockquote>Foreigners cannot own land in their own name.</blockquote>\nAsk Nick on LINE for the details.",
+     "t": "<b>Foreigners can own property</b>\n\n▫️ <b>Floor:</b> a unit above the ground floor\n▫️ <b>Foreign quota:</b> up to 70% of a building\n▫️ <b>Title:</b> a strata title is required\n\n<blockquote>Foreigners cannot own land in their own name.</blockquote>\nAsk Nick on Telegram for the details.",
      "b": [
-      "និយាយជាមួយ Nick តាម LINE",
+      "និយាយជាមួយ Nick តាម Telegram",
       "ត្រឡប់ក្រោយ"
      ]
     }
@@ -1138,10 +1159,14 @@
    "text": "<b>Costs beyond the price</b>\n\n<b>When you buy</b>\n▫️ <b>Booking fee:</b> $500 to $2,000\n▫️ <b>Down payment:</b> 20% to 30%\n▫️ <b>Transfer tax:</b> 4%\n▫️ <b>Lawyer:</b> 0.5% to 1%\n▫️ <b>Furniture:</b> from $5,000\n\n<b>While you own it</b>\n▫️ <b>Property tax:</b> 0.1% a year\n▫️ <b>Building management:</b> $1 to $2 per sqm a month\n\n<blockquote>Some developers pay the transfer tax as a promotion.</blockquote>\nNick confirms the exact figures for each project.",
    "buttons": [
     {
-     "l": "Message Nick on LINE",
+     "l": "Message Nick on Telegram",
      "to": "",
      "half": false,
-     "url": "https://line.me/ti/p/@615ueovq"
+     "url": "https://line.me/ti/p/@615ueovq",
+     "urls": {
+      "en": "https://t.me/Nick_REAKH",
+      "kh": "https://t.me/Nick_REAKH"
+     }
     },
     {
      "l": "Back",
@@ -1162,7 +1187,7 @@
     "kh": {
      "t": "<b>Costs beyond the price</b>\n\n<b>When you buy</b>\n▫️ <b>Booking fee:</b> $500 to $2,000\n▫️ <b>Down payment:</b> 20% to 30%\n▫️ <b>Transfer tax:</b> 4%\n▫️ <b>Lawyer:</b> 0.5% to 1%\n▫️ <b>Furniture:</b> from $5,000\n\n<b>While you own it</b>\n▫️ <b>Property tax:</b> 0.1% a year\n▫️ <b>Building management:</b> $1 to $2 per sqm a month\n\n<blockquote>Some developers pay the transfer tax as a promotion.</blockquote>\nNick confirms the exact figures for each project.",
      "b": [
-      "និយាយជាមួយ Nick តាម LINE",
+      "និយាយជាមួយ Nick តាម Telegram",
       "ត្រឡប់ក្រោយ"
      ]
     }
@@ -1179,10 +1204,14 @@
    "text": "<b>What comes off the rent</b>\n\n▫️ <b>Tax:</b> 14% if you live abroad, 10% if resident\n▫️ <b>Building management:</b> $1 to $2 per sqm a month\n▫️ <b>Empty months:</b> plan for about 10% a year\n\n<blockquote>What you keep = rent minus tax, management and empty months</blockquote>\nAsk Nick for an estimate on a real unit.",
    "buttons": [
     {
-     "l": "Message Nick on LINE",
+     "l": "Message Nick on Telegram",
      "to": "",
      "half": false,
-     "url": "https://line.me/ti/p/@615ueovq"
+     "url": "https://line.me/ti/p/@615ueovq",
+     "urls": {
+      "en": "https://t.me/Nick_REAKH",
+      "kh": "https://t.me/Nick_REAKH"
+     }
     },
     {
      "l": "Back",
@@ -1203,7 +1232,7 @@
     "kh": {
      "t": "<b>What comes off the rent</b>\n\n▫️ <b>Tax:</b> 14% if you live abroad, 10% if resident\n▫️ <b>Building management:</b> $1 to $2 per sqm a month\n▫️ <b>Empty months:</b> plan for about 10% a year\n\n<blockquote>What you keep = rent minus tax, management and empty months</blockquote>\nAsk Nick for an estimate on a real unit.",
      "b": [
-      "និយាយជាមួយ Nick តាម LINE",
+      "និយាយជាមួយ Nick តាម Telegram",
       "ត្រឡប់ក្រោយ"
      ]
     }
@@ -1220,10 +1249,14 @@
    "text": "<b>The buying process: 6 steps</b>\n\n① <b>Booking:</b> fee of $500 to $2,000\n② <b>Down payment and contract:</b> 20% to 30%\n③ <b>Instalments:</b> during construction\n④ <b>Balance:</b> 40% to 50% at handover\n⑤ <b>Handover:</b> inspect the unit, collect the keys\n⑥ <b>Title:</b> registered in your name\n\n<blockquote>The steps are almost always the same. What changes is the amount and timing of each payment.</blockquote>\nAsk Nick for the plan of a specific project.",
    "buttons": [
     {
-     "l": "Message Nick on LINE",
+     "l": "Message Nick on Telegram",
      "to": "",
      "half": false,
-     "url": "https://line.me/ti/p/@615ueovq"
+     "url": "https://line.me/ti/p/@615ueovq",
+     "urls": {
+      "en": "https://t.me/Nick_REAKH",
+      "kh": "https://t.me/Nick_REAKH"
+     }
     },
     {
      "l": "Back",
@@ -1244,7 +1277,7 @@
     "kh": {
      "t": "<b>The buying process: 6 steps</b>\n\n① <b>Booking:</b> fee of $500 to $2,000\n② <b>Down payment and contract:</b> 20% to 30%\n③ <b>Instalments:</b> during construction\n④ <b>Balance:</b> 40% to 50% at handover\n⑤ <b>Handover:</b> inspect the unit, collect the keys\n⑥ <b>Title:</b> registered in your name\n\n<blockquote>The steps are almost always the same. What changes is the amount and timing of each payment.</blockquote>\nAsk Nick for the plan of a specific project.",
      "b": [
-      "និយាយជាមួយ Nick តាម LINE",
+      "និយាយជាមួយ Nick តាម Telegram",
       "ត្រឡប់ក្រោយ"
      ]
     }
@@ -1261,10 +1294,14 @@
    "text": "<b>You can buy from abroad</b>\n\n① <b>Online:</b> choosing the unit, questions and transfers\n② <b>Contract:</b> signed by hand on the originals (no e-signature)\n③ <b>Courier:</b> originals go by DHL or similar, and the developer or seller signs them too\n\n<blockquote>A power of attorney is also possible, but the process is more involved.</blockquote>\nPrices and rents are usually in US dollars.",
    "buttons": [
     {
-     "l": "Message Nick on LINE",
+     "l": "Message Nick on Telegram",
      "to": "",
      "half": false,
-     "url": "https://line.me/ti/p/@615ueovq"
+     "url": "https://line.me/ti/p/@615ueovq",
+     "urls": {
+      "en": "https://t.me/Nick_REAKH",
+      "kh": "https://t.me/Nick_REAKH"
+     }
     },
     {
      "l": "Back",
@@ -1285,7 +1322,7 @@
     "kh": {
      "t": "<b>You can buy from abroad</b>\n\n① <b>Online:</b> choosing the unit, questions and transfers\n② <b>Contract:</b> signed by hand on the originals (no e-signature)\n③ <b>Courier:</b> originals go by DHL or similar, and the developer or seller signs them too\n\n<blockquote>A power of attorney is also possible, but the process is more involved.</blockquote>\nPrices and rents are usually in US dollars.",
      "b": [
-      "និយាយជាមួយ Nick តាម LINE",
+      "និយាយជាមួយ Nick តាម Telegram",
       "ត្រឡប់ក្រោយ"
      ]
     }
@@ -1549,7 +1586,11 @@
      "l": "Talk to Nick",
      "to": "",
      "half": false,
-     "url": "https://line.me/ti/p/@615ueovq"
+     "url": "https://line.me/ti/p/@615ueovq",
+     "urls": {
+      "en": "https://t.me/Nick_REAKH",
+      "kh": "https://t.me/Nick_REAKH"
+     }
     }
    ],
    "note": "Sent whenever the bot hits an error. Nick also gets an alert.",
@@ -1592,7 +1633,11 @@
      "l": "Talk to Nick",
      "to": "",
      "half": false,
-     "url": "https://line.me/ti/p/@615ueovq"
+     "url": "https://line.me/ti/p/@615ueovq",
+     "urls": {
+      "en": "https://t.me/Nick_REAKH",
+      "kh": "https://t.me/Nick_REAKH"
+     }
     }
    ],
    "note": "Sent when someone types something the bot cannot match.",
@@ -1631,7 +1676,11 @@
      "l": "Talk to Nick",
      "to": "",
      "half": false,
-     "url": "https://line.me/ti/p/@615ueovq"
+     "url": "https://line.me/ti/p/@615ueovq",
+     "urls": {
+      "en": "https://t.me/Nick_REAKH",
+      "kh": "https://t.me/Nick_REAKH"
+     }
     }
    ],
    "note": "Sent when someone without access uses a staff or agent command.",

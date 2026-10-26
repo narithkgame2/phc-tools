@@ -64,7 +64,7 @@ function createOps(ctx) {
       'Opened from a unit link: ' + cur.deeplinks + '. Compare used: ' + cur.compares,
       'Agents: ' + cur.submitted + ' submitted, ' + cur.approved + ' approved, ' + cur.sold + ' sold'];
     if (cur.top.length) lines.push('', 'Most asked: ' + cur.top.map(([r, n]) => r + ' (' + n + ')').join(', '));
-    lines.push('', 'Telegram cannot count taps on the LINE button, so LINE messages are not in these numbers. Check LINE for those.');
+    lines.push('', 'Telegram cannot count taps on the contact buttons, so chats on LINE (Japanese clients) and on your own Telegram (English and Khmer clients) are not in these numbers. Check those apps for them.');
     return lines.join('\n');
   }
   async function runDigest() {

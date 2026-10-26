@@ -79,13 +79,13 @@ function rig(rows) {
     const r2 = rig([listing()]); await r2.search(NICK); await r2.cb(NICK, 'q:TS5-5008'); r2.advance(300); assert.strictEqual(await r2.bot.runOps(), 0);
     assert.ok(!r2.evs.some((e) => e.type === 'ask' || e.type === 'search' || e.type === 'new'), 'the admin is not a client');
   });
-  await t('Monday numbers: sent once on Monday morning with real counts and the LINE limit stated; not on other days', async () => {
+  await t('Monday numbers: sent once on Monday morning with real counts and the LINE and Telegram limit stated; not on other days', async () => {
     const r = rig([listing(), listing({ id: 'X-2', price: 90000 })]);
     await r.search(910); await r.cb(910, 'q:TS5-5008'); await r.search(911, 1, 4); // the second search finds nothing in Toul Kork
     await r.cb(NICK, 'v:a:TS5-5008:910');
     r.setTime(Date.parse('2026-11-02T02:30:00Z')); // the next Monday, 09:30 in Phnom Penh
     assert.strictEqual(await r.bot.runOps(), 1); const d = r.texts(NICK).pop();
-    assert.ok(/<b>Weekly numbers<\/b>/.test(d) && /New clients: 2 \(before: 0\)/.test(d) && /Searches: 2 \(before: 0\), 1 found nothing/.test(d) && /Questions about a unit \(Ask\): 1 \(before: 0\) on 1 different units/.test(d) && /Your replies: 1 of 1/.test(d) && /Most asked: TS5-5008 \(1\)/.test(d) && /cannot count taps on the LINE button/.test(d), d);
+    assert.ok(/<b>Weekly numbers<\/b>/.test(d) && /New clients: 2 \(before: 0\)/.test(d) && /Searches: 2 \(before: 0\), 1 found nothing/.test(d) && /Questions about a unit \(Ask\): 1 \(before: 0\) on 1 different units/.test(d) && /Your replies: 1 of 1/.test(d) && /Most asked: TS5-5008 \(1\)/.test(d) && /cannot count taps on the contact buttons, so chats on LINE \(Japanese clients\) and on your own Telegram/.test(d), d);
     assert.strictEqual(await r.bot.runOps(), 0, 'once a week');
     const r2 = rig([listing()]); r2.setTime(Date.parse('2026-10-28T03:00:00Z')); assert.strictEqual(await r2.bot.runOps(), 0, 'not on a Wednesday');
   });

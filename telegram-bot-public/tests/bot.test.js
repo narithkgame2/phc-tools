@@ -43,6 +43,15 @@ const NICK = '353195979';
     assert.strictEqual(kb.flat().find((b) => b.url).url, 'https://line.me/ti/p/@615ueovq');
     assert.ok(kb.flat().length >= 5);
   });
+  await t('English and Khmer clients reach Nick on Telegram, Japanese clients on LINE', async () => {
+    const r = rig();
+    const url = async (id, lang, btn) => { const me = r.U(id, lang); await r.say(me, '/start'); if (btn) await r.tap(me, btn); await r.say(me, '/nick');
+      const m = r.lastTo(id).body; return { url: m.reply_markup.inline_keyboard[0][0].url, text: m.text }; };
+    const en = await url(31, 'en', 'English'), kh = await url(32, 'km', 'ខ្មែរ'), jp = await url(33, 'ja') // a Japanese phone skips the language screen;
+    assert.strictEqual(en.url, 'https://t.me/Nick_REAKH'); assert.ok(/Telegram/.test(en.text) && !/LINE/.test(en.text), en.text);
+    assert.strictEqual(kh.url, 'https://t.me/Nick_REAKH'); assert.ok(!/LINE/.test(kh.text), kh.text);
+    assert.strictEqual(jp.url, 'https://line.me/ti/p/@615ueovq'); assert.ok(/LINE/.test(jp.text));
+  });
   await t('buy search ends with a request that tells Nick budget and district', async () => {
     const r = rig(), me = r.U(4, 'ja'); await r.say(me, '/start');
     await r.tap(me, '物件を購入する');
@@ -57,10 +66,10 @@ const NICK = '353195979';
     await r.say(me, '/estimate'); await r.say(me, '68000 650 1800');
     await r.tap(me, 'Ask Nick to review it');
     for (let i = 0; i < 2; i++) await r.tap(me, r.firstLabel(5));
-    await r.tap(me, 'Telegram');
+    await r.tap(me, 'Nick messages me first');
     assert.ok(r.lastTo(5).body.text.includes('1 business day'));
     const notes = r.sent.filter((s) => s.body.chat_id === NICK && /Ask Nick/.test(s.body.text));
-    assert.strictEqual(notes.length, 1); assert.ok(/Goal: /.test(notes[0].body.text) && /Reply by: Telegram/.test(notes[0].body.text), notes[0].body.text);
+    assert.strictEqual(notes.length, 1); assert.ok(/Goal: /.test(notes[0].body.text) && /Reply by: Nick messages me first/.test(notes[0].body.text), notes[0].body.text);
   });
   await t('estimate maths is exact and the disclaimer is shown', async () => {
     const r = rig(), me = r.U(6, 'en'); await r.say(me, '/start'); await r.tap(me, 'English'); await r.say(me, '/estimate');

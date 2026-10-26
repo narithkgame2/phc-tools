@@ -24,10 +24,13 @@ t('buttons never get cut: shared row 14 characters, full row 28', () => steps.fo
 }))));
 t('banned words never appear in any language', () => steps.forEach((s) => allTexts(s).forEach((x) => assert.ok(!/高利回り|非公開|最大級|off[- ]market/i.test(x), s.id))));
 t('PHC, REAKH and their links never appear', () => steps.forEach((s) => allTexts(s).forEach((x) => assert.ok(!/PHC|Property Hub|propertyhubcambodia|REAKH|Realestate\.com\.kh|t\.me\/Nick_REAKH/i.test(x), s.id))));
-t('every Talk to Nick or LINE button opens the official LINE link', () => steps.forEach((s) => s.buttons.forEach((b) => {
-  if (/talk to nick|message nick|Nickに相談|LINEで/i.test(b.l)) assert.strictEqual(b.url, 'https://line.me/ti/p/@615ueovq', s.id + ' ' + b.l);
-  if (b.url) assert.strictEqual(b.url, 'https://line.me/ti/p/@615ueovq', s.id + ' non-LINE link');
-})));
+t('Talk to Nick: Japanese clients get the official LINE, English and Khmer clients get Nick\'s Telegram', () => steps.forEach((s) => {
+  s.buttons.forEach((b) => { if (b.url) assert.strictEqual(b.url, 'https://line.me/ti/p/@615ueovq', s.id + ' non-LINE link'); });
+  const kb = (l) => R.keyboard(s, l).inline_keyboard.flat().filter((b) => b.url);
+  kb('jp').forEach((b) => { assert.strictEqual(b.url, 'https://line.me/ti/p/@615ueovq', s.id + ' jp'); assert.ok(!/Telegram/.test(b.text), s.id + ' jp label ' + b.text); });
+  ['en', 'kh'].forEach((l) => kb(l).forEach((b) => { assert.strictEqual(b.url, 'https://t.me/Nick_REAKH', s.id + ' ' + l); assert.ok(!/LINE/.test(b.text), s.id + ' ' + l + ' label ' + b.text); }));
+  ['en', 'kh'].forEach((l) => assert.ok(!/LINE/.test(R.textOf(s, l)), s.id + ' ' + l + ' text mentions LINE'));
+}));
 t('every screen that shows a yield carries the standard disclaimer', () => steps.forEach((s) => ['en', 'jp'].forEach((l) => {
   const x = R.textOf(s, l); if (/yield|利回り/i.test(x)) assert.ok(/for reference only|参考値/.test(x), s.id + ' ' + l);
 })));

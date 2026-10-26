@@ -2,6 +2,7 @@
 // Edit screens in the Studio, export, save as config/phase1.source.json, then run: node config/build-flow.cjs
 const fs = require('fs'), path = require('path');
 const LINE = 'https://line.me/ti/p/@615ueovq';
+const TELEGRAM = 'https://t.me/Nick_REAKH'; // Nick's own Telegram, for English and Khmer clients
 const src = JSON.parse(fs.readFileSync(path.join(__dirname, 'phase1.source.json'), 'utf8'));
 const by = {}; src.forEach(s => by[s.id] = s);
 function setTr(s, lang, t, b) { s.tr = s.tr || {}; s.tr[lang] = { t, b }; }
@@ -158,5 +159,20 @@ const keep = Object.keys(by);
 const order = []; src.forEach(s => { if (by[s.id]) order.push(s.id); if (s.id === 'more') ['faq','faq1','faq2','faq3','faq4','faq5'].forEach(i => order.push(i)); if (s.id === 'b2') order.push('b2other'); if (s.id === 'rr2') order.push('rr2other'); });
 const steps = order.map(id => by[id]);
 steps.forEach(s => s.buttons = s.buttons.filter(b => b.url || !b.to || keep.includes(b.to)));
-fs.writeFileSync(path.join(__dirname, 'flow.json'), JSON.stringify({ line: LINE, steps }, null, 1));
+// Only Japanese clients use LINE (Nick, 2026-10-26). English and Khmer clients reach Nick on his own Telegram:
+// every LINE button carries the Telegram link for en and kh, and the en and kh words say Telegram.
+steps.forEach(s => {
+  s.buttons.forEach((b, i) => {
+    if (b.url !== LINE) return;
+    b.urls = { en: TELEGRAM, kh: TELEGRAM };
+    b.l = b.l.replace('LINE', 'Telegram');
+    if (s.tr && s.tr.kh && s.tr.kh.b && s.tr.kh.b[i]) s.tr.kh.b[i] = s.tr.kh.b[i].replace('LINE', 'Telegram');
+  });
+  s.text = s.text.replace(/LINE/g, 'Telegram');
+  if (s.tr && s.tr.kh && s.tr.kh.t) s.tr.kh.t = s.tr.kh.t.replace(/LINE/g, 'Telegram');
+});
+// Ask Nick step 3 in English and Khmer: both answers are Telegram, so they say who writes first
+by.lead3.buttons[0].l = 'I will message Nick now'; by.lead3.buttons[1].l = 'Nick messages me first';
+by.lead3.tr.kh.b[0] = 'ផ្ញើសារទៅ Nick ឥឡូវនេះ'; by.lead3.tr.kh.b[1] = 'ឲ្យ Nick ផ្ញើសារមកខ្ញុំមុន';
+fs.writeFileSync(path.join(__dirname, 'flow.json'), JSON.stringify({ line: LINE, telegram: TELEGRAM, steps }, null, 1));
 console.log('flow.json written:', steps.length, 'steps');
