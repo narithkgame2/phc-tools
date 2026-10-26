@@ -23,8 +23,8 @@ case "$1" in
     TO="$HOME/.phc-secrets/nick-reakh-bot.env"
     if ! grep -q '^TRANSLATE_KEY=' "$FILE" || ! grep -q '^TRANSLATE_URL=' "$FILE"; then echo "Set up the translator for @Nick_Cambodia_Bot first (key and url)."; exit 1; fi
     touch "$TO"; chmod 600 "$TO"
-    grep -v '^TRANSLATE_\(KEY\|URL\)=' "$TO" > "$TO.tmp" && mv "$TO.tmp" "$TO" && chmod 600 "$TO"
-    grep '^TRANSLATE_\(KEY\|URL\)=' "$FILE" >> "$TO"
+    grep -vE '^TRANSLATE_(KEY|URL)=' "$TO" > "$TO.tmp" && mv "$TO.tmp" "$TO" && chmod 600 "$TO"
+    grep -E '^TRANSLATE_(KEY|URL)=' "$FILE" >> "$TO"
     echo "Done. @Nick_REAKH_Bot can now use the same translator. Restart that bot."
     ;;
   *) echo "Use: bash setup-translator.sh key   or   bash setup-translator.sh url LINK   or   bash setup-translator.sh reakh";;
