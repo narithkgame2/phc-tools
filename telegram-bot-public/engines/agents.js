@@ -4,7 +4,7 @@
 // channels, and every 7 days the bot asks the agent whether each unit is still available. Agents see only their own units, never a client.
 // createAgentArea(ctx) -> { handleMessage, handleCallback, listings, runChecks, isAgent, toListing }. Everything Telegram goes through ctx.api.
 const { parsePost } = require('./postparse.js');
-const { composeJP, composeEN } = require('./compose.js');
+const { composeJP, composeJPPost, composeEN } = require('./compose.js');
 
 const DAY = 86400000;
 const CHECK_DAYS = 7, REMIND_HOURS = 24, MAX_REMINDS = 3, MAX_MEDIA = 10;
@@ -185,34 +185,33 @@ function createAgentArea(ctx) {
   function channelPost(unit, ch) {
     const l = toListing(unit), lang = ch.lang === 'en' ? 'en' : 'jp';
     if (lang === 'jp') {
-      const r = composeJP({ card: ctx.listingText(l, 'jp'), features: unit.features, availLine: ctx.availLine || '', lineUrl: lineUrl(), phone: ch.phone || '', botLink: ctx.botLink ? ctx.botLink(unit.ref) : '' });
+      const r = composeJPPost(unit, { khan: l.khan, availLine: ctx.availLine || '', phone: ch.phone || '' });
       return { text: r.text, left: r.left };
     }
     const r = composeEN(unit, { khan: l.khan, footer: ch.footer || '' });
     return { text: esc(r.text), left: r.left };
   }
   // link buttons under a channel post, from channels.json "buttons": [{ "text": "...", "url": "https://..." }]
-  // (Telegram buttons only open web or t.me links: a phone number needs a link such as https://wa.me/855...)
-  function channelRows(ch) {
+  // (Telegram buttons only open web or t.me links, so a phone number stays in the post text, where a tap dials it.)
+  // Japanese default: LINE, plus the bot page of this unit where the client finds every photo.
+  function channelRows(ch, unit) {
     let list = Array.isArray(ch.buttons) ? ch.buttons.slice() : [];
-    if (!list.length && ch.lang === 'jp' && lineUrl()) list = [{ text: 'LINEでNickに相談', url: lineUrl() }];
+    if (!list.length && ch.lang === 'jp') {
+      if (lineUrl()) list.push({ text: 'LINEでNickに相談', url: lineUrl() });
+      if (ctx.botLink && unit) list.push({ text: '写真・他の物件を見る', url: ctx.botLink(unit.ref) });
+    }
     list = list.filter((b) => b && b.text && /^https?:\/\//.test(b.url || ''));
     return list.length ? [list.map((b) => ({ text: b.text, url: b.url }))] : null;
   }
+  // one clean post like the Content Bot: the cover photo or video carries the caption and the buttons
   async function postToChannel(ch, unit) {
-    const post = channelPost(unit, ch), text = post.text, media = unit.media || [], rows = channelRows(ch);
-    const short = text.length <= 1000;
+    const post = channelPost(unit, ch), text = post.text, media = unit.media || [], rows = channelRows(ch, unit);
+    const short = text.length <= 1000, mk = rows ? { reply_markup: kb(rows) } : {};
     let r;
-    if (media.length === 1) {
-      // one photo or video can carry the buttons itself
-      const one = media[0], cap = short ? { caption: text, parse_mode: 'HTML' } : {}, mk = rows ? { reply_markup: kb(rows) } : {};
+    if (media.length) {
+      const one = media[0], cap = short ? { caption: text, parse_mode: 'HTML' } : {};
       r = await (one.t === 'video' ? api('sendVideo', Object.assign({ chat_id: ch.chat, video: one.id }, cap, mk)) : api('sendPhoto', Object.assign({ chat_id: ch.chat, photo: one.id }, cap, mk)));
       if (r && r.ok !== false && !short) r = await say(ch.chat, text, rows);
-    } else if (media.length) {
-      // an album cannot carry buttons, so they go in a short message right under it
-      r = await mediaTo(ch.chat, media, short ? text : null);
-      if (r && r.ok !== false && !short) r = await say(ch.chat, text, rows);
-      else if (r && r.ok !== false && rows) await say(ch.chat, ch.lang === 'jp' ? 'ご相談はこちら' : 'Contact Nick', rows);
     } else r = await say(ch.chat, text, rows);
     if (r && r.ok !== false) r.left = post.left;
     return r;

@@ -56,6 +56,27 @@ function composeJP(o) {
   return { text: parts.join('\n'), left: { claims: f.claims, unknown: f.unknown } };
 }
 
+// ---- Japanese channel post, same layout as the English house style: one clean block with a divider and contact lines
+function composeJPPost(u, o) {
+  const usd = (n) => '$' + Math.round(n).toLocaleString('en-US');
+  const rent = u.type === 'rent';
+  const esc = (x) => String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const beds = u.beds === 0 ? 'スタジオ' : u.beds ? u.beds + 'ベッドルーム' : '';
+  const place = (u.area && u.area !== 'Others' ? u.area : (o.khan || ''));
+  const f = sortFeatures(u.features);
+  const lines = [(rent ? '#賃貸 ' + usd(u.price) + '/月' : '#売出中 ' + usd(u.price)), '', '<b>' + esc((u.name + (beds ? ' | ' + beds : '')).toUpperCase()) + '</b>', '📍 ' + (place ? esc(place) + '、' : '') + 'プノンペン', '', '――――――――――', '', '<b>物件情報</b>'];
+  if (u.unitNo || u.floor) lines.push('✅ ' + [u.unitNo ? esc(u.unitNo) + '号室' : '', u.floor ? u.floor + '階' : ''].filter(Boolean).join(' | '));
+  if (beds) lines.push('✅ ' + beds);
+  if (u.gross || u.net) lines.push('✅ ' + [u.net ? u.net + '㎡（専有）' : '', u.gross ? u.gross + '㎡（総面積）' : ''].filter(Boolean).join(' | '));
+  else if (u.sqm) lines.push('✅ ' + u.sqm + '㎡');
+  if (u.tenanted) lines.push('✅ 入居者あり（賃貸中）' + (u.tenantNote ? '：' + esc(u.tenantNote) : ''));
+  f.facts.slice(0, 10).forEach((x) => lines.push('✅ ' + esc(x)));
+  lines.push('', '💰 ' + (rent ? '月額家賃：' : '販売価格：') + usd(u.price));
+  if (o.availLine) lines.push('', '<i>' + esc(o.availLine) + '</i>');
+  if (o.phone) lines.push('', '――――――――――', '📞 ' + esc(o.phone));
+  return { text: lines.join('\n'), left: { claims: f.claims, unknown: f.unknown } };
+}
+
 // ---- English house style
 const BOLD = (s) => String(s).replace(/[A-Za-z0-9]/g, (c) => {
   const code = c.charCodeAt(0);
@@ -83,4 +104,4 @@ function composeEN(u, o) {
 }
 function ordinal(n) { const v = Number(n); if (!v) return String(n); const s = ['th', 'st', 'nd', 'rd'], m = v % 100; return v + (s[(m - 20) % 10] || s[m] || s[0]); }
 
-module.exports = { translateFeature, sortFeatures, composeJP, composeEN, BOLD, FEATURE_SKIP };
+module.exports = { translateFeature, sortFeatures, composeJP, composeJPPost, composeEN, BOLD, FEATURE_SKIP };
