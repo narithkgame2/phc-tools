@@ -47,7 +47,7 @@ function createOps(ctx) {
     asksE.forEach((e) => { refs[e.ref] = (refs[e.ref] || 0) + 1; });
     return { newClients: c('new').length, searches: c('search').length, shown: c('search').reduce((a, e) => a + (e.n || 0), 0), empty: c('search').filter((e) => !e.n).length,
       asks: asksE.length, askedRefs: Object.keys(refs).length, top: Object.entries(refs).sort((a, b) => b[1] - a[1]).slice(0, 3), replied: replies.length, medianMs: median(replies.map((e) => e.ms)),
-      alertsOn: c('alert_on').length, alertsSent: c('alert_sent').length, dropsSent: c('drop_sent').length, deeplinks: c('deeplink').length, compares: c('compare').length,
+      alertsOn: c('alert_on').length, alertsSent: c('alert_sent').length, dropsSent: c('drop_sent').length, deeplinks: c('deeplink').length, compares: c('compare').length, guides: c('guide').length,
       leads: c('lead').length, tours: c('tour').length, submitted: c('agent_submit').length, approved: c('agent_approve').length, sold: c('agent_sold').length };
   }
   function digestText() {
@@ -61,7 +61,7 @@ function createOps(ctx) {
       'Your replies: ' + cur.replied + ' of ' + cur.asks + (cur.replied ? ', typical reply time ' + mins(cur.medianMs) : '') + (waiting ? '. Waiting now: ' + waiting : ''),
       'Viewing requests: ' + cur.tours + '. Talk to Nick forms: ' + cur.leads,
       'New listing alerts: ' + cur.alertsOn + ' switched on, ' + cur.alertsSent + ' sent. Price drop messages: ' + cur.dropsSent,
-      'Opened from a unit link: ' + cur.deeplinks + '. Compare used: ' + cur.compares,
+      'Opened from a unit link: ' + cur.deeplinks + '. Compare used: ' + cur.compares + '. Guides sent: ' + cur.guides,
       'Agents: ' + cur.submitted + ' submitted, ' + cur.approved + ' approved, ' + cur.sold + ' sold'];
     if (cur.top.length) lines.push('', 'Most asked: ' + cur.top.map(([r, n]) => r + ' (' + n + ')').join(', '));
     lines.push('', 'Telegram cannot count taps on the contact buttons, so chats on LINE (Japanese clients) and on your own Telegram (English and Khmer clients) are not in these numbers. Check those apps for them.');

@@ -5,6 +5,7 @@ const L = require('./engines/listings.js');
 const { createAgentArea } = require('./engines/agents.js');
 const { createOps } = require('./engines/ops.js');
 const { compareText } = require('./engines/compare.js');
+const { leadFor } = require('./engines/crm.js');
 
 const DISCLAIMER = {
   jp: '※利回り・価格は参考値であり、将来の収益を保証するものではありません。',
@@ -33,6 +34,16 @@ const MSG = {
     jp: 'ご相談は公式LINEで承ります。Nick本人が1営業日以内にお答えします。',
     en: 'Nick answers on Telegram. He replies within 1 business day.',
     kh: 'Nick ឆ្លើយតបតាម Telegram។ គាត់ឆ្លើយក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។',
+  },
+  guideAsk: {
+    jp: 'ご質問はLINEでどうぞ。Nick本人が1営業日以内にお答えします。',
+    en: 'Questions? Message Nick on Telegram. He replies within 1 business day.',
+    kh: 'មានសំណួរ? សូមផ្ញើសារទៅ Nick តាម Telegram។ គាត់ឆ្លើយក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។',
+  },
+  guideCap: {
+    jp: '<b>購入前に知っておきたい5つのこと（2026年版）</b>\nご質問はLINEでどうぞ。Nick本人が1営業日以内にお答えします。',
+    en: '<b>5 things to know before you buy (2026)</b>\nQuestions? Message Nick on Telegram. He replies within 1 business day.',
+    kh: '<b>រឿង 5 ដែលគួរដឹងមុនពេលទិញ (2026)</b>\nឯកសារនេះជាភាសាអង់គ្លេស។ មានសំណួរ? សូមផ្ញើសារទៅ Nick តាម Telegram។ គាត់ឆ្លើយក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។',
   },
   nickBtn: { jp: 'LINEでNickに相談', en: 'Message Nick on Telegram', kh: 'និយាយជាមួយ Nick តាម Telegram' },
   listHead: { jp: '<b>ご希望に近い物件</b>', en: '<b>Available now, close to your search</b>', kh: '<b>ជម្រើសដែលសមនឹងការស្វែងរករបស់អ្នក</b>' },
@@ -142,9 +153,10 @@ function parseCalc(text) {
 }
 
 // Pictures used by screens (config/flow.json "photo"), served from the public repository so any copy of the bot can send them.
+const GUIDE = { jp: 'guide-5-things-2026-jp.pdf', en: 'guide-5-things-2026-en.pdf' }; // built by assets/faq/build-guide-pdf.cjs
 const MEDIA_BASE = process.env.MEDIA_BASE_URL || 'https://raw.githubusercontent.com/narithkgame2/phc-tools/feat/bot-color-cards-and-guards/telegram-bot-public/assets/';
 
-function createBot({ api, store, flow, nickId, onError, getListings, listingState, alertStore, testerIds, isPrivate, agentData, channels, places, events, botUsername, now, translate }) {
+function createBot({ api, store, flow, nickId, onError, getListings, listingState, alertStore, testerIds, isPrivate, agentData, channels, places, events, botUsername, now, translate, crm, guideStore }) {
   // Phase 2 agent units join the listings the Sheet and the website provide
   const baseListings = getListings || (async () => []);
   let agentArea = null;
@@ -189,6 +201,24 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
   const save = (u) => store.set(u.id, u);
   const nameOf = (from) => [from.first_name, from.last_name].filter(Boolean).join(' ') || 'Client';
 
+  // What a client showed interest in. Kept across searches (u.answers is cleared at the main menu); shown to Nick on his
+  // alerts and sent to the PHC CRM when the client shows real interest (guide, Ask, search request, tour, Ask Nick form).
+  const noteInt = (u, k, v) => { if (!v) return; u.int = u.int || {}; u.int[k] = (u.int[k] || []).filter((x) => x !== v).concat([v]).slice(-5); };
+  function interestLines(u, esc) {
+    const e = esc || R.esc, it = u.int || {}, out = [];
+    if (it.from) out.push('Came from: ' + e(it.from));
+    if (it.searches && it.searches.length) out.push('Searched: ' + e(it.searches.join(' | ')));
+    if (it.faq && it.faq.length) out.push('Read: ' + e(it.faq.join(', ')));
+    if (it.asks && it.asks.length) out.push('Asked about: ' + e(it.asks.join(', ')));
+    if (it.guide) out.push('Guide sent: ' + e(it.guide));
+    return out;
+  }
+  async function toCrm(u, from, event, extra) {
+    if (!crm || isNick(u.id)) return; // Nick testing his own bot never becomes a CRM row
+    const lead = Object.assign(leadFor(u, from, { tester: isTester(u.id) }), extra || {});
+    await crm.upsert(lead, [event].concat(interestLines(u, (x) => String(x))).join('. '));
+  }
+
   function summaryFor(u, ids) {
     return ids.map((id) => u.answers[id]).filter(Boolean).join(' · ') || '-';
   }
@@ -227,13 +257,16 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     const lines = ['<b>' + R.esc(step.notify) + '</b>', 'Client: ' + R.esc(nameOf(from)) + (from.username ? ' (@' + R.esc(from.username) + ')' : '') + ' (' + u.id + ')',
       'Language: ' + String(u.lang || '-').toUpperCase()];
     const a = u.answers;
-    const add = (k, label) => { if (a[k]) lines.push(label + ': ' + R.esc(a[k])); };
+    const det = [];
+    const add = (k, label) => { if (a[k]) { lines.push(label + ': ' + R.esc(a[k])); det.push(label.toLowerCase() + ' ' + a[k]); } };
     if (step.id === 'bres') { add('b1', 'Budget'); add('b2', 'District'); }
     if (step.id === 'rres') { add('rr1', 'Monthly budget'); add('rr2', 'District'); }
     if (step.id === 'leaddone') { add('lead1', 'Goal'); add('lead2', 'Timeline'); add('lead3', 'Reply by'); if (a.b1 || a.rr1) lines.push('Last search: ' + R.esc(summaryFor(u, a.rr1 ? ['rr1', 'rr2'] : ['b1', 'b2']))); }
     if (step.id === 'tourok') { add('tour', 'Tour'); add('tourday', 'Day'); add('tourtime', 'Time'); }
+    lines.push.apply(lines, interestLines(u));
     lines.push('Open chat: tg://user?id=' + u.id);
     await api('sendMessage', { chat_id: nickId, text: lines.join('\n'), parse_mode: 'HTML', disable_web_page_preview: true });
+    await toCrm(u, from, step.notify + (det.length ? ' (' + det.join(', ') + ')' : ''));
   }
 
   function listingText(l, lang) {
@@ -317,12 +350,18 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     const step = byId[stepId] || byId.error;
     if (stepId === 'menu') { u.answers = {}; u.keys = {}; }
     if (step.id === 'bres') u.lastKind = 'buy'; else if (step.id === 'rres') u.lastKind = 'rent';
+    if (step.id === 'bres' || step.id === 'rres') {
+      noteInt(u, 'searches', (step.id === 'bres' ? 'buy ' : 'rent ') + summaryFor(u, step.id === 'bres' ? ['b1', 'b2'] : ['rr1', 'rr2']));
+      if (step.id === 'bres' && u.keys && u.keys.b1) { u.int.budget = u.keys.b1; } // English label, mapped to the CRM's budget bands
+    }
+    if (/^faq[1-5]$/.test(step.id) && byId.faq) noteInt(u, 'faq', (byId.faq.buttons.find((b) => b.to === step.id) || {}).l);
+    if (step.id === 'leaddone' && u.keys && u.keys.lead2) { u.int = u.int || {}; u.int.timeline = u.keys.lead2; }
     u.awaiting = step.await || null;
     save(u);
     const shown = (step.id === 'bres' || step.id === 'rres') && await sendListings(chatId, u, step.id === 'bres' ? 'buy' : 'rent');
     await send(chatId, u, step, Object.assign(varsFor(u, step.id), extraVars || {}), shown ? null : edit);
     await notifyNick(u, from, step);
-    if (step.id === 'forgetdone') { store.delete(u.id); alerts.delete(u.id); } // the client asked to delete everything
+    if (step.id === 'forgetdone') { store.delete(u.id); alerts.delete(u.id); if (crm) await crm.forget(u.id); } // the client asked to delete everything, the CRM row included
   }
 
   // tells every client who asked about a unit in the last 7 days that it is gone (used when an agent marks a unit sold)
@@ -415,6 +454,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
   async function showRef(chatId, from, u, ref) {
     const l = (await loadListings(from.id)).find((x) => x.id.toLowerCase() === ref.toLowerCase());
     if (!isNick(u.id)) ops.track('deeplink', { ref });
+    if (!(u.int && u.int.from)) { u.int = u.int || {}; u.int.from = 'unit link ' + ref; save(u); }
     if (!l) return api('sendMessage', { chat_id: chatId, text: MSG.refGone[u.lang], reply_markup: { inline_keyboard: [[{ text: MSG.menuBtn[u.lang], callback_data: 'm:menu' }]] } });
     // a unit opened from a channel link shows its photos first, then the card with the buttons
     if (l.media && l.media.length) { ops.track('photos', { ref: l.id }); await sendMedia(chatId, l.media); }
@@ -423,6 +463,32 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     body.reply_markup.inline_keyboard.push([{ text: MSG.menuBtn[u.lang], callback_data: 'm:menu' }]);
     return api('sendMessage', Object.assign({ chat_id: chatId }, body));
   }
+  // The free guide (cover, the 5 FAQ pages, contacts) as a PDF in the chat. Japanese clients get the Japanese guide,
+  // everyone else the English one (the Khmer FAQ is not approved yet). Nick hears about it once, and the client becomes a CRM row.
+  // A guide Nick sent to the bot himself (caption /setguide jp or /setguide en, for example the full Japanese condo report)
+  // wins over the small built guide. Telegram keeps the file, so a big PDF is no problem and it is never put on a public website.
+  const gmem = {};
+  const guides = guideStore || { get: (k) => gmem[k], set: (k, v) => { gmem[k] = v; } };
+  async function sendGuide(chatId, from, u) {
+    if (!u.lang) u.lang = 'jp';
+    const first = !(u.int && u.int.guide);
+    u.int = u.int || {}; u.int.guide = new Date(clock()).toISOString().slice(0, 10); save(u);
+    const own = guides.get(u.lang === 'jp' ? 'jp' : 'en');
+    const file = own ? own.fileId : MEDIA_BASE + 'faq/' + (u.lang === 'jp' ? GUIDE.jp : GUIDE.en);
+    const cap = own ? '<b>' + R.esc(own.title) + '</b>\n' + MSG.guideAsk[u.lang] : MSG.guideCap[u.lang];
+    const kb = { inline_keyboard: [[{ text: MSG.nickBtn[u.lang], url: contactUrl(u.lang) }], [{ text: MSG.menuBtn[u.lang], callback_data: 'm:menu' }]] };
+    const r = await api('sendDocument', { chat_id: chatId, document: file, caption: cap, parse_mode: 'HTML', reply_markup: kb });
+    if (!r || r.ok === false) await api('sendMessage', { chat_id: chatId, text: MSG.guideCap[u.lang] + '\n' + MEDIA_BASE + 'faq/' + (u.lang === 'jp' ? GUIDE.jp : GUIDE.en), parse_mode: 'HTML', reply_markup: kb });
+    if (isNick(u.id) || !first) return;
+    ops.track('guide', { lang: u.lang });
+    if (nickId) {
+      await api('sendMessage', { chat_id: nickId, parse_mode: 'HTML', disable_web_page_preview: true, text: ['<b>Guide sent</b>' + (isTester(u.id) ? ' <i>(tester account)</i>' : ''),
+        'Client: ' + R.esc(nameOf(from)) + (from.username ? ' (@' + R.esc(from.username) + ')' : '') + ' (' + u.id + ')', 'Language: ' + String(u.lang).toUpperCase()]
+        .concat(interestLines(u).filter((x) => !/^Guide sent/.test(x)), ['Open chat: tg://user?id=' + u.id]).join('\n') });
+    }
+    await toCrm(u, from, 'Guide sent (' + (u.lang === 'jp' ? 'Japanese' : 'English') + ' PDF)');
+  }
+
   async function runOps() {
     let n = 0;
     n += await ops.runSla(); n += await ops.runDigest(); n += await ops.runPriceDrops(sendPriceDrop);
@@ -438,7 +504,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
       const lang = data.slice(2);
       if (R.LANGS.includes(lang)) {
         u.lang = lang;
-        if (u.pendingRef) { const r = u.pendingRef; delete u.pendingRef; save(u); return showRef(chatId, from, u, r); }
+        if (u.pendingRef) { const r = u.pendingRef; delete u.pendingRef; save(u); return r.toLowerCase() === 'guide' ? sendGuide(chatId, from, u) : showRef(chatId, from, u, r); }
         return goto(chatId, from, u, 'menu', msg);
       }
       return;
@@ -447,6 +513,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
       const l = (await loadListings(from.id)).find((x) => x.id === data.slice(2));
       if (!l) return;
       if (!u.lang) u.lang = 'jp';
+      noteInt(u, 'asks', l.id);
       save(u);
       const st = state.get(l.id) || {};
       st.askers = (st.askers || []).filter((x) => x.id !== u.id).concat([{ id: u.id, lang: u.lang, at: new Date(clock()).toISOString() }]).slice(-50);
@@ -454,11 +521,14 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
       if (!isNick(u.id)) { ops.track('ask', { ref: l.id }); ops.askOpened(l.id, u.id, l.name, nameOf(from) + (from.username ? ' (@' + from.username + ')' : '')); }
       if (nickId) {
         const rent = l.type === 'rent';
-        await api('sendMessage', { chat_id: nickId, text: '<b>Listing interest</b>' + (isNick(u.id) ? ' <i>(your own test)</i>' : isTester(u.id) ? ' <i>(tester account)</i>' : '') + '\nClient: ' + R.esc(nameOf(from)) + (from.username ? ' (@' + R.esc(from.username) + ')' : '') + ' (' + u.id + ')\nListing: ' + R.esc(l.id + ' ' + l.name) + (areaText(l) ? ', ' + R.esc(areaText(l)) : '') + ', ' + fmtUsd(rent ? l.rent : l.price) + (rent ? '/month' : '') + '\nOpen chat: tg://user?id=' + u.id, parse_mode: 'HTML', disable_web_page_preview: true,
+        await api('sendMessage', { chat_id: nickId, text: '<b>Listing interest</b>' + (isNick(u.id) ? ' <i>(your own test)</i>' : isTester(u.id) ? ' <i>(tester account)</i>' : '') + '\nClient: ' + R.esc(nameOf(from)) + (from.username ? ' (@' + R.esc(from.username) + ')' : '') + ' (' + u.id + ')\nListing: ' + R.esc(l.id + ' ' + l.name) + (areaText(l) ? ', ' + R.esc(areaText(l)) : '') + ', ' + fmtUsd(rent ? l.rent : l.price) + (rent ? '/month' : '') + interestLines(u).map((x) => '\n' + x).join('') + '\nOpen chat: tg://user?id=' + u.id, parse_mode: 'HTML', disable_web_page_preview: true,
           reply_markup: { inline_keyboard: [[{ text: 'Available', callback_data: 'v:a:' + l.id + ':' + u.id }, { text: 'Not available', callback_data: 'v:n:' + l.id + ':' + u.id }], [{ text: 'Checking now', callback_data: 'v:c:' + l.id + ':' + u.id }]] } });
       }
-      return api('sendMessage', { chat_id: chatId, text: MSG.askDone[u.lang], reply_markup: { inline_keyboard: [[{ text: MSG.nickBtn[u.lang], url: contactUrl(u.lang) }]] } });
+      const done = await api('sendMessage', { chat_id: chatId, text: MSG.askDone[u.lang], reply_markup: { inline_keyboard: [[{ text: MSG.nickBtn[u.lang], url: contactUrl(u.lang) }]] } });
+      await toCrm(u, from, 'Asked about ' + l.id + ' ' + l.name + ', ' + fmtUsd(l.type === 'rent' ? l.rent : l.price) + (l.type === 'rent' ? '/month' : ''), { interestedIn: l.id + ' ' + l.name });
+      return done;
     }
+    if (data === 'gd:get') return sendGuide(chatId, from, u);
     if (/^(aw|am|ac|ak|ua|ur|uc|uw|pn|pa|pr):/.test(data)) { if (await agentArea.handleCallback(cb, u)) return; }
     if (data.startsWith('ph:')) {
       const l = (await loadListings(from.id)).find((x) => x.id === data.slice(3));
@@ -518,6 +588,13 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     const u = user(from);
     if (!existed && !isNick(u.id)) ops.track('new');
     const cmd = text.startsWith('/') ? text.split(/\s+/)[0].split('@')[0].toLowerCase() : '';
+    // Nick sets the guide PDF: send the file to the bot with the caption /setguide jp (or /setguide en)
+    if (isNick(from.id) && m.document && /^\/setguide\b/i.test(m.caption || '')) {
+      const lg = /\ben\b/i.test(m.caption) ? 'en' : 'jp';
+      const title = String(m.document.file_name || 'Guide').replace(/\.pdf$/i, '');
+      guides.set(lg, { fileId: m.document.file_id, title, size: m.document.file_size || 0, at: new Date(clock()).toISOString() });
+      return api('sendMessage', { chat_id: chatId, text: 'Saved. ' + (lg === 'jp' ? 'Japanese clients' : 'English and Khmer clients') + ' who tap the guide button now get:\n' + title + (m.document.file_size ? ' (' + (m.document.file_size / 1048576).toFixed(1) + ' MB)' : '') });
+    }
 
     if (cmd === '/start' || cmd === '/menu') {
       const payload = cmd === '/start' ? (text.split(/\s+/)[1] || '') : '';
@@ -526,6 +603,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
         if (/^ja/i.test(from.language_code || '')) u.lang = 'jp';
         else { if (ref) u.pendingRef = ref; save(u); return goto(chatId, from, u, 'start'); }
       }
+      if (ref.toLowerCase() === 'guide') { if (!(u.int && u.int.from)) { u.int = u.int || {}; u.int.from = 'guide link'; } save(u); return sendGuide(chatId, from, u); }
       if (ref) { save(u); return showRef(chatId, from, u, ref); }
       return goto(chatId, from, u, 'menu');
     }
@@ -543,6 +621,8 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     if (cmd === '/rent') return goto(chatId, from, u, 'rr1');
     if (cmd === '/tour') return goto(chatId, from, u, 'tour');
     if (cmd === '/estimate') return goto(chatId, from, u, 'calc1');
+    if (cmd === '/guide') return sendGuide(chatId, from, u);
+    if (cmd === '/faq') return goto(chatId, from, u, 'faq');
     if (cmd === '/nick') {
       save(u);
       return api('sendMessage', { chat_id: chatId, text: MSG.nick[u.lang], reply_markup: { inline_keyboard: [[{ text: MSG.nickBtn[u.lang], url: contactUrl(u.lang) }]] } });

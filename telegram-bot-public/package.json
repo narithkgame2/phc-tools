@@ -5,6 +5,6 @@
   "description": "Public Japanese investor bot @Nick_Cambodia_Bot, Phase 1 (clients only)",
   "scripts": {
     "start": "node index.js",
-    "test": "node tests/flow.test.js && node tests/bot.test.js && node tests/walk.test.js && node tests/listings.test.js && node tests/verdict.test.js && node tests/alerts.test.js && node tests/sizes.test.js && node tests/agents.test.js && node tests/postparse.test.js && node tests/compose.test.js && node tests/ops.test.js && node tests/translate.test.js && node tests/jpline.test.js"
+    "test": "node tests/flow.test.js && node tests/bot.test.js && node tests/walk.test.js && node tests/listings.test.js && node tests/verdict.test.js && node tests/alerts.test.js && node tests/sizes.test.js && node tests/agents.test.js && node tests/postparse.test.js && node tests/compose.test.js && node tests/ops.test.js && node tests/translate.test.js && node tests/jpline.test.js && node tests/crm.test.js"
   }
 }

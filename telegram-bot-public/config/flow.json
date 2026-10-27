@@ -72,6 +72,13 @@
      "url": ""
     },
     {
+     "l": "Free guide (PDF)",
+     "to": "",
+     "half": false,
+     "url": "",
+     "cb": "gd:get"
+    },
+    {
      "l": "More",
      "to": "more",
      "half": false,
@@ -102,6 +109,7 @@
       "物件を購入する",
       "賃貸物件を探す",
       "内覧を予約する",
+      "無料資料（PDF）を受け取る",
       "その他",
       "言語",
       "Nickに相談"
@@ -113,6 +121,7 @@
       "រកអចលនទ្រព្យទិញ",
       "រកផ្ទះជួល",
       "កក់ពេលទស្សនា",
+      "ឯកសារឥតគិតថ្លៃ (PDF)",
       "ផ្សេងៗ",
       "ភាសា",
       "ទាក់ទង Nick"
@@ -1471,7 +1480,7 @@
    "id": "privacy",
    "flow": "Privacy",
    "title": "Privacy and my data",
-   "text": "<b>Privacy and my data</b>\n\nWe store your Telegram ID, your language and the answers you give so Nick can help you. We do not sell or share them.\n\nYou can delete everything at any time.",
+   "text": "<b>Privacy and my data</b>\n\nWe store your Telegram ID, your language, your answers and the topics and units you look at, so Nick can help you. When you ask about a unit, request the guide or book a tour, your name and these interests are saved in Nick's client list. We do not sell or share them.\n\nYou can delete everything at any time.",
    "buttons": [
     {
      "l": "Delete my data",
@@ -1489,14 +1498,14 @@
    "note": "Needs a quick legal read for clients in the EU and Japan.",
    "tr": {
     "jp": {
-     "t": "<b>プライバシーとデータ</b>\n\nNickがご相談に対応するため、TelegramのID、言語、ご回答内容を保存します。第三者への販売や共有は行いません。\n\nデータはいつでも削除できます。",
+     "t": "<b>プライバシーとデータ</b>\n\nNickがご相談に対応するため、TelegramのID、言語、ご回答内容、ご覧になったテーマと物件を保存します。物件へのお問い合わせ、資料のご請求、内覧のご予約をいただいた場合は、お名前とこれらの内容をNickの顧客リストに記録します。第三者への販売や共有は行いません。\n\nデータはいつでも削除できます。",
      "b": [
       "データを削除する",
       "戻る"
      ]
     },
     "kh": {
-     "t": "<b>ឯកជនភាព និងទិន្នន័យរបស់ខ្ញុំ</b>\n\nយើងរក្សាទុក Telegram ID ភាសា និងចម្លើយរបស់អ្នក ដើម្បីឱ្យ Nick អាចជួយអ្នកបាន។ យើងមិនលក់ ឬចែករំលែកវាទេ។\n\nអ្នកអាចលុបទាំងអស់បានគ្រប់ពេល។",
+     "t": "<b>ឯកជនភាព និងទិន្នន័យរបស់ខ្ញុំ</b>\n\nយើងរក្សាទុក Telegram ID ភាសា ចម្លើយរបស់អ្នក និងប្រធានបទ និងបន្ទប់ដែលអ្នកបានមើល ដើម្បីឱ្យ Nick អាចជួយអ្នកបាន។ នៅពេលអ្នកសួរអំពីបន្ទប់ ស្នើសុំឯកសារ ឬកក់ពេលទស្សនា ឈ្មោះរបស់អ្នក និងព័ត៌មានទាំងនេះនឹងត្រូវកត់ត្រាក្នុងបញ្ជីអតិថិជនរបស់ Nick។ យើងមិនលក់ ឬចែករំលែកវាទេ។\n\nអ្នកអាចលុបទាំងអស់បានគ្រប់ពេល។",
      "b": [
       "លុបទិន្នន័យរបស់ខ្ញុំ",
       "ត្រឡប់ក្រោយ"

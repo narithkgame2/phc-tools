@@ -63,6 +63,12 @@ const agentData = {
 let channels = [];
 try { channels = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'channels.json'), 'utf8')); } catch (e) { channels = []; } // [{ "chat": "@Nick_Cambodia", "mode": "auto" | "confirm", "lang": "jp" | "en" }]
 
+// The guide PDFs Nick sent to the bot (/setguide): Telegram file ids, so a big report needs no public link.
+const GUIDE_FILE = path.join(__dirname, 'data', 'guides.json');
+let gd = {};
+try { gd = JSON.parse(fs.readFileSync(GUIDE_FILE, 'utf8')); } catch (e) { gd = {}; }
+const guideStore = { get: (k) => gd[k], set: (k, v) => { gd[k] = v; const tmp = GUIDE_FILE + '.tmp'; fs.writeFileSync(tmp, JSON.stringify(gd)); fs.renameSync(tmp, GUIDE_FILE); } };
+
 // Counts of what happened (new clients, searches, asks, replies ...) for the Monday numbers. Kept to the last 30000 events.
 const EVENTS_FILE = path.join(__dirname, 'data', 'events.json');
 let evlist = [];
@@ -92,12 +98,16 @@ const websiteFeed = process.env.WEBSITE_LISTINGS_URL === 'off' ? '' : (process.e
 const { createTranslator } = require('./engines/translate.js');
 const translate = createTranslator({ url: process.env.TRANSLATE_URL, key: process.env.TRANSLATE_KEY });
 console.log('Translator for unknown lines: ' + (translate ? 'on' : 'off (set TRANSLATE_URL and TRANSLATE_KEY to switch it on)'));
-const bot = createBot({ api, translate, store, flow, nickId: NICK_ID, listingState, alertStore, testerIds, agentData, channels, places, events: eventStore, botUsername: process.env.BOT_USERNAME || 'Nick_Cambodia_Bot', isPrivate: () => { try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'mode.json'), 'utf8')).private === true; } catch (e) { return false; } }, getListings: combine(makeLoader(listingsSource, 300000, places), makeWebsiteLoader(websiteFeed, 300000, { photos: process.env.SHOW_WEBSITE_PHOTOS === '1', places, boundaries })), onError: (e) => console.error('Handler error:', e.message) });
+// The PHC CRM: clients who show real interest become rows in the Leads tab (bot key, set by deploy/crm/setup-crm.sh)
+const { createCrm } = require('./engines/crm.js');
+const crm = createCrm({ url: process.env.CRM_URL, key: process.env.CRM_KEY, onError: (e) => console.error(e.message) });
+console.log('PHC CRM link: ' + (crm ? 'on' : 'off (run deploy/crm/setup-crm.sh to switch it on)'));
+const bot = createBot({ api, translate, crm, guideStore, store, flow, nickId: NICK_ID, listingState, alertStore, testerIds, agentData, channels, places, events: eventStore, botUsername: process.env.BOT_USERNAME || 'Nick_Cambodia_Bot', isPrivate: () => { try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'mode.json'), 'utf8')).private === true; } catch (e) { return false; } }, getListings: combine(makeLoader(listingsSource, 300000, places), makeWebsiteLoader(websiteFeed, 300000, { photos: process.env.SHOW_WEBSITE_PHOTOS === '1', places, boundaries })), onError: (e) => console.error('Handler error:', e.message) });
 
 async function setupProfile() {
   const cmds = {
-    jp: [['start', 'メインメニュー'], ['buy', '購入物件を探す'], ['rent', '賃貸物件を探す'], ['tour', '内覧を予約する'], ['estimate', '手取りを計算する'], ['nick', 'Nickに相談する'], ['stop', '新着通知を停止する']],
-    en: [['start', 'Main menu'], ['buy', 'Find a property to buy'], ['rent', 'Find a place to rent'], ['tour', 'Book a tour'], ['estimate', 'Estimate with my numbers'], ['nick', 'Talk to Nick'], ['stop', 'Stop new listing alerts']],
+    jp: [['start', 'メインメニュー'], ['buy', '購入物件を探す'], ['rent', '賃貸物件を探す'], ['tour', '内覧を予約する'], ['estimate', '手取りを計算する'], ['guide', '無料資料（PDF）を受け取る'], ['faq', 'よくある質問'], ['nick', 'Nickに相談する'], ['stop', '新着通知を停止する']],
+    en: [['start', 'Main menu'], ['buy', 'Find a property to buy'], ['rent', 'Find a place to rent'], ['tour', 'Book a tour'], ['estimate', 'Estimate with my numbers'], ['guide', 'Get the free guide (PDF)'], ['faq', 'Common questions'], ['nick', 'Talk to Nick'], ['stop', 'Stop new listing alerts']],
   };
   const mk = (a) => a.map(([command, description]) => ({ command, description }));
   await api('setMyCommands', { commands: mk(cmds.jp) });

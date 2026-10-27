@@ -153,6 +153,17 @@ by.calc1.await = 'calc'; by.check1.await = 'check';
   by.calc1.tr.jp.t = '<b>ご自身の数値で試算</b>\n\n2つの数字を送ってください。価格と月額家賃です。表面利回りと、税金と管理費を引いた手取りの目安が分かります。\n例: <code>68000 650</code>\n\n年間費用が分かる場合は、3つ目の数字として加えてください。<code>68000 650 1800</code>\n\n<i>※利回り・価格は参考値であり、将来の収益を保証するものではありません。</i>';
   by.calc1.tr.kh.t = '<b>ប៉ាន់ស្មានតាមលេខរបស់ខ្ញុំ</b>\n\nសូមផ្ញើលេខពីរ៖ តម្លៃ និងថ្លៃជួលប្រចាំខែ។\nឧទាហរណ៍: <code>68000 650</code>\n\nបើអ្នកដឹងចំណាយប្រចាំឆ្នាំ សូមបន្ថែមជាលេខទីបី៖ <code>68000 650 1800</code>\n\n<i>ផលចំណេញ និងតម្លៃគឺសម្រាប់ជាឯកសារយោងប៉ុណ្ណោះ ហើយមិនធានាប្រាក់ចំណូលនាពេលអនាគតទេ។</i>';
 })();
+// free guide (2026-10-27): a main menu button; the bot sends the PDF itself (bot.js sendGuide), so it has a callback, not a screen
+(function () {
+  const m = by.menu, at = m.buttons.findIndex(b => b.to === 'tour') + 1;
+  m.buttons.splice(at, 0, { l: 'Free guide (PDF)', to: '', half: false, url: '', cb: 'gd:get' });
+  m.tr.jp.b.splice(at, 0, '無料資料（PDF）を受け取る');
+  m.tr.kh.b.splice(at, 0, 'ឯកសារឥតគិតថ្លៃ (PDF)');
+})();
+// privacy (2026-10-27): the bot now also keeps the topics and units a client looks at, and serious requests go into Nick's client list
+by.privacy.text = '<b>Privacy and my data</b>\n\nWe store your Telegram ID, your language, your answers and the topics and units you look at, so Nick can help you. When you ask about a unit, request the guide or book a tour, your name and these interests are saved in Nick\'s client list. We do not sell or share them.\n\nYou can delete everything at any time.';
+by.privacy.tr.jp.t = '<b>プライバシーとデータ</b>\n\nNickがご相談に対応するため、TelegramのID、言語、ご回答内容、ご覧になったテーマと物件を保存します。物件へのお問い合わせ、資料のご請求、内覧のご予約をいただいた場合は、お名前とこれらの内容をNickの顧客リストに記録します。第三者への販売や共有は行いません。\n\nデータはいつでも削除できます。';
+by.privacy.tr.kh.t = '<b>ឯកជនភាព និងទិន្នន័យរបស់ខ្ញុំ</b>\n\nយើងរក្សាទុក Telegram ID ភាសា ចម្លើយរបស់អ្នក និងប្រធានបទ និងបន្ទប់ដែលអ្នកបានមើល ដើម្បីឱ្យ Nick អាចជួយអ្នកបាន។ នៅពេលអ្នកសួរអំពីបន្ទប់ ស្នើសុំឯកសារ ឬកក់ពេលទស្សនា ឈ្មោះរបស់អ្នក និងព័ត៌មានទាំងនេះនឹងត្រូវកត់ត្រាក្នុងបញ្ជីអតិថិជនរបស់ Nick។ យើងមិនលក់ ឬចែករំលែកវាទេ។\n\nអ្នកអាចលុបទាំងអស់បានគ្រប់ពេល។';
 // steps that tell Nick
 by.leaddone.notify = 'Ask Nick'; by.tourok.notify = 'Tour request'; by.check2.notify = 'Listing to check';
 const keep = Object.keys(by);
