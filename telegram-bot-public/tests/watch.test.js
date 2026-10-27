@@ -116,6 +116,9 @@ function rig() {
     assert.strictEqual(p('Ground floor shop unit\n#ForRent $900/month').floor, 'G');
     assert.ok(/▫️ 1階（地上階）/.test(buildJP('X | STUDIO\n✅ Floor G', [], { bullet: '▫️' }).text));
     assert.ok(/▫️ 11階/.test(buildJP('X | STUDIO\n✅ 11th Floor', [], { bullet: '▫️' }).text));
+    const { linesToTranslate } = require('../engines/jpline.js');
+    assert.ok(/▫️ G10-09号室 \| 9階/.test(buildJP('X | 1BR\n✅ Unit G10-09 | 9th Floor', [], { bullet: '▫️' }).text));
+    assert.deepStrictEqual(linesToTranslate('X | 1BR\n✅ Unit G10-09 | 9th Floor', [], {}), [], 'a unit number never goes to Google');
     assert.ok(/✅ Ground Floor/.test(composeEN({ name: 'Sky Villa', type: 'rent', price: 650, floor: 'G', features: [] }, { footer: '' }).text));
   });
 

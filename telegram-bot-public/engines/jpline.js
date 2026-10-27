@@ -55,6 +55,7 @@ function factSegment(seg, o) {
   }
   if ((m = s.match(/^(\d{1,3})(?:st|nd|rd|th)?\s*floor$/i)) || (m = s.match(/^floor\s*[:#]?\s*(\d{1,3})(?:st|nd|rd|th)?$/i))) return floorJP(m[1]);
   if (/^(?:ground floor|floor\s*[:#]?\s*g|g\s*floor)$/i.test(s)) return floorJP('G');
+  if ((m = s.match(/^unit\s*(?:no\.?|number|#)?\s*[:：]?\s*([A-Z]{0,3}\d[\w-]*)$/i))) return m[1] + '号室'; // "Unit G10-09": the room number, never sent to Google
   return null;
 }
 function factLine(t, o) {
