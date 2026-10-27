@@ -536,6 +536,8 @@ function createAgentArea(ctx) {
     }
     if (cmd === '/myunits') { u.wiz = null; ctx.saveUser(u); await myUnits(chat, u.id); return true; }
     if (cmd === '/addunit') { await startIntake(chat, u); return true; }
+    // any other command (/faq, /guide, /nick...) goes to the client side; an open unit stays open for its buttons
+    if (cmd) return false;
     const w = u.wiz, hasMedia = !!((m.photo && m.photo.length) || (m.video && m.video.file_id));
     if (w && w.step === 'newprice') {
       const unit = data.getUnit(w.ref), price = numOf(text);

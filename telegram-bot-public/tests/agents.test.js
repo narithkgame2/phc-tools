@@ -112,6 +112,13 @@ async function submitted(r, agent, post) {
     assert.ok(/no photos yet/.test(r.last(A).body.text)); await r.photo(A, 'F1', 'g1'); await r.cb(A, 'aw:media:done'); await r.cb(A, 'aw:submit');
     assert.strictEqual(r.units()[0].ref, 'TS5-6001');
   });
+  await t('a command while a unit waits for a button reaches the client side, and the unit stays open', async () => {
+    const r = rig(); await r.say(NICK, '/addagent 700001 Dara');
+    await r.say(A, '/addunit'); await r.cb(A, 'aw:steps'); await r.say(A, 'Time Square 5');
+    assert.ok(/sale or for rent/.test(r.last(A).body.text));
+    for (const c of ['/faq', '/guide', '/nick', '/stop']) { await r.say(A, c); assert.ok(!r.texts(A).some((x) => /Please use the buttons/.test(x)), c + ' was swallowed'); }
+    await r.cb(A, 'aw:type:buy'); assert.ok(/Selling price/.test(r.last(A).body.text), 'the unit carries on after the commands');
+  });
   await t('a post about another city is refused politely and nothing is kept', async () => {
     const r = rig(); await r.say(NICK, '/addagent 700001 Dara');
     await r.photo(A, 'F1', 'g1', 'Condo in Sihanoukville beachfront, 1 bedroom, selling price $65,000'); await r.cb(A, 'aw:collectdone');
