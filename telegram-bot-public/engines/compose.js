@@ -4,6 +4,7 @@
 //    not know is reported back so a person can translate it.
 //  - English (house style, for @NickREAKH): the layout of Nick's channel posts, with bold sans-serif headings.
 // Nothing here guesses a translation. Unknown lines are returned in `unknown`.
+const { floorJP } = require('./sizes.js');
 const FEATURE_SKIP = /bedrooms?|bathrooms?|^floor\b|\bfloor\s*[:#]?\s*\d|\d+(?:st|nd|rd|th)?\s*floor|^unit\s|\d.*(?:sqm|㎡|m2|m²)|price|booking|payment|installment|handover|deposit|property id|message me|\$|^(?:unit details|features|facilities|payment plan|resale highlights)$/i;
 const CLAIM = /invest|growth|potential|demand|yield|guarantee|return|apprecia|capital|\bbest\b|prime|rare|exclusive|opportunit|affordable|bargain|luxur|ideal for|perfect for|strong|great |amazing|high-?demand|hot |must see/i;
 
@@ -65,7 +66,7 @@ function composeJPPost(u, o) {
   const place = (u.area && u.area !== 'Others' ? u.area : (o.khan || ''));
   const f = sortFeatures(u.features);
   const lines = [(rent ? '#賃貸 ' + usd(u.price) + '/月' : '#売出中 ' + usd(u.price)), '', '<b>' + esc((u.name + (beds ? ' | ' + beds : '')).toUpperCase()) + '</b>', '📍 ' + (place ? esc(place) + '、' : '') + 'プノンペン', '', '――――――――――', '', '<b>物件情報</b>'];
-  if (u.unitNo || u.floor) lines.push('✅ ' + [u.unitNo ? esc(u.unitNo) + '号室' : '', u.floor ? u.floor + '階' : ''].filter(Boolean).join(' | '));
+  if (u.unitNo || u.floor) lines.push('✅ ' + [u.unitNo ? esc(u.unitNo) + '号室' : '', u.floor ? floorJP(u.floor) : ''].filter(Boolean).join(' | '));
   if (beds) lines.push('✅ ' + beds);
   if (u.gross || u.net) lines.push('✅ ' + [u.net ? u.net + '㎡（専有）' : '', u.gross ? u.gross + '㎡（総面積）' : ''].filter(Boolean).join(' | '));
   else if (u.sqm) lines.push('✅ ' + u.sqm + '㎡');
@@ -91,8 +92,8 @@ function composeEN(u, o) {
   const rent = u.type === 'rent';
   const beds = u.beds === 0 ? 'STUDIO' : u.beds ? u.beds + 'BR' : '';
   const title = BOLD((u.name + (beds ? ' | ' + beds + ' UNIT' : '')).toUpperCase());
-  const lines = [(rent ? '#ForRent ' + usd(u.price) + '/month' : '#ForSale ' + usd(u.price)), '', title, '📍 ' + (u.area && u.area !== 'Others' ? u.area : (o.khan || '')) + (u.area || o.khan ? ', ' : '') + 'Phnom Penh', '', '――――――――――', '', BOLD('UNIT DETAILS')];
-  if (u.unitNo || u.floor) lines.push('✅ ' + [u.unitNo ? 'Unit ' + u.unitNo : '', u.floor ? ordinal(u.floor) + ' Floor' : ''].filter(Boolean).join(' | '));
+  const lines = [(rent ? '#ForRent ' + usd(u.price) + '/month' : '#ForSale ' + usd(u.price) + (u.urgent ? ' (Urgent)' : '')), '', title, '📍 ' + (u.area && u.area !== 'Others' ? u.area : (o.khan || '')) + (u.area || o.khan ? ', ' : '') + 'Phnom Penh', '', '――――――――――', '', BOLD('UNIT DETAILS')];
+  if (u.unitNo || u.floor) lines.push('✅ ' + [u.unitNo ? 'Unit ' + u.unitNo : '', u.floor ? (/^(g|ground|gf)$/i.test(u.floor) ? 'Ground Floor' : ordinal(u.floor) + ' Floor') : ''].filter(Boolean).join(' | '));
   if (u.beds !== undefined && u.beds !== '') lines.push('✅ ' + (u.beds === 0 ? 'Studio' : u.beds + ' Bedroom' + (u.beds > 1 ? 's' : '')));
   const sizes = [u.gross ? u.gross + '㎡ Gross' : '', u.net ? u.net + '㎡ Net' : ''].filter(Boolean);
   if (sizes.length) lines.push('✅ ' + sizes.join(' | ')); else if (u.sqm) lines.push('✅ ' + u.sqm + '㎡');
@@ -100,6 +101,9 @@ function composeEN(u, o) {
   const all = (u.features || []).map((x) => String(x).replace(/^[✅▫️•\-–\s]+/, '').trim()).filter((x) => x && !FEATURE_SKIP.test(x));
   const claims = all.filter((x) => CLAIM.test(x)); // promotional claims stay out of the draft; Nick may add one back by hand
   all.filter((x) => !CLAIM.test(x)).slice(0, 10).forEach((x) => lines.push('✅ ' + x));
+  // the payment plan of a resale or off-plan unit, only when the post stated one (Nick 2026-10-27)
+  const PAY = { monthly: 'Monthly Payment', handover: 'Handover Payment', down: 'Down Payment' };
+  if (!rent && u.payment && u.payment.length) lines.push('', BOLD('PAYMENT PLAN'), ...u.payment.map((p) => '✅ ' + (PAY[p.k] || 'Payment') + ': ' + p.value));
   lines.push('', '💰 ' + (rent ? 'Monthly Rent: ' : 'Selling Price: ') + (u.priceFrom && u.priceFrom !== u.price ? usd(u.priceFrom) + ' → ' : '') + usd(u.price));
   if (o.footer) lines.push('', '――――――――――', o.footer);
   return { text: lines.join('\n'), left: { claims } };

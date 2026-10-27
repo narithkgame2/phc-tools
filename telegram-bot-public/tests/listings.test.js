@@ -91,7 +91,7 @@ function rig(rows) {
     await bot.handleUpdate({ update_id: 1, message: { message_id: 2, chat: { id: 88, type: 'private' }, from, text: '/buy' } });
     await tap('b1', 1); await tap('b2', 4);
     const list = sent.find((x) => /Time Square 7/.test(x.body.text || '')).body.text;
-    assert.ok(/\$90,000から/.test(list) && /40㎡から/.test(list), list);
+    assert.ok(/\$90,000から/.test(list) && /40㎡（約12\.1坪）から/.test(list), list);
   });
   await t('the map fills a blank Area, never overrides one Nick typed, and shows the real district for Others', async () => {
     const places = { places: [
@@ -159,10 +159,10 @@ function rig(rows) {
     await bot.handleUpdate({ update_id: 2, callback_query: { id: 'c', from, data: 'g:b1:1', message: { message_id: 5, chat: { id: 71, type: 'private' } } } });
     await bot.handleUpdate({ update_id: 3, callback_query: { id: 'c', from, data: 'g:b2:2', message: { message_id: 5, chat: { id: 71, type: 'private' } } } });
     const text = sent.find((x) => /Net Place/.test(x.body.text || '')).body.text;
-    assert.ok(/35㎡（専有）/.test(text) && /\$2,000\/㎡（専有）/.test(text), text);
-    assert.ok(/Gross Place[^]*50㎡（総面積）[^]*\$1,400\/㎡（総面積）/.test(text), 'gross is labelled and its own price per sqm');
+    assert.ok(/35㎡（専有・約10\.6坪）/.test(text) && /\$2,000\/㎡（専有）/.test(text), text);
+    assert.ok(/Gross Place[^]*50㎡（総面積・約15\.1坪）[^]*\$1,400\/㎡（総面積）/.test(text), 'gross is labelled and its own price per sqm');
     const card = text.split('<blockquote>').find((x) => /Unknown Place/.test(x));
-    assert.ok(/50㎡/.test(card) && !/㎡（/.test(card) && !/\/㎡/.test(card), 'unknown basis: plain size and no price per sqm: ' + card);
+    assert.ok(/50㎡（約15\.1坪）/.test(card) && !/専有|総面積/.test(card) && !/\/㎡/.test(card), 'unknown basis: plain size and no price per sqm: ' + card);
   });
   await t('quoted commas are read correctly and internal columns never reach the clean rows', () => {
     const a = rows.find((r) => r.id === 'A1');

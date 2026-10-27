@@ -127,7 +127,7 @@ async function run() {
   setInterval(() => bot.runAlerts().catch((e) => console.error('Alert error:', e.message)), 10 * 60 * 1000);
   let offset = 0;
   for (;;) {
-    const r = await api('getUpdates', { offset, timeout: 30, allowed_updates: ['message', 'callback_query'] });
+    const r = await api('getUpdates', { offset, timeout: 30, allowed_updates: ['message', 'callback_query', 'channel_post'] }); // channel_post: Nick's own listings in a watched channel
     if (!r.ok) { await new Promise((s) => setTimeout(s, 3000)); continue; }
     for (const u of r.result) {
       offset = u.update_id + 1;

@@ -1,6 +1,6 @@
 // Reads a listing post (text, as posted in the channels or typed by an agent) into facts, so the bot only has to ask about what is missing.
 // Used by the agent intake and by tools/import-queue.cjs. Nothing here guesses: a field it cannot find is returned empty.
-const { parseSizes } = require('./sizes.js');
+const { parseSizes, sqftToSqm } = require('./sizes.js');
 const { placeFor } = require('./listings.js');
 
 const DISTRICTS = [['bkk1', 'BKK1'], ['bkk 1', 'BKK1'], ['bkk2', 'BKK2'], ['bkk3', 'BKK3'], ['toul kork', 'Toul Kork'], ['tuol kork', 'Toul Kork'], ['tonle bassac', 'Tonle Bassac'],
@@ -9,7 +9,7 @@ const BUTTONS = ['Daun Penh', 'Tonle Bassac', 'BKK1', 'TTP', 'Toul Kork'];
 const BY_PROJECT = [['time square 7', 'Toul Kork'], ['time square 9', 'BKK1'], ['time square 5', 'BKK1'], ['odom', 'Tonle Bassac'], ['j tower 3', 'Tonle Bassac'], ['norea', 'Tonle Bassac'], ['diamond bay', 'Tonle Bassac'], ['gato', 'BKK1'], ['picasso', 'BKK1'], ['le conde', 'BKK1']];
 
 function clean(content) {
-  return String(content || '').normalize('NFKC') // styled bold letters become plain letters
+  return sqftToSqm(String(content || '').normalize('NFKC')) // styled bold letters become plain letters; square feet become sqm
     .split(/\r?\n/).filter((l) => !/(📞|🏠|📱|t\.me\/|^\s*[―\-─]{3,}\s*$)/.test(l)).join('\n');
 }
 const money = (v, min) => { const n = Number(String(v || '').replace(/,/g, '')); return n >= min ? n : 0; };
@@ -20,17 +20,20 @@ function facts(text) {
   const priceRent = (text.match(/#ForRent[^\d$]*\$\s*([\d,]+)/i) || [])[1];
   const titleLine = lines.find((l) => l && !l.startsWith('#') && !l.startsWith('📍') && !/^(UNIT DETAILS|FEATURES|PAYMENT PLAN|RESALE HIGHLIGHTS)$/i.test(l)) || '';
   const pinLine = (lines.find((l) => l.startsWith('📍')) || '').replace(/^📍\s*/, '').trim();
-  const titleHead = titleLine.split('|')[0].trim();
+  // a title such as "🔥 Time Square 8 🔥 Resale" or "Urgent Sale – Time Square 8": emoji and sale words are not part of the name
+  const titleHead = cleanTitle(titleLine.split('|')[0]);
+  const projectLine = ((lines.find((l) => /^project\s*(?:name)?\s*[:：]/i.test(l)) || '').replace(/^project\s*(?:name)?\s*[:：]\s*/i, '')).trim();
   const hay = (titleLine + ' ' + pinLine).toLowerCase();
   const d = DISTRICTS.find(([k]) => hay.includes(k));
   const byProject = BY_PROJECT.find(([k]) => hay.includes(k));
   const district = d ? d[1] : (byProject ? byProject[1] : '');
   const isArea = (s) => !s || DISTRICTS.some(([k]) => s.toLowerCase().includes(k)) || /phnom penh|district|blvd|street|st\./i.test(s);
   const junk = (s) => !/[A-Za-z]{3}/.test(s) || /^(key features|\d+\s?br\b)/i.test(s.replace(/^[^A-Za-z0-9]+/, '')) || /^[^A-Za-z0-9]/.test(s) || /sihanoukville|siem reap|beachfront/i.test(s);
-  const name = [pinLine, titleHead].find((s) => s && !isArea(s) && !junk(s)) || '';
+  const name = [projectLine, pinLine, titleHead].find((s) => s && !isArea(s) && !junk(s)) || '';
   const faraway = /sihanoukville|siem reap|kampot|kep\b|beachfront|time square 10|otres/i.test(titleLine + ' ' + pinLine);
   const sizes = parseSizes(text);
-  const floorM = /\d+(?:st|nd|rd|th)\s*[–-]\s*\d+/.test(text) ? null : (text.match(/floor\s*[:#]?\s*(\d{1,2})(?:st|nd|rd|th)?\b/i) || text.match(/(\d{1,2})(?:st|nd|rd|th)\s*floor/i));
+  const floorM = /\d+(?:st|nd|rd|th)\s*[–-]\s*\d+/.test(text) ? null : (text.match(/floor\s*[:#]?\s*(\d{1,2})(?:st|nd|rd|th)?\b/i) || text.match(/(\d{1,2})(?:st|nd|rd|th)\s*floor/i)
+    || (/\bground\s*floor\b|\bfloor\s*[:#]?\s*g\b|\bg\s*floor\b/i.test(text) ? [null, 'G'] : null));
   const unitM = text.match(/unit\s+([A-Z]?\d[\w-]*\d)\b/i) || text.match(/floor:\s*\d+(?:st|nd|rd|th)\s*\((\w+)\)/i);
   const tenantM = /\btenanted\b/i.test(text) ? (text.match(/(\d+-?\s*year lease[^\n]*)/i) || [])[1] : null;
   const beds = (text.match(/(\d)\s*(?:bedrooms?|BR\b|bed\b|Schlafzimmer)/i) || text.match(/bedrooms?:\s*(\d)/i) || [])[1];
@@ -80,8 +83,24 @@ function parsePost(raw, places) {
   const place = name ? placeFor(name, places) : null;
   const area = place ? place.area : (f.district ? (BUTTONS.includes(f.district) ? f.district : 'Others') : '');
   const bathM = text.match(/(\d+(?:\.\d)?)\s*-?\s*(?:bathrooms?|baths?)\b/i);
-  return { priceFrom, baths: bathM ? Number(bathM[1]) : undefined, name, type, price, rentAlso: buy && rent ? rent : 0, net: f.net, gross: f.gross, plain: f.plain, beds: f.beds !== undefined ? f.beds : (f.studio ? 0 : undefined),
+  return { urgent: /\burgent\b/i.test(text), payment: type === 'rent' ? [] : paymentPlan(text), priceFrom, baths: bathM ? Number(bathM[1]) : undefined, name, type, price, rentAlso: buy && rent ? rent : 0, net: f.net, gross: f.gross, plain: f.plain, beds: f.beds !== undefined ? f.beds : (f.studio ? 0 : undefined),
     features: extractFeatures(raw), floor: f.floor, unit: f.unit, area, tenanted: f.tenanted, tenantNote: f.tenantNote, faraway: f.faraway, check: f.check, district: f.district, buy, rent };
+}
+function cleanTitle(s) {
+  return String(s || '').replace(/[^\p{L}\p{N}\s&'.]/gu, ' ')
+    .replace(/\b(?:urgent\s+sale|urgent|hot\s+deal|resale(?:\s+unit)?|for\s+sale|for\s+rent)\b/gi, ' ').replace(/\s+/g, ' ').trim();
+}
+// The payment plan of a resale or off-plan unit, only when the post states amounts: "Monthly Payment: $678 from November 2026 to March 2029",
+// "Handover Payment: $50,888", "Down payment 30%". A rental's "Monthly rent" is not a payment plan.
+function paymentPlan(text) {
+  const out = [];
+  String(text || '').split('\n').map((l) => l.trim().replace(/^[✅▫️•\-–💳\s]+/u, '')).forEach((l) => {
+    const m = l.match(/^(monthly\s+payment|monthly\s+installment|monthly|handover\s+payment|payment\s+on\s+handover|down\s*payment|downpayment)\s*[:：]?\s*(.+)$/i);
+    if (!m || !/\$|%/.test(m[2]) || /rent/i.test(m[1] + m[2])) return;
+    const k = /^monthly/i.test(m[1]) ? 'monthly' : /handover/i.test(m[1]) ? 'handover' : 'down';
+    if (!out.some((x) => x.k === k)) out.push({ k, value: m[2].trim() });
+  });
+  return out;
 }
 // the checklist lines of a post that describe the unit (furnished, pool, strata title ...), without the structured facts
 function extractFeatures(raw) {

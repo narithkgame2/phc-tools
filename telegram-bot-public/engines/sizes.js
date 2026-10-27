@@ -4,8 +4,18 @@
 const NUM = '(\\d[\\d.,]*)';
 const UNIT = '(?:㎡|m²|m2|sqm|sq\\.?\\s?m)';
 const toNum = (s) => Number(String(s).replace(/,(?=\d{3}\b)/g, '').replace(',', '.'));
+// Nick's rule (2026-10-27): sqm everywhere. A size written in square feet is turned into sqm before anything reads it.
+const SQFT = /(\d[\d.,]*)\s*(?:sq\.?\s?ft\.?|sqft|ft²|ft2|square\s+feet)/gi;
+const sqftToSqm = (text) => String(text || '').replace(SQFT, (all, n) => (Math.round((toNum(n) / 10.7639) * 10) / 10) + ' sqm');
+// Japanese buyers think in tsubo too: 50㎡（約15.1坪）. 1坪 = 3.3058㎡.
+const tsubo = (sqm) => (Math.round((Number(sqm) / 3.3058) * 10) / 10).toFixed(1);
+// a size for a Japanese text: "29㎡（専有・約8.8坪）", "57㎡（約17.2坪）"
+const jpSize = (sqm, basis) => sqm + '㎡（' + (basis === 'net' ? '専有・' : basis === 'gross' ? '総面積・' : '') + '約' + tsubo(sqm) + '坪）';
+// Cambodia counts floors the British way (Ground, then 1st). Japan calls the ground floor 1階; other floors keep the building's number.
+const floorJP = (f) => (/^(g|ground|gf)$/i.test(String(f)) ? '1階（地上階）' : f + '階');
+const floorEN = (f) => (/^(g|ground|gf)$/i.test(String(f)) ? 'Ground floor' : 'Floor ' + f);
 function parseSizes(text) {
-  const t = String(text || '').normalize('NFKC');
+  const t = sqftToSqm(String(text || '').normalize('NFKC'));
   const out = { net: 0, gross: 0, plain: 0 };
   const put = (kind, v) => { const n = toNum(v); if (n > 0 && !out[kind]) out[kind] = n; };
   let m;
@@ -21,4 +31,4 @@ function parseSizes(text) {
   if (!out.net && !out.gross && !out.plain) { const any = new RegExp(NUM + '\\s*' + UNIT, 'i').exec(t); if (any) put('plain', any[1]); }
   return out;
 }
-module.exports = { parseSizes };
+module.exports = { parseSizes, sqftToSqm, tsubo, jpSize, floorJP, floorEN };

@@ -5,6 +5,7 @@
 // translated. Promotional claims stay out of the Japanese post (Nick's rule for this channel) and are reported. The contact block
 // of the source is always replaced by the channel's own contact line.
 const { translateFeature } = require('./compose.js');
+const { sqftToSqm, jpSize, floorJP } = require('./sizes.js');
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const usd = (n) => '$' + Math.round(n).toLocaleString('en-US');
@@ -26,13 +27,13 @@ const BULLET = /^(✅|☑️|☑|✔️|✔|✓|▫️|▫|•|●|▪️|▪|�
 const TICKS = /^(✅|☑️|☑|✔️|✔|✓|▫️|▫|•|●|▪️|▪|■|★|➡️|⁃|🛏️?|🛁)$/u;
 const HEADINGS = {
   'unit details': '物件情報', 'details': '物件情報', 'property details': '物件情報', 'features': '特徴', 'key features': '特徴', 'highlights': '特徴',
-  'facilities': '共用施設', 'amenities': '共用施設', 'payment plan': 'お支払いプラン', 'payment plans': 'お支払いプラン', 'payment terms': 'お支払い条件',
+  'facilities': '共用施設', 'amenities': '共用施設', 'payment plan': '支払い条件', 'payment plans': '支払い条件', 'payment terms': '支払い条件',
   'utilities': '光熱費', 'location': '立地', 'project details': 'プロジェクト情報', 'resale highlights': 'リセールのポイント', 'rental details': '賃貸条件',
 };
 const LABELS = {
   handover: '引き渡し', completion: '完成', 'completion date': '完成時期', furnished: '家具', furnishing: '家具', facing: '向き', orientation: '向き', view: '眺望', views: '眺望',
   title: '権利', ownership: '権利', tenure: '権利', 'unit type': 'タイプ', type: 'タイプ', price: '価格', 'selling price': '販売価格', 'rental price': '賃料', rent: '賃料',
-  deposit: 'デポジット', 'booking fee': '予約金', 'down payment': '頭金', 'monthly payment': '月々のお支払い', 'management fee': '管理費', parking: '駐車場', available: '入居可能日', availability: '入居可能日',
+  deposit: 'デポジット', 'booking fee': '予約金', 'down payment': '頭金', 'downpayment': '頭金', 'monthly payment': '月々', 'monthly installment': '月々', monthly: '月々', 'handover payment': '引き渡し時', 'payment on handover': '引き渡し時', 'management fee': '管理費', parking: '駐車場', available: '入居可能日', availability: '入居可能日',
   'unit no': '部屋番号', floor: '階数', size: '広さ', 'gross size': '総面積', 'net size': '専有面積', developer: 'デベロッパー', tenant: '入居者', lease: '賃貸契約',
 };
 const CITY = { 'phnom penh': 'プノンペン', 'siem reap': 'シェムリアップ', 'sihanoukville': 'シアヌークビル', 'kampot': 'カンポット', 'kep': 'ケップ' };
@@ -50,10 +51,10 @@ function factSegment(seg, o) {
     // the post says only "57㎡": the answer to the bot's net or gross question labels it
     const v = Number(m[2].replace(',', '.'));
     if (!kind && o.gross && v === Number(o.gross)) kind = 'gross'; else if (!kind && o.net && v === Number(o.net)) kind = 'net';
-    return m[2] + '㎡' + (kind === 'gross' ? '（総面積）' : kind === 'net' ? '（専有）' : '');
+    return jpSize(m[2], kind); // 29㎡（専有・約8.8坪）
   }
-  if ((m = s.match(/^(\d{1,3})(?:st|nd|rd|th)?\s*floor$/i)) || (m = s.match(/^floor\s*[:#]?\s*(\d{1,3})(?:st|nd|rd|th)?$/i))) return m[1] + '階';
-  if (/^(?:ground floor|floor\s*g)$/i.test(s)) return '1階（グラウンドフロア）';
+  if ((m = s.match(/^(\d{1,3})(?:st|nd|rd|th)?\s*floor$/i)) || (m = s.match(/^floor\s*[:#]?\s*(\d{1,3})(?:st|nd|rd|th)?$/i))) return floorJP(m[1]);
+  if (/^(?:ground floor|floor\s*[:#]?\s*g|g\s*floor)$/i.test(s)) return floorJP('G');
   return null;
 }
 function factLine(t, o) {
@@ -74,6 +75,14 @@ function dateText(v) {
   if (/^(ready|now|immediately|completed)$/.test(s)) return '完成済み';
   return null;
 }
+// "$678 from November 2026 to March 2029" → "$678（2026年11月から2029年3月まで）"
+function amountPeriod(v) {
+  const m = String(v).trim().match(/^(\$\s*[\d,]+(?:\.\d+)?|\d+(?:\.\d+)?\s*%)\s*(?:\/\s*month|per\s+month)?\s*(?:from\s+(.+?)\s+(?:to|until|till)\s+(.+)|until\s+(.+))$/i);
+  if (!m) return null;
+  const a = m[2] ? dateText(m[2]) : null, b = dateText(m[3] || m[4] || '');
+  if (!b || (m[2] && !a)) return null;
+  return m[1].replace(/\s+/g, '') + '（' + (a ? a + 'から' : '') + b + 'まで）';
+}
 // "$98,000 → $94,000": the old price crossed out, the new one after the arrow
 function priceText(s, current, from) {
   const arrow = s.match(/\$\s*([\d,]+)\s*(?:→|->|=>|➡️?|➜|\bto\b)\s*\$\s*([\d,]+)/i);
@@ -86,7 +95,7 @@ function priceText(s, current, from) {
 
 // Splits the source into lines with a bold flag (Telegram bold marks, or the bold sans serif letters of Nick's titles).
 function sourceLines(text, entities) {
-  const t = String(text || '');
+  const t = String(text || ''); // sizes in square feet are converted later, line by line (the bold offsets must stay as they are)
   const bold = new Array(t.length).fill(false);
   (entities || []).forEach((e) => { if (e && e.type === 'bold') for (let i = e.offset; i < e.offset + e.length && i < t.length; i++) bold[i] = true; });
   const lines = []; let pos = 0;
@@ -106,7 +115,7 @@ function sourceLines(text, entities) {
 
 // Plans one line. Returns { out } when the line is done, { google: english } when it needs the translator, or { drop, claim }.
 function planLine(l, o, state) {
-  const t = l.text;
+  const t = sqftToSqm(l.text);
   if (!t) return { out: '' };
   if (DIVIDER.test(t)) return { out: '――――――――――' };
   if (CONTACT.test(t)) return { drop: true };
@@ -115,7 +124,7 @@ function planLine(l, o, state) {
   if (tag || /^💰/u.test(t) || (/\$\s*\d/.test(t) && /\b(price|rent)\b/i.test(t) && !BULLET.test(t))) {
     // every price line is the unit's price: the current one, with the old one crossed out after a reduction
     const p = priceText(t, o.price, o.priceFrom);
-    const urgent = /urgent/i.test(t) ? '（緊急）' : '';
+    const urgent = /urgent/i.test(t) ? '（早期売却希望）' : ''; // Nick 2026-10-27: a fact (the seller wants an early sale), never "best value"
     if (p) {
       if (tag) return { out: (/rent/i.test(tag[1]) ? '#賃貸 ' : /new/i.test(tag[1]) ? '#新築プロジェクト ' : '#売出中 ') + p + urgent };
       const label = /monthly rent|rental price|\brent\b/i.test(t) ? '月額賃料：' : /selling price|sale price|asking price|\bprice\b/i.test(t) ? '販売価格：' : '';
@@ -148,7 +157,7 @@ function planLine(l, o, state) {
   const lv = body.match(/^([A-Za-z][A-Za-z .\/&]{1,24}?)\s*[:：]\s*(\S.*)$/);
   if (lv && LABELS[lv[1].trim().toLowerCase()]) {
     const label = LABELS[lv[1].trim().toLowerCase()], value = lv[2].trim();
-    const fv = factLine(value, o) || dateText(value) || (/^[\d$.,%\s\-–\/]+$/.test(value) ? value : null) || (translateFeature(value).kind === 'fact' ? translateFeature(value).jp : null);
+    const fv = factLine(value, o) || dateText(value) || amountPeriod(value) || (/^[\d$.,%\s\-–\/]+$/.test(value) ? value : null) || (translateFeature(value).kind === 'fact' ? translateFeature(value).jp : null);
     return fv ? { out: pre + label + '：' + fv } : { pre: pre + label + '：', google: value };
   }
   const r = translateFeature(body);

@@ -11,7 +11,7 @@ t('title words and fact lines come from the tables', () => {
   assert.strictEqual(mapTitleWords('2BR UNIT'), '2ベッドルーム');
   assert.strictEqual(mapTitleWords('Studio for Sale'), 'スタジオ・売出');
   assert.strictEqual(mapTitleWords('SKY GARDEN SUITE'), null, 'unknown words go to the translator');
-  assert.strictEqual(factLine('32 sqm net / 41 sqm gross'), '32㎡（専有） | 41㎡（総面積）');
+  assert.strictEqual(factLine('32 sqm net / 41 sqm gross'), '32㎡（専有・約9.7坪） | 41㎡（総面積・約12.4坪）');
   assert.strictEqual(factLine('Studio | 1 Bath'), 'スタジオ | 1バスルーム');
   assert.strictEqual(factLine('Floor 12'), '12階');
 });
@@ -53,7 +53,7 @@ t('dates and answered sizes come from the tables', () => {
   const { dateText } = require('../engines/jpline.js');
   assert.strictEqual(dateText('Early 2027'), '2027年初頭'); assert.strictEqual(dateText('Q3 2028'), '2028年第3四半期'); assert.strictEqual(dateText('December 2027'), '2027年12月'); assert.strictEqual(dateText('2027'), '2027年');
   const r = buildJP('X | 1BR UNIT\n✅ 57㎡\n✅ Handover: Late 2026', [], { gross: 57 });
-  assert.ok(r.text.includes('✅ 57㎡（総面積）') && r.text.includes('✅ 引き渡し：2026年後半'), r.text);
+  assert.ok(r.text.includes('✅ 57㎡（総面積・約17.2坪）') && r.text.includes('✅ 引き渡し：2026年後半'), r.text);
 });
 console.log('\nRESULTS: ' + passed + ' / ' + total + ' TESTS PASSED (' + Math.round(passed / total * 100) + '%)');
 process.exit(passed === total ? 0 : 1);

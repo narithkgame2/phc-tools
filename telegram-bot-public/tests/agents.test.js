@@ -131,7 +131,7 @@ async function submitted(r, agent, post) {
     await r.cb(A, 'ua:TS5-6001'); await r.cb(CLIENT, 'ua:TS5-6001'); assert.strictEqual(r.units()[0].status, 'pending', 'an agent or a client cannot approve');
     await r.cb(NICK, 'ua:TS5-6001'); assert.strictEqual(r.units()[0].status, 'active'); assert.ok(/approved and now shows to clients/.test(r.texts(A).pop()));
     const jp = r.to('@Nick_Cambodia').find((s) => s.method === 'sendMediaGroup'); assert.ok(jp, 'posted to the channel as one album'); assert.strictEqual(jp.body.media.length, 3, 'every photo and the video are posted'); assert.ok(!jp.body.media[0].caption, 'the album carries no caption'); const tm = r.to('@Nick_Cambodia').find((x) => x.method === 'sendMessage' && x.body.reply_markup); const cap = tm.body.text;
-    assert.ok(/^#売出中 \$82,000/.test(cap) && /41㎡（総面積） \| 32㎡（専有）/.test(cap) && /096 96 61 555|物件情報/.test(cap) && !/\+855|phc/i.test(cap), cap);
+    assert.ok(/^#売出中 \$82,000/.test(cap) && /41㎡（総面積・約12\.4坪） \| 32㎡（専有・約9\.7坪）/.test(cap) && /096 96 61 555|物件情報/.test(cap) && !/\+855|phc/i.test(cap), cap);
     const urls = tm.body.reply_markup.inline_keyboard[0].map((b) => b.url); assert.ok(urls[0] === 'https://line.me/ti/p/@615ueovq' && /start=TS5-6001/.test(urls[1]), urls.join(' '));
     const conf = r.last(NICK); assert.ok(/approved and live/.test(conf.body.text) && r.labels(conf).includes('Also post to @NickREAKH'));
     assert.ok(!r.to('@NickREAKH').length, 'the REAKH channel is not posted without Nick\'s tap');
@@ -208,7 +208,7 @@ async function submitted(r, agent, post) {
     const card = r.texts(NICK).find((x) => /New unit to approve/.test(x)); assert.ok(/not posted there again/.test(card), card);
     r.sent.length = 0; await r.cb(NICK, 'ua:' + unit.ref);
     const post = r.to('@Nick_Cambodia').find((x) => x.method === 'sendMessage' && x.body.reply_markup).body.text;
-    const want = ['<b>TIME SQUARE 6 | 1ベッドルーム・リセール</b>', '💰 <s>$98,000</s> → $94,000', '📍 BKK1、プノンペン', '<b>物件情報</b>', '▫️ 1ベッドルーム | 1バスルーム', '▫️ 57㎡（総面積）', '▫️ 26階', '▫️ 北向き', '▫️ 家具付き', '▫️ 引き渡し：2027年初頭', '📞 096 96 61 555'];
+    const want = ['<b>TIME SQUARE 6 | 1ベッドルーム・リセール</b>', '💰 <s>$98,000</s> → $94,000', '📍 BKK1、プノンペン', '<b>物件情報</b>', '▫️ 1ベッドルーム | 1バスルーム', '▫️ 57㎡（総面積・約17.2坪）', '▫️ 26階', '▫️ 北向き', '▫️ 家具付き', '▫️ 引き渡し：2027年初頭', '📞 096 96 61 555'];
     assert.deepStrictEqual(asked, [], 'everything in this post comes from the tables: nothing sent to Google');
     want.forEach((w) => assert.ok(post.includes(w), 'missing ' + w + ' in\n' + post));
     assert.ok(!/t\.me\/NickREAKH/.test(post), 'the source contact block is replaced');

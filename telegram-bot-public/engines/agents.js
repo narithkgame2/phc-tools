@@ -179,10 +179,46 @@ function createAgentArea(ctx) {
     if (r.beds !== undefined) d.beds = r.beds; if (r.floor) d.floor = r.floor; if (r.area) d.area = r.area;
     if (r.features && r.features.length) d.features = r.features;
     if (r.unit) d.unitNo = r.unit; if (r.tenanted) { d.tenanted = true; d.tenantNote = r.tenantNote; }
+    if (r.urgent) d.urgent = true; if (r.payment && r.payment.length) d.payment = r.payment;
     const found = [r.name, r.type && (r.type === 'rent' ? 'rent ' + usd(r.price) : 'sale ' + usd(r.price)), (r.net || r.gross || r.plain) && 'size', r.beds !== undefined && 'bedrooms', r.floor && 'floor', r.area && 'area'].filter(Boolean);
     await say(chat, found.length ? 'I read your post. Found: ' + esc(found.join(', ')) + '. I will ask only what is missing.' : 'I could not read details from that post, so I will ask step by step.');
     return advance(chat, u);
   }
+  // ---- Nick's own channel (2026-10-27): a listing Nick posts in a channel marked "watch": true in data/channels.json (@NickREAKH)
+  // comes to him as a card, the same as if he had forwarded it. One post in @NickREAKH, then a few taps for @Nick_Cambodia.
+  // An album arrives as several channel posts: everything from that channel within a short pause is one post.
+  const WATCH_QUIET = 6000;
+  const watchBuf = {};
+  const watched = (c) => { const n = String((c && c.username) || '').toLowerCase(); return !!n && (ctx.channels || []).some((x) => x.watch && String(x.chat).replace(/^@/, '').toLowerCase() === n); };
+  function watchPost(p) {
+    if (!p || !p.chat || !watched(p.chat) || p.reply_markup) return false; // the bot's own channel posts carry buttons
+    const key = String(p.chat.username).toLowerCase();
+    const g = watchBuf[key] = watchBuf[key] || { source: p.chat.username, media: [], texts: [], post: null, first: String(p.message_id) };
+    if (p.photo && p.photo.length && g.media.length < MAX_MEDIA) g.media.push({ t: 'photo', id: p.photo[p.photo.length - 1].file_id });
+    if (p.video && p.video.file_id && g.media.length < MAX_MEDIA) g.media.push({ t: 'video', id: p.video.file_id });
+    const body = (p.text || p.caption || '').trim();
+    if (body) { g.texts.push(body); if (!g.post || body.length > g.post.text.length) g.post = { text: body, ents: p.caption_entities || p.entities || [] }; }
+    g.last = clock();
+    const later = ctx.later || ((fn, ms) => setTimeout(fn, ms));
+    later(() => { if (watchBuf[key] === g && clock() - g.last >= WATCH_QUIET - 200) flushWatch(key).catch(() => {}); }, WATCH_QUIET);
+    return true;
+  }
+  async function flushWatch(key) {
+    for (const k of (key ? [key] : Object.keys(watchBuf))) {
+      const g = watchBuf[k]; delete watchBuf[k];
+      if (!g || !nickId) continue;
+      const r = parsePost(g.texts.join('\n'), places);
+      if (!r.price) continue; // a teaching post or an announcement, not a listing
+      const u = ctx.getUser({ id: Number(nickId) });
+      u.watch = (u.watch || []).filter((x) => clock() - Date.parse(x.at) < 7 * DAY && x.id !== g.first)
+        .concat([{ id: g.first, at: iso(), source: g.source, media: g.media, texts: g.texts, post: g.post }]).slice(-10);
+      ctx.saveUser(u);
+      const what = [r.name, usd(r.price) + (r.type === 'rent' ? '/month' : '') + (r.urgent ? ' (Urgent)' : '')].filter(Boolean).join(' · ');
+      await say(nickId, '<b>New listing in @' + esc(g.source) + '</b>\n' + esc(what) + (g.media.length ? '\n' + counts(g.media) : '') + '\n\nPrepare the Japanese version for @Nick_Cambodia?',
+        [[btn('Prepare it', 'wp:' + g.first), btn('Not this one', 'wx:' + g.first)]]);
+    }
+  }
+
   async function startIntake(chat, u) {
     u.wiz = newWiz('intake'); ctx.saveUser(u);
     return say(chat, '<b>Add a unit</b>\n\nSend me the post as you would post it: photos, videos and the description, in one or several messages. I read it and ask only what is missing. Then tap Done.', [[btn('Ask me step by step instead', 'aw:steps')], cancelRow]);
@@ -196,7 +232,7 @@ function createAgentArea(ctx) {
       const seq = data.nextSeq(), ref = refPrefix(d.name) + '-' + (6000 + seq);
       const unit = { ref, seq, agentId: u.id, agentName: (data.getAgent(u.id) || {}).name || 'Agent', status: 'pending', type, name: d.name, area: d.area, price, net: d.net || 0, gross: d.gross || 0, sqm: d.sqm || 0,
         beds: d.beds, baths: d.baths, priceFrom: type === (d.type === 'both' ? 'buy' : d.type) ? (d.priceFrom || 0) : 0, source: w.source || '', post: w.post || null,
-        floor: d.floor || '', unitNo: d.unitNo || '', features: d.features || [], tenanted: !!d.tenanted, tenantNote: d.tenantNote || '', media: w.media || [], submittedAt: iso(), approvedAt: '', checked: '', nextCheckAt: '', askedAt: '', reminders: 0, pendingPrice: null };
+        floor: d.floor || '', unitNo: d.unitNo || '', urgent: !!d.urgent, payment: type === 'rent' ? [] : (d.payment || []), features: d.features || [], tenanted: !!d.tenanted, tenantNote: d.tenantNote || '', media: w.media || [], submittedAt: iso(), approvedAt: '', checked: '', nextCheckAt: '', askedAt: '', reminders: 0, pendingPrice: null };
       data.setUnit(ref, unit); made.push(unit);
     }
     // the lines the tables and the glossary do not know are translated now, so Nick sees the finished Japanese post before approving
@@ -594,6 +630,20 @@ function createAgentArea(ctx) {
       }
       return true;
     }
+    if (kind === 'wp' || kind === 'wx') {
+      if (!isNick(from.id)) return true;
+      const item = (u.watch || []).find((x) => x.id === a);
+      if (!item) { await say(chat, 'That post is no longer waiting (older than 7 days, or already handled).'); return true; }
+      u.watch = u.watch.filter((x) => x.id !== a);
+      if (kind === 'wx') { ctx.saveUser(u); await say(chat, 'OK, not this one.'); return true; }
+      if (u.wiz && u.wiz.step !== 'collect') {
+        u.watch.push(item); ctx.saveUser(u);
+        await say(chat, 'You are in the middle of adding another unit. Finish it or tap Cancel, then tap Prepare it again.', [cancelRow]); return true;
+      }
+      u.wiz = Object.assign(newWiz('intake'), { media: item.media || [], texts: item.texts || [], post: item.post, source: item.source });
+      ctx.saveUser(u);
+      await readPost(chat, u); return true;
+    }
     if (kind === 'ak') {
       if (!(isNick(from.id) || isAgent(from.id))) return true;
       if (a === 'x') { await say(chat, 'Cancelled. Nothing was changed.'); return true; }
@@ -655,7 +705,7 @@ function createAgentArea(ctx) {
     unit.status = unit.goneFrom || 'active'; delete unit.goneFrom; data.setUnit(unit.ref, unit);
     return updatePosts(unit, unit.reserved ? 'reserved' : null);
   }
-  return { handleMessage, handleCallback, listings, runChecks, isAgent, toListing, markGone, undoGone };
+  return { handleMessage, handleCallback, listings, runChecks, isAgent, toListing, markGone, undoGone, watchPost, flushWatch };
 }
 
 module.exports = { createAgentArea, refPrefix };

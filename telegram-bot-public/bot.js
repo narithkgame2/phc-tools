@@ -114,15 +114,17 @@ const nk = (x) => String(x || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 // old single size only when its basis is known. Projects show a plain "from" size and no price per square metre.
 const BASIS = { net: { jp: '（専有）', en: ' net', kh: ' net' }, gross: { jp: '（総面積）', en: ' gross', kh: ' gross' } };
 const basisText = (l, lang) => (l.basis ? BASIS[l.basis][lang] || BASIS[l.basis].en : '');
+// Japanese sizes carry tsubo too (Nick 2026-10-27): 32㎡（専有・約9.7坪）
+const { jpSize, floorJP, floorEN } = require('./engines/sizes.js');
 const unitSqm = (n, lang) => n + (lang === 'jp' ? '㎡' : ' sqm');
 function sizeText(l, lang) {
-  const tag = (k) => (lang === 'jp' ? BASIS[k].jp : BASIS[k].en);
   const jp = lang === 'jp';
-  if (l.net && l.gross) return jp ? l.net + '㎡' + BASIS.net.jp + ' / ' + l.gross + '㎡' + BASIS.gross.jp : l.net + ' sqm net / ' + l.gross + ' sqm gross';
-  if (l.net) return jp ? l.net + '㎡' + BASIS.net.jp : l.net + ' sqm net';
-  if (l.gross) return jp ? l.gross + '㎡' + BASIS.gross.jp : l.gross + ' sqm gross';
+  if (l.net && l.gross) return jp ? jpSize(l.net, 'net') + ' / ' + jpSize(l.gross, 'gross') : l.net + ' sqm net / ' + l.gross + ' sqm gross';
+  if (l.net) return jp ? jpSize(l.net, 'net') : l.net + ' sqm net';
+  if (l.gross) return jp ? jpSize(l.gross, 'gross') : l.gross + ' sqm gross';
   if (!l.sqm) return '';
-  return (l.from && !jp ? 'from ' : '') + unitSqm(l.sqm, lang) + (jp && l.from ? 'から' : '') + basisText(l, lang);
+  if (jp) return jpSize(l.sqm, l.basis) + (l.from ? 'から' : '');
+  return (l.from ? 'from ' : '') + unitSqm(l.sqm, lang) + basisText(l, lang);
 }
 function perSqm(l, lang) {
   if (l.type !== 'buy' || l.from || !(l.price > 0)) return '';
@@ -156,7 +158,7 @@ function parseCalc(text) {
 const GUIDE = { jp: 'guide-5-things-2026-jp.pdf', en: 'guide-5-things-2026-en.pdf' }; // built by assets/faq/build-guide-pdf.cjs
 const MEDIA_BASE = process.env.MEDIA_BASE_URL || 'https://raw.githubusercontent.com/narithkgame2/phc-tools/feat/bot-color-cards-and-guards/telegram-bot-public/assets/';
 
-function createBot({ api, store, flow, nickId, onError, getListings, listingState, alertStore, testerIds, isPrivate, agentData, channels, places, events, botUsername, now, translate, crm, guideStore }) {
+function createBot({ api, store, flow, nickId, onError, getListings, listingState, alertStore, testerIds, isPrivate, agentData, channels, places, events, botUsername, now, translate, crm, guideStore, later }) {
   // Phase 2 agent units join the listings the Sheet and the website provide
   const baseListings = getListings || (async () => []);
   let agentArea = null;
@@ -273,7 +275,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     const note = lang === 'jp' ? l.noteJp : l.noteEn;
     const price0 = l.type === 'buy' ? fmtUsd(l.price) : fmtUsd(l.rent) + (lang === 'jp' ? '/月' : lang === 'kh' ? '/ខែ' : '/mo');
     const price = l.from ? (lang === 'jp' ? price0 + 'から' : (lang === 'kh' ? 'ចាប់ពី ' : 'from ') + price0) : price0;
-    const facts = [price, sizeText(l, lang), l.beds ? l.beds + (lang === 'jp' ? 'ベッドルーム' : 'BR') : '', l.floor ? (lang === 'jp' ? l.floor + '階' : 'Floor ' + l.floor) : '', perSqm(l, lang)].filter(Boolean).join(' · ');
+    const facts = [price, sizeText(l, lang), l.beds ? l.beds + (lang === 'jp' ? 'ベッドルーム' : 'BR') : '', l.floor ? (lang === 'jp' ? floorJP(l.floor) : floorEN(l.floor)) : '', perSqm(l, lang)].filter(Boolean).join(' · ');
     // Others is only a search bucket, so show the real khan. Otherwise show the label (Nick's market name, also used by the buttons)
     // and, when the official district differs, the khan beside it: "Tonle Bassac (Chba Ampov)".
     const area = areaText(l);
@@ -394,7 +396,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     data: agentData || (() => { const ag = {}, un = {}; let seq = 0; return { getAgent: (k) => ag[String(k)], setAgent: (k, v) => { ag[String(k)] = v; }, deleteAgent: (k) => { delete ag[String(k)]; }, allAgents: () => Object.keys(ag).map((k) => ag[k]),
       getUnit: (k) => un[k], setUnit: (k, v) => { un[k] = v; }, allUnits: () => Object.keys(un).map((k) => un[k]), nextSeq: () => ++seq }; })(),
     getUser: (from) => user(from), saveUser: (u) => save(u), listingText: (l, lang) => listingText(l, lang), tellAskersGone,
-    track: (type, d) => ops.track(type, d), translate: translate || null, botLink, availLine: MSG.avail.jp, findDuplicates, markUnavailable,
+    track: (type, d) => ops.track(type, d), translate: translate || null, later, botLink, availLine: MSG.avail.jp, findDuplicates, markUnavailable,
     reopen: (ref) => { const st = state.get(ref); if (st && st.status === 'unavailable') state.set(ref, Object.assign({}, st, { status: 'available', at: new Date(clock()).toISOString(), prev: { status: st.status, at: st.at } })); } });
 
   // Nick's buttons on a listing inquiry: v:<a|n|c|u>:<ref>[:<client id>]. Only Nick can use them.
@@ -529,7 +531,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
       return done;
     }
     if (data === 'gd:get') return sendGuide(chatId, from, u);
-    if (/^(aw|am|ac|ak|ua|ur|uc|uw|pn|pa|pr):/.test(data)) { if (await agentArea.handleCallback(cb, u)) return; }
+    if (/^(aw|am|ac|ak|ua|ur|uc|uw|pn|pa|pr|wp|wx):/.test(data)) { if (await agentArea.handleCallback(cb, u)) return; }
     if (data.startsWith('ph:')) {
       const l = (await loadListings(from.id)).find((x) => x.id === data.slice(3));
       if (!l || !l.media || !l.media.length) return;
@@ -685,6 +687,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
           return;
         }
       }
+      if (update.channel_post) { agentArea.watchPost(update.channel_post); return; } // a post in Nick's own channel (watch)
       if (update.callback_query) return await handleCallback(update.callback_query);
       if (update.message) return await handleMessage(update.message);
     } catch (e) {
@@ -698,7 +701,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
       } catch (e2) { /* nothing more to do */ }
     }
   }
-  return { handleUpdate, byId, runAlerts, runOps, runAgentChecks: () => agentArea.runChecks(), botLink, ops };
+  return { handleUpdate, byId, runAlerts, runOps, runAgentChecks: () => agentArea.runChecks(), botLink, ops, flushWatch: () => agentArea.flushWatch() };
 }
 
 module.exports = { createBot, parseThree, parseCalc, DISCLAIMER, MSG };
