@@ -116,6 +116,15 @@ function rig(opts = {}) {
     assert.ok(/-en\.pdf$/.test(r.docs(16).pop().body.document));
   });
 
+  await t('the guide title can be written after /setguide (Telegram may change the file name)', async () => {
+    const r = rig(), nick = r.U(Number(NICK), 'ja'), client = r.U(26, 'en');
+    await r.say(nick, '', { document: { file_id: 'F2', file_name: 'Cambodia_Condo_Investment_Guide_2026.pdf' }, caption: '/setguide en Cambodia Condo Investment Guide 2026 | Realestate.com.kh' });
+    assert.ok(/English and Khmer clients/.test(r.lastTo(Number(NICK)).body.text));
+    await r.say(client, '/start'); await r.tap(client, 'English'); await r.data(client, 'gd:get');
+    const d = r.docs(26).pop();
+    assert.strictEqual(d.body.document, 'F2'); assert.ok(/<b>Cambodia Condo Investment Guide 2026 \| Realestate\.com\.kh<\/b>/.test(d.body.caption), d.body.caption);
+  });
+
   await t('only Nick can set the guide', async () => {
     const r = rig(), other = r.U(17, 'ja'), client = r.U(18, 'ja');
     await r.say(other, '', { document: { file_id: 'EVIL', file_name: 'x.pdf' }, caption: '/setguide jp' });

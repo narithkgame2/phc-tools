@@ -590,8 +590,9 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     const cmd = text.startsWith('/') ? text.split(/\s+/)[0].split('@')[0].toLowerCase() : '';
     // Nick sets the guide PDF: send the file to the bot with the caption /setguide jp (or /setguide en)
     if (isNick(from.id) && m.document && /^\/setguide\b/i.test(m.caption || '')) {
-      const lg = /\ben\b/i.test(m.caption) ? 'en' : 'jp';
-      const title = String(m.document.file_name || 'Guide').replace(/\.pdf$/i, '');
+      const lg = /^\/setguide\s+en\b/i.test(m.caption) ? 'en' : 'jp';
+      // the title clients see: the text after "/setguide jp", else the file name (Telegram may turn its dots and spaces into _)
+      const title = (m.caption.replace(/^\/setguide\s*(jp|en)?\s*/i, '').trim() || String(m.document.file_name || 'Guide').replace(/\.pdf$/i, '')).slice(0, 200);
       guides.set(lg, { fileId: m.document.file_id, title, size: m.document.file_size || 0, at: new Date(clock()).toISOString() });
       return api('sendMessage', { chat_id: chatId, text: 'Saved. ' + (lg === 'jp' ? 'Japanese clients' : 'English and Khmer clients') + ' who tap the guide button now get:\n' + title + (m.document.file_size ? ' (' + (m.document.file_size / 1048576).toFixed(1) + ' MB)' : '') });
     }
