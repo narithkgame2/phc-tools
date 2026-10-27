@@ -84,6 +84,18 @@ function rig() {
     await r.cb(NICK, 'wp:701'); assert.ok(/no longer waiting/.test(r.texts(NICK).pop()));
   });
 
+  await t('the channel button says what it opens (写真・詳細を見る), and /hide takes a duplicate out without a banner', async () => {
+    const r = rig(); await r.say(NICK, '/addagent ' + NICK + ' Nick');
+    await r.post(REAKH, { photo: [{ file_id: 'P1' }], caption: OWN }, 801); await r.bot.flushWatch();
+    await r.cb(NICK, 'wp:801'); await r.cb(NICK, 'aw:submit'); const u = r.units()[0]; await r.cb(NICK, 'ua:' + u.ref); await r.cb(NICK, r.data(NICK, /Nick_Cambodia/));
+    const btns = r.to('@Nick_Cambodia').find((x) => x.body.reply_markup).body.reply_markup.inline_keyboard.flat().map((b) => b.text);
+    assert.ok(btns.includes('写真・詳細を見る') && !btns.some((b) => /他の物件/.test(b)), btns.join(','));
+    const before = r.sent.length; await r.say(NICK, '/hide ' + u.ref.toLowerCase());
+    assert.strictEqual(r.units()[0].status, 'hidden'); assert.ok(/is hidden/.test(r.texts(NICK).pop()));
+    assert.ok(!r.sent.slice(before).some((x) => /^edit/.test(x.method)), 'no banner edit on the channel posts');
+    await r.say(555, '/hide ' + u.ref); assert.strictEqual(r.units()[0].status, 'hidden', 'only Nick can hide');
+  });
+
   // ---- the reading rules (Nick, 2026-10-27), on posts in the formats the Content Bot learned from real agents
   const p = (text) => parsePost(text, places);
   await t('project name from "Project:" and from a title with emoji or sale words, written clean', async () => {

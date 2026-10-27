@@ -283,7 +283,7 @@ function createAgentArea(ctx) {
     let list = Array.isArray(ch.buttons) ? ch.buttons.slice() : [];
     if (!list.length && ch.lang === 'jp') {
       if (lineUrl()) list.push({ text: 'LINEでNickに相談', url: lineUrl() });
-      if (ctx.botLink && unit) list.push({ text: '写真・他の物件を見る', url: ctx.botLink(unit.ref) });
+      if (ctx.botLink && unit) list.push({ text: '写真・詳細を見る', url: ctx.botLink(unit.ref) }); // opens this unit's photos and details (Nick 2026-10-27)
     }
     list = list.filter((b) => b && b.text && /^https?:\/\//.test(b.url || ''));
     return list.length ? [list.map((b) => ({ text: b.text, url: b.url }))] : null;
@@ -512,6 +512,14 @@ function createAgentArea(ctx) {
         return true;
       }
       if (cmd === '/agents') { await say(chat, '<b>Agents</b>\n' + (data.allAgents().map((a) => esc(a.name) + ' (' + esc(a.id) + ')').join('\n') || 'None yet. Send /addagent TELEGRAM_ID Name')); return true; }
+      // a duplicate or a test unit: hidden from clients with no banner on its channel posts (delete those posts by hand)
+      if (cmd === '/hide') {
+        const ref = (text.split(/\s+/)[1] || '').toUpperCase(), unit = ref && data.getUnit(ref);
+        if (!unit) { await say(chat, 'Send /hide REF, for example /hide RL-6007. /units lists the refs.'); return true; }
+        unit.status = 'hidden'; unit.hiddenAt = iso(); data.setUnit(unit.ref, unit);
+        await say(chat, esc(unit.ref) + ' ' + esc(unit.name) + ' is hidden: clients no longer see it and it gets no weekly check. Its channel posts are unchanged; delete them in the channel if they should go.');
+        return true;
+      }
       if (cmd === '/units') {
         const line = (x) => esc(x.ref) + ' ' + esc(x.name) + ' ' + usd(x.price) + ' · ' + esc(x.status) + ' · ' + esc(x.agentName);
         await say(chat, '<b>Agent units</b>\n' + (data.allUnits().map(line).join('\n') || 'None yet.'));
