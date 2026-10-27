@@ -87,7 +87,7 @@ const MSG = {
     kh: 'កំពុងរៀបចំដើម្បីបើក។ សូមត្រឡប់មកវិញក្រោយ។',
   },
   photoBtn: { jp: '写真を見る {id}', en: 'Photos {id}', kh: 'រូបថត {id}' },
-  cmpBtn: { jp: '3件を比較する', en: 'Compare these', kh: 'ប្រៀបធៀប' },
+  cmpBtn: { jp: '{n}件を比較する', en: 'Compare these {n}', kh: 'ប្រៀបធៀប {n}' },
   dropHead: { jp: '<b>値下げのお知らせ</b>', en: '<b>Price drop</b>', kh: '<b>តម្លៃបានថយចុះ</b>' },
   refGone: {
     jp: 'この物件は現在ご案内できません。条件に近い物件はメインメニューからお探しいただけます。',
@@ -295,7 +295,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     if (found.some((l) => l.netYield)) text += '\n\n<i>*' + DISCLAIMER[lang].replace(/^※/, '') + '</i>';
     const kb = [];
     found.forEach((l) => { kb.push([{ text: MSG.ask[lang].replace('{id}', l.id), callback_data: 'q:' + l.id }]); if (l.media && l.media.length) kb.push([{ text: MSG.photoBtn[lang].replace('{id}', l.id), callback_data: 'ph:' + l.id }]); });
-    if (found.length >= 2) kb.push([{ text: MSG.cmpBtn[lang], callback_data: 'cmp:' + found.slice(0, 3).map((l) => l.id).join(',') }]);
+    if (found.length >= 2) kb.push([{ text: MSG.cmpBtn[lang].replace('{n}', String(Math.min(found.length, 3))), callback_data: 'cmp:' + found.slice(0, 3).map((l) => l.id).join(',') }]);
     if (stopRow) kb.push([{ text: MSG.alertStopBtn[lang], callback_data: 'al:off' }]);
     return { chat: null, body: { text, parse_mode: 'HTML', disable_web_page_preview: true, reply_markup: { inline_keyboard: kb } } };
   }
@@ -502,7 +502,9 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     if (!(u.int && u.int.from)) { u.int = u.int || {}; u.int.from = 'channel post ' + ref; save(u); }
     if (!l) return api('sendMessage', { chat_id: chatId, text: MSG.refGone[u.lang], reply_markup: { inline_keyboard: [[{ text: MSG.menuBtn[u.lang], callback_data: 'm:menu' }]] } });
     const price = (x) => (x.type === 'rent' ? x.rent : x.price) || 0, p0 = price(l);
-    const near = all.filter((x) => x.id !== l.id && x.type === l.type && p0 && price(x) && Math.abs(price(x) - p0) / p0 <= 0.25)
+    // the same flat listed twice (the Sheet and an agent, for example) is not a "similar" unit
+    const same = (x) => nk(x.name) === nk(l.name) && ((x.floor && l.floor && String(x.floor) === String(l.floor) && String(x.beds || '') === String(l.beds || '')) || (x.net && l.net && Math.abs(x.net - l.net) < 0.5));
+    const near = all.filter((x) => x.id !== l.id && !same(x) && x.type === l.type && p0 && price(x) && Math.abs(price(x) - p0) / p0 <= 0.25)
       .sort((a, b) => ((a.district === l.district ? 0 : 1) - (b.district === l.district ? 0 : 1)) || (Math.abs(price(a) - p0) - Math.abs(price(b) - p0))).slice(0, 3);
     const body = composeListings([l].concat(near), u.lang, MSG.simHead[u.lang]).body;
     if (!near.length) body.text += '\n\n' + MSG.simNone[u.lang];

@@ -103,13 +103,16 @@ function rig() {
     const api = async (method, body) => { sent.push({ method, body }); return { ok: true, result: { message_id: sent.length } }; };
     const store = { get: (k) => db[String(k)], set: (k, v) => { db[String(k)] = JSON.parse(JSON.stringify(v)); }, delete: (k) => { delete db[String(k)]; } };
     const L = (id, price, district, media) => ({ id, name: 'Unit ' + id, type: 'buy', price, net: 30, beds: 1, district, area: district, media: media || [] });
-    const listings = [L('A1', 100000, 'BKK1', [{ t: 'photo', id: 'X' }]), L('A2', 95000, 'BKK1', [{ t: 'photo', id: 'Y' }]), L('A3', 110000, 'Toul Kork'), L('A4', 300000, 'BKK1'), L('A5', 120000, 'BKK1')];
+    const twin = Object.assign(L('B9', 100000, 'BKK1'), { name: 'Unit A1', floor: '9' });
+    const listings = [twin, Object.assign(L('A1', 100000, 'BKK1', [{ t: 'photo', id: 'X' }]), { floor: '9' }), L('A2', 95000, 'BKK1', [{ t: 'photo', id: 'Y' }]), L('A3', 110000, 'Toul Kork'), L('A4', 300000, 'BKK1'), L('A5', 120000, 'BKK1')];
     const bot = createBot({ api, store, flow, nickId: String(NICK), getListings: async () => listings });
     await bot.handleUpdate({ update_id: 1, message: { message_id: 1, chat: { id: 42, type: 'private' }, from: { id: 42, first_name: 'K', language_code: 'ja' }, text: '/start sim_A1' } });
     assert.ok(!sent.some((x) => /sendMediaGroup|sendPhoto|sendVideo/.test(x.method)), 'no photos again');
     const m = sent.filter((x) => x.method === 'sendMessage').pop().body;
     assert.ok(/この物件と、似た条件の物件/.test(m.text) && /A1/.test(m.text) && /A2/.test(m.text) && /A5/.test(m.text) && /A3/.test(m.text) && !/A4/.test(m.text), m.text);
     assert.ok(m.text.indexOf('A2') < m.text.indexOf('A3'), 'the same area comes first');
+    assert.ok(!/B9/.test(m.text), 'the same flat listed twice is not a similar unit');
+    assert.ok(m.reply_markup.inline_keyboard.flat().some((b) => b.text === '3件を比較する'), 'compare shows the real count');
     const cbs = m.reply_markup.inline_keyboard.flat().map((b) => b.callback_data);
     assert.ok(cbs.includes('q:A1') && cbs.includes('q:A2') && !cbs.includes('ph:A1') && cbs.includes('ph:A2') && cbs.includes('m:menu'), cbs.join(','));
     assert.strictEqual(db['42'].int.from, 'channel post A1');
