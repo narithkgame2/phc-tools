@@ -37,6 +37,14 @@ const NICK = '353195979';
     await r.tap(me, '日本語'); assert.ok(r.lastTo(2).body.text.includes('買う前に'));
     assert.strictEqual(r.db['2'].lang, 'jp');
   });
+  await t('the ☰ menu follows the language picked in the bot, for that chat only (Khmer gets the English list)', async () => {
+    const r = rig(), menu = (id) => r.sent.filter((s) => s.method === 'setMyCommands' && s.body.scope && s.body.scope.chat_id === id).pop();
+    const jp = r.U(5, 'en'); await r.say(jp, '/start'); await r.tap(jp, '日本語');
+    assert.strictEqual(menu(5).body.scope.type, 'chat'); assert.strictEqual(menu(5).body.commands.find((c) => c.command === 'faq').description, 'よくある質問');
+    assert.strictEqual(r.db['5'].menuSet, true);
+    const kh = r.U(6, 'km'); await r.say(kh, '/start'); await r.tap(kh, 'ខ្មែរ');
+    assert.strictEqual(menu(6).body.commands.find((c) => c.command === 'faq').description, 'Common questions');
+  });
   await t('menu: Talk to Nick opens the official LINE and the keyboard is complete', async () => {
     const r = rig(), me = r.U(3, 'ja'); await r.say(me, '/start');
     const kb = r.lastTo(3).body.reply_markup.inline_keyboard;

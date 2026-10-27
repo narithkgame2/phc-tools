@@ -105,14 +105,19 @@ console.log('PHC CRM link: ' + (crm ? 'on' : 'off (run deploy/crm/setup-crm.sh t
 const bot = createBot({ api, translate, crm, guideStore, store, flow, nickId: NICK_ID, listingState, alertStore, testerIds, agentData, channels, places, events: eventStore, botUsername: process.env.BOT_USERNAME || 'Nick_Cambodia_Bot', isPrivate: () => { try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'mode.json'), 'utf8')).private === true; } catch (e) { return false; } }, getListings: combine(makeLoader(listingsSource, 300000, places), makeWebsiteLoader(websiteFeed, 300000, { photos: process.env.SHOW_WEBSITE_PHOTOS === '1', places, boundaries })), onError: (e) => console.error('Handler error:', e.message) });
 
 async function setupProfile() {
-  const cmds = {
-    jp: [['start', 'メインメニュー'], ['buy', '購入物件を探す'], ['rent', '賃貸物件を探す'], ['tour', '内覧を予約する'], ['estimate', '手取りを計算する'], ['guide', '無料資料（PDF）を受け取る'], ['faq', 'よくある質問'], ['nick', 'Nickに相談する'], ['stop', '新着通知を停止する']],
-    en: [['start', 'Main menu'], ['buy', 'Find a property to buy'], ['rent', 'Find a place to rent'], ['tour', 'Book a tour'], ['estimate', 'Estimate with my numbers'], ['guide', 'Get the free guide (PDF)'], ['faq', 'Common questions'], ['nick', 'Talk to Nick'], ['stop', 'Stop new listing alerts']],
-  };
-  const mk = (a) => a.map(([command, description]) => ({ command, description }));
-  await api('setMyCommands', { commands: mk(cmds.jp) });
-  await api('setMyCommands', { commands: mk(cmds.en), language_code: 'en' });
-  await api('setMyCommands', { commands: mk(cmds.jp), language_code: 'ja' });
+  // the default follows the Telegram app language; a client who picks a language in the bot gets that list for their chat
+  const { commandList } = require('./bot.js');
+  await api('setMyCommands', { commands: commandList('jp') });
+  await api('setMyCommands', { commands: commandList('en'), language_code: 'en' });
+  await api('setMyCommands', { commands: commandList('jp'), language_code: 'ja' });
+  // clients who picked a language before this existed: give each their own list once
+  const langs = {};
+  try { for (const x of store.all ? store.all() : []) if (x && x.id && x.lang && !x.menuSet) langs[x.id] = x.lang; } catch (e) {}
+  for (const [id, lang] of Object.entries(langs)) {
+    // tried once only, so a client who blocked the bot does not log an error on every start
+    await api('setMyCommands', { commands: commandList(lang), scope: { type: 'chat', chat_id: Number(id) } });
+    const x = store.get(id); if (x) { x.menuSet = true; store.set(id, x); }
+  }
 }
 
 async function run() {

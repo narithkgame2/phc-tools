@@ -160,6 +160,13 @@ function parseCalc(text) {
 const GUIDE = { jp: 'guide-5-things-2026-jp.pdf', en: 'guide-5-things-2026-en.pdf' }; // built by assets/faq/build-guide-pdf.cjs
 const MEDIA_BASE = process.env.MEDIA_BASE_URL || 'https://raw.githubusercontent.com/narithkgame2/phc-tools/feat/bot-color-cards-and-guards/telegram-bot-public/assets/';
 
+// the ☰ command menu; Khmer clients get the English list until Nick has checked a Khmer one
+const COMMANDS = {
+  jp: [['start', 'メインメニュー'], ['buy', '購入物件を探す'], ['rent', '賃貸物件を探す'], ['tour', '内覧を予約する'], ['estimate', '手取りを計算する'], ['guide', '無料資料（PDF）を受け取る'], ['faq', 'よくある質問'], ['nick', 'Nickに相談する'], ['stop', '新着通知を停止する']],
+  en: [['start', 'Main menu'], ['buy', 'Find a property to buy'], ['rent', 'Find a place to rent'], ['tour', 'Book a tour'], ['estimate', 'Estimate with my numbers'], ['guide', 'Get the free guide (PDF)'], ['faq', 'Common questions'], ['nick', 'Talk to Nick'], ['stop', 'Stop new listing alerts']],
+};
+const commandList = (lang) => (COMMANDS[lang] || COMMANDS.en).map(([command, description]) => ({ command, description }));
+
 function createBot({ api, store, flow, nickId, onError, getListings, listingState, alertStore, testerIds, isPrivate, agentData, channels, places, events, botUsername, now, translate, crm, guideStore, later }) {
   // Phase 2 agent units join the listings the Sheet and the website provide
   const baseListings = getListings || (async () => []);
@@ -529,6 +536,9 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
       const lang = data.slice(2);
       if (R.LANGS.includes(lang)) {
         u.lang = lang;
+        // the ☰ menu follows the language picked here, not the language of the client's Telegram app
+        const set = await api('setMyCommands', { commands: commandList(lang), scope: { type: 'chat', chat_id: chatId } });
+        if (set && set.ok) u.menuSet = true;
         if (u.pendingRef) { const r = u.pendingRef; delete u.pendingRef; save(u); return r.toLowerCase() === 'guide' ? sendGuide(chatId, from, u) : /^sim_/i.test(r) ? showSimilar(chatId, from, u, r.slice(4)) : showRef(chatId, from, u, r); }
         return goto(chatId, from, u, 'menu', msg);
       }
@@ -728,4 +738,4 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
   return { handleUpdate, byId, runAlerts, runOps, runAgentChecks: () => agentArea.runChecks(), botLink, ops, flushWatch: () => agentArea.flushWatch() };
 }
 
-module.exports = { createBot, parseThree, parseCalc, DISCLAIMER, MSG };
+module.exports = { createBot, parseThree, parseCalc, DISCLAIMER, MSG, commandList };
