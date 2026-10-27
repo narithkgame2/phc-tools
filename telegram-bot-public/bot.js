@@ -119,7 +119,7 @@ const { jpSize, floorJP, floorEN } = require('./engines/sizes.js');
 const unitSqm = (n, lang) => n + (lang === 'jp' ? '㎡' : ' sqm');
 function sizeText(l, lang) {
   const jp = lang === 'jp';
-  if (l.net && l.gross) return jp ? jpSize(l.net, 'net') + ' / ' + jpSize(l.gross, 'gross') : l.net + ' sqm net / ' + l.gross + ' sqm gross';
+  if (l.net && l.gross) return jp ? jpSize(l.net, 'net') + ' / ' + l.gross + '㎡' + BASIS.gross.jp : l.net + ' sqm net / ' + l.gross + ' sqm gross'; // one tsubo figure, on the net size
   if (l.net) return jp ? jpSize(l.net, 'net') : l.net + ' sqm net';
   if (l.gross) return jp ? jpSize(l.gross, 'gross') : l.gross + ' sqm gross';
   if (!l.sqm) return '';

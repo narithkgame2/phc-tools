@@ -30,7 +30,7 @@ function rig(rows) {
 (async () => {
   await t('a listing link opens that unit directly for a Japanese phone, with Ask and a way back to the menu', async () => {
     const r = rig([listing()]); await r.say(901, '/start TS5-5008');
-    const m = r.to(901).pop(); assert.ok(/Time Square 5/.test(m.body.text) && /32㎡（専有・約9\.7坪） \/ 41㎡（総面積・約12\.4坪）/.test(m.body.text), m.body.text);
+    const m = r.to(901).pop(); assert.ok(/Time Square 5/.test(m.body.text) && /32㎡（専有・約9\.7坪） \/ 41㎡（総面積）/.test(m.body.text), m.body.text);
     assert.deepStrictEqual(labels(m), ['この物件について聞く TS5-5008', 'メインメニュー']);
     assert.ok(r.evs.some((e) => e.type === 'deeplink' && e.ref === 'TS5-5008'));
     function labels(x) { return r.labels(x); }

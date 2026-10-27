@@ -61,8 +61,16 @@ function factSegment(seg, o) {
 function factLine(t, o) {
   const segs = t.split(/\s*\|\s*|\s+\/\s+/).filter(Boolean);
   if (!segs.length) return null;
-  const out = segs.map((x) => factSegment(x, o));
-  return out.every(Boolean) ? out.join(' | ') : null;
+  let out = segs.map((x) => factSegment(x, o));
+  if (!out.every(Boolean)) return null;
+  // net and gross on one line (Nick 2026-10-27): the net size first with tsubo, the gross size short, so only one tsubo figure shows
+  const net = out.findIndex((x) => /（専有・/.test(x)), gross = out.findIndex((x) => /（総面積・/.test(x));
+  if (net !== -1 && gross !== -1) {
+    const g = out[gross].replace(/（総面積・約[\d.]+坪）/, '（総面積）'), n = out[net];
+    out = out.filter((_, i) => i !== net && i !== gross);
+    out.splice(Math.min(net, gross), 0, n, g);
+  }
+  return out.join(' | ');
 }
 const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
 function dateText(v) {

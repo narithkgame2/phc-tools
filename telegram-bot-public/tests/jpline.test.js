@@ -11,7 +11,7 @@ t('title words and fact lines come from the tables', () => {
   assert.strictEqual(mapTitleWords('2BR UNIT'), '2ベッドルーム');
   assert.strictEqual(mapTitleWords('Studio for Sale'), 'スタジオ・売出');
   assert.strictEqual(mapTitleWords('SKY GARDEN SUITE'), null, 'unknown words go to the translator');
-  assert.strictEqual(factLine('32 sqm net / 41 sqm gross'), '32㎡（専有・約9.7坪） | 41㎡（総面積・約12.4坪）');
+  assert.strictEqual(factLine('32 sqm net / 41 sqm gross'), '32㎡（専有・約9.7坪） | 41㎡（総面積）');
   assert.strictEqual(factLine('Studio | 1 Bath'), 'スタジオ | 1バスルーム');
   assert.strictEqual(factLine('Floor 12'), '12階');
 });

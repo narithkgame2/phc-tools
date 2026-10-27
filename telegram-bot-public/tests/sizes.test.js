@@ -51,7 +51,7 @@ async function t(name, fn) { total++; try { await fn(); passed++; console.log(` 
   await t('Japanese card: both sizes labelled, price per sqm on the net size', async () => {
     const text = await cardsFor('ja');
     const card = text.split('<blockquote>').find((x) => /Both Sizes/.test(x));
-    assert.ok(/38㎡（専有・約11\.5坪） \/ 47㎡（総面積・約14\.2坪）/.test(card), card);
+    assert.ok(/38㎡（専有・約11\.5坪） \/ 47㎡（総面積）/.test(card), card);
     assert.ok(/\$1,000\/㎡（専有）/.test(card), 'price per sqm uses the net size: ' + card);
   });
   await t('a single known size is labelled and priced on its own basis; an old single size with no basis shows plain with no price per sqm', async () => {

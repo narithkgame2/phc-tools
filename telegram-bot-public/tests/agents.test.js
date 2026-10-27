@@ -131,7 +131,7 @@ async function submitted(r, agent, post) {
     await r.cb(A, 'ua:TS5-6001'); await r.cb(CLIENT, 'ua:TS5-6001'); assert.strictEqual(r.units()[0].status, 'pending', 'an agent or a client cannot approve');
     await r.cb(NICK, 'ua:TS5-6001'); assert.strictEqual(r.units()[0].status, 'active'); assert.ok(/approved and now shows to clients/.test(r.texts(A).pop()));
     const jp = r.to('@Nick_Cambodia').find((s) => s.method === 'sendMediaGroup'); assert.ok(jp, 'posted to the channel as one album'); assert.strictEqual(jp.body.media.length, 3, 'every photo and the video are posted'); assert.ok(!jp.body.media[0].caption, 'the album carries no caption'); const tm = r.to('@Nick_Cambodia').find((x) => x.method === 'sendMessage' && x.body.reply_markup); const cap = tm.body.text;
-    assert.ok(/^#売出中 \$82,000/.test(cap) && /41㎡（総面積・約12\.4坪） \| 32㎡（専有・約9\.7坪）/.test(cap) && /096 96 61 555|物件情報/.test(cap) && !/\+855|phc/i.test(cap), cap);
+    assert.ok(/^#売出中 \$82,000/.test(cap) && /32㎡（専有・約9\.7坪） \| 41㎡（総面積）/.test(cap) && /096 96 61 555|物件情報/.test(cap) && !/\+855|phc/i.test(cap), cap);
     const urls = tm.body.reply_markup.inline_keyboard[0].map((b) => b.url); assert.ok(urls[0] === 'https://line.me/ti/p/@615ueovq' && /start=TS5-6001/.test(urls[1]), urls.join(' '));
     const conf = r.last(NICK); assert.ok(/approved and live/.test(conf.body.text) && r.labels(conf).includes('Also post to @NickREAKH'));
     assert.ok(!r.to('@NickREAKH').length, 'the REAKH channel is not posted without Nick\'s tap');

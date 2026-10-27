@@ -125,7 +125,7 @@ function rig() {
   await t('sizes: Japanese shows ㎡ with 坪; a post in sqft becomes sqm; sqft is never shown', async () => {
     assert.strictEqual(p('#ForSale $50,000\nSKY | 1BR UNIT\n✅ 900 sqft\n✅ 1 Bedroom').plain, 83.6);
     const jp = buildJP('SKY | 1BR\n✅ 900 sqft\n✅ 47㎡ Gross | 38㎡ Net\n✅ 57㎡', [], { bullet: '▫️', gross: 57 }).text;
-    assert.ok(/▫️ 83\.6㎡（約25\.3坪）/.test(jp) && /47㎡（総面積・約14\.2坪） \| 38㎡（専有・約11\.5坪）/.test(jp) && /57㎡（総面積・約17\.2坪）/.test(jp) && !/sqft/.test(jp), jp);
+    assert.ok(/▫️ 83\.6㎡（約25\.3坪）/.test(jp) && /38㎡（専有・約11\.5坪） \| 47㎡（総面積）(?!・)/.test(jp) && /57㎡（総面積・約17\.2坪）/.test(jp) && !/sqft/.test(jp), jp);
   });
 
   await t('the Content Bot\'s real agent formats still read right (price, sale or rent, bedrooms, floor, size)', async () => {
