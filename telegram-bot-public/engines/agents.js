@@ -283,7 +283,8 @@ function createAgentArea(ctx) {
     let list = Array.isArray(ch.buttons) ? ch.buttons.slice() : [];
     if (!list.length && ch.lang === 'jp') {
       if (lineUrl()) list.push({ text: 'LINEでNickに相談', url: lineUrl() });
-      if (ctx.botLink && unit) list.push({ text: '写真・詳細を見る', url: ctx.botLink(unit.ref) }); // opens this unit's photos and details (Nick 2026-10-27)
+      // the channel already shows every photo: the button offers what the post cannot, similar units (Nick 2026-10-27)
+      if (ctx.botLink && unit) list.push({ text: '似た物件を探す', url: ctx.botLink('sim_' + unit.ref) });
     }
     list = list.filter((b) => b && b.text && /^https?:\/\//.test(b.url || ''));
     return list.length ? [list.map((b) => ({ text: b.text, url: b.url }))] : null;

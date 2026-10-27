@@ -84,16 +84,40 @@ function rig() {
     await r.cb(NICK, 'wp:701'); assert.ok(/no longer waiting/.test(r.texts(NICK).pop()));
   });
 
-  await t('the channel button says what it opens (写真・詳細を見る), and /hide takes a duplicate out without a banner', async () => {
+  await t('the channel button says what it opens (似た物件を探す), and /hide takes a duplicate out without a banner', async () => {
     const r = rig(); await r.say(NICK, '/addagent ' + NICK + ' Nick');
     await r.post(REAKH, { photo: [{ file_id: 'P1' }], caption: OWN }, 801); await r.bot.flushWatch();
     await r.cb(NICK, 'wp:801'); await r.cb(NICK, 'aw:submit'); const u = r.units()[0]; await r.cb(NICK, 'ua:' + u.ref); await r.cb(NICK, r.data(NICK, /Nick_Cambodia/));
     const btns = r.to('@Nick_Cambodia').find((x) => x.body.reply_markup).body.reply_markup.inline_keyboard.flat().map((b) => b.text);
-    assert.ok(btns.includes('写真・詳細を見る') && !btns.some((b) => /他の物件/.test(b)), btns.join(','));
+    assert.ok(btns.includes('似た物件を探す') && !btns.some((b) => /写真/.test(b)), btns.join(','));
+    const url = r.to('@Nick_Cambodia').find((x) => x.body.reply_markup).body.reply_markup.inline_keyboard.flat().find((b) => b.text === '似た物件を探す').url;
+    assert.ok(new RegExp('start=sim_' + u.ref + '$').test(url), url);
     const before = r.sent.length; await r.say(NICK, '/hide ' + u.ref.toLowerCase());
     assert.strictEqual(r.units()[0].status, 'hidden'); assert.ok(/is hidden/.test(r.texts(NICK).pop()));
     assert.ok(!r.sent.slice(before).some((x) => /^edit/.test(x.method)), 'no banner edit on the channel posts');
     await r.say(555, '/hide ' + u.ref); assert.strictEqual(r.units()[0].status, 'hidden', 'only Nick can hide');
+  });
+
+  await t('似た物件を探す opens the unit and up to 3 similar ones, without sending the photos again', async () => {
+    const sent = [], db = {};
+    const api = async (method, body) => { sent.push({ method, body }); return { ok: true, result: { message_id: sent.length } }; };
+    const store = { get: (k) => db[String(k)], set: (k, v) => { db[String(k)] = JSON.parse(JSON.stringify(v)); }, delete: (k) => { delete db[String(k)]; } };
+    const L = (id, price, district, media) => ({ id, name: 'Unit ' + id, type: 'buy', price, net: 30, beds: 1, district, area: district, media: media || [] });
+    const listings = [L('A1', 100000, 'BKK1', [{ t: 'photo', id: 'X' }]), L('A2', 95000, 'BKK1', [{ t: 'photo', id: 'Y' }]), L('A3', 110000, 'Toul Kork'), L('A4', 300000, 'BKK1'), L('A5', 120000, 'BKK1')];
+    const bot = createBot({ api, store, flow, nickId: String(NICK), getListings: async () => listings });
+    await bot.handleUpdate({ update_id: 1, message: { message_id: 1, chat: { id: 42, type: 'private' }, from: { id: 42, first_name: 'K', language_code: 'ja' }, text: '/start sim_A1' } });
+    assert.ok(!sent.some((x) => /sendMediaGroup|sendPhoto|sendVideo/.test(x.method)), 'no photos again');
+    const m = sent.filter((x) => x.method === 'sendMessage').pop().body;
+    assert.ok(/この物件と、似た条件の物件/.test(m.text) && /A1/.test(m.text) && /A2/.test(m.text) && /A5/.test(m.text) && /A3/.test(m.text) && !/A4/.test(m.text), m.text);
+    assert.ok(m.text.indexOf('A2') < m.text.indexOf('A3'), 'the same area comes first');
+    const cbs = m.reply_markup.inline_keyboard.flat().map((b) => b.callback_data);
+    assert.ok(cbs.includes('q:A1') && cbs.includes('q:A2') && !cbs.includes('ph:A1') && cbs.includes('ph:A2') && cbs.includes('m:menu'), cbs.join(','));
+    assert.strictEqual(db['42'].int.from, 'channel post A1');
+    sent.length = 0;
+    await bot.handleUpdate({ update_id: 2, message: { message_id: 2, chat: { id: 43, type: 'private' }, from: { id: 43, first_name: 'E', language_code: 'en' }, text: '/start sim_A4' } });
+    await bot.handleUpdate({ update_id: 3, callback_query: { id: 'c', from: { id: 43, first_name: 'E', language_code: 'en' }, data: 'l:en', message: { message_id: 5, chat: { id: 43, type: 'private' } } } });
+    const e = sent.filter((x) => x.method === 'sendMessage').pop().body.text;
+    assert.ok(/This unit and similar ones/.test(e) && /No similar units right now/.test(e), e);
   });
 
   // ---- the reading rules (Nick, 2026-10-27), on posts in the formats the Content Bot learned from real agents

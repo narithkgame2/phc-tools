@@ -15,6 +15,8 @@ const DISCLAIMER = {
 const MSG = {
   // a unit opened from a channel link: the client did not search, so no "close to your search"
   refHead: { jp: '<b>物件の詳細</b>', en: '<b>Listing details</b>', kh: '<b>ព័ត៌មានលម្អិតអំពីអចលនទ្រព្យ</b>' },
+  simHead: { jp: '<b>この物件と、似た条件の物件</b>', en: '<b>This unit and similar ones</b>', kh: '<b>អចលនទ្រព្យនេះ និងអចលនទ្រព្យស្រដៀងគ្នា</b>' },
+  simNone: { jp: '似た条件の物件は、今はほかにありません。メインメニューから条件を変えて探せます。', en: 'No similar units right now. Use the main menu to search with other options.', kh: 'ឥឡូវនេះមិនទាន់មានអចលនទ្រព្យស្រដៀងគ្នាទេ។ សូមប្រើម៉ឺនុយមេដើម្បីស្វែងរកតាមជម្រើសផ្សេង។' },
   calcTwo: {
     jp: (v) => '<b>試算結果</b>\nお送りいただいた数値のみに基づきます\n\n年間家賃: ' + v.rent + '\n表面利回り: ' + v.gross + '%\n手取り利回りの目安: ' + v.lo + '%から' + v.hi + '%\n\n手取りは、家賃から非居住者の源泉税14%と管理費5%から10%を引いた場合です。空室と修繕の費用は含まれません。',
     en: (v) => '<b>Estimate</b>\nBased only on the numbers you sent\n\nYearly rent: ' + v.rent + '\nGross yield: ' + v.gross + '%\nNet yield, roughly: ' + v.lo + '% to ' + v.hi + '%\n\nNet means rent minus 14% non-resident tax and a 5% to 10% management fee. Vacancy and repairs are not included.',
@@ -491,6 +493,25 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     await toCrm(u, from, 'Guide sent (' + (u.lang === 'jp' ? 'Japanese' : 'English') + ' PDF)');
   }
 
+  // The channel button 似た物件を探す (t.me/...?start=sim_REF): the client has seen the post and its photos, so the bot shows
+  // that unit's card and up to 3 similar units (same sale or rent, price within 25%, same area first), no photos again.
+  async function showSimilar(chatId, from, u, ref) {
+    const all = await loadListings(from.id);
+    const l = all.find((x) => x.id.toLowerCase() === ref.toLowerCase());
+    if (!isNick(u.id)) ops.track('deeplink', { ref, similar: true });
+    if (!(u.int && u.int.from)) { u.int = u.int || {}; u.int.from = 'channel post ' + ref; save(u); }
+    if (!l) return api('sendMessage', { chat_id: chatId, text: MSG.refGone[u.lang], reply_markup: { inline_keyboard: [[{ text: MSG.menuBtn[u.lang], callback_data: 'm:menu' }]] } });
+    const price = (x) => (x.type === 'rent' ? x.rent : x.price) || 0, p0 = price(l);
+    const near = all.filter((x) => x.id !== l.id && x.type === l.type && p0 && price(x) && Math.abs(price(x) - p0) / p0 <= 0.25)
+      .sort((a, b) => ((a.district === l.district ? 0 : 1) - (b.district === l.district ? 0 : 1)) || (Math.abs(price(a) - p0) - Math.abs(price(b) - p0))).slice(0, 3);
+    const body = composeListings([l].concat(near), u.lang, MSG.simHead[u.lang]).body;
+    if (!near.length) body.text += '\n\n' + MSG.simNone[u.lang];
+    // the unit's own photos are in the channel already; the photo buttons stay for the similar units
+    body.reply_markup.inline_keyboard = body.reply_markup.inline_keyboard.filter((row) => !row.some((b) => b.callback_data === 'ph:' + l.id));
+    body.reply_markup.inline_keyboard.push([{ text: MSG.menuBtn[u.lang], callback_data: 'm:menu' }]);
+    return api('sendMessage', Object.assign({ chat_id: chatId }, body));
+  }
+
   async function runOps() {
     let n = 0;
     n += await ops.runSla(); n += await ops.runDigest(); n += await ops.runPriceDrops(sendPriceDrop);
@@ -506,7 +527,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
       const lang = data.slice(2);
       if (R.LANGS.includes(lang)) {
         u.lang = lang;
-        if (u.pendingRef) { const r = u.pendingRef; delete u.pendingRef; save(u); return r.toLowerCase() === 'guide' ? sendGuide(chatId, from, u) : showRef(chatId, from, u, r); }
+        if (u.pendingRef) { const r = u.pendingRef; delete u.pendingRef; save(u); return r.toLowerCase() === 'guide' ? sendGuide(chatId, from, u) : /^sim_/i.test(r) ? showSimilar(chatId, from, u, r.slice(4)) : showRef(chatId, from, u, r); }
         return goto(chatId, from, u, 'menu', msg);
       }
       return;
@@ -607,6 +628,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
         else { if (ref) u.pendingRef = ref; save(u); return goto(chatId, from, u, 'start'); }
       }
       if (ref.toLowerCase() === 'guide') { if (!(u.int && u.int.from)) { u.int = u.int || {}; u.int.from = 'guide link'; } save(u); return sendGuide(chatId, from, u); }
+      if (/^sim_/i.test(ref)) { save(u); return showSimilar(chatId, from, u, ref.slice(4)); }
       if (ref) { save(u); return showRef(chatId, from, u, ref); }
       return goto(chatId, from, u, 'menu');
     }
