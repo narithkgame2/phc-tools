@@ -194,6 +194,11 @@ by.privacy.tr.kh.t = '<b>ឯកជនភាព និងទិន្នន័យ
 by.leaddone.notify = 'Ask Nick'; by.tourok.notify = 'Tour request'; by.check2.notify = 'Listing to check';
 const keep = Object.keys(by);
 const order = []; src.forEach(s => { if (by[s.id]) order.push(s.id); if (s.id === 'more') ['faq','faq1','faq2','faq3','faq4','faq5'].forEach(i => order.push(i)); if (s.id === 'calc1') ['calcrent', 'calcsize', 'calcown'].forEach(i => order.push(i)); if (s.id === 'b2') order.push('b2other'); if (s.id === 'rr2') order.push('rr2other'); });
+// the estimate is hidden from clients until Nick is happy with it (2026-10-28): no button on the More menu, /estimate works for Nick and testers only
+(function () {
+  const m = by.more, i = m.buttons.findIndex(b => b.to === 'calc1');
+  if (i >= 0) { m.buttons.splice(i, 1); ['jp', 'kh'].forEach(g => m.tr && m.tr[g] && m.tr[g].b && m.tr[g].b.splice(i, 1)); }
+})();
 const steps = order.map(id => by[id]);
 steps.forEach(s => s.buttons = s.buttons.filter(b => b.url || !b.to || keep.includes(b.to)));
 // Only Japanese clients use LINE (Nick, 2026-10-26). English and Khmer clients reach Nick on his own Telegram:

@@ -5,11 +5,11 @@ const flow = require('../config/flow.json');
 let passed = 0, total = 0;
 async function t(name, fn) { total++; try { await fn(); passed++; console.log(`  ✅ Test ${total}: ${name}`); } catch (e) { console.log(`  ❌ Test ${total}: ${name}\n     ${e.message}`); } }
 
-function rig() {
+function rig(opts) {
   const sent = [], db = {};
   const api = async (method, body) => { sent.push({ method, body }); return { ok: true }; };
   const store = { get: (id) => db[String(id)], set: (id, v) => { db[String(id)] = JSON.parse(JSON.stringify(v)); }, delete: (id) => { delete db[String(id)]; } };
-  const bot = createBot({ api, store, flow, nickId: '353195979' });
+  const bot = createBot({ api, store, flow, nickId: '353195979', testerIds: (opts || {}).testers || [] });
   let msgId = 100;
   const U = (id, lang) => ({ id, first_name: 'Kenji', username: 'kenji_t', language_code: lang });
   const say = (from, text, extra) => bot.handleUpdate({ update_id: 1, message: Object.assign({ message_id: ++msgId, chat: { id: from.id, type: 'private' }, from, text }, extra || {}) });
@@ -41,7 +41,8 @@ const NICK = '353195979';
     const r = rig(), menu = (id) => r.sent.filter((s) => s.method === 'setMyCommands' && s.body.scope && s.body.scope.chat_id === id).pop();
     const jp = r.U(5, 'en'); await r.say(jp, '/start'); await r.tap(jp, '日本語');
     assert.strictEqual(menu(5).body.scope.type, 'chat'); assert.strictEqual(menu(5).body.commands.find((c) => c.command === 'faq').description, 'よくある質問');
-    assert.strictEqual(r.db['5'].menuSet, true);
+    assert.strictEqual(r.db['5'].menuV, require('../bot.js').MENU_V);
+    assert.ok(!menu(5).body.commands.some((c) => c.command === 'estimate'), 'the estimate is hidden from the menu for now');
     const kh = r.U(6, 'km'); await r.say(kh, '/start'); await r.tap(kh, 'ខ្មែរ');
     assert.strictEqual(menu(6).body.commands.find((c) => c.command === 'faq').description, 'Common questions');
   });
@@ -69,8 +70,14 @@ const NICK = '353195979';
     const toNick = r.sent.filter((s) => s.body.chat_id === NICK).pop().body.text;
     assert.ok(toNick.includes('Search request') && toNick.includes(budget) && toNick.includes('tg://user?id=4'));
   });
+  await t('the estimate is hidden from clients for now: no More button, /estimate gets the usual refusal; testers still get it', async () => {
+    const r = rig({ testers: [14] }), me = r.U(13, 'ja'); await r.say(me, '/start'); await r.tap(me, 'その他');
+    assert.ok(!r.lastTo(13).body.reply_markup.inline_keyboard.some((row) => /試算/.test(row[0].text)), 'no estimate button for clients');
+    await r.say(me, '/estimate'); assert.ok(!/物件の価格/.test(r.lastTo(13).body.text));
+    const tester = r.U(14, 'ja'); await r.say(tester, '/estimate'); assert.ok(/① 物件の価格は/.test(r.lastTo(14).body.text));
+  });
   await t('estimate then ask Nick: three answers, one notification, 1 business day promise', async () => {
-    const r = rig(), me = r.U(5, 'en'); await r.say(me, '/start'); await r.tap(me, 'English');
+    const r = rig({ testers: [5] }), me = r.U(5, 'en'); await r.say(me, '/start'); await r.tap(me, 'English');
     await r.say(me, '/estimate'); await r.say(me, '68000'); await r.say(me, '650'); await r.say(me, '35');
     await r.tap(me, 'Ask Nick to review it');
     for (let i = 0; i < 2; i++) await r.tap(me, r.firstLabel(5));
@@ -80,7 +87,7 @@ const NICK = '353195979';
     assert.strictEqual(notes.length, 1); assert.ok(/Goal: /.test(notes[0].body.text) && /Reply by: Nick messages me first/.test(notes[0].body.text), notes[0].body.text);
   });
   await t('estimate: one question at a time, then every line in dollars (Nick method plus the building fee)', async () => {
-    const r = rig(), me = r.U(6, 'en'); await r.say(me, '/start'); await r.tap(me, 'English'); await r.say(me, '/estimate');
+    const r = rig({ testers: [6] }), me = r.U(6, 'en'); await r.say(me, '/start'); await r.tap(me, 'English'); await r.say(me, '/estimate');
     assert.ok(/① What is the price/.test(r.lastTo(6).body.text));
     await r.say(me, '$68,000'); assert.ok(/② What is the monthly rent/.test(r.lastTo(6).body.text));
     await r.say(me, '650'); assert.ok(/③ What is the size/.test(r.lastTo(6).body.text));
@@ -90,24 +97,24 @@ const NICK = '353195979';
     assert.deepStrictEqual(r.lastTo(6).body.reply_markup.inline_keyboard.map((row) => row[0].text), ['Ask Nick to review it', 'Try other numbers', 'Main menu']);
   });
   await t('estimate in Japanese with no size: Nick signature example $34,900 gives 8.6% to about 5.8%', async () => {
-    const r = rig(), me = r.U(7, 'ja'); await r.say(me, '/estimate'); await r.say(me, '34900'); await r.say(me, '250'); await r.tap(me, '分からない');
+    const r = rig({ testers: [7] }), me = r.U(7, 'ja'); await r.say(me, '/estimate'); await r.say(me, '34900'); await r.say(me, '250'); await r.tap(me, '分からない');
     const x = r.lastTo(7).body.text;
     for (const want of ['家賃：3,000ドル', '－ 税金 14%：420ドル', '－ 賃貸管理費 10%：300ドル', '－ 空室 1か月：250ドル', '手取り：2,030ドル', '表面利回り 8.6%', '手取りの利回り 約5.8%', '建物の管理費（1㎡あたり月1から2ドル）は含みません', '参考値']) assert.ok(x.includes(want), want + '\n' + x);
   });
   await t('bad estimate input gets a gentle retry at each question, not a result', async () => {
-    const r = rig(), me = r.U(8, 'ja'); await r.say(me, '/estimate');
+    const r = rig({ testers: [8] }), me = r.U(8, 'ja'); await r.say(me, '/estimate');
     for (const bad of ['hello', '500', '1 2 3']) { await r.say(me, bad); assert.ok(r.lastTo(8).body.text.includes('価格を数字で'), bad); }
     await r.say(me, '6.8万'); assert.ok(/② 月額家賃/.test(r.lastTo(8).body.text), 'man (10,000) is read');
     await r.say(me, 'abc'); assert.ok(r.lastTo(8).body.text.includes('月額家賃を数字で'));
     await r.say(me, '650'); for (const bad of ['0', '9999', 'big']) { await r.say(me, bad); assert.ok(r.lastTo(8).body.text.includes('広さ（㎡）を数字で'), bad); }
   });
   await t('the old one line "100000 700" still works: price and rent at once, then the size', async () => {
-    const r = rig(), me = r.U(9, 'en'); await r.say(me, '/start'); await r.tap(me, 'English'); await r.say(me, '/estimate'); await r.say(me, '100000 700');
+    const r = rig({ testers: [9] }), me = r.U(9, 'en'); await r.say(me, '/start'); await r.tap(me, 'English'); await r.say(me, '/estimate'); await r.say(me, '100000 700');
     assert.ok(/③ What is the size/.test(r.lastTo(9).body.text)); await r.tap(me, 'I do not know');
     const x = r.lastTo(9).body.text; assert.ok(x.includes('Gross yield 8.4%') && x.includes('net yield about 5.7%') && x.includes('is not included'), x);
   });
   await t('own calculation: the client is told Nick checks it; Nick gets their message, a draft and what is missing; nothing is sent until he taps', async () => {
-    const r = rig(), me = r.U(10, 'ja'), nick = r.U(NICK, 'en');
+    const r = rig({ testers: [10] }), me = r.U(10, 'ja'), nick = r.U(NICK, 'en');
     await r.say(me, '/estimate'); await r.tap(me, '自分の計算を送る');
     await r.say(me, 'Time Square 5\n－ 家賃              500ドル/month\n－ 建物の管理費       1ドル/sqm\n－ Size: 50 sqm');
     assert.ok(r.lastTo(10).body.text.includes('1営業日以内'));
@@ -127,13 +134,13 @@ const NICK = '353195979';
     assert.ok(toClient() === before + 3, 'a client cannot press Nick buttons');
   });
   await t('all three numbers in one line, "68000, 650, 35", give the result at once; the same line as an own calculation gets a draft', async () => {
-    const r = rig(), me = r.U(12, 'ja'); await r.say(me, '/estimate'); await r.say(me, '68000, 650, 35');
+    const r = rig({ testers: [12] }), me = r.U(12, 'ja'); await r.say(me, '/estimate'); await r.say(me, '68000, 650, 35');
     const x = r.lastTo(12).body.text; assert.ok(x.includes('手取り：4,648ドル') && x.includes('約6.8%'), x);
     await r.say(me, '/estimate'); await r.tap(me, '自分の計算を送る'); await r.say(me, '68000, 650, 35');
     const card = r.lastTo(NICK).body.text; assert.ok(card.includes('price $68,000 · rent $650/month · 35 sqm') && card.includes('手取り：4,648ドル'), card);
   });
   await t('own short stay calculation: Nick gets his sheet model with the tax line, and no Send button', async () => {
-    const r = rig(), me = r.U(11, 'ja'); await r.say(me, '/estimate'); await r.tap(me, '自分の計算を送る');
+    const r = rig({ testers: [11] }), me = r.U(11, 'ja'); await r.say(me, '/estimate'); await r.tap(me, '自分の計算を送る');
     await r.say(me, 'Gatsby 1BR\n1泊 60ドル\n稼働率 60%\n60sqm\n価格 $84,000');
     const m = r.lastTo(NICK), x = m.body.text;
     for (const want of ['Short stay', '219 nights', '$13,140', '$9,108 before the operator fee', '$7,286', '8.7% of $84,000', 'If 14% rental tax applies', '6.5%']) assert.ok(x.includes(want), want + '\n' + x);

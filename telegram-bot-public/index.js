@@ -106,17 +106,17 @@ const bot = createBot({ api, translate, crm, guideStore, store, flow, nickId: NI
 
 async function setupProfile() {
   // the default follows the Telegram app language; a client who picks a language in the bot gets that list for their chat
-  const { commandList } = require('./bot.js');
+  const { commandList, MENU_V } = require('./bot.js');
   await api('setMyCommands', { commands: commandList('jp') });
   await api('setMyCommands', { commands: commandList('en'), language_code: 'en' });
   await api('setMyCommands', { commands: commandList('jp'), language_code: 'ja' });
   // clients who picked a language before this existed: give each their own list once
   const langs = {};
-  try { for (const x of store.all ? store.all() : []) if (x && x.id && x.lang && !x.menuSet) langs[x.id] = x.lang; } catch (e) {}
+  try { for (const x of store.all ? store.all() : []) if (x && x.id && x.lang && x.menuV !== MENU_V) langs[x.id] = x.lang; } catch (e) {}
   for (const [id, lang] of Object.entries(langs)) {
     // tried once only, so a client who blocked the bot does not log an error on every start
     await api('setMyCommands', { commands: commandList(lang), scope: { type: 'chat', chat_id: Number(id) } });
-    const x = store.get(id); if (x) { x.menuSet = true; store.set(id, x); }
+    const x = store.get(id); if (x) { x.menuV = MENU_V; delete x.menuSet; store.set(id, x); }
   }
 }
 

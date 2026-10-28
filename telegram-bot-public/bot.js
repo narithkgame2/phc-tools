@@ -144,9 +144,11 @@ const MEDIA_BASE = process.env.MEDIA_BASE_URL || 'https://raw.githubusercontent.
 
 // the ☰ command menu; Khmer clients get the English list until Nick has checked a Khmer one
 const COMMANDS = {
-  jp: [['start', 'メインメニュー'], ['buy', '購入物件を探す'], ['rent', '賃貸物件を探す'], ['tour', '内覧を予約する'], ['estimate', '手取りを計算する'], ['guide', '無料資料（PDF）を受け取る'], ['faq', 'よくある質問'], ['nick', 'Nickに相談する'], ['stop', '新着通知を停止する']],
-  en: [['start', 'Main menu'], ['buy', 'Find a property to buy'], ['rent', 'Find a place to rent'], ['tour', 'Book a tour'], ['estimate', 'Estimate with my numbers'], ['guide', 'Get the free guide (PDF)'], ['faq', 'Common questions'], ['nick', 'Talk to Nick'], ['stop', 'Stop new listing alerts']],
+  jp: [['start', 'メインメニュー'], ['buy', '購入物件を探す'], ['rent', '賃貸物件を探す'], ['tour', '内覧を予約する'], ['guide', '無料資料（PDF）を受け取る'], ['faq', 'よくある質問'], ['nick', 'Nickに相談する'], ['stop', '新着通知を停止する']],
+  en: [['start', 'Main menu'], ['buy', 'Find a property to buy'], ['rent', 'Find a place to rent'], ['tour', 'Book a tour'], ['guide', 'Get the free guide (PDF)'], ['faq', 'Common questions'], ['nick', 'Talk to Nick'], ['stop', 'Stop new listing alerts']],
 };
+// the ☰ list a chat has; raise it when COMMANDS changes so every chat gets the new list once (the estimate left the list 2026-10-28)
+const MENU_V = 2;
 const commandList = (lang) => (COMMANDS[lang] || COMMANDS.en).map(([command, description]) => ({ command, description }));
 
 function createBot({ api, store, flow, nickId, onError, getListings, listingState, alertStore, testerIds, isPrivate, agentData, channels, places, events, botUsername, now, translate, crm, guideStore, later }) {
@@ -571,7 +573,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
         u.lang = lang;
         // the ☰ menu follows the language picked here, not the language of the client's Telegram app
         const set = await api('setMyCommands', { commands: commandList(lang), scope: { type: 'chat', chat_id: chatId } });
-        if (set && set.ok) u.menuSet = true;
+        if (set && set.ok) u.menuV = MENU_V;
         if (u.pendingRef) { const r = u.pendingRef; delete u.pendingRef; save(u); return r.toLowerCase() === 'guide' ? sendGuide(chatId, from, u) : /^sim_/i.test(r) ? showSimilar(chatId, from, u, r.slice(4)) : showRef(chatId, from, u, r); }
         return goto(chatId, from, u, 'menu', msg);
       }
@@ -692,7 +694,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     if (cmd === '/buy') return goto(chatId, from, u, 'b1');
     if (cmd === '/rent') return goto(chatId, from, u, 'rr1');
     if (cmd === '/tour') return goto(chatId, from, u, 'tour');
-    if (cmd === '/estimate') return goto(chatId, from, u, 'calc1');
+    if (cmd === '/estimate') return seesPreview(u.id) ? goto(chatId, from, u, 'calc1') : goto(chatId, from, u, 'refused'); // hidden from clients for now
     if (cmd === '/guide') return sendGuide(chatId, from, u);
     if (cmd === '/faq') return goto(chatId, from, u, 'faq');
     if (cmd === '/nick') {
@@ -789,4 +791,4 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
   return { handleUpdate, byId, runAlerts, runOps, runAgentChecks: () => agentArea.runChecks(), botLink, ops, flushWatch: () => agentArea.flushWatch() };
 }
 
-module.exports = { createBot, DISCLAIMER, MSG, commandList };
+module.exports = { createBot, DISCLAIMER, MSG, commandList, MENU_V };
