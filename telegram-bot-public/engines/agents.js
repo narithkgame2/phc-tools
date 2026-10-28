@@ -494,6 +494,8 @@ function createAgentArea(ctx) {
   // ---- messages
   async function handleMessage(m, u, text, cmd) {
     const from = m.from, chat = m.chat.id, body = (m.text || m.caption || '').trim();
+    // a client screen that waits for typed numbers (the estimate) takes the message, even from Nick testing it
+    if (!cmd && u.awaiting && /^(calc|ck)/.test(u.awaiting)) return false;
     if (isNick(from.id)) {
       if (cmd === '/addagent') {
         const parts = text.split(/\s+/).slice(1); let id = parts[0] || '', name = parts.slice(1).join(' ');

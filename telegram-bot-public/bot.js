@@ -6,6 +6,7 @@ const { createAgentArea } = require('./engines/agents.js');
 const { createOps } = require('./engines/ops.js');
 const { compareText } = require('./engines/compare.js');
 const { leadFor } = require('./engines/crm.js');
+const E = require('./engines/estimate.js');
 
 const DISCLAIMER = {
   jp: '※利回り・価格は参考値であり、将来の収益を保証するものではありません。',
@@ -17,16 +18,12 @@ const MSG = {
   refHead: { jp: '<b>物件の詳細</b>', en: '<b>Listing details</b>', kh: '<b>ព័ត៌មានលម្អិតអំពីអចលនទ្រព្យ</b>' },
   simHead: { jp: '<b>この物件と、似た条件の物件</b>', en: '<b>This unit and similar ones</b>', kh: '<b>អចលនទ្រព្យនេះ និងអចលនទ្រព្យស្រដៀងគ្នា</b>' },
   simNone: { jp: '似た条件の物件は、今はほかにありません。メインメニューから条件を変えて探せます。', en: 'No similar units right now. Use the main menu to search with other options.', kh: 'ឥឡូវនេះមិនទាន់មានអចលនទ្រព្យស្រដៀងគ្នាទេ។ សូមប្រើម៉ឺនុយមេដើម្បីស្វែងរកតាមជម្រើសផ្សេង។' },
-  calcTwo: {
-    jp: (v) => '<b>試算結果</b>\nお送りいただいた数値のみに基づきます\n\n年間家賃: ' + v.rent + '\n表面利回り: ' + v.gross + '%\n手取り利回りの目安: ' + v.lo + '%から' + v.hi + '%\n\n手取りは、家賃から非居住者の源泉税14%と賃貸管理費（家賃の5%から10%）を引いた場合です。建物の管理費、空室（年に約10%）、修繕の費用は含まれません。',
-    en: (v) => '<b>Estimate</b>\nBased only on the numbers you sent\n\nYearly rent: ' + v.rent + '\nGross yield: ' + v.gross + '%\nNet yield, roughly: ' + v.lo + '% to ' + v.hi + '%\n\nNet means rent minus 14% non-resident tax and rental management (5% to 10% of the rent). Building management, empty months (about 10% a year) and repairs are not included.',
-    kh: (v) => '<b>លទ្ធផលប៉ាន់ស្មាន</b>\nផ្អែកលើលេខដែលអ្នកផ្ញើប៉ុណ្ណោះ\n\nថ្លៃជួលប្រចាំឆ្នាំ៖ ' + v.rent + '\nផលចំណេញដុល៖ ' + v.gross + '%\nផលចំណេញសុទ្ធប្រហែល៖ ' + v.lo + '% ដល់ ' + v.hi + '%\n\nសុទ្ធ គឺថ្លៃជួល ដកពន្ធ 14% សម្រាប់អ្នកមិនមែនមានលំនៅដ្ឋាន និងថ្លៃគ្រប់គ្រង 5% ដល់ 10%។ មិនរាប់បញ្ចូលការទំនេរ និងការជួសជុលទេ។',
-  },
-  calcBad: {
-    jp: '数字を読み取れませんでした。価格と月額家賃の2つ（年間費用が分かれば3つ）を、スペースで区切って送ってください。\n例: <code>68000 650</code>',
-    en: 'I could not read the numbers. Send two numbers separated by a space: price and monthly rent (a third number, yearly costs, is optional).\nExample: <code>68000 650</code>',
-    kh: 'មិនអាចអានលេខបានទេ។ សូមផ្ញើលេខពីរដោយដកឃ្លា៖ តម្លៃ និងថ្លៃជួលប្រចាំខែ (លេខទីបី ចំណាយប្រចាំឆ្នាំ គឺជាជម្រើស)។\nឧទាហរណ៍៖ <code>68000 650</code>',
-  },
+  // the estimate questions (Khmer gets English until Nick has checked a Khmer text)
+  calcBadPrice: { jp: '価格を数字で送ってください。\n例：<code>68000</code>', en: 'Please send the price as a number.\nExample: <code>68000</code>' },
+  calcBadRent: { jp: '月額家賃を数字で送ってください。\n例：<code>650</code>', en: 'Please send the monthly rent as a number.\nExample: <code>650</code>' },
+  calcBadSize: { jp: '広さ（㎡）を数字で送ってください。分からない場合は「分からない」をタップしてください。\n例：<code>35</code>', en: 'Please send the size in sqm as a number, or tap I do not know.\nExample: <code>35</code>' },
+  ckGot: { jp: '受け取りました。Nickが内容を確認し、1営業日以内にご返信いたします。', en: 'Received. Nick will check it and reply within 1 business day.' },
+  ckAskPrice: { jp: '試算のため、物件の価格を教えてください。\n例：<code>68000</code>', en: 'To work out the yield, what is the price of the unit?\nExample: <code>68000</code>' },
   calcCheck: {
     jp: '※数字をもう一度ご確認ください。',
     en: 'Please double check your numbers.',
@@ -139,21 +136,6 @@ function areaText(l) {
   const n = nk(l.district);
   const agrees = !l.khan || [l.khan, l.sangkat].some((x) => nk(x).includes(n) || (nk(x) && n.includes(nk(x))));
   return agrees ? l.district : l.district + ' (' + l.khan + ')';
-}
-
-function parseThree(text) {
-  const nums = String(text || '').replace(/[,，]/g, '').match(/-?\d+(?:\.\d+)?/g);
-  if (!nums || nums.length !== 3) return null;
-  const [price, rent, costs] = nums.map(Number);
-  if (!(price > 0) || !(rent > 0) || costs < 0) return null;
-  return { price, rent, costs };
-}
-
-// two numbers (price, monthly rent) or three (plus yearly costs)
-function parseCalc(text) {
-  const nums = String(text || '').replace(/[,，]/g, '').match(/-?\d+(?:\.\d+)?/g);
-  if (nums && nums.length === 2) { const [price, rent] = nums.map(Number); return price > 0 && rent > 0 ? { price, rent, costs: null } : null; }
-  return parseThree(text);
 }
 
 // Pictures used by screens (config/flow.json "photo"), served from the public repository so any copy of the bot can send them.
@@ -355,6 +337,57 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
       } catch (e) { if (onError) onError(e); }
     }
     return sent;
+  }
+
+  // the estimate result: Nick's method line by line (engines/estimate.js), with the result screen's buttons
+  async function showEstimate(chatId, from, u) {
+    const c = u.calc || {};
+    if (!c.price || !c.rent) return goto(chatId, from, u, 'calc1');
+    const lang = u.lang || 'jp', tl = lang === 'jp' ? 'jp' : 'en', r = E.longTerm(c);
+    let t = E.clientText(r, tl) + '\n\n<i>' + DISCLAIMER[tl] + '</i>';
+    if (r.gross > 25 || r.net < 0) t += '\n\n' + MSG.calcCheck[lang];
+    noteInt(u, 'searches', 'estimate ' + fmtUsd(c.price) + ', rent ' + fmtUsd(c.rent) + (c.size ? ', ' + c.size + ' sqm' : ''));
+    u.awaiting = null; save(u);
+    return api('sendMessage', Object.assign({ chat_id: chatId }, R.render(byId.calc2, lang, {}), { text: t }));
+  }
+  // Nick's card for a client's own calculation: what the bot read, what is missing, and a draft he can send or not
+  function ckCard(u, from) {
+    const d = u.ck.d, tl = u.lang === 'jp' ? 'jp' : 'en', miss = E.missingOf(d), e = R.esc;
+    const read = [d.name, d.price && 'price ' + fmtUsd(d.price), d.rent && 'rent ' + fmtUsd(d.rent) + '/month', d.nightly && 'nightly ' + fmtUsd(d.nightly),
+      d.occupancy && 'occupancy ' + Math.round(d.occupancy * 100) + '%', d.bldFee && 'building fee $' + d.bldFee + '/sqm', d.size && d.size + ' sqm'].filter(Boolean).join(' · ');
+    const L = ['<b>Estimate to check</b>', 'Client: ' + e(nameOf(from)) + (from.username ? ' (@' + e(from.username) + ')' : '') + ' (' + u.id + ')', 'Language: ' + String(u.lang || '-').toUpperCase()];
+    if (u.ck.photo) L.push(read ? 'They sent a picture (above). The bot read only its caption.' : 'They sent a picture (above). The bot cannot read pictures, so please reply yourself.');
+    if (read) L.push('Read from their message: ' + e(read));
+    const kb = [];
+    if (d.short) {
+      L.push('Missing from their version: ' + (miss.length ? miss.join(', ') : 'nothing'), '', '<b>Short stay, your sheet model (for you only, not for the client)</b>', e(E.shortText(E.shortStay(d))));
+    } else if (d.rent) {
+      L.push('Missing from their version: ' + (miss.length ? miss.join(', ') : 'nothing'), '', '<b>Draft reply (not sent yet)</b>', '<blockquote>' + E.clientText(E.longTerm(d), tl) + '</blockquote>');
+      kb.push([{ text: 'Send to client', callback_data: 'ek:s:' + u.id }]);
+    } else if (read || !u.ck.photo) L.push('No rent or nightly rate found, so there is no draft. Please reply yourself.');
+    if (!d.price && (d.rent || d.nightly)) kb.push([{ text: 'Ask for the price', callback_data: 'ek:p:' + u.id }]);
+    kb.push([{ text: 'I will reply myself', callback_data: 'ek:x:' + u.id }]);
+    L.push('Open chat: tg://user?id=' + u.id);
+    return { text: L.join('\n').slice(0, 4000), parse_mode: 'HTML', disable_web_page_preview: true, reply_markup: { inline_keyboard: kb } };
+  }
+  // Nick's buttons on that card
+  async function ckAction(chatId, data) {
+    const [, k, id] = data.split(':'), c = store.get(id);
+    if (!c || !c.ck) return api('sendMessage', { chat_id: chatId, text: 'This check was already handled.' });
+    const lg = c.lang || 'jp', tl = lg === 'jp' ? 'jp' : 'en';
+    if (k === 's' && c.ck.d.rent && !c.ck.d.short) {
+      await api('sendMessage', { chat_id: c.id, text: E.clientText(E.longTerm(c.ck.d), tl) + '\n\n<i>' + DISCLAIMER[tl] + '</i>', parse_mode: 'HTML',
+        reply_markup: { inline_keyboard: [[{ text: MSG.nickBtn[lg], url: contactUrl(lg) }], [{ text: MSG.menuBtn[lg], callback_data: 'm:menu' }]] } });
+      delete c.ck; store.set(c.id, c);
+      return api('sendMessage', { chat_id: chatId, text: 'Sent to the client.' });
+    }
+    if (k === 'p') {
+      c.awaiting = 'ckprice'; store.set(c.id, c);
+      await api('sendMessage', { chat_id: c.id, text: MSG.ckAskPrice[lg] || MSG.ckAskPrice.en, parse_mode: 'HTML' });
+      return api('sendMessage', { chat_id: chatId, text: 'Asked the client for the price. Their answer comes back here as a new check.' });
+    }
+    delete c.ck; store.set(c.id, c);
+    return api('sendMessage', { chat_id: chatId, text: 'OK, nothing was sent. Reply to them yourself: tg://user?id=' + c.id });
   }
 
   async function goto(chatId, from, u, stepId, edit, extraVars) {
@@ -564,6 +597,8 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
       return done;
     }
     if (data === 'gd:get') return sendGuide(chatId, from, u);
+    if (data === 'es:nosize') { if (!u.calc || !u.calc.rent) return goto(chatId, from, u, 'calc1'); u.calc.size = 0; return showEstimate(chatId, from, u); }
+    if (/^ek:[spx]:\d+$/.test(data)) { if (isNick(from.id)) return ckAction(chatId, data); return; }
     if (/^(aw|am|ac|ak|ua|ur|uc|uw|pn|pa|pr|wp|wx):/.test(data)) { if (await agentArea.handleCallback(cb, u)) return; }
     if (data.startsWith('ph:')) {
       const l = (await loadListings(from.id)).find((x) => x.id === data.slice(3));
@@ -675,28 +710,39 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
       (u.keys = u.keys || {})[stepId] = 'typed:' + area;
       return goto(chatId, from, u, nextId);
     }
-    if (u.awaiting === 'calc') {
-      const n = parseCalc(text);
-      if (!n) { save(u); return api('sendMessage', { chat_id: chatId, text: MSG.calcBad[u.lang], parse_mode: 'HTML' }); }
-      if (n.costs === null) {
-        const yr = n.rent * 12, pct = (x) => ((x / n.price) * 100).toFixed(1);
-        const v = { rent: R.esc(fmtUsd(yr)), gross: pct(yr), lo: pct(yr * (1 - 0.14 - 0.10)), hi: pct(yr * (1 - 0.14 - 0.05)) };
-        u.awaiting = null; save(u);
-        const body2 = R.render(byId.calc2, u.lang, {});
-        let t2 = MSG.calcTwo[u.lang](v) + '\n\n<i>' + DISCLAIMER[u.lang] + '</i>';
-        if (Number(v.gross) > 25) t2 += '\n\n' + MSG.calcCheck[u.lang];
-        return api('sendMessage', Object.assign({ chat_id: chatId }, body2, { text: t2 }));
+    // the estimate, one question at a time: price, rent, size (engines/estimate.js does the maths)
+    if (u.awaiting === 'calc_price') {
+      const nums = E.allNums(text);
+      // a client who still types "68000 650" in one message: price and rent at once
+      if (nums.length === 2 && nums[0] > 0 && nums[1] > 0) { u.calc = { price: Math.max(nums[0], nums[1]), rent: Math.min(nums[0], nums[1]) }; return goto(chatId, from, u, 'calcsize'); }
+      const p = nums.length === 1 ? E.amountOf(text) : 0;
+      if (!(p >= 1000)) { save(u); return api('sendMessage', { chat_id: chatId, text: MSG.calcBadPrice[u.lang] || MSG.calcBadPrice.en, parse_mode: 'HTML' }); }
+      u.calc = { price: p }; return goto(chatId, from, u, 'calcrent');
+    }
+    if (u.awaiting === 'calc_rent') {
+      const r = E.allNums(text).length === 1 ? E.amountOf(text) : 0;
+      if (!(r > 0) || !(u.calc && u.calc.price)) { save(u); return api('sendMessage', { chat_id: chatId, text: MSG.calcBadRent[u.lang] || MSG.calcBadRent.en, parse_mode: 'HTML' }); }
+      u.calc.rent = r; return goto(chatId, from, u, 'calcsize');
+    }
+    if (u.awaiting === 'calc_size') {
+      const s = E.allNums(text).length === 1 ? E.amountOf(text) : 0;
+      if (!(s > 0 && s < 2000)) { save(u); return api('sendMessage', { chat_id: chatId, text: MSG.calcBadSize[u.lang] || MSG.calcBadSize.en, parse_mode: 'HTML' }); }
+      u.calc.size = s; return showEstimate(chatId, from, u);
+    }
+    // the client's own calculation: forwarded to Nick with a draft check; nothing goes back until Nick taps Send
+    if (u.awaiting === 'calcown' || u.awaiting === 'ckprice') {
+      const body = (m.text || m.caption || '').trim(), photo = !!(m.photo && m.photo.length);
+      if (!body && !photo) { save(u); return; }
+      let d = E.readOwn(body);
+      if (u.awaiting === 'ckprice' && u.ck && u.ck.d) { const p = E.amountOf(body); d = Object.assign({}, u.ck.d, { price: p >= 1000 ? p : u.ck.d.price }); }
+      u.awaiting = null; u.ck = { d, photo, at: new Date(clock()).toISOString() }; noteInt(u, 'asks', 'own estimate'); save(u);
+      await api('sendMessage', { chat_id: chatId, text: MSG.ckGot[u.lang] || MSG.ckGot.en, reply_markup: { inline_keyboard: [[{ text: MSG.menuBtn[u.lang] || MSG.menuBtn.en, callback_data: 'm:menu' }]] } });
+      if (nickId) {
+        await api('forwardMessage', { chat_id: nickId, from_chat_id: chatId, message_id: m.message_id });
+        await api('sendMessage', Object.assign({ chat_id: nickId }, ckCard(u, from)));
       }
-      const yearlyRent = n.rent * 12, net = yearlyRent - n.costs, yld = (net / n.price) * 100;
-      u.awaiting = null;
-      const step = byId.calc2, body = R.render(step, u.lang, {});
-      let t = body.text;
-      const rows = [[R.esc(fmtUsd(yearlyRent))], [R.esc(fmtUsd(n.costs))], [R.esc(fmtUsd(net))]];
-      // fill the three [amount] placeholders in order, then [result]
-      t = t.replace('$[amount]', rows[0][0]).replace('$[amount]', rows[1][0]).replace('$[amount]', rows[2][0]).replace('[result]', yld.toFixed(1));
-      if (yld > 25 || yld < 0) t += '\n\n' + MSG.calcCheck[u.lang];
-      save(u);
-      return api('sendMessage', Object.assign({ chat_id: chatId }, body, { text: t }));
+      if (!isNick(u.id)) { ops.track('own_estimate'); await toCrm(u, from, 'Estimate to check'); }
+      return;
     }
     if (u.awaiting === 'check') {
       await api('forwardMessage', { chat_id: nickId, from_chat_id: chatId, message_id: m.message_id });
@@ -738,4 +784,4 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
   return { handleUpdate, byId, runAlerts, runOps, runAgentChecks: () => agentArea.runChecks(), botLink, ops, flushWatch: () => agentArea.flushWatch() };
 }
 
-module.exports = { createBot, parseThree, parseCalc, DISCLAIMER, MSG, commandList };
+module.exports = { createBot, DISCLAIMER, MSG, commandList };

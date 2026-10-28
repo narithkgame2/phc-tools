@@ -119,6 +119,13 @@ async function submitted(r, agent, post) {
     for (const c of ['/faq', '/guide', '/nick', '/stop']) { await r.say(A, c); assert.ok(!r.texts(A).some((x) => /Please use the buttons/.test(x)), c + ' was swallowed'); }
     await r.cb(A, 'aw:type:buy'); assert.ok(/Selling price/.test(r.last(A).body.text), 'the unit carries on after the commands');
   });
+  await t('Nick is also an agent: his own estimate test is read as an estimate, not as a new unit', async () => {
+    const r = rig(); await r.say(NICK, '/addagent ' + NICK + ' Nick');
+    await r.say(NICK, '/estimate'); await r.cb(NICK, 'g:calc1:0');
+    await r.say(NICK, 'Time Square 5\nRent $500 a month\nBuilding fee $1/sqm\nSize 50 sqm\nPrice $82,000');
+    assert.ok(r.texts(NICK).some((x) => /Estimate to check/.test(x)), r.texts(NICK).slice(-3).join(' | '));
+    assert.strictEqual(r.units().length, 0); assert.ok(!r.texts(NICK).some((x) => /Check your unit|Received \(/.test(x)));
+  });
   await t('a post about another city is refused politely and nothing is kept', async () => {
     const r = rig(); await r.say(NICK, '/addagent 700001 Dara');
     await r.photo(A, 'F1', 'g1', 'Condo in Sihanoukville beachfront, 1 bedroom, selling price $65,000'); await r.cb(A, 'aw:collectdone');

@@ -96,13 +96,13 @@ by.calc1.await = 'calc'; by.check1.await = 'check';
   const LINEBTN = { l: 'Message Nick on LINE', to: '', half: false, url: LINE };
   const items = [
     // faq1 to faq4 follow the Trusted Agent training app (Nick, 2026-10-26: it holds the newest figures, from the Cambodia Condo Investment Guide 2026)
-    // 2026-10-28 (Nick): faq2/faq3 matched to the guide: rental management 5% to 10%, lawyer 0.5% to 1%, property tax above about $25,000, CGT from January 2027
+    // 2026-10-28 (Nick): faq2/faq3 matched to the guide: rental management 5% to 10%, lawyer back to $500* and a title transfer fee that depends on the project (Nick, same day), property tax above about $25,000, CGT from January 2027
     ['faq1', 'Foreign ownership', '外国人の所有', 'Foreign ownership',
       '<b>Foreigners can own property</b>\n\n▫️ <b>Floor:</b> a unit above the ground floor\n▫️ <b>Foreign quota:</b> up to 70% of a building\n▫️ <b>Title:</b> a strata title is required\n\n<blockquote>Foreigners cannot own land in their own name.</blockquote>\nAsk Nick on LINE for the details.',
       '<b>外国人も所有できます</b>\n\n▫️ <b>階数：</b>地上階より上の部屋\n▫️ <b>外国人枠：</b>1棟の70%まで\n▫️ <b>権利証：</b>ストラタタイトルが必要\n\n<blockquote>土地は、外国人の名義では所有できません。</blockquote>\n詳しくはLINEでご相談ください。'],
     ['faq2', 'Extra costs', '購入にかかる費用', 'Extra costs',
-      '<b>Costs beyond the price</b>\n\n<b>When you buy</b>\n▫️ <b>Transfer tax:</b> 4%\n▫️ <b>Lawyer:</b> from $500*\n\n<b>While you own it</b>\n▫️ <b>Property tax:</b> 0.1% a year on the value above about $25,000\n▫️ <b>Building management:</b> $1 to $2 per sqm a month\n▫️ <b>Rental management:</b> 5% to 10% of the rent\n▫️ <b>Rental income tax:</b> 14% if you live abroad, 10% if resident\n\n<b>When you sell</b>\n▫️ <b>Capital gains tax:</b> 20% of the gain, scheduled from January 2027, may change\n\n<b>Depends on the project</b>\n▫️ <b>Furniture:</b> some units come furnished\n\n<i>*Usually 0.5% to 1% of the price. It depends on the lawyer, and a Japanese lawyer may cost more.</i>\n\n<blockquote>The booking fee and down payment are part of the price, not extra costs.</blockquote>\nSome developers pay the transfer tax as a promotion. Nick confirms the figures for each project.',
-      '<b>物件価格以外の費用</b>\n\n<b>購入時</b>\n▫️ <b>移転税：</b>4%\n▫️ <b>弁護士：</b>500ドルから※\n\n<b>保有中</b>\n▫️ <b>固定資産税：</b>年0.1%（評価額のうち約2万5,000ドルを超える部分）\n▫️ <b>建物の管理費：</b>1㎡あたり月1ドルから2ドル\n▫️ <b>賃貸管理費：</b>家賃の5%から10%\n▫️ <b>賃貸収入の税金：</b>海外在住14%、居住者10%\n\n<b>売却時</b>\n▫️ <b>キャピタルゲイン税：</b>売却益の20%（2027年1月から開始予定、変更の可能性あり）\n\n<b>物件による</b>\n▫️ <b>家具：</b>家具付きの物件もあります\n\n<i>※目安は物件価格の0.5%から1%です。弁護士によって異なり、日本人弁護士の場合は高くなります。</i>\n\n<blockquote>予約金と頭金は、物件価格に含まれます。追加の費用ではありません。</blockquote>\n移転税をデベロッパーが負担するキャンペーンもあります。金額は物件ごとに確認してお伝えします。'],
+      '<b>Costs beyond the price</b>\n\n<b>When you buy</b>\n▫️ <b>Transfer tax:</b> 4%\n▫️ <b>Lawyer:</b> $500*\n▫️ <b>Title transfer fee:</b> depends on the project\n\n<b>While you own it</b>\n▫️ <b>Property tax:</b> 0.1% a year on the value above about $25,000\n▫️ <b>Building management:</b> $1 to $2 per sqm a month\n▫️ <b>Rental management:</b> 5% to 10% of the rent\n▫️ <b>Rental income tax:</b> 14% if you live abroad, 10% if resident\n\n<b>When you sell</b>\n▫️ <b>Capital gains tax:</b> 20% of the gain, scheduled from January 2027, may change\n\n<b>Depends on the project</b>\n▫️ <b>Furniture:</b> some units come furnished\n\n<i>*The usual fee in Cambodia. It depends on the lawyer, and a Japanese lawyer may cost more.</i>\n\n<blockquote>The booking fee and down payment are part of the price, not extra costs.</blockquote>\nSome developers pay the transfer tax as a promotion. Nick confirms the figures for each project.',
+      '<b>物件価格以外の費用</b>\n\n<b>購入時</b>\n▫️ <b>移転税：</b>4%\n▫️ <b>弁護士：</b>500ドル※\n▫️ <b>所有権移転の手続き費用：</b>物件による\n\n<b>保有中</b>\n▫️ <b>固定資産税：</b>年0.1%（評価額のうち約2万5,000ドルを超える部分）\n▫️ <b>建物の管理費：</b>1㎡あたり月1ドルから2ドル\n▫️ <b>賃貸管理費：</b>家賃の5%から10%\n▫️ <b>賃貸収入の税金：</b>海外在住14%、居住者10%\n\n<b>売却時</b>\n▫️ <b>キャピタルゲイン税：</b>売却益の20%（2027年1月から開始予定、変更の可能性あり）\n\n<b>物件による</b>\n▫️ <b>家具：</b>家具付きの物件もあります\n\n<i>※カンボジアでの一般的な費用です。弁護士によって異なり、日本人弁護士の場合は高くなります。</i>\n\n<blockquote>予約金と頭金は、物件価格に含まれます。追加の費用ではありません。</blockquote>\n移転税をデベロッパーが負担するキャンペーンもあります。金額は物件ごとに確認してお伝えします。'],
     ['faq3', 'Rental tax and fees', '賃貸収入の税金', 'Rental tax and fees',
       '<b>What comes off the rent</b>\n\n▫️ <b>Tax:</b> 14% if you live abroad, 10% if resident\n▫️ <b>Rental management:</b> 5% to 10% of the rent\n▫️ <b>Building management:</b> $1 to $2 per sqm a month\n▫️ <b>Empty months:</b> plan for about 10% a year\n\n<blockquote>What you keep = rent minus tax, rental management, building management and empty months</blockquote>\nAsk Nick for an estimate on a real unit.',
       '<b>家賃から引かれるもの</b>\n\n▫️ <b>税金：</b>海外在住14%、居住者10%\n▫️ <b>賃貸管理費：</b>家賃の5%から10%\n▫️ <b>建物の管理費：</b>1㎡あたり月1ドルから2ドル\n▫️ <b>空室：</b>年に約10%を見込みます\n\n<blockquote>手取り ＝ 家賃 － 税金 － 賃貸管理費 － 建物の管理費 － 空室</blockquote>\n実際の物件での試算はLINEでどうぞ。'],
@@ -149,10 +149,35 @@ by.calc1.await = 'calc'; by.check1.await = 'check';
   // the More menu gets the FAQ as its first button
   by.more.buttons.unshift({ l: 'Common questions', to: 'faq', half: false, url: '' });
   by.more.tr.jp.b.unshift('よくある質問'); by.more.tr.kh.b.unshift('សំណួរញឹកញាប់');
-  // the estimate screen now takes two numbers (quick estimate) or three
-  by.calc1.text = '<b>Estimate with my numbers</b>\n\nSend two numbers: the price and the monthly rent. You get the gross yield and a net range after tax and rental management.\nExample: <code>68000 650</code>\n\nIf you know your yearly costs, add them as a third number: <code>68000 650 1800</code>\n\n<i>Yields and prices are for reference only and do not guarantee future income.</i>';
-  by.calc1.tr.jp.t = '<b>ご自身の数値で試算</b>\n\n2つの数字を送ってください。価格と月額家賃です。表面利回りと、税金と賃貸管理費を引いた手取りの目安が分かります。\n例: <code>68000 650</code>\n\n年間費用が分かる場合は、3つ目の数字として加えてください。<code>68000 650 1800</code>\n\n<i>※利回り・価格は参考値であり、将来の収益を保証するものではありません。</i>';
-  by.calc1.tr.kh.t = '<b>ប៉ាន់ស្មានតាមលេខរបស់ខ្ញុំ</b>\n\nសូមផ្ញើលេខពីរ៖ តម្លៃ និងថ្លៃជួលប្រចាំខែ។\nឧទាហរណ៍: <code>68000 650</code>\n\nបើអ្នកដឹងចំណាយប្រចាំឆ្នាំ សូមបន្ថែមជាលេខទីបី៖ <code>68000 650 1800</code>\n\n<i>ផលចំណេញ និងតម្លៃគឺសម្រាប់ជាឯកសារយោងប៉ុណ្ណោះ ហើយមិនធានាប្រាក់ចំណូលនាពេលអនាគតទេ។</i>';
+  // the estimate (Nick 2026-10-28): one question at a time (price, rent, size), the result is a money breakdown (bot.js + engines/estimate.js);
+  // a client may instead send their own calculation, which reaches Nick first as a draft he sends or answers himself
+  const KH_BACK = 'ត្រឡប់ក្រោយ';
+  by.calc1.text = '<b>Estimate with my numbers</b>\n\nThree short questions, then you see what you keep each year.\n\n<b>① What is the price?</b> (USD)\nExample: <code>68000</code>';
+  by.calc1.tr.jp.t = '<b>ご自身の数値で試算</b>\n\n3つの質問のあと、年間の手取りが分かります。\n\n<b>① 物件の価格は？</b>（ドル）\n例：<code>68000</code>';
+  by.calc1.tr.kh.t = by.calc1.text;
+  by.calc1.await = 'calc_price';
+  by.calc1.buttons = [{ l: 'Send my own calculation', to: 'calcown', half: false, url: '' }, { l: 'Back', to: 'more', half: false, url: '' }];
+  by.calc1.tr.jp.b = ['自分の計算を送る', '戻る']; by.calc1.tr.kh.b = ['Send my own calculation', KH_BACK];
+  by.calcrent = { id: 'calcrent', flow: 'Estimate', title: 'Estimate: rent', await: 'calc_rent',
+    text: '<b>② What is the monthly rent?</b> (USD)\nExample: <code>650</code>',
+    buttons: [{ l: 'Ask Nick about the rent', to: '', half: false, url: LINE }, { l: 'Back', to: 'calc1', half: false, url: '' }],
+    tr: { jp: { t: '<b>② 月額家賃は？</b>（ドル）\n例：<code>650</code>', b: ['家賃をNickに聞く', '戻る'] }, kh: { t: '<b>② What is the monthly rent?</b> (USD)\nExample: <code>650</code>', b: ['Ask Nick about the rent', KH_BACK] } } };
+  by.calcsize = { id: 'calcsize', flow: 'Estimate', title: 'Estimate: size', await: 'calc_size',
+    text: '<b>③ What is the size?</b> (sqm)\nExample: <code>35</code>\nIt is used for the building management fee.',
+    buttons: [{ l: 'I do not know', to: '', half: false, url: '', cb: 'es:nosize' }, { l: 'Back', to: 'calcrent', half: false, url: '' }],
+    tr: { jp: { t: '<b>③ 広さは？</b>（㎡）\n例：<code>35</code>\n建物の管理費の計算に使います。', b: ['分からない', '戻る'] }, kh: { t: '<b>③ What is the size?</b> (sqm)\nExample: <code>35</code>\nIt is used for the building management fee.', b: ['I do not know', KH_BACK] } } };
+  by.calcown = { id: 'calcown', flow: 'Estimate', title: 'Estimate: my own calculation', await: 'calcown',
+    text: '<b>Send your own calculation</b>\n\nSend it as it is, as text or a screenshot. Nick checks it and replies within 1 business day.\n\nExample:\n<code>Time Square 5\nRent $500 a month\nBuilding fee $1 per sqm\nSize 50 sqm</code>',
+    buttons: [{ l: 'Back', to: 'calc1', half: false, url: '' }],
+    note: 'Whatever the client sends is forwarded to Nick with a draft check (engines/estimate.js). Nothing goes back to the client until Nick taps Send.',
+    tr: { jp: { t: '<b>ご自身の計算を送る</b>\n\n文字でもスクリーンショットでも、そのまま送ってください。Nickが確認し、1営業日以内にご返信いたします。\n\n例：\n<code>Time Square 5\n家賃 500ドル/月\n建物の管理費 1ドル/㎡\n広さ 50㎡</code>', b: ['戻る'] },
+      kh: { t: '<b>Send your own calculation</b>\n\nSend it as it is, as text or a screenshot. Nick checks it and replies within 1 business day.\n\nExample:\n<code>Time Square 5\nRent $500 a month\nBuilding fee $1 per sqm\nSize 50 sqm</code>', b: [KH_BACK] } } };
+  // the result screen keeps its buttons; its text is written by bot.js
+  by.calc2.buttons = [{ l: 'Ask Nick to review it', to: 'lead1', half: false, url: '' }, { l: 'Try other numbers', to: 'calc1', half: false, url: '' }, { l: 'Main menu', to: 'menu', half: false, url: '' }];
+  by.calc2.tr.jp.b = ['Nickに確認を依頼', '別の数値で試す', 'メインメニュー']; by.calc2.tr.kh.b = ['សុំ Nick ពិនិត្យ', 'សាកល្បងលេខផ្សេង', 'ម៉ឺនុយមេ'];
+  // the "check a listing" screen also takes the client's own numbers
+  by.check1.tr.jp.t = by.check1.tr.jp.t.replace('リンクまたはスクリーンショットをお送りください。', 'リンク、スクリーンショット、またはご自身の計算をお送りください。');
+  by.check1.text = by.check1.text.replace('Send the link or a screenshot.', 'Send the link, a screenshot or your own calculation.');
 })();
 // free guide (2026-10-27): a main menu button; the bot sends the PDF itself (bot.js sendGuide), so it has a callback, not a screen
 (function () {
@@ -168,7 +193,7 @@ by.privacy.tr.kh.t = '<b>ឯកជនភាព និងទិន្នន័យ
 // steps that tell Nick
 by.leaddone.notify = 'Ask Nick'; by.tourok.notify = 'Tour request'; by.check2.notify = 'Listing to check';
 const keep = Object.keys(by);
-const order = []; src.forEach(s => { if (by[s.id]) order.push(s.id); if (s.id === 'more') ['faq','faq1','faq2','faq3','faq4','faq5'].forEach(i => order.push(i)); if (s.id === 'b2') order.push('b2other'); if (s.id === 'rr2') order.push('rr2other'); });
+const order = []; src.forEach(s => { if (by[s.id]) order.push(s.id); if (s.id === 'more') ['faq','faq1','faq2','faq3','faq4','faq5'].forEach(i => order.push(i)); if (s.id === 'calc1') ['calcrent', 'calcsize', 'calcown'].forEach(i => order.push(i)); if (s.id === 'b2') order.push('b2other'); if (s.id === 'rr2') order.push('rr2other'); });
 const steps = order.map(id => by[id]);
 steps.forEach(s => s.buttons = s.buttons.filter(b => b.url || !b.to || keep.includes(b.to)));
 // Only Japanese clients use LINE (Nick, 2026-10-26). English and Khmer clients reach Nick on his own Telegram:

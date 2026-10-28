@@ -10,7 +10,7 @@ const cp = (x) => Array.from(String(x)).length;
 
 t('every button points to a real screen or a URL', () => steps.forEach((s) => s.buttons.forEach((b) => assert.ok(b.url || b.cb || ids.has(b.to), s.id + ' -> ' + b.to))));
 t('every screen is reachable from the menu or a command', () => {
-  const seen = new Set(['start', 'menu', 'b1', 'rr1', 'tour', 'calc1', 'calc2', 'check2', 'refused', 'unknown', 'error']);
+  const seen = new Set(['start', 'menu', 'b1', 'rr1', 'tour', 'calc1', 'calc2', 'calcrent', 'calcsize', 'check2', 'refused', 'unknown', 'error']);
   let grew = true;
   while (grew) { grew = false; steps.forEach((s) => { if (seen.has(s.id)) s.buttons.forEach((b) => { if (b.to && !seen.has(b.to)) { seen.add(b.to); grew = true; } }); }); }
   steps.forEach((s) => assert.ok(seen.has(s.id), 'unreachable: ' + s.id));
