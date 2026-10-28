@@ -96,7 +96,7 @@ const NICK = '353195979';
   });
   await t('two numbers give gross yield and a net range after 14% tax and 5 to 10% fees, with the limits stated', async () => {
     const r = rig(), me = r.U(7, 'en'); await r.say(me, '/estimate'); r.sent.length = 0; await r.say(me, '100000 700');
-    const x = r.lastTo(7).body.text; assert.ok(/Gross yield: 8\.4%/.test(x) && /6\.4% to 6\.8%/.test(x) && /Vacancy and repairs are not included/.test(x) && /for reference only/.test(x), x);
+    const x = r.lastTo(7).body.text; assert.ok(/Gross yield: 8\.4%/.test(x) && /6\.4% to 6\.8%/.test(x) && /rental management \(5% to 10% of the rent\)/.test(x) && /empty months \(about 10% a year\) and repairs are not included/.test(x) && /for reference only/.test(x), x);
   });
   await t('the FAQ shows its picture in Japanese and English, with the answer and buttons', async () => {
     const r = rig(), jp = r.U(31, 'ja'); await r.say(jp, '/start');

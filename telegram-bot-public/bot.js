@@ -18,8 +18,8 @@ const MSG = {
   simHead: { jp: '<b>この物件と、似た条件の物件</b>', en: '<b>This unit and similar ones</b>', kh: '<b>អចលនទ្រព្យនេះ និងអចលនទ្រព្យស្រដៀងគ្នា</b>' },
   simNone: { jp: '似た条件の物件は、今はほかにありません。メインメニューから条件を変えて探せます。', en: 'No similar units right now. Use the main menu to search with other options.', kh: 'ឥឡូវនេះមិនទាន់មានអចលនទ្រព្យស្រដៀងគ្នាទេ។ សូមប្រើម៉ឺនុយមេដើម្បីស្វែងរកតាមជម្រើសផ្សេង។' },
   calcTwo: {
-    jp: (v) => '<b>試算結果</b>\nお送りいただいた数値のみに基づきます\n\n年間家賃: ' + v.rent + '\n表面利回り: ' + v.gross + '%\n手取り利回りの目安: ' + v.lo + '%から' + v.hi + '%\n\n手取りは、家賃から非居住者の源泉税14%と管理費5%から10%を引いた場合です。空室と修繕の費用は含まれません。',
-    en: (v) => '<b>Estimate</b>\nBased only on the numbers you sent\n\nYearly rent: ' + v.rent + '\nGross yield: ' + v.gross + '%\nNet yield, roughly: ' + v.lo + '% to ' + v.hi + '%\n\nNet means rent minus 14% non-resident tax and a 5% to 10% management fee. Vacancy and repairs are not included.',
+    jp: (v) => '<b>試算結果</b>\nお送りいただいた数値のみに基づきます\n\n年間家賃: ' + v.rent + '\n表面利回り: ' + v.gross + '%\n手取り利回りの目安: ' + v.lo + '%から' + v.hi + '%\n\n手取りは、家賃から非居住者の源泉税14%と賃貸管理費（家賃の5%から10%）を引いた場合です。建物の管理費、空室（年に約10%）、修繕の費用は含まれません。',
+    en: (v) => '<b>Estimate</b>\nBased only on the numbers you sent\n\nYearly rent: ' + v.rent + '\nGross yield: ' + v.gross + '%\nNet yield, roughly: ' + v.lo + '% to ' + v.hi + '%\n\nNet means rent minus 14% non-resident tax and rental management (5% to 10% of the rent). Building management, empty months (about 10% a year) and repairs are not included.',
     kh: (v) => '<b>លទ្ធផលប៉ាន់ស្មាន</b>\nផ្អែកលើលេខដែលអ្នកផ្ញើប៉ុណ្ណោះ\n\nថ្លៃជួលប្រចាំឆ្នាំ៖ ' + v.rent + '\nផលចំណេញដុល៖ ' + v.gross + '%\nផលចំណេញសុទ្ធប្រហែល៖ ' + v.lo + '% ដល់ ' + v.hi + '%\n\nសុទ្ធ គឺថ្លៃជួល ដកពន្ធ 14% សម្រាប់អ្នកមិនមែនមានលំនៅដ្ឋាន និងថ្លៃគ្រប់គ្រង 5% ដល់ 10%។ មិនរាប់បញ្ចូលការទំនេរ និងការជួសជុលទេ។',
   },
   calcBad: {
