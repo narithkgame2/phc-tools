@@ -715,6 +715,11 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
       const nums = E.allNums(text);
       // a client who still types "68000 650" in one message: price and rent at once
       if (nums.length === 2 && nums[0] > 0 && nums[1] > 0) { u.calc = { price: Math.max(nums[0], nums[1]), rent: Math.min(nums[0], nums[1]) }; return goto(chatId, from, u, 'calcsize'); }
+      // or all three at once, "68000, 650, 35": the biggest is the price, then the rent, then the size
+      if (nums.length === 3 && nums.every((n) => n > 0) && Math.max.apply(null, nums) >= 1000) {
+        const rest = nums.slice(), price = Math.max.apply(null, nums); rest.splice(rest.indexOf(price), 1);
+        if (rest[1] < 2000) { u.calc = { price, rent: rest[0], size: rest[1] }; return showEstimate(chatId, from, u); }
+      }
       const p = nums.length === 1 ? E.amountOf(text) : 0;
       if (!(p >= 1000)) { save(u); return api('sendMessage', { chat_id: chatId, text: MSG.calcBadPrice[u.lang] || MSG.calcBadPrice.en, parse_mode: 'HTML' }); }
       u.calc = { price: p }; return goto(chatId, from, u, 'calcrent');

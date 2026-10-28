@@ -152,8 +152,8 @@ by.calc1.await = 'calc'; by.check1.await = 'check';
   // the estimate (Nick 2026-10-28): one question at a time (price, rent, size), the result is a money breakdown (bot.js + engines/estimate.js);
   // a client may instead send their own calculation, which reaches Nick first as a draft he sends or answers himself
   const KH_BACK = 'ត្រឡប់ក្រោយ';
-  by.calc1.text = '<b>Estimate with my numbers</b>\n\nThree short questions, then you see what you keep each year.\n\n<b>① What is the price?</b> (USD)\nExample: <code>68000</code>';
-  by.calc1.tr.jp.t = '<b>ご自身の数値で試算</b>\n\n3つの質問のあと、年間の手取りが分かります。\n\n<b>① 物件の価格は？</b>（ドル）\n例：<code>68000</code>';
+  by.calc1.text = '<b>Estimate with my numbers</b>\n\nThree short questions, then you see what you keep each year.\n\n<b>① What is the price?</b> (USD)\nExample: <code>68000</code>\n\n<i>You can also send all three at once: price, rent, size, like <code>68000 650 35</code></i>';
+  by.calc1.tr.jp.t = '<b>ご自身の数値で試算</b>\n\n3つの質問のあと、年間の手取りが分かります。\n\n<b>① 物件の価格は？</b>（ドル）\n例：<code>68000</code>\n\n<i>価格、家賃、広さの3つをまとめて <code>68000 650 35</code> と送ることもできます。</i>';
   by.calc1.tr.kh.t = by.calc1.text;
   by.calc1.await = 'calc_price';
   by.calc1.buttons = [{ l: 'Send my own calculation', to: 'calcown', half: false, url: '' }, { l: 'Back', to: 'more', half: false, url: '' }];

@@ -45,6 +45,15 @@ function readOwn(text) {
   const size = t.match(/(\d+(?:\.\d+)?)\s*(?:sqm|㎡|m2|m²|平米|平方メートル)/i); d.size = size ? Number(size[1]) : 0;
   d.bldFee = grab(/\$?\s*([\d.]+)\s*(?:ドル|\$|usd)?\s*\/\s*(?:sqm|㎡|m2|m²|平米)/i);
   d.electricity = grab(/(?:electric|電気|光熱|utilit)[^\d\n]*\$?\s*([\d,.]+)/i);
+  // bare numbers with no words, like "68000, 650, 35": price (the biggest), then the rent, then the size, as in /estimate
+  if (!d.rent && !d.nightly) {
+    const bare = lines.filter((x) => /\d/.test(x) && !/[A-Za-z぀-ヿ一-鿿]/.test(x.replace(/\$|ドル|usd|sqm|㎡|m2|万|k/gi, '')));
+    const ns = allNums(bare.join(' '));
+    if (ns.length >= 2 && ns.length <= 3 && Math.max.apply(null, ns) >= 1000) {
+      const rest = ns.slice(); rest.splice(rest.indexOf(Math.max.apply(null, ns)), 1);
+      d.price = d.price || Math.max.apply(null, ns); d.rent = rest[0]; if (rest[1] && !d.size) d.size = rest[1];
+    }
+  }
   if (!d.price) { const big = allNums(t).filter((n) => n >= 10000); if (big.length) d.price = Math.max.apply(null, big); }
   d.short = !!d.nightly;
   d.has = { tax: /tax|税/i.test(t), mgmt: /rental\s*management|management\s*fee\s*\d|賃貸管理|管理手数料|\d\s*[%％][^\n]*管理|管理[^\n]*\d\s*[%％]/i.test(t),

@@ -126,6 +126,12 @@ const NICK = '353195979';
     await r.bot.handleUpdate({ update_id: 4, callback_query: { id: 'cb', from: me, data: 'ek:s:10', message: { message_id: 52, chat: { id: 10, type: 'private' } } } });
     assert.ok(toClient() === before + 3, 'a client cannot press Nick buttons');
   });
+  await t('all three numbers in one line, "68000, 650, 35", give the result at once; the same line as an own calculation gets a draft', async () => {
+    const r = rig(), me = r.U(12, 'ja'); await r.say(me, '/estimate'); await r.say(me, '68000, 650, 35');
+    const x = r.lastTo(12).body.text; assert.ok(x.includes('手取り：4,648ドル') && x.includes('約6.8%'), x);
+    await r.say(me, '/estimate'); await r.tap(me, '自分の計算を送る'); await r.say(me, '68000, 650, 35');
+    const card = r.lastTo(NICK).body.text; assert.ok(card.includes('price $68,000 · rent $650/month · 35 sqm') && card.includes('手取り：4,648ドル'), card);
+  });
   await t('own short stay calculation: Nick gets his sheet model with the tax line, and no Send button', async () => {
     const r = rig(), me = r.U(11, 'ja'); await r.say(me, '/estimate'); await r.tap(me, '自分の計算を送る');
     await r.say(me, 'Gatsby 1BR\n1泊 60ドル\n稼働率 60%\n60sqm\n価格 $84,000');

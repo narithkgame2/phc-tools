@@ -1406,7 +1406,7 @@
    "id": "calc1",
    "flow": "Estimate",
    "title": "Estimate with my numbers",
-   "text": "<b>Estimate with my numbers</b>\n\nThree short questions, then you see what you keep each year.\n\n<b>① What is the price?</b> (USD)\nExample: <code>68000</code>",
+   "text": "<b>Estimate with my numbers</b>\n\nThree short questions, then you see what you keep each year.\n\n<b>① What is the price?</b> (USD)\nExample: <code>68000</code>\n\n<i>You can also send all three at once: price, rent, size, like <code>68000 650 35</code></i>",
    "buttons": [
     {
      "l": "Send my own calculation",
@@ -1424,14 +1424,14 @@
    "note": "The client types the numbers. The bot supplies no yield figure of its own.",
    "tr": {
     "jp": {
-     "t": "<b>ご自身の数値で試算</b>\n\n3つの質問のあと、年間の手取りが分かります。\n\n<b>① 物件の価格は？</b>（ドル）\n例：<code>68000</code>",
+     "t": "<b>ご自身の数値で試算</b>\n\n3つの質問のあと、年間の手取りが分かります。\n\n<b>① 物件の価格は？</b>（ドル）\n例：<code>68000</code>\n\n<i>価格、家賃、広さの3つをまとめて <code>68000 650 35</code> と送ることもできます。</i>",
      "b": [
       "自分の計算を送る",
       "戻る"
      ]
     },
     "kh": {
-     "t": "<b>Estimate with my numbers</b>\n\nThree short questions, then you see what you keep each year.\n\n<b>① What is the price?</b> (USD)\nExample: <code>68000</code>",
+     "t": "<b>Estimate with my numbers</b>\n\nThree short questions, then you see what you keep each year.\n\n<b>① What is the price?</b> (USD)\nExample: <code>68000</code>\n\n<i>You can also send all three at once: price, rent, size, like <code>68000 650 35</code></i>",
      "b": [
       "Send my own calculation",
       "ត្រឡប់ក្រោយ"
