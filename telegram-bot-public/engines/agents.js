@@ -287,7 +287,8 @@ function createAgentArea(ctx) {
       if (ctx.botLink && unit) list.push({ text: '似た物件を探す', url: ctx.botLink('sim_' + unit.ref) });
     }
     list = list.filter((b) => b && b.text && /^https?:\/\//.test(b.url || ''));
-    return list.length ? [list.map((b) => ({ text: b.text, url: b.url }))] : null;
+    // one button per row, full width, so Japanese labels are never cut on a phone (Nick 2026-10-28)
+    return list.length ? list.map((b) => [{ text: b.text, url: b.url }]) : null;
   }
   // The channel post, the same way the Content Bot does it (Nick's design): one photo or video carries the caption and the buttons
   // itself. Several: the album goes out with no caption, then the full text follows as its own message with the buttons on it.
