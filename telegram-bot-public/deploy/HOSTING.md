@@ -94,13 +94,13 @@ If you see `Another copy of this bot is already running`, a second program uses 
 The server cannot read files on your Mac. It reads a link to your Google Sheet. Publish only a safe tab, never the whole Sheet.
 
 1. In your Sheet add a new tab named `Bot feed`.
-2. In cell A1 paste this formula. Change `Sheet1` to the real name of your listings tab if it differs:
+2. In cell A1 paste this formula. Change `Sheet1` to the real name of your listings tab if it differs. Columns A to X are the 24 columns the bot reads (Ref to Unit number):
 
 ```
-=QUERY(Sheet1!A:R, "select A,B,C,D,E,F,G,H,I,J,K,L,M,N,O where B = 'Active'", 1)
+=QUERY(Sheet1!A:X, "select * where B = 'Active' or B = 'Preview'", 1)
 ```
 
-If you added the new columns (Size basis, Tenanted, Tenancy note, Floor, Unit number), extend the range, for example `A:W`, and add their column letters to the select list.
+Preview rows are shown to Nick and the testers only, never to clients, so they are safe to include.
 3. File, Share, Publish to web. Choose the tab `Bot feed` (not Entire document), format `Comma separated values (.csv)`, Publish.
 4. Copy the link it shows.
 5. On the server open the settings file again and add one line (replace the link):
@@ -115,7 +115,7 @@ LISTINGS_CSV_URL=PASTE_THE_PUBLISHED_LINK_HERE
 
 6. Restart: `sudo systemctl restart nick-cambodia-bot`.
 
-Only Active rows appear in that tab, so Pending Review rows and your internal notes are not published. The link is long and unguessable, but treat it as semi private.
+Only Active and Preview rows appear in that tab, so other rows and any notes outside columns A to X are not published. The link is long and unguessable, but treat it as semi private.
 
 The bot reads the link every 5 minutes. Edits to the Sheet reach clients within about 5 minutes, with no download step.
 
@@ -123,12 +123,28 @@ The bot reads the link every 5 minutes. Edits to the Sheet reach clients within 
 
 Only after the test bot works well on the server:
 
-1. On your Mac, stop the bot (Control+C in its Terminal window).
-2. On the server edit the settings file and replace the token with the real @Nick_Cambodia_Bot token.
-3. `sudo systemctl restart nick-cambodia-bot`
-4. Check the log, then test `/buy` from your phone. Your Mac copy must stay off.
+The `data` folder on the Mac holds everything the code does not: the channels (@Nick_Cambodia, @NickREAKH and its watch), agents and their units, the guide PDFs, testers, clients and their alerts. It is never on GitHub, so it is carried across by hand.
 
-Client data from the Mac (`data/users.json`, `data/alerts.json`, `data/listing-state.json`) can be copied across. Ask Claude for the exact commands when you reach this step.
+1. On your Mac, stop the bot (Control+C in its Terminal window). If you installed the Mac background service, also run `bash ~/Desktop/PHC_Backup_2026/phc-tools/telegram-bot-public/deploy/mac/uninstall-mac-service.sh`.
+2. In a Mac Terminal, pack the data folder onto your Desktop:
+
+```
+tar -czf ~/Desktop/nickbot-data.tgz -C ~/Desktop/PHC_Backup_2026/phc-tools/telegram-bot-public data
+```
+
+3. In the server's black SSH window click `UPLOAD FILE` (top right), choose `nickbot-data.tgz` from your Desktop, wait for it to finish, then paste:
+
+```
+sudo systemctl stop nick-cambodia-bot
+sudo tar -xzf ~/nickbot-data.tgz -C /home/nickbot/phc-tools/telegram-bot-public
+sudo chown -R nickbot:nickbot /home/nickbot/phc-tools/telegram-bot-public/data
+rm ~/nickbot-data.tgz
+```
+
+4. Copy the settings. On the Mac run `open -e ~/.phc-secrets/nick-cambodia-bot.env` (it opens in TextEdit; never screenshot or share it). On the server open the settings file (`sudo -u nickbot nano /home/nickbot/.phc-secrets/nick-cambodia-bot.env`), delete what is there, and type or paste every line from the Mac file (the real token, NICK_TELEGRAM_ID, CRM_URL, CRM_KEY and any TRANSLATE_ lines). Keep your LISTINGS_CSV_URL line from Step 7. Save with Control+O, Enter, Control+X. Close TextEdit without changing anything.
+5. `sudo systemctl start nick-cambodia-bot`, then `sudo journalctl -u nick-cambodia-bot -n 20 --no-pager`. You should see `PHC CRM link: on`, and Telegram sends `Bot started on nick-cambodia-bot`.
+6. Test from your phone: `/buy`, `/guide` (the guide PDF arrives) and the ☰ menu in Japanese. Your Mac copy must stay off from now on.
+7. Delete `nickbot-data.tgz` from your Mac Desktop (it holds client data).
 
 ## Daily life
 
