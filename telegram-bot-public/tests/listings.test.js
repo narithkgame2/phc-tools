@@ -69,7 +69,7 @@ function rig(rows) {
     await tap('b1', 1); await tap('b2', 2);
     const list = sent.find((x) => /Tenant Tower/.test(x.body.text || '')).body.text;
     assert.ok(/テナント入居中: Leased at \$250\/month until Dec 2027/.test(list), list);
-    assert.ok(/12階/.test(list) && /公式リスティングパートナー/.test(list) && /Plain Tower/.test(list));
+    assert.ok(/12階/.test(list) && /掲載元：Realestate\.com\.kh/.test(list) && !/公式/.test(list) && /Plain Tower/.test(list));
   });
   await t('website feed: Phnom Penh only, from-prices flagged, photos off by default, repeats dropped, a failing source skipped', async () => {
     const feed = { listings: [

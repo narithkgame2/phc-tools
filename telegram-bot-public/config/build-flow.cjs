@@ -16,13 +16,13 @@ function request(id, back, enT, jpT, khT) {
   s.note = 'Matching listings from the Sheet are shown above this screen when there are any. Either way Nick checks availability by hand and replies within 1 business day.';
 }
 request('bres', 'b1',
-  '<b>Your search is saved</b>\n<i>[search summary]</i>\n\nNick will check availability and send you the three best options for this search within 1 business day.\nYou can also message him now on LINE.',
-  '<b>ご希望の条件を承りました</b>\n<i>[search summary]</i>\n\nNickが空室状況を確認し、この条件に合う物件を3件、数字つきで1営業日以内にお送りします。\nお急ぎの場合は、今すぐLINEでもご相談いただけます。',
-  '<b>យើងបានទទួលលក្ខខណ្ឌស្វែងរករបស់អ្នក</b>\n<i>[search summary]</i>\n\nNick នឹងពិនិត្យភាពអាចរកបាន ហើយផ្ញើជម្រើសល្អបំផុតចំនួន 3 ជូនអ្នកក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។\nអ្នកក៏អាចផ្ញើសារទៅគាត់តាម LINE ភ្លាមៗបានដែរ។');
+  '<b>Your search is saved</b>\n<i>[search summary]</i>\n\nNick will check availability and send you up to three options for this search within 1 business day.\nYou can also message him now on LINE.',
+  '<b>ご希望の条件を承りました</b>\n<i>[search summary]</i>\n\nNickが販売状況を確認し、この条件に合う物件を最大3件、数字つきで1営業日以内にお送りします。\nお急ぎの場合は、今すぐLINEでもご相談いただけます。',
+  '<b>យើងបានទទួលលក្ខខណ្ឌស្វែងរករបស់អ្នក</b>\n<i>[search summary]</i>\n\nNick នឹងពិនិត្យភាពអាចរកបាន ហើយផ្ញើជម្រើសល្អបំផុតរហូតដល់ 3 ជូនអ្នកក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។\nអ្នកក៏អាចផ្ញើសារទៅគាត់តាម LINE ភ្លាមៗបានដែរ។');
 request('rres', 'rr1',
-  '<b>Your search is saved</b>\n<i>[search summary]</i>\n\nNick will check availability and send you the three best rental options for this search within 1 business day.\nYou can also message him now on LINE.',
-  '<b>ご希望の条件を承りました</b>\n<i>[search summary]</i>\n\nNickが空室状況を確認し、この条件に合う賃貸物件を3件、1営業日以内にお送りします。\nお急ぎの場合は、今すぐLINEでもご相談いただけます。',
-  '<b>យើងបានទទួលលក្ខខណ្ឌស្វែងរករបស់អ្នក</b>\n<i>[search summary]</i>\n\nNick នឹងពិនិត្យភាពអាចរកបាន ហើយផ្ញើជម្រើសសម្រាប់ជួលល្អបំផុតចំនួន 3 ជូនអ្នកក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។\nអ្នកក៏អាចផ្ញើសារទៅគាត់តាម LINE ភ្លាមៗបានដែរ។');
+  '<b>Your search is saved</b>\n<i>[search summary]</i>\n\nNick will check availability and send you up to three rental options for this search within 1 business day.\nYou can also message him now on LINE.',
+  '<b>ご希望の条件を承りました</b>\n<i>[search summary]</i>\n\nNickが空室状況を確認し、この条件に合う賃貸物件を最大3件、1営業日以内にお送りします。\nお急ぎの場合は、今すぐLINEでもご相談いただけます。',
+  '<b>យើងបានទទួលលក្ខខណ្ឌស្វែងរករបស់អ្នក</b>\n<i>[search summary]</i>\n\nNick នឹងពិនិត្យភាពអាចរកបាន ហើយផ្ញើជម្រើសសម្រាប់ជួលល្អបំផុតរហូតដល់ 3 ជូនអ្នកក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។\nអ្នកក៏អាចផ្ញើសារទៅគាត់តាម LINE ភ្លាមៗបានដែរ។');
 // wording fixes found in the Japanese review: the bot has no favourites and no keyword search, so the screens must not mention them
 function retext(id, en, jp, kh) { const s = by[id]; s.text = en; s.tr.jp.t = jp; s.tr.kh.t = kh; }
 retext('forget',
@@ -31,7 +31,7 @@ retext('forget',
   '<b>លុបទិន្នន័យរបស់ខ្ញុំ</b>\n\nវានឹងលុបការស្វែងរកដែលបានរក្សាទុក ការជូនដំណឹងអំពីបញ្ជីថ្មី និងប្រវត្តិសាកសួរ។\nចុច \"បញ្ជាក់\" ដើម្បីលុប។');
 retext('unknown',
   '<b>I did not catch that</b>\n\nPlease pick an option below.',
-  '<b>うまく理解できませんでした</b>\n\n下のメニューから選んでください。',
+  '<b>メッセージを読み取れませんでした</b>\n\n下のメニューからお選びください。',
   '<b>ខ្ញុំមិនយល់ទេ</b>\n\nសូមជ្រើសរើសជម្រើសខាងក្រោម។');
 // results no longer branch to refine or "no match"
 ['bref', 'nores', 'offline'].forEach(id => delete by[id]);
@@ -107,8 +107,8 @@ by.calc1.await = 'calc'; by.check1.await = 'check';
       '<b>What comes off the rent</b>\n\n▫️ <b>Tax:</b> 14% if you live abroad, 10% if resident\n▫️ <b>Rental management:</b> 5% to 10% of the rent\n▫️ <b>Building management:</b> $1 to $2 per sqm a month\n▫️ <b>Empty months:</b> plan for about 10% a year\n\n<blockquote>What you keep = rent minus tax, rental management, building management and empty months</blockquote>\nAsk Nick for an estimate on a real unit.',
       '<b>家賃から引かれるもの</b>\n\n▫️ <b>税金：</b>海外在住14%、居住者10%\n▫️ <b>賃貸管理費：</b>家賃の5%から10%\n▫️ <b>建物の管理費：</b>1㎡あたり月1ドルから2ドル\n▫️ <b>空室：</b>年に約10%を見込みます\n\n<blockquote>手取り ＝ 家賃 － 税金 － 賃貸管理費 － 建物の管理費 － 空室</blockquote>\n実際の物件での試算はLINEでどうぞ。'],
     ['faq4', 'How buying works', '購入の流れ', 'How buying works',
-      '<b>The buying process: 6 steps</b>\n\n① <b>Booking:</b> fee of $500 to $2,000\n② <b>Down payment and contract:</b> 20% to 30%\n③ <b>Instalments:</b> during construction\n④ <b>Balance:</b> 40% to 50% at handover\n⑤ <b>Handover:</b> inspect the unit, collect the keys\n⑥ <b>Title:</b> registered in your name\n\n<blockquote>The steps are almost always the same. What changes is the amount and timing of each payment.</blockquote>\nAsk Nick for the plan of a specific project.',
-      '<b>購入の流れ（6ステップ）</b>\n\n① <b>予約：</b>予約金 500ドルから2,000ドル\n② <b>頭金と契約：</b>価格の20%から30%\n③ <b>分割払い：</b>建設中に支払い\n④ <b>残金：</b>引き渡し時に40%から50%\n⑤ <b>引き渡し：</b>部屋を点検して鍵を受け取り\n⑥ <b>登記：</b>ご本人の名義に\n\n<blockquote>手順はほぼ共通です。違うのは、各段階の金額と期間です。</blockquote>\n物件ごとの支払い計画はLINEでお伝えします。'],
+      '<b>The buying process: 6 steps</b>\n\n① <b>Booking:</b> fee of $500 to $2,000\n② <b>Down payment and contract:</b> 20% to 30%\n③ <b>Instalments:</b> during construction\n④ <b>Balance:</b> paid at handover (the share depends on the project)\n⑤ <b>Handover:</b> inspect the unit, collect the keys\n⑥ <b>Title:</b> registered in your name\n\n<blockquote>The steps are almost always the same. What changes is the amount and timing of each payment.</blockquote>\nAsk Nick for the plan of a specific project.',
+      '<b>購入の流れ（6ステップ）</b>\n\n① <b>予約：</b>予約金 500ドルから2,000ドル\n② <b>頭金と契約：</b>価格の20%から30%\n③ <b>分割払い：</b>建設中に支払い\n④ <b>残金：</b>引き渡し時に支払い（割合は物件によります）\n⑤ <b>引き渡し：</b>部屋を点検して鍵を受け取り\n⑥ <b>登記：</b>ご本人の名義に\n\n<blockquote>手順はほぼ共通です。違うのは、各段階の金額と期間です。</blockquote>\n物件ごとの支払い計画はLINEでお伝えします。'],
     // faq5 corrected by Nick 2026-10-26: no e-signature; the originals are signed and sent by courier (DHL or similar)
     ['faq5', 'Buying from abroad', '海外から購入', 'Buying from abroad',
       '<b>You can buy from abroad</b>\n\n① <b>Online:</b> choosing the unit, questions and transfers\n② <b>Contract:</b> signed by hand on the originals (no e-signature)\n③ <b>Courier:</b> originals go by DHL or similar, and the developer or seller signs them too\n\n<blockquote>A power of attorney is also possible, but the process is more involved.</blockquote>\nPrices and rents are usually in US dollars.',
@@ -190,6 +190,14 @@ by.calc1.await = 'calc'; by.check1.await = 'check';
 by.privacy.text = '<b>Privacy and my data</b>\n\nWe store your Telegram ID, your language, your answers and the topics and units you look at, so Nick can help you. When you ask about a unit, request the guide or book a tour, your name and these interests are saved in Nick\'s client list. We do not sell or share them.\n\nYou can delete everything at any time.';
 by.privacy.tr.jp.t = '<b>プライバシーとデータ</b>\n\nNickがご相談に対応するため、TelegramのID、言語、ご回答内容、ご覧になったテーマと物件を保存します。物件へのお問い合わせ、資料のご請求、内覧のご予約をいただいた場合は、お名前とこれらの内容をNickの顧客リストに記録します。第三者への販売や共有は行いません。\n\nデータはいつでも削除できます。';
 by.privacy.tr.kh.t = '<b>ឯកជនភាព និងទិន្នន័យរបស់ខ្ញុំ</b>\n\nយើងរក្សាទុក Telegram ID ភាសា ចម្លើយរបស់អ្នក និងប្រធានបទ និងបន្ទប់ដែលអ្នកបានមើល ដើម្បីឱ្យ Nick អាចជួយអ្នកបាន។ នៅពេលអ្នកសួរអំពីបន្ទប់ ស្នើសុំឯកសារ ឬកក់ពេលទស្សនា ឈ្មោះរបស់អ្នក និងព័ត៌មានទាំងនេះនឹងត្រូវកត់ត្រាក្នុងបញ្ជីអតិថិជនរបស់ Nick។ យើងមិនលក់ ឬចែករំលែកវាទេ។\n\nអ្នកអាចលុបទាំងអស់បានគ្រប់ពេល។';
+// Japanese review with Nick (2026-10-29): the bot sends no tour reminder, so it is not promised; no "当社" (there is no company
+// behind the brand in public); a video call is ビデオ通話; the contact question reads naturally.
+by.tourok.text = by.tourok.text.replace('Nick confirms within 1 business day. You will get a reminder the day before.', 'Nick confirms the time and replies within 1 business day.');
+by.tourok.tr.jp.t = by.tourok.tr.jp.t.replace('Nickが1営業日以内にご確認します。前日にリマインドをお送りします。', 'Nickが日程を確認し、1営業日以内にご連絡します。');
+by.tourok.tr.kh.t = by.tourok.tr.kh.t.replace(' អ្នកនឹងទទួលបានការរំលឹកមួយថ្ងៃមុន។', '');
+by.error.tr.jp.t = by.error.tr.jp.t.replace('当社側の問題で', 'システム側の問題で');
+by.tour.tr.jp.b = by.tour.tr.jp.b.map((x) => (x === 'ライブ映像で内覧' ? 'ビデオ通話で内覧' : x));
+by.lead3.tr.jp.t = by.lead3.tr.jp.t.replace('Nickからのご連絡方法は？', 'ご希望の連絡方法をお選びください。');
 // steps that tell Nick
 by.leaddone.notify = 'Ask Nick'; by.tourok.notify = 'Tour request'; by.check2.notify = 'Listing to check';
 const keep = Object.keys(by);

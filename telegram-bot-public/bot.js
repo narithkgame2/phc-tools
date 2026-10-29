@@ -94,12 +94,12 @@ const MSG = {
   menuBtn: { jp: 'メインメニュー', en: 'Main menu', kh: 'ម៉ឺនុយមេ' },
   tenanted: { jp: 'テナント入居中', en: 'Tenanted', kh: 'មានអ្នកជួលរួចហើយ' },
   partner: {
-    jp: '掲載: REAKH（Realestate.com.kh 公式リスティングパートナー）',
-    en: 'Listings by REAKH, Official Listing Partner of Realestate.com.kh',
-    kh: 'បញ្ជីដោយ REAKH ដៃគូបញ្ជីផ្លូវការរបស់ Realestate.com.kh',
+    jp: '掲載元：Realestate.com.kh',
+    en: 'Listed on Realestate.com.kh',
+    kh: 'ប្រភព៖ Realestate.com.kh',
   },
   avail: {
-    jp: '※空室状況と価格は、お問い合わせいただいた時点で最新情報を確認します。',
+    jp: '※販売・空室状況と価格は、お問い合わせいただいた時点で確認します。',
     en: 'Availability and price are confirmed when you ask.',
     kh: 'ភាពអាចរកបាន និងតម្លៃនឹងត្រូវបញ្ជាក់នៅពេលអ្នកសួរ។',
   },

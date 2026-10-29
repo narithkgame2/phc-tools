@@ -318,7 +318,7 @@
    "id": "bres",
    "flow": "Buy",
    "title": "Buy request",
-   "text": "<b>Your search is saved</b>\n<i>[search summary]</i>\n\nNick will check availability and send you the three best options for this search within 1 business day.\nYou can also message him now on Telegram.",
+   "text": "<b>Your search is saved</b>\n<i>[search summary]</i>\n\nNick will check availability and send you up to three options for this search within 1 business day.\nYou can also message him now on Telegram.",
    "buttons": [
     {
      "l": "Message Nick on Telegram",
@@ -353,7 +353,7 @@
    "note": "Matching listings from the Sheet are shown above this screen when there are any. Either way Nick checks availability by hand and replies within 1 business day.",
    "tr": {
     "jp": {
-     "t": "<b>ご希望の条件を承りました</b>\n<i>[search summary]</i>\n\nNickが空室状況を確認し、この条件に合う物件を3件、数字つきで1営業日以内にお送りします。\nお急ぎの場合は、今すぐLINEでもご相談いただけます。",
+     "t": "<b>ご希望の条件を承りました</b>\n<i>[search summary]</i>\n\nNickが販売状況を確認し、この条件に合う物件を最大3件、数字つきで1営業日以内にお送りします。\nお急ぎの場合は、今すぐLINEでもご相談いただけます。",
      "b": [
       "LINEでNickに相談",
       "新着物件を通知する",
@@ -362,7 +362,7 @@
      ]
     },
     "kh": {
-     "t": "<b>យើងបានទទួលលក្ខខណ្ឌស្វែងរករបស់អ្នក</b>\n<i>[search summary]</i>\n\nNick នឹងពិនិត្យភាពអាចរកបាន ហើយផ្ញើជម្រើសល្អបំផុតចំនួន 3 ជូនអ្នកក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។\nអ្នកក៏អាចផ្ញើសារទៅគាត់តាម Telegram ភ្លាមៗបានដែរ។",
+     "t": "<b>យើងបានទទួលលក្ខខណ្ឌស្វែងរករបស់អ្នក</b>\n<i>[search summary]</i>\n\nNick នឹងពិនិត្យភាពអាចរកបាន ហើយផ្ញើជម្រើសល្អបំផុតរហូតដល់ 3 ជូនអ្នកក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។\nអ្នកក៏អាចផ្ញើសារទៅគាត់តាម Telegram ភ្លាមៗបានដែរ។",
      "b": [
       "និយាយជាមួយ Nick តាម Telegram",
       "ជូនដំណឹងពេលមានថ្មី",
@@ -561,7 +561,7 @@
    "id": "rres",
    "flow": "Rent",
    "title": "Rent request",
-   "text": "<b>Your search is saved</b>\n<i>[search summary]</i>\n\nNick will check availability and send you the three best rental options for this search within 1 business day.\nYou can also message him now on Telegram.",
+   "text": "<b>Your search is saved</b>\n<i>[search summary]</i>\n\nNick will check availability and send you up to three rental options for this search within 1 business day.\nYou can also message him now on Telegram.",
    "buttons": [
     {
      "l": "Message Nick on Telegram",
@@ -595,7 +595,7 @@
    ],
    "tr": {
     "jp": {
-     "t": "<b>ご希望の条件を承りました</b>\n<i>[search summary]</i>\n\nNickが空室状況を確認し、この条件に合う賃貸物件を3件、1営業日以内にお送りします。\nお急ぎの場合は、今すぐLINEでもご相談いただけます。",
+     "t": "<b>ご希望の条件を承りました</b>\n<i>[search summary]</i>\n\nNickが空室状況を確認し、この条件に合う賃貸物件を最大3件、1営業日以内にお送りします。\nお急ぎの場合は、今すぐLINEでもご相談いただけます。",
      "b": [
       "LINEでNickに相談",
       "新着物件を通知する",
@@ -604,7 +604,7 @@
      ]
     },
     "kh": {
-     "t": "<b>យើងបានទទួលលក្ខខណ្ឌស្វែងរករបស់អ្នក</b>\n<i>[search summary]</i>\n\nNick នឹងពិនិត្យភាពអាចរកបាន ហើយផ្ញើជម្រើសសម្រាប់ជួលល្អបំផុតចំនួន 3 ជូនអ្នកក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។\nអ្នកក៏អាចផ្ញើសារទៅគាត់តាម Telegram ភ្លាមៗបានដែរ។",
+     "t": "<b>យើងបានទទួលលក្ខខណ្ឌស្វែងរករបស់អ្នក</b>\n<i>[search summary]</i>\n\nNick នឹងពិនិត្យភាពអាចរកបាន ហើយផ្ញើជម្រើសសម្រាប់ជួលល្អបំផុតរហូតដល់ 3 ជូនអ្នកក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។\nអ្នកក៏អាចផ្ញើសារទៅគាត់តាម Telegram ភ្លាមៗបានដែរ។",
      "b": [
       "និយាយជាមួយ Nick តាម Telegram",
       "ជូនដំណឹងពេលមានថ្មី",
@@ -751,7 +751,7 @@
    ],
    "tr": {
     "jp": {
-     "t": "<b>Nickに相談</b>\n<i>ステップ3/3</i>\n\nNickからのご連絡方法は？",
+     "t": "<b>Nickに相談</b>\n<i>ステップ3/3</i>\n\nご希望の連絡方法をお選びください。",
      "b": [
       "LINE",
       "Telegram",
@@ -829,7 +829,7 @@
      "t": "<b>内覧を予約</b>\n<i>ステップ1/3</i>\n\nどのように物件をご覧になりますか？",
      "b": [
       "プノンペンで現地内覧",
-      "ライブ映像で内覧",
+      "ビデオ通話で内覧",
       "メインメニュー"
      ]
     },
@@ -960,7 +960,7 @@
    "id": "tourok",
    "flow": "Tour",
    "title": "Tour requested",
-   "text": "<b>Tour requested</b>\n\n[day] at [time], [in person or video].\nNick confirms within 1 business day. You will get a reminder the day before.",
+   "text": "<b>Tour requested</b>\n\n[day] at [time], [in person or video].\nNick confirms the time and replies within 1 business day.",
    "buttons": [
     {
      "l": "Main menu",
@@ -973,13 +973,13 @@
    "note": "Creates a lead and a calendar hold. The reminder goes out the day before.",
    "tr": {
     "jp": {
-     "t": "<b>内覧のご希望を受け付けました</b>\n\n[day] [time]、[in person or video]。\nNickが1営業日以内にご確認します。前日にリマインドをお送りします。",
+     "t": "<b>内覧のご希望を受け付けました</b>\n\n[day] [time]、[in person or video]。\nNickが日程を確認し、1営業日以内にご連絡します。",
      "b": [
       "メインメニュー"
      ]
     },
     "kh": {
-     "t": "<b>បានទទួលសំណើទស្សនា</b>\n\n[day] ម៉ោង [time], [in person or video]។\nNick នឹងបញ្ជាក់ក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។ អ្នកនឹងទទួលបានការរំលឹកមួយថ្ងៃមុន។",
+     "t": "<b>បានទទួលសំណើទស្សនា</b>\n\n[day] ម៉ោង [time], [in person or video]។\nNick នឹងបញ្ជាក់ក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។",
      "b": [
       "ម៉ឺនុយមេ"
      ]
@@ -1247,7 +1247,7 @@
    "id": "faq4",
    "flow": "FAQ",
    "title": "FAQ: How buying works",
-   "text": "<b>The buying process: 6 steps</b>\n\n① <b>Booking:</b> fee of $500 to $2,000\n② <b>Down payment and contract:</b> 20% to 30%\n③ <b>Instalments:</b> during construction\n④ <b>Balance:</b> 40% to 50% at handover\n⑤ <b>Handover:</b> inspect the unit, collect the keys\n⑥ <b>Title:</b> registered in your name\n\n<blockquote>The steps are almost always the same. What changes is the amount and timing of each payment.</blockquote>\nAsk Nick for the plan of a specific project.",
+   "text": "<b>The buying process: 6 steps</b>\n\n① <b>Booking:</b> fee of $500 to $2,000\n② <b>Down payment and contract:</b> 20% to 30%\n③ <b>Instalments:</b> during construction\n④ <b>Balance:</b> paid at handover (the share depends on the project)\n⑤ <b>Handover:</b> inspect the unit, collect the keys\n⑥ <b>Title:</b> registered in your name\n\n<blockquote>The steps are almost always the same. What changes is the amount and timing of each payment.</blockquote>\nAsk Nick for the plan of a specific project.",
    "buttons": [
     {
      "l": "Message Nick on Telegram",
@@ -1269,14 +1269,14 @@
    "note": "Facts from the website FAQ. Japanese needs a native review. Khmer shows English for now.",
    "tr": {
     "jp": {
-     "t": "<b>購入の流れ（6ステップ）</b>\n\n① <b>予約：</b>予約金 500ドルから2,000ドル\n② <b>頭金と契約：</b>価格の20%から30%\n③ <b>分割払い：</b>建設中に支払い\n④ <b>残金：</b>引き渡し時に40%から50%\n⑤ <b>引き渡し：</b>部屋を点検して鍵を受け取り\n⑥ <b>登記：</b>ご本人の名義に\n\n<blockquote>手順はほぼ共通です。違うのは、各段階の金額と期間です。</blockquote>\n物件ごとの支払い計画はLINEでお伝えします。",
+     "t": "<b>購入の流れ（6ステップ）</b>\n\n① <b>予約：</b>予約金 500ドルから2,000ドル\n② <b>頭金と契約：</b>価格の20%から30%\n③ <b>分割払い：</b>建設中に支払い\n④ <b>残金：</b>引き渡し時に支払い（割合は物件によります）\n⑤ <b>引き渡し：</b>部屋を点検して鍵を受け取り\n⑥ <b>登記：</b>ご本人の名義に\n\n<blockquote>手順はほぼ共通です。違うのは、各段階の金額と期間です。</blockquote>\n物件ごとの支払い計画はLINEでお伝えします。",
      "b": [
       "LINEでNickに相談",
       "戻る"
      ]
     },
     "kh": {
-     "t": "<b>The buying process: 6 steps</b>\n\n① <b>Booking:</b> fee of $500 to $2,000\n② <b>Down payment and contract:</b> 20% to 30%\n③ <b>Instalments:</b> during construction\n④ <b>Balance:</b> 40% to 50% at handover\n⑤ <b>Handover:</b> inspect the unit, collect the keys\n⑥ <b>Title:</b> registered in your name\n\n<blockquote>The steps are almost always the same. What changes is the amount and timing of each payment.</blockquote>\nAsk Nick for the plan of a specific project.",
+     "t": "<b>The buying process: 6 steps</b>\n\n① <b>Booking:</b> fee of $500 to $2,000\n② <b>Down payment and contract:</b> 20% to 30%\n③ <b>Instalments:</b> during construction\n④ <b>Balance:</b> paid at handover (the share depends on the project)\n⑤ <b>Handover:</b> inspect the unit, collect the keys\n⑥ <b>Title:</b> registered in your name\n\n<blockquote>The steps are almost always the same. What changes is the amount and timing of each payment.</blockquote>\nAsk Nick for the plan of a specific project.",
      "b": [
       "និយាយជាមួយ Nick តាម Telegram",
       "ត្រឡប់ក្រោយ"
@@ -1284,8 +1284,8 @@
     }
    },
    "photo": {
-    "jp": "faq/faq-02-process.png?v=02da95e7",
-    "en": "faq/faq-02-process-en.png?v=3b9936bb"
+    "jp": "faq/faq-02-process.png?v=9bba1b2a",
+    "en": "faq/faq-02-process-en.png?v=9ee137e1"
    }
   },
   {
@@ -1714,7 +1714,7 @@
    "note": "Sent whenever the bot hits an error. Nick also gets an alert.",
    "tr": {
     "jp": {
-     "t": "<b>問題が発生しました</b>\n\n当社側の問題で、お客様の操作によるものではありません。回答内容は保存されています。",
+     "t": "<b>問題が発生しました</b>\n\nシステム側の問題で、お客様の操作によるものではありません。回答内容は保存されています。",
      "b": [
       "もう一度試す",
       "Nickに相談"
@@ -1761,7 +1761,7 @@
    "note": "Sent when someone types something the bot cannot match.",
    "tr": {
     "jp": {
-     "t": "<b>うまく理解できませんでした</b>\n\n下のメニューから選んでください。",
+     "t": "<b>メッセージを読み取れませんでした</b>\n\n下のメニューからお選びください。",
      "b": [
       "物件を購入する",
       "メインメニュー",
