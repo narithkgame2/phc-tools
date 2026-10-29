@@ -132,6 +132,12 @@ function rig(opts = {}) {
     assert.ok(/guide-5-things-2026-jp\.pdf$/.test(r.docs(18).pop().body.document));
   });
 
+  await t('a tagged guide link (start=guide_reakh) sends the guide and records the post it came from, also after the language screen', async () => {
+    const r = rig(), en = r.U(21, 'en'); await r.say(en, '/start guide_reakh'); await r.tap(en, 'English');
+    assert.strictEqual(r.docs(21).length, 1);
+    assert.strictEqual(r.db['21'].int.from, 'guide link (reakh)');
+    assert.ok(r.crmCalls.some((c) => /Came from: guide link \(reakh\)/.test(c.event)));
+  });
   await t('a guide link (t.me/Nick_Cambodia_Bot?start=guide) sends the guide and records where the client came from', async () => {
     const r = rig(), me = r.U(19, 'ja'); await r.say(me, '/start guide');
     assert.strictEqual(r.docs(19).length, 1);

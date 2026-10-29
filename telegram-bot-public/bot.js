@@ -342,6 +342,14 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
   }
 
   // the estimate result: Nick's method line by line (engines/estimate.js), with the result screen's buttons
+  // the free guide link, t.me/Nick_Cambodia_Bot?start=guide, or with a source tag such as start=guide_reakh (the @NickREAKH post):
+  // the tag is kept as where the client came from, so Nick sees which post brought them
+  function guideLink(ref) { return /^guide(_[a-z0-9]{1,20})?$/i.test(ref || ''); }
+  function openGuide(chatId, from, u, ref) {
+    const tag = (String(ref).match(/^guide_([a-z0-9]{1,20})$/i) || [])[1];
+    if (!(u.int && u.int.from)) { u.int = u.int || {}; u.int.from = 'guide link' + (tag ? ' (' + tag.toLowerCase() + ')' : ''); }
+    save(u); return sendGuide(chatId, from, u);
+  }
   async function showEstimate(chatId, from, u) {
     const c = u.calc || {};
     if (!c.price || !c.rent) return goto(chatId, from, u, 'calc1');
@@ -574,7 +582,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
         // the ☰ menu follows the language picked here, not the language of the client's Telegram app
         const set = await api('setMyCommands', { commands: commandList(lang), scope: { type: 'chat', chat_id: chatId } });
         if (set && set.ok) u.menuV = MENU_V;
-        if (u.pendingRef) { const r = u.pendingRef; delete u.pendingRef; save(u); return r.toLowerCase() === 'guide' ? sendGuide(chatId, from, u) : /^sim_/i.test(r) ? showSimilar(chatId, from, u, r.slice(4)) : showRef(chatId, from, u, r); }
+        if (u.pendingRef) { const r = u.pendingRef; delete u.pendingRef; save(u); return guideLink(r) ? openGuide(chatId, from, u, r) : /^sim_/i.test(r) ? showSimilar(chatId, from, u, r.slice(4)) : showRef(chatId, from, u, r); }
         return goto(chatId, from, u, 'menu', msg);
       }
       return;
@@ -676,7 +684,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
         if (/^ja/i.test(from.language_code || '')) u.lang = 'jp';
         else { if (ref) u.pendingRef = ref; save(u); return goto(chatId, from, u, 'start'); }
       }
-      if (ref.toLowerCase() === 'guide') { if (!(u.int && u.int.from)) { u.int = u.int || {}; u.int.from = 'guide link'; } save(u); return sendGuide(chatId, from, u); }
+      if (guideLink(ref)) return openGuide(chatId, from, u, ref);
       if (/^sim_/i.test(ref)) { save(u); return showSimilar(chatId, from, u, ref.slice(4)); }
       if (ref) { save(u); return showRef(chatId, from, u, ref); }
       return goto(chatId, from, u, 'menu');
