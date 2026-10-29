@@ -124,9 +124,45 @@ function createAgentArea(ctx) {
   async function advance(chat, u) {
     const s = missing(u.wiz);
     if (s) return ask(chat, u, s);
-    u.wiz.step = 'confirm'; ctx.saveUser(u);
     const d = u.wiz.d, dup = await dupes(d);
+    // the same flat is already live in this bot: ask before making a second listing (Nick 2026-10-29). Only a unit the sender may
+    // change can be updated (Nick: any; an agent: their own); anything else stays a warning on the check screen and the approval card.
+    if (!u.wiz.dupAsked && d.type !== 'both') {
+      const live = dup.map((x) => data.getUnit(x.id)).filter((x) => x && (x.status === 'active' || x.status === 'stale') && x.type === d.type && (isNick(u.id) || x.agentId === u.id));
+      if (live.length) {
+        const x = live[0]; u.wiz.step = 'dupask'; ctx.saveUser(u);
+        return say(chat, '<b>This looks like a unit that is already live</b>\n' + esc(x.ref) + ' ' + esc(x.name) + (x.floor ? ', floor ' + esc(x.floor) : '') + ', ' + usd(x.price) + (x.type === 'rent' ? ' per month' : '') +
+          '\n\nUpdate that one with this post (no second listing), or add this as a new unit?', [[btn('Update ' + x.ref, 'aw:upd:' + x.ref)], [btn('Add as a new unit', 'aw:newok')], cancelRow]);
+      }
+    }
+    u.wiz.step = 'confirm'; ctx.saveUser(u);
     return say(chat, '<b>Check your unit</b>\n\n' + summary({ ...d, media: u.wiz.media }) + dupeLine(dup) + pastLine(soldBefore(d)) + '\n\nSubmit it to Nick for approval?', [[btn('Submit', 'aw:submit'), btn('Cancel', 'aw:cancel')]]);
+  }
+  // "Update RL-6009": the new post's details and photos go onto the unit that is already live. The Ref, the channel posts and the
+  // history stay; a new price goes through the usual price change (Nick confirms it, an agent's waits for Nick).
+  async function updateFrom(chat, u, from, ref) {
+    const w = u.wiz, d = w.d, unit = data.getUnit(ref);
+    if (!unit || !(unit.status === 'active' || unit.status === 'stale') || !(isNick(u.id) || unit.agentId === u.id)) { u.wiz = null; ctx.saveUser(u); return say(chat, 'That unit can no longer be updated. Nothing was changed.'); }
+    ['net', 'gross', 'sqm', 'baths'].forEach((k) => { if (d[k]) unit[k] = d[k]; });
+    if (d.beds !== undefined) unit.beds = d.beds;
+    ['floor', 'unitNo', 'area', 'tenantNote'].forEach((k) => { if (d[k]) unit[k] = d[k]; });
+    if (d.features && d.features.length) unit.features = d.features;
+    if (unit.type !== 'rent' && d.payment && d.payment.length) unit.payment = d.payment;
+    if (d.tenanted) unit.tenanted = true;
+    unit.urgent = !!d.urgent;
+    if ((w.media || []).length) unit.media = w.media;
+    if (w.post) { unit.post = w.post; unit.mt = {}; }
+    if (w.source) unit.source = w.source;
+    if (ctx.translate && w.post) { const src = jpSource(unit), need = linesToTranslate(src.text, src.ents, { price: unit.price, priceFrom: unit.priceFrom, net: unit.net, gross: unit.gross }); if (need.length) unit.mt = await ctx.translate(need, [unit.name, unit.area]); }
+    unit.status = 'active'; unit.checked = iso(); unit.nextCheckAt = iso(clock() + CHECK_DAYS * DAY); unit.askedAt = ''; unit.reminders = 0; unit.updatedAt = iso();
+    data.setUnit(unit.ref, unit); u.wiz = null; ctx.saveUser(u);
+    const ed = await updatePosts(unit, '', 0);
+    await say(chat, 'Updated <b>' + esc(unit.ref) + '</b> with the new post. No second listing was made.' + (ed ? ' ' + ed + ' channel post(s) now show the new details.' : ''));
+    if (nickId) {
+      const rows = (unit.posts || []).length ? [[btn('Repost to refresh', 'rp:' + unit.ref)]] : null;
+      await say(nickId, '<b>' + esc(unit.ref) + '</b> ' + esc(unit.name) + ' was updated' + (isNick(u.id) ? '' : ' by ' + esc(unit.agentName)) + ' from a new post.' + (rows ? ' New photos only show in a fresh post: tap Repost to refresh if you want one.' : ''), rows);
+    }
+    if (d.price && d.price !== unit.price) await doAction({ kind: 'price', ref: unit.ref, value: d.price }, u, chat, from);
   }
   const newWiz = (mode) => ({ mode, step: mode === 'intake' ? 'collect' : 'name', d: {}, media: [], texts: [] });
 
@@ -295,12 +331,12 @@ function createAgentArea(ctx) {
   async function postToChannel(ch, unit) {
     const post = channelPost(unit, ch), text = post.text, media = (unit.media || []).slice(0, 10), rows = channelRows(ch, unit);
     const short = text.length <= 1000;
-    let r;
+    let r, album = null;
     if (media.length === 1 && short) {
       const one = media[0], cap = { caption: text, parse_mode: 'HTML' }, mk = rows ? { reply_markup: kb(rows) } : {};
       r = await (one.t === 'video' ? api('sendVideo', Object.assign({ chat_id: ch.chat, video: one.id }, cap, mk)) : api('sendPhoto', Object.assign({ chat_id: ch.chat, photo: one.id }, cap, mk)));
     } else {
-      if (media.length) r = await mediaTo(ch.chat, media, null);
+      if (media.length) r = album = await mediaTo(ch.chat, media, null);
       if (!media.length || (r && r.ok !== false)) r = await say(ch.chat, text, rows);
     }
     if (r && r.ok !== false) {
@@ -308,7 +344,8 @@ function createAgentArea(ctx) {
       // remember the message that carries the text, so a sale or a new price can update the post later
       const msg = r.result && !Array.isArray(r.result) ? r.result : null;
       if (msg && msg.message_id) {
-        unit.posts = (unit.posts || []).filter((x) => x.chat !== ch.chat).concat([{ chat: ch.chat, id: msg.message_id, kind: media.length === 1 && short ? 'caption' : 'text' }]);
+        const albumIds = album && album.result ? (Array.isArray(album.result) ? album.result.map((x) => x.message_id) : [album.result.message_id]).filter(Boolean) : [];
+        unit.posts = (unit.posts || []).filter((x) => x.chat !== ch.chat).concat([{ chat: ch.chat, id: msg.message_id, kind: media.length === 1 && short ? 'caption' : 'text', album: albumIds, at: iso() }]);
         data.setUnit(unit.ref, unit);
       }
     }
@@ -335,6 +372,31 @@ function createAgentArea(ctx) {
       if (r && r.ok !== false) n++;
     }
     return n;
+  }
+  // Repost to refresh (Nick 2026-10-29): the unit is posted again as a fresh post in every channel where the bot posted it, then
+  // the old post (its photos and its text) is removed, so each channel still shows the unit once. The new post goes out first,
+  // so nothing is lost if Telegram refuses to remove the old one; Nick then gets the link to delete it by hand.
+  const postLink = (chat, id) => (/^@/.test(String(chat)) ? 'https://t.me/' + String(chat).slice(1) + '/' + id : '');
+  function oldIds(p, unit) {
+    if (p.album && p.album.length) return p.album.concat([p.id]);
+    // posts made before 29 Oct 2026 kept only the text message: its photos went out just before it, as the messages right above
+    const n = p.kind === 'text' ? Math.min(MAX_MEDIA, (unit.media || []).length) : 0;
+    return Array.from({ length: n }, (_, i) => p.id - n + i).concat([p.id]);
+  }
+  async function repost(unit) {
+    const out = [];
+    for (const p of (unit.posts || []).slice()) {
+      const ch = (ctx.channels || []).find((c) => c.chat === p.chat); if (!ch) continue;
+      const r = await postToChannel(ch, unit);
+      if (!r || r.ok === false) { out.push('Could not post to ' + esc(chName(ch)) + ': ' + esc((r && r.description) || 'unknown error') + '. The old post stays.'); continue; }
+      const ids = oldIds(p, unit); let gone = 0;
+      for (const id of ids) { const d = await api('deleteMessage', { chat_id: p.chat, message_id: id }); if (d && d.ok !== false) gone++; }
+      const link = postLink(p.chat, p.id);
+      out.push(gone === ids.length ? 'Reposted in ' + esc(chName(ch)) + '. The old post is removed.' : 'Reposted in ' + esc(chName(ch)) + ', but Telegram did not let me remove the old post. Please delete it by hand' + (link ? ': ' + link : '.'));
+    }
+    unit.checked = iso(); unit.nextCheckAt = iso(clock() + CHECK_DAYS * DAY); unit.askedAt = ''; unit.reminders = 0; unit.repostedAt = iso(); data.setUnit(unit.ref, unit);
+    if (ctx.track) ctx.track('agent_repost', { ref: unit.ref });
+    return out;
   }
   async function afterApprove(unit) {
     const out = [], rows = [], left = { claims: [], unknown: [], machine: [] };
@@ -524,6 +586,15 @@ function createAgentArea(ctx) {
         await say(chat, esc(unit.ref) + ' ' + esc(unit.name) + ' is hidden: clients no longer see it and it gets no weekly check. Its channel posts are unchanged; delete them in the channel if they should go.');
         return true;
       }
+      if (cmd === '/repost') {
+        const ref = (text.split(/\s+/)[1] || '').toUpperCase(), unit = ref && data.getUnit(ref);
+        if (!unit) { await say(chat, 'Send /repost REF, for example /repost RL-6009. /units lists the refs.'); return true; }
+        if (!(unit.status === 'active' || unit.status === 'stale')) { await say(chat, esc(unit.ref) + ' is ' + esc(unit.status) + '. Only a live unit can be reposted.'); return true; }
+        if (!(unit.posts || []).length) { const res = await afterApprove(unit); await say(chat, esc(unit.ref) + ' has no channel post from this bot yet, so there is nothing to refresh. Post it now:', res.rows.filter((row) => /^uc:/.test(row[0].callback_data))); return true; }
+        const where = unit.posts.map((p) => { const ch = (ctx.channels || []).find((c) => c.chat === p.chat); return ch ? chName(ch) : p.chat; }).join(' and ');
+        await say(chat, '<b>Repost ' + esc(unit.ref) + '</b> ' + esc(unit.name) + ', ' + usd(unit.price) + (unit.type === 'rent' ? ' per month' : '') + '\n\nIt goes out again as a fresh post in ' + esc(where) + ', and the old post is removed, so the channel shows it once.', [[btn('Repost', 'rp:' + unit.ref)], [btn('Cancel', 'ak:x')]]);
+        return true;
+      }
       if (cmd === '/units') {
         const line = (x) => esc(x.ref) + ' ' + esc(x.name) + ' ' + usd(x.price) + ' · ' + esc(x.status) + ' · ' + esc(x.agentName);
         await say(chat, '<b>Agent units</b>\n' + (data.allUnits().map(line).join('\n') || 'None yet.'));
@@ -644,6 +715,14 @@ function createAgentArea(ctx) {
       }
       return true;
     }
+    if (kind === 'rp') {
+      if (!isNick(from.id)) return true;
+      const unit = data.getUnit(a);
+      if (!unit || !(unit.status === 'active' || unit.status === 'stale')) { await say(chat, 'That unit is no longer live, so it was not reposted.'); return true; }
+      const out = await repost(unit);
+      await say(chat, out.length ? out.join('\n') : 'Nothing to repost: ' + esc(unit.ref) + ' has no channel post from this bot.');
+      return true;
+    }
     if (kind === 'wp' || kind === 'wx') {
       if (!isNick(from.id)) return true;
       const item = (u.watch || []).find((x) => x.id === a);
@@ -688,6 +767,8 @@ function createAgentArea(ctx) {
       if (a === 'steps' && w.step === 'collect') { w.mode = 'manual'; return !!(await advance(chat, u), true); }
       if (a === 'collectdone' && w.step === 'collect') { await readPost(chat, u); return true; }
       if (a === 'submit') { if (w.step === 'confirm') await submit(chat, u); return true; }
+      if (a === 'newok' && w.step === 'dupask') { w.dupAsked = true; await advance(chat, u); return true; }
+      if (a === 'upd' && w.step === 'dupask') { await updateFrom(chat, u, from, b); return true; }
       if (a === 'type' && w.step === 'type') {
         const t = b === 'rent' ? 'rent' : b === 'both' ? 'both' : 'buy'; w.d.type = t;
         w.d.price = t === 'rent' ? (w.d.rentPrice || w.d.price || 0) : (w.d.buyPrice || w.d.price || 0);

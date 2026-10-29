@@ -126,6 +126,50 @@ async function submitted(r, agent, post) {
     assert.ok(r.texts(NICK).some((x) => /Estimate to check/.test(x)), r.texts(NICK).slice(-3).join(' | '));
     assert.strictEqual(r.units().length, 0); assert.ok(!r.texts(NICK).some((x) => /Check your unit|Received \(/.test(x)));
   });
+  await t('the same flat again while it is live: the bot stops and asks; Update keeps one listing, takes the new photos and sends the new price for approval', async () => {
+    const r = rig(); await submitted(r); await r.cb(NICK, 'ua:TS5-6001');
+    await r.photo(A, 'N1', 'g7', POST.replace('$82,000', '$79,000')); await r.photo(A, 'N2', 'g7'); await r.cb(A, 'aw:collectdone');
+    const ask = r.last(A); assert.ok(/already live/.test(ask.body.text) && /TS5-6001/.test(ask.body.text), ask.body.text);
+    assert.deepStrictEqual(r.labels(ask), ['Update TS5-6001', 'Add as a new unit', 'Cancel']);
+    await r.cb(A, 'aw:upd:TS5-6001');
+    assert.strictEqual(r.units().length, 1, 'no second listing');
+    const u = r.units()[0]; assert.deepStrictEqual(u.media.map((m) => m.id), ['N1', 'N2']); assert.strictEqual(u.price, 82000, 'the old price stays until Nick approves');
+    assert.ok(r.texts(A).some((x) => /Updated <b>TS5-6001<\/b>/.test(x)) && r.texts(NICK).some((x) => /Price change to approve/.test(x) && /\$79,000/.test(x)));
+    assert.ok(r.texts(NICK).some((x) => /TS5-6001.*was updated by Dara/.test(x)));
+  });
+  await t('Add as a new unit still works after the question, and another agent\'s flat is only a warning', async () => {
+    const r = rig(); await submitted(r); await r.cb(NICK, 'ua:TS5-6001');
+    await r.photo(A, 'N1', 'g7', POST); await r.cb(A, 'aw:collectdone'); await r.cb(A, 'aw:newok');
+    assert.ok(/Check your unit/.test(r.last(A).body.text) && /Possible duplicate/.test(r.last(A).body.text));
+    await r.cb(A, 'aw:submit'); assert.strictEqual(r.units().length, 2);
+    await r.say(NICK, '/addagent ' + B + ' Sok'); await r.photo(B, 'M1', 'g8', POST); await r.cb(B, 'aw:collectdone');
+    assert.ok(/Check your unit/.test(r.last(B).body.text) && /Possible duplicate/.test(r.last(B).body.text), 'another agent cannot update Dara\'s unit, so no question');
+  });
+  await t('/repost: a fresh post in the channel, then the old photos and text are removed; Nick confirms first', async () => {
+    const r = rig(); await submitted(r); await r.cb(NICK, 'ua:TS5-6001');
+    const before = r.units()[0].posts.find((p) => p.chat === '@Nick_Cambodia'); assert.ok(before && before.album.length >= 1, JSON.stringify(before));
+    await r.say(NICK, '/repost ts5-6001'); assert.ok(/Repost TS5-6001/.test(r.last(NICK).body.text) && r.labels(r.last(NICK)).includes('Repost'));
+    const n0 = r.sent.length; await r.cb(NICK, 'rp:TS5-6001'); const after = r.sent.slice(n0);
+    assert.ok(after.some((x) => x.method === 'sendMediaGroup' && x.body.chat_id === '@Nick_Cambodia') && after.some((x) => x.method === 'sendMessage' && x.body.chat_id === '@Nick_Cambodia'));
+    const del = after.filter((x) => x.method === 'deleteMessage').map((x) => x.body.message_id);
+    assert.deepStrictEqual(del, before.album.concat([before.id]), 'exactly the old album and text are removed');
+    assert.ok(/Reposted in @Nick_Cambodia\. The old post is removed/.test(r.last(NICK).body.text));
+    const now = r.units()[0].posts.find((p) => p.chat === '@Nick_Cambodia'); assert.notStrictEqual(now.id, before.id);
+  });
+  await t('/repost when Telegram refuses to remove the old post: the new post stays and Nick gets the link to delete it', async () => {
+    const r = rig({ reply: (m) => (m === 'deleteMessage' ? { ok: false, description: 'message can\'t be deleted' } : null) });
+    await submitted(r); await r.cb(NICK, 'ua:TS5-6001'); const old = r.units()[0].posts[0].id;
+    await r.cb(NICK, 'rp:TS5-6001');
+    assert.ok(new RegExp('delete it by hand: https://t\\.me/Nick_Cambodia/' + old).test(r.last(NICK).body.text), r.last(NICK).body.text);
+    await r.say(NICK, '/repost XX-1'); assert.ok(/Send \/repost REF/.test(r.last(NICK).body.text));
+    await r.cb(A, 'rp:TS5-6001'); assert.ok(!/Reposted/.test(r.texts(A).join('|')), 'only Nick can repost');
+  });
+  await t('a post kept before album ids existed: the photos right above the text are removed too', async () => {
+    const r = rig(); await submitted(r); await r.cb(NICK, 'ua:TS5-6001');
+    const u = r.units()[0]; u.posts = [{ chat: '@Nick_Cambodia', id: 500, kind: 'text' }]; r.agentData.setUnit(u.ref, u);
+    const n0 = r.sent.length; await r.cb(NICK, 'rp:TS5-6001');
+    assert.deepStrictEqual(r.sent.slice(n0).filter((x) => x.method === 'deleteMessage').map((x) => x.body.message_id), [497, 498, 499, 500], '3 media then the text');
+  });
   await t('a post about another city is refused politely and nothing is kept', async () => {
     const r = rig(); await r.say(NICK, '/addagent 700001 Dara');
     await r.photo(A, 'F1', 'g1', 'Condo in Sihanoukville beachfront, 1 bedroom, selling price $65,000'); await r.cb(A, 'aw:collectdone');

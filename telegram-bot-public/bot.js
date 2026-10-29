@@ -609,7 +609,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     if (data === 'gd:get') return sendGuide(chatId, from, u);
     if (data === 'es:nosize') { if (!u.calc || !u.calc.rent) return goto(chatId, from, u, 'calc1'); u.calc.size = 0; return showEstimate(chatId, from, u); }
     if (/^ek:[spx]:\d+$/.test(data)) { if (isNick(from.id)) return ckAction(chatId, data); return; }
-    if (/^(aw|am|ac|ak|ua|ur|uc|uw|pn|pa|pr|wp|wx):/.test(data)) { if (await agentArea.handleCallback(cb, u)) return; }
+    if (/^(aw|am|ac|ak|ua|ur|uc|uw|pn|pa|pr|wp|wx|rp):/.test(data)) { if (await agentArea.handleCallback(cb, u)) return; }
     if (data.startsWith('ph:')) {
       const l = (await loadListings(from.id)).find((x) => x.id === data.slice(3));
       if (!l || !l.media || !l.media.length) return;
