@@ -201,6 +201,11 @@ function rig(rows) {
     const toNick = r.sent.find((s) => s.body.chat_id === '353195979'); assert.ok(/A1 Alpha Tower/.test(toNick.body.text));
     const toClient = r.sent.filter((s) => s.body.chat_id === 1).pop(); assert.ok(toClient.body.reply_markup.inline_keyboard[0][0].url.startsWith('https://line.me'));
   });
+  await t('the same flat listed twice (two Refs) shows once; different floors and project rows with a from price stay', () => {
+    const u = (id, extra) => Object.assign({ id, type: 'buy', name: 'M Residence', district: 'BKK1', price: 45000, net: 29, floor: '11', beds: '' }, extra || {});
+    const found = L.match([u('MR-6004'), u('MR-6010'), u('MR-6011', { floor: '12' }), { id: 'P1', type: 'buy', name: 'Time Square 9', district: 'BKK1', price: 46000 }, { id: 'P2', type: 'buy', name: 'Time Square 9', district: 'BKK1', price: 46000 }], 'buy', {}, 10);
+    assert.deepStrictEqual(found.map((x) => x.id), ['MR-6004', 'MR-6011', 'P1', 'P2']);
+  });
   await t('a Preview row is shown to Nick only, never to a client', async () => {
     const mk = (id) => { const sent = []; const db = {};
       const api = async (m, b) => { sent.push({ method: m, body: b }); return { ok: true }; };

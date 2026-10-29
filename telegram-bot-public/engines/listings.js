@@ -106,8 +106,20 @@ function districtOk(l, key) {
 function match(listings, kind, keys, limit) {
   const r = range(keys.budget);
   const price = (l) => (kind === 'buy' ? l.price : l.rent);
-  return (listings || []).filter((l) => l.type === kind && districtOk(l, keys.district) && (!r || (price(l) >= r[0] && price(l) <= r[1])))
-    .sort((a, b) => (r && r[2] ? Math.abs(price(a) - r[2]) - Math.abs(price(b) - r[2]) : price(a) - price(b))).slice(0, limit || 3);
+  return dedupe((listings || []).filter((l) => l.type === kind && districtOk(l, keys.district) && (!r || (price(l) >= r[0] && price(l) <= r[1])))
+    .sort((a, b) => (r && r[2] ? Math.abs(price(a) - r[2]) - Math.abs(price(b) - r[2]) : price(a) - price(b)))).slice(0, limit || 3);
+}
+// The same flat listed twice (two Refs, or the Sheet and an agent post) shows to a client once (Nick 2026-10-29).
+// Only listings that name a floor or a size count as one flat: a project row with a "from" price is never merged.
+function dedupe(list) {
+  const seen = new Set();
+  return list.filter((l) => {
+    const size = l.net || l.sqm || l.gross || 0;
+    if (!l.floor && !size) return true;
+    const k = [String(l.name || '').toLowerCase().replace(/[^a-z0-9]/g, ''), l.type, l.type === 'rent' ? l.rent : l.price, String(l.floor || ''), String(l.beds || ''), Math.round(size)].join('|');
+    if (seen.has(k)) return false;
+    seen.add(k); return true;
+  });
 }
 
 // Loader with a short cache. source is a file path or an https URL; failure keeps the last good copy.
