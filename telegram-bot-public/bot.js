@@ -45,7 +45,7 @@ const MSG = {
     kh: '<b>រឿង 5 ដែលគួរដឹងមុនពេលទិញ (2026)</b>\nឯកសារនេះជាភាសាអង់គ្លេស។ មានសំណួរ? សូមផ្ញើសារទៅ Nick តាម Telegram។ គាត់ឆ្លើយក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។',
   },
   nickBtn: { jp: 'LINEでNickに相談', en: 'Message Nick on Telegram', kh: 'និយាយជាមួយ Nick តាម Telegram' },
-  listHead: { jp: '<b>ご希望に近い物件</b>', en: '<b>Available now, close to your search</b>', kh: '<b>ជម្រើសដែលសមនឹងការស្វែងរករបស់អ្នក</b>' },
+  listHead: { jp: '<b>ご希望に近い物件</b>', en: '<b>Close to your search</b>', kh: '<b>ជម្រើសដែលសមនឹងការស្វែងរករបស់អ្នក</b>' },
   ask: { jp: 'この物件について聞く {id}', en: 'Ask about {id}', kh: 'សួរអំពី {id}' },
   askDone: {
     jp: 'Nickに伝えました。詳細は公式LINEでご案内します。',
@@ -65,7 +65,7 @@ const MSG = {
   },
   alertOn: {
     jp: '登録しました。条件に合う新着物件があれば、1日1回までまとめてお知らせします（日本時間の朝9時以降）。停止はいつでも /stop と送信してください。保存する情報は、TelegramのID、言語、検索条件のみです。',
-    en: 'Done. When a new listing fits your search, I will tell you at most once a day (after 9:00 Japan time). Send /stop at any time to end alerts. I only keep your Telegram ID, language and search choices.',
+    en: 'Done. When a new listing fits your search, I will tell you at most once a day, during the day (7:00 to 19:00 Phnom Penh time). Send /stop at any time to end alerts. I only keep your Telegram ID, language and search choices.',
     kh: 'រួចរាល់។ នៅពេលមានបញ្ជីថ្មីដែលសមនឹងការស្វែងរករបស់អ្នក ខ្ញុំនឹងប្រាប់យ៉ាងច្រើនមួយដងក្នុងមួយថ្ងៃ (បន្ទាប់ម៉ោង 9:00 ម៉ោងជប៉ុន)។ ផ្ញើ /stop ដើម្បីបញ្ឈប់។ ខ្ញុំរក្សាទុកតែ Telegram ID ភាសា និងជម្រើសស្វែងរកប៉ុណ្ណោះ។',
   },
   alertStopBtn: { jp: '通知を停止する', en: 'Stop alerts', kh: 'បិទការជូនដំណឹង' },

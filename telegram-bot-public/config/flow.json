@@ -672,7 +672,7 @@
    "id": "lead2",
    "flow": "Lead",
    "title": "Lead 2: Timeline",
-   "text": "<b>Ask Nick</b>\n<i>Step 2 of 3</i>\n\nWhen are you looking to move?",
+   "text": "<b>Ask Nick</b>\n<i>Step 2 of 3</i>\n\nWhen are you planning to buy or rent?",
    "buttons": [
     {
      "l": "Now",
@@ -812,7 +812,7 @@
      "url": ""
     },
     {
-     "l": "Live video call",
+     "l": "Video call",
      "to": "tourday",
      "half": false,
      "url": ""
@@ -1157,7 +1157,7 @@
    "id": "faq2",
    "flow": "FAQ",
    "title": "FAQ: Extra costs",
-   "text": "<b>Costs beyond the price</b>\n\n<b>When you buy</b>\n▫️ <b>Transfer tax:</b> 4%\n▫️ <b>Lawyer:</b> $500*\n▫️ <b>Title transfer fee:</b> depends on the project\n\n<b>While you own it</b>\n▫️ <b>Property tax:</b> 0.1% a year on the value above about $25,000\n▫️ <b>Building management:</b> $1 to $2 per sqm a month\n▫️ <b>Rental management:</b> 5% to 10% of the rent\n▫️ <b>Rental income tax:</b> 14% if you live abroad, 10% if resident\n\n<b>When you sell</b>\n▫️ <b>Capital gains tax:</b> 20% of the gain, scheduled from January 2027, may change\n\n<b>Depends on the project</b>\n▫️ <b>Furniture:</b> some units come furnished\n\n<i>*The usual fee in Cambodia. It depends on the lawyer, and a Japanese lawyer may cost more.</i>\n\n<blockquote>The booking fee and down payment are part of the price, not extra costs.</blockquote>\nSome developers pay the transfer tax as a promotion. Nick confirms the figures for each project.",
+   "text": "<b>Costs beyond the price</b>\n\n<b>When you buy</b>\n▫️ <b>Transfer tax:</b> 4%\n▫️ <b>Lawyer:</b> $500*\n▫️ <b>Title transfer fee:</b> depends on the project\n\n<b>While you own it</b>\n▫️ <b>Property tax:</b> 0.1% a year on the value above about $25,000\n▫️ <b>Building management:</b> $1 to $2 per sqm a month\n▫️ <b>Rental management:</b> 5% to 10% of the rent\n▫️ <b>Rental income tax:</b> 14% if you live abroad, 10% if resident\n\n<b>When you sell</b>\n▫️ <b>Capital gains tax:</b> 20% of the gain, scheduled from January 2027, may change\n\n<b>Depends on the project</b>\n▫️ <b>Furniture:</b> some units come furnished\n\n<i>*The usual fee in Cambodia. It depends on the lawyer, and a foreign lawyer may cost more.</i>\n\n<blockquote>The booking fee and down payment are part of the price, not extra costs.</blockquote>\nSome developers pay the transfer tax as a promotion. Nick confirms the figures for each project.",
    "buttons": [
     {
      "l": "Message Nick on Telegram",
@@ -1186,7 +1186,7 @@
      ]
     },
     "kh": {
-     "t": "<b>Costs beyond the price</b>\n\n<b>When you buy</b>\n▫️ <b>Transfer tax:</b> 4%\n▫️ <b>Lawyer:</b> $500*\n▫️ <b>Title transfer fee:</b> depends on the project\n\n<b>While you own it</b>\n▫️ <b>Property tax:</b> 0.1% a year on the value above about $25,000\n▫️ <b>Building management:</b> $1 to $2 per sqm a month\n▫️ <b>Rental management:</b> 5% to 10% of the rent\n▫️ <b>Rental income tax:</b> 14% if you live abroad, 10% if resident\n\n<b>When you sell</b>\n▫️ <b>Capital gains tax:</b> 20% of the gain, scheduled from January 2027, may change\n\n<b>Depends on the project</b>\n▫️ <b>Furniture:</b> some units come furnished\n\n<i>*The usual fee in Cambodia. It depends on the lawyer, and a Japanese lawyer may cost more.</i>\n\n<blockquote>The booking fee and down payment are part of the price, not extra costs.</blockquote>\nSome developers pay the transfer tax as a promotion. Nick confirms the figures for each project.",
+     "t": "<b>Costs beyond the price</b>\n\n<b>When you buy</b>\n▫️ <b>Transfer tax:</b> 4%\n▫️ <b>Lawyer:</b> $500*\n▫️ <b>Title transfer fee:</b> depends on the project\n\n<b>While you own it</b>\n▫️ <b>Property tax:</b> 0.1% a year on the value above about $25,000\n▫️ <b>Building management:</b> $1 to $2 per sqm a month\n▫️ <b>Rental management:</b> 5% to 10% of the rent\n▫️ <b>Rental income tax:</b> 14% if you live abroad, 10% if resident\n\n<b>When you sell</b>\n▫️ <b>Capital gains tax:</b> 20% of the gain, scheduled from January 2027, may change\n\n<b>Depends on the project</b>\n▫️ <b>Furniture:</b> some units come furnished\n\n<i>*The usual fee in Cambodia. It depends on the lawyer, and a foreign lawyer may cost more.</i>\n\n<blockquote>The booking fee and down payment are part of the price, not extra costs.</blockquote>\nSome developers pay the transfer tax as a promotion. Nick confirms the figures for each project.",
      "b": [
       "និយាយជាមួយ Nick តាម Telegram",
       "ត្រឡប់ក្រោយ"
@@ -1195,7 +1195,7 @@
    },
    "photo": {
     "jp": "faq/faq-03-costs.png?v=d121a670",
-    "en": "faq/faq-03-costs-en.png?v=5578e8b1"
+    "en": "faq/faq-03-costs-en.png?v=2573573f"
    }
   },
   {
