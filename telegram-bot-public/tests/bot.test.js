@@ -157,7 +157,7 @@ const NICK = '353195979';
     assert.ok(enPh && /faq-02-process-en\.png\?v=/.test(enPh.body.photo) && /The buying process/.test(enPh.body.caption), 'English gets the English picture');
     // Khmer since Nick's review (2026-11-01): Khmer picture, Nick's Khmer answer, the Khmer menu word
     const kh = r.U(33, 'km'); await r.say(kh, '/start'); await r.tap(kh, 'ខ្មែរ'); const k0 = r.sent.length;
-    await r.tap(kh, 'ផ្សេងៗ'); await r.tap(kh, 'សំណួរញឹកញាប់'); await r.tap(kh, 'How buying works');
+    await r.tap(kh, 'ផ្សេងៗ'); await r.tap(kh, 'សំណួរញឹកញាប់'); await r.tap(kh, 'ដំណើរការទិញ');
     const khPh = r.sent.slice(k0).find((x) => x.method === 'sendPhoto');
     assert.ok(khPh && /faq-02-process-kh\.png\?v=/.test(khPh.body.photo) && khPh.body.caption.includes('ចុះបញ្ជីផ្ទេរកម្មសិទ្ធិក្នុងនាមរបស់អ្នក'), 'Khmer gets the Khmer picture and answer');
     const flow = require('../config/flow.json');

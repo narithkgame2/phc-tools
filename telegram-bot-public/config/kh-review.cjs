@@ -58,4 +58,7 @@ const msgs = {
   avail: 'ភាពអាចរកបាន និងតម្លៃ Nick នឹងបញ្ជាក់នៅពេលអ្នកសួរ។',
 };
 
-module.exports = { screens, faq, msgs, KH_MENU };
+// FAQ topic buttons, in the order faq1 to faq5 (Nick OK, 2026-11-01)
+const faqTopics = ['កម្មសិទ្ធិជនបរទេស', 'ចំណាយផ្សេងៗ', 'ពន្ធ និងថ្លៃលើការជួល', 'ដំណើរការទិញ', 'ទិញពីក្រៅប្រទេស'];
+
+module.exports = { screens, faq, faqTopics, msgs, KH_MENU };

@@ -238,6 +238,9 @@ by.lead3.tr.kh.b[0] = 'ផ្ញើសារទៅ Nick ឥឡូវនេះ'; 
     s.tr.kh = { t: r.t, b: r.b.slice() };
   });
   Object.keys(KH.faq).forEach((id) => { by[id].tr.kh.t = KH.faq[id]; by[id].note = 'Facts from the website FAQ. Japanese and Khmer reviewed by Nick.'; });
+  const fb = by.faq.tr.kh.b, ids = by.faq.buttons.map((x) => x.to);
+  if (ids.slice(0, 5).join() !== 'faq1,faq2,faq3,faq4,faq5') throw new Error('Khmer review: FAQ topics moved');
+  KH.faqTopics.forEach((l, i) => { fb[i] = l; });
   by.faq.note = 'Facts come from the website FAQ. No company names, no WhatsApp. Japanese and Khmer reviewed by Nick.';
   // the main menu button is ម៉ឺនុយ everywhere, also on screens outside the review (estimate)
   steps.forEach((s) => { if (s.tr && s.tr.kh && s.tr.kh.b) s.tr.kh.b = s.tr.kh.b.map((x) => (x === 'ម៉ឺនុយមេ' ? KH.KH_MENU : x)); });
