@@ -32,17 +32,17 @@ const MSG = {
   nick: {
     jp: 'ご相談は公式LINEで承ります。Nick本人が1営業日以内にお答えします。',
     en: 'Nick answers on Telegram. He replies within 1 business day.',
-    kh: 'Nick ឆ្លើយតបតាម Telegram។ គាត់ឆ្លើយក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។',
+    kh: 'Nick ឆ្លើយតបតាម Telegram។ គាត់ឆ្លើយក្នុងរយៈពេល 24 ម៉ោង។',
   },
   guideAsk: {
     jp: 'ご質問はLINEでどうぞ。Nick本人が1営業日以内にお答えします。',
     en: 'Questions? Message Nick on Telegram. He replies within 1 business day.',
-    kh: 'មានសំណួរ? សូមផ្ញើសារទៅ Nick តាម Telegram។ គាត់ឆ្លើយក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។',
+    kh: 'មានសំណួរ? សូមផ្ញើសារទៅ Nick តាម Telegram។ គាត់ឆ្លើយក្នុងរយៈពេល 24 ម៉ោង។',
   },
   guideCap: {
     jp: '<b>購入前に知っておきたい5つのこと（2026年版）</b>\nご質問はLINEでどうぞ。Nick本人が1営業日以内にお答えします。',
     en: '<b>5 things to know before you buy (2026)</b>\nQuestions? Message Nick on Telegram. He replies within 1 business day.',
-    kh: '<b>រឿង 5 ដែលគួរដឹងមុនពេលទិញ (2026)</b>\nឯកសារនេះជាភាសាអង់គ្លេស។ មានសំណួរ? សូមផ្ញើសារទៅ Nick តាម Telegram។ គាត់ឆ្លើយក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។',
+    kh: '<b>រឿង 5 ដែលគួរដឹងមុនពេលទិញ (2026)</b>\nឯកសារនេះជាភាសាអង់គ្លេស។ មានសំណួរ? សូមផ្ញើសារទៅ Nick តាម Telegram។ គាត់ឆ្លើយក្នុងរយៈពេល 24 ម៉ោង។',
   },
   nickBtn: { jp: 'LINEでNickに相談', en: 'Message Nick on Telegram', kh: 'និយាយជាមួយ Nick តាម Telegram' },
   listHead: { jp: '<b>ご希望に近い物件</b>', en: '<b>Close to your search</b>', kh: '<b>ជម្រើសដែលសមនឹងការស្វែងរករបស់អ្នក</b>' },

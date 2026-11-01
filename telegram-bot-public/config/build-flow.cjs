@@ -18,11 +18,11 @@ function request(id, back, enT, jpT, khT) {
 request('bres', 'b1',
   '<b>Your search is saved</b>\n<i>[search summary]</i>\n\nNick will check availability and send you up to three options for this search within 1 business day.\nYou can also message him now on LINE.',
   '<b>ご希望の条件を承りました</b>\n<i>[search summary]</i>\n\nNickが販売状況を確認し、この条件に合う物件を最大3件、数字つきで1営業日以内にお送りします。\nお急ぎの場合は、今すぐLINEでもご相談いただけます。',
-  '<b>យើងបានទទួលលក្ខខណ្ឌស្វែងរករបស់អ្នក</b>\n<i>[search summary]</i>\n\nNick នឹងពិនិត្យភាពអាចរកបាន ហើយផ្ញើជម្រើសល្អបំផុតរហូតដល់ 3 ជូនអ្នកក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។\nអ្នកក៏អាចផ្ញើសារទៅគាត់តាម LINE ភ្លាមៗបានដែរ។');
+  '<b>យើងបានទទួលលក្ខខណ្ឌស្វែងរករបស់អ្នក</b>\n<i>[search summary]</i>\n\nNick នឹងពិនិត្យភាពអាចរកបាន ហើយផ្ញើជម្រើសល្អបំផុតរហូតដល់ 3 ជូនអ្នកក្នុងរយៈពេល 24 ម៉ោង។\nអ្នកក៏អាចផ្ញើសារទៅគាត់តាម LINE ភ្លាមៗបានដែរ។');
 request('rres', 'rr1',
   '<b>Your search is saved</b>\n<i>[search summary]</i>\n\nNick will check availability and send you up to three rental options for this search within 1 business day.\nYou can also message him now on LINE.',
   '<b>ご希望の条件を承りました</b>\n<i>[search summary]</i>\n\nNickが空室状況を確認し、この条件に合う賃貸物件を最大3件、1営業日以内にお送りします。\nお急ぎの場合は、今すぐLINEでもご相談いただけます。',
-  '<b>យើងបានទទួលលក្ខខណ្ឌស្វែងរករបស់អ្នក</b>\n<i>[search summary]</i>\n\nNick នឹងពិនិត្យភាពអាចរកបាន ហើយផ្ញើជម្រើសសម្រាប់ជួលល្អបំផុតរហូតដល់ 3 ជូនអ្នកក្នុងរយៈពេល 1 ថ្ងៃធ្វើការ។\nអ្នកក៏អាចផ្ញើសារទៅគាត់តាម LINE ភ្លាមៗបានដែរ។');
+  '<b>យើងបានទទួលលក្ខខណ្ឌស្វែងរករបស់អ្នក</b>\n<i>[search summary]</i>\n\nNick នឹងពិនិត្យភាពអាចរកបាន ហើយផ្ញើជម្រើសសម្រាប់ជួលល្អបំផុតរហូតដល់ 3 ជូនអ្នកក្នុងរយៈពេល 24 ម៉ោង។\nអ្នកក៏អាចផ្ញើសារទៅគាត់តាម LINE ភ្លាមៗបានដែរ។');
 // wording fixes found in the Japanese review: the bot has no favourites and no keyword search, so the screens must not mention them
 function retext(id, en, jp, kh) { const s = by[id]; s.text = en; s.tr.jp.t = jp; s.tr.kh.t = kh; }
 retext('forget',

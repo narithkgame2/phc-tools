@@ -161,7 +161,7 @@ const NICK = '353195979';
     const khPh = r.sent.slice(k0).find((x) => x.method === 'sendPhoto');
     assert.ok(khPh && /faq-02-process-kh\.png\?v=/.test(khPh.body.photo) && khPh.body.caption.includes('ចុះបញ្ជីផ្ទេរកម្មសិទ្ធិក្នុងនាមរបស់អ្នក'), 'Khmer gets the Khmer picture and answer');
     const flow = require('../config/flow.json');
-    assert.ok(!JSON.stringify(flow).includes('ម៉ឺនុយមេ') && !JSON.stringify(flow).includes('24 ម៉ោង'), 'Khmer says ម៉ឺនុយ and 1 business day everywhere');
+    assert.ok(!JSON.stringify(flow).includes('ម៉ឺនុយមេ') && !JSON.stringify(flow).includes('ថ្ងៃធ្វើការ'), 'Khmer says ម៉ឺនុយ and 24 hours everywhere (Nick)');
   });
   await t('estimate reading: amounts with commas, $, man and k; a project name; sizes, not fees per sqm', () => {
     const E = require('../engines/estimate.js');
