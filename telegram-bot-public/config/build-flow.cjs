@@ -134,9 +134,9 @@ by.calc1.await = 'calc'; by.check1.await = 'check';
     };
   });
   // FAQ pictures (Nick 2026-10-26): shown with the answer as the caption, per language. English since 2026-10-26.
-  // Khmer pictures exist as drafts (assets/faq/*-kh.png) and are switched on only after Nick has checked the Khmer: add 'kh' to LANGS_WITH_PICTURES.
+  // Khmer since 2026-11-01, after Nick's Khmer review.
   // v is a short fingerprint of the file, so Telegram fetches a changed picture again instead of a cached one.
-  const LANGS_WITH_PICTURES = { jp: '', en: '-en' };
+  const LANGS_WITH_PICTURES = { jp: '', en: '-en', kh: '-kh' };
   const pics = { faq1: 'faq-01-ownership', faq2: 'faq-03-costs', faq3: 'faq-04-rental', faq4: 'faq-02-process', faq5: 'faq-05-abroad' };
   Object.keys(pics).forEach((id) => {
     by[id].photo = {};
@@ -227,5 +227,20 @@ steps.forEach(s => {
 // Ask Nick step 3 in English and Khmer: both answers are Telegram, so they say who writes first
 by.lead3.buttons[0].l = 'I will message Nick now'; by.lead3.buttons[1].l = 'Nick messages me first';
 by.lead3.tr.kh.b[0] = 'ផ្ញើសារទៅ Nick ឥឡូវនេះ'; by.lead3.tr.kh.b[1] = 'ឲ្យ Nick ផ្ញើសារមកខ្ញុំមុន';
+// Khmer review with Nick (2026-11-01, config/kh-review.cjs): his Khmer for every client screen and the FAQ.
+// Applied last so it sees the final buttons; a screen whose button count no longer matches stops the build.
+(function () {
+  const KH = require('./kh-review.cjs');
+  Object.keys(KH.screens).forEach((id) => {
+    const s = by[id], r = KH.screens[id];
+    if (!s) throw new Error('Khmer review: no screen ' + id);
+    if (r.b.length !== s.buttons.length) throw new Error('Khmer review: ' + id + ' has ' + s.buttons.length + ' buttons, the review has ' + r.b.length);
+    s.tr.kh = { t: r.t, b: r.b.slice() };
+  });
+  Object.keys(KH.faq).forEach((id) => { by[id].tr.kh.t = KH.faq[id]; by[id].note = 'Facts from the website FAQ. Japanese and Khmer reviewed by Nick.'; });
+  by.faq.note = 'Facts come from the website FAQ. No company names, no WhatsApp. Japanese and Khmer reviewed by Nick.';
+  // the main menu button is ម៉ឺនុយ everywhere, also on screens outside the review (estimate)
+  steps.forEach((s) => { if (s.tr && s.tr.kh && s.tr.kh.b) s.tr.kh.b = s.tr.kh.b.map((x) => (x === 'ម៉ឺនុយមេ' ? KH.KH_MENU : x)); });
+})();
 fs.writeFileSync(path.join(__dirname, 'flow.json'), JSON.stringify({ line: LINE, telegram: TELEGRAM, steps }, null, 1));
 console.log('flow.json written:', steps.length, 'steps');

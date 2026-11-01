@@ -105,6 +105,11 @@ const MSG = {
   },
   myid: { jp: 'あなたのTelegram IDは {id} です。', en: 'Your Telegram ID is {id}.', kh: 'Telegram ID របស់អ្នកគឺ {id}។' },
 };
+// Nick's Khmer review (2026-11-01) replaces these Khmer texts; the file also feeds the screens (config/build-flow.cjs)
+Object.entries(require('./config/kh-review.cjs').msgs).forEach(([k, v]) => {
+  if (!MSG[k]) throw new Error('Khmer review: no message ' + k);
+  MSG[k].kh = v;
+});
 const fmtUsd = (n) => '$' + Math.round(n).toLocaleString('en-US');
 
 const nk = (x) => String(x || '').toLowerCase().replace(/[^a-z0-9]/g, '');

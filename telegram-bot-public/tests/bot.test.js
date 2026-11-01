@@ -146,7 +146,7 @@ const NICK = '353195979';
     for (const want of ['Short stay', '219 nights', '$13,140', '$9,108 before the operator fee', '$7,286', '8.7% of $84,000', 'If 14% rental tax applies', '6.5%']) assert.ok(x.includes(want), want + '\n' + x);
     assert.ok(!m.body.reply_markup.inline_keyboard.some((row) => row[0].text === 'Send to client'));
   });
-  await t('the FAQ shows its picture in Japanese and English, with the answer and buttons', async () => {
+  await t('the FAQ shows its picture in Japanese, English and Khmer, with the answer and buttons', async () => {
     const r = rig(), jp = r.U(31, 'ja'); await r.say(jp, '/start');
     await r.tap(jp, 'その他'); await r.tap(jp, 'よくある質問'); await r.tap(jp, '購入の流れ');
     const ph = r.sent.filter((x) => x.method === 'sendPhoto').pop();
@@ -155,7 +155,13 @@ const NICK = '353195979';
     await r.tap(en, 'More'); await r.tap(en, 'Common questions'); await r.tap(en, 'How buying works');
     const after = r.sent.slice(n0), enPh = after.find((x) => x.method === 'sendPhoto');
     assert.ok(enPh && /faq-02-process-en\.png\?v=/.test(enPh.body.photo) && /The buying process/.test(enPh.body.caption), 'English gets the English picture');
-    const step = require('../config/flow.json').steps.find((x) => x.id === 'faq4'); assert.ok(!step.photo.kh, 'Khmer pictures stay off until Nick has checked the Khmer');
+    // Khmer since Nick's review (2026-11-01): Khmer picture, Nick's Khmer answer, the Khmer menu word
+    const kh = r.U(33, 'km'); await r.say(kh, '/start'); await r.tap(kh, 'ខ្មែរ'); const k0 = r.sent.length;
+    await r.tap(kh, 'ផ្សេងៗ'); await r.tap(kh, 'សំណួរញឹកញាប់'); await r.tap(kh, 'How buying works');
+    const khPh = r.sent.slice(k0).find((x) => x.method === 'sendPhoto');
+    assert.ok(khPh && /faq-02-process-kh\.png\?v=/.test(khPh.body.photo) && khPh.body.caption.includes('ចុះបញ្ជីផ្ទេរកម្មសិទ្ធិក្នុងនាមរបស់អ្នក'), 'Khmer gets the Khmer picture and answer');
+    const flow = require('../config/flow.json');
+    assert.ok(!JSON.stringify(flow).includes('ម៉ឺនុយមេ') && !JSON.stringify(flow).includes('24 ម៉ោង'), 'Khmer says ម៉ឺនុយ and 1 business day everywhere');
   });
   await t('estimate reading: amounts with commas, $, man and k; a project name; sizes, not fees per sqm', () => {
     const E = require('../engines/estimate.js');
