@@ -82,7 +82,8 @@ async function api(method, body) {
   try {
     const r = await fetch('https://api.telegram.org/bot' + token + '/' + method, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
     const j = await r.json();
-    if (!j.ok && /Conflict/i.test(j.description || '')) console.error('Another copy of this bot is already running with the same token. Stop one of them (only one may run at a time).');
+    if (!j.ok && /Conflict/i.test(j.description || '') && /webhook/i.test(j.description || '')) console.log('The backup was answering while this Mac was away. The Mac takes over again.');
+    else if (!j.ok && /Conflict/i.test(j.description || '')) console.error('Another copy of this bot is already running with the same token. Stop one of them (only one may run at a time).');
     else if (!j.ok && !/message is not modified/i.test(j.description || '')) console.error('Telegram error on ' + method + ': ' + (j.description || 'unknown'));
     return j;
   } catch (e) {
@@ -104,6 +105,17 @@ const crm = createCrm({ url: process.env.CRM_URL, key: process.env.CRM_KEY, onEr
 console.log('PHC CRM link: ' + (crm ? 'on' : 'off (run deploy/crm/setup-crm.sh to switch it on)'));
 const bot = createBot({ api, translate, crm, guideStore, store, flow, nickId: NICK_ID, listingState, alertStore, testerIds, agentData, channels, places, events: eventStore, botUsername: process.env.BOT_USERNAME || 'Nick_Cambodia_Bot', isPrivate: () => { try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'mode.json'), 'utf8')).private === true; } catch (e) { return false; } }, getListings: combine(makeLoader(listingsSource, 300000, places), makeWebsiteLoader(websiteFeed, 300000, { photos: process.env.SHOW_WEBSITE_PHOTOS === '1', places, boundaries })), onError: (e) => console.error('Handler error:', e.message) });
 
+// The backup in Google Apps Script answers clients while this Mac is off (deploy/backup/). Heartbeat every minute.
+const { createBackupLink, backupConfig } = require('./engines/backup.js');
+const backup = createBackupLink({
+  url: process.env.BACKUP_URL, key: process.env.BACKUP_KEY,
+  config: () => { const B = require('./bot.js'); return backupConfig({ flow, MSG: B.MSG, GUIDE: B.GUIDE, MEDIA_BASE: B.MEDIA_BASE, commandList: B.commandList, nickId: NICK_ID, testers: testerIds, priv: (() => { try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'mode.json'), 'utf8')).private === true; } catch (e) { return false; } })(), guides: gd }); },
+  live: () => { const langs = {}; Object.keys(users).forEach((k) => { if (users[k] && users[k].lang) langs[k] = users[k].lang; }); return { langs, alerts: Object.keys(astate), agents: Object.keys(ad.agents || {}) }; },
+  replay: (it) => bot.replay(it),
+  log: (m) => console.log(m),
+});
+console.log('Backup when the Mac is off: ' + (backup ? 'on' : 'off (run deploy/backup/setup-backup.sh to switch it on)'));
+
 async function setupProfile() {
   // the default follows the Telegram app language; a client who picks a language in the bot gets that list for their chat
   const { commandList, MENU_V } = require('./bot.js');
@@ -123,6 +135,8 @@ async function setupProfile() {
 async function run() {
   const me = await api('getMe', {});
   console.log('Nick Cambodia bot started as @' + (me.result && me.result.username) + '');
+  // Telegram may still point at the backup (it answered while this Mac was off): take the messages back before polling
+  await api('deleteWebhook', { drop_pending_updates: false });
   await setupProfile();
   // Tell Nick where the bot is running each time it starts, so he knows whether the hosted copy or his Mac is answering.
   if (NICK_ID) await api('sendMessage', { chat_id: NICK_ID, text: 'Bot started on ' + require('os').hostname() + ' (@' + ((me.result && me.result.username) || '?') + ').' });
@@ -130,9 +144,15 @@ async function run() {
   setInterval(() => bot.runOps().catch((e) => console.error('Ops error:', e.message)), 10 * 60 * 1000);
   setInterval(() => bot.runAgentChecks().catch((e) => console.error('Agent check error:', e.message)), 10 * 60 * 1000);
   setInterval(() => bot.runAlerts().catch((e) => console.error('Alert error:', e.message)), 10 * 60 * 1000);
+  if (backup) { await backup.beat(); setInterval(() => backup.beat().catch((e) => console.error('Backup error:', e.message)), 60 * 1000); }
   let offset = 0;
   for (;;) {
     const r = await api('getUpdates', { offset, timeout: 30, allowed_updates: ['message', 'callback_query', 'channel_post'] }); // channel_post: Nick's own listings in a watched channel
+    if (!r.ok && /webhook/i.test(r.description || '')) { // the backup took over while this Mac seemed away (asleep, offline): take it back
+      await api('deleteWebhook', { drop_pending_updates: false });
+      if (backup) await backup.beat();
+      continue;
+    }
     if (!r.ok) { await new Promise((s) => setTimeout(s, 3000)); continue; }
     for (const u of r.result) {
       offset = u.update_id + 1;

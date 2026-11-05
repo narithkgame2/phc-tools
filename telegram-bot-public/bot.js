@@ -575,6 +575,40 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     return n;
   }
 
+  // Ask about a unit: Nick gets the card with Available / Not available, the client a short answer (late: the client already had it from the backup)
+  async function askAbout(chatId, from, u, l, late) {
+    noteInt(u, 'asks', l.id);
+    save(u);
+    const st = state.get(l.id) || {};
+    st.askers = (st.askers || []).filter((x) => x.id !== u.id).concat([{ id: u.id, lang: u.lang, at: new Date(clock()).toISOString() }]).slice(-50);
+    state.set(l.id, st);
+    if (!isNick(u.id)) { ops.track('ask', { ref: l.id }); ops.askOpened(l.id, u.id, l.name, nameOf(from) + (from.username ? ' (@' + from.username + ')' : '')); }
+    if (nickId) {
+      const rent = l.type === 'rent';
+      await api('sendMessage', { chat_id: nickId, text: '<b>Listing interest</b>' + (late ? ' <i>(asked while the Mac was off)</i>' : '') + (isNick(u.id) ? ' <i>(your own test)</i>' : isTester(u.id) ? ' <i>(tester account)</i>' : '') + '\nClient: ' + R.esc(nameOf(from)) + (from.username ? ' (@' + R.esc(from.username) + ')' : '') + ' (' + u.id + ')\nListing: ' + R.esc(l.id + ' ' + l.name) + (areaText(l) ? ', ' + R.esc(areaText(l)) : '') + ', ' + fmtUsd(rent ? l.rent : l.price) + (rent ? '/month' : '') + interestLines(u).map((x) => '\n' + x).join('') + '\nOpen chat: tg://user?id=' + u.id, parse_mode: 'HTML', disable_web_page_preview: true,
+        reply_markup: { inline_keyboard: [[{ text: 'Available', callback_data: 'v:a:' + l.id + ':' + u.id }, { text: 'Not available', callback_data: 'v:n:' + l.id + ':' + u.id }], [{ text: 'Checking now', callback_data: 'v:c:' + l.id + ':' + u.id }]] } });
+    }
+    const done = late ? null : await api('sendMessage', { chat_id: chatId, text: MSG.askDone[u.lang], reply_markup: { inline_keyboard: [[{ text: MSG.nickBtn[u.lang], url: contactUrl(u.lang) }]] } });
+    await toCrm(u, from, 'Asked about ' + l.id + ' ' + l.name + ', ' + fmtUsd(l.type === 'rent' ? l.rent : l.price) + (l.type === 'rent' ? '/month' : ''), { interestedIn: l.id + ' ' + l.name });
+    return done;
+  }
+  async function showPhotos(chatId, from, ref) {
+    const l = (await loadListings(from.id)).find((x) => x.id === ref);
+    if (!l || !l.media || !l.media.length) return;
+    ops.track('photos', { ref: l.id });
+    const items = l.media.slice(0, 10);
+    if (items.length === 1) return items[0].t === 'video' ? api('sendVideo', { chat_id: chatId, video: items[0].id }) : api('sendPhoto', { chat_id: chatId, photo: items[0].id });
+    return api('sendMediaGroup', { chat_id: chatId, media: items.map((x) => ({ type: x.t === 'video' ? 'video' : 'photo', media: x.id })) });
+  }
+  async function showCompare(chatId, from, u, refs) {
+    const ids = refs.slice(0, 3), all = await loadListings(from.id);
+    const picked = ids.map((id) => all.find((x) => x.id === id)).filter(Boolean);
+    if (picked.length < 2) return api('sendMessage', { chat_id: chatId, text: MSG.refGone[u.lang || 'jp'] });
+    if (!u.lang) u.lang = 'jp';
+    if (!isNick(u.id)) ops.track('compare');
+    return api('sendMessage', { chat_id: chatId, text: compareText(picked, u.lang, { fmtUsd, esc: R.esc, areaText }), parse_mode: 'HTML', disable_web_page_preview: true,
+      reply_markup: { inline_keyboard: picked.map((l) => [{ text: MSG.ask[u.lang].replace('{id}', l.id), callback_data: 'q:' + l.id }]) } });
+  }
   async function handleCallback(cb) {
     const from = cb.from, data = cb.data || '', msg = cb.message;
     await api('answerCallbackQuery', { callback_query_id: cb.id });
@@ -596,42 +630,14 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
       const l = (await loadListings(from.id)).find((x) => x.id === data.slice(2));
       if (!l) return;
       if (!u.lang) u.lang = 'jp';
-      noteInt(u, 'asks', l.id);
-      save(u);
-      const st = state.get(l.id) || {};
-      st.askers = (st.askers || []).filter((x) => x.id !== u.id).concat([{ id: u.id, lang: u.lang, at: new Date(clock()).toISOString() }]).slice(-50);
-      state.set(l.id, st);
-      if (!isNick(u.id)) { ops.track('ask', { ref: l.id }); ops.askOpened(l.id, u.id, l.name, nameOf(from) + (from.username ? ' (@' + from.username + ')' : '')); }
-      if (nickId) {
-        const rent = l.type === 'rent';
-        await api('sendMessage', { chat_id: nickId, text: '<b>Listing interest</b>' + (isNick(u.id) ? ' <i>(your own test)</i>' : isTester(u.id) ? ' <i>(tester account)</i>' : '') + '\nClient: ' + R.esc(nameOf(from)) + (from.username ? ' (@' + R.esc(from.username) + ')' : '') + ' (' + u.id + ')\nListing: ' + R.esc(l.id + ' ' + l.name) + (areaText(l) ? ', ' + R.esc(areaText(l)) : '') + ', ' + fmtUsd(rent ? l.rent : l.price) + (rent ? '/month' : '') + interestLines(u).map((x) => '\n' + x).join('') + '\nOpen chat: tg://user?id=' + u.id, parse_mode: 'HTML', disable_web_page_preview: true,
-          reply_markup: { inline_keyboard: [[{ text: 'Available', callback_data: 'v:a:' + l.id + ':' + u.id }, { text: 'Not available', callback_data: 'v:n:' + l.id + ':' + u.id }], [{ text: 'Checking now', callback_data: 'v:c:' + l.id + ':' + u.id }]] } });
-      }
-      const done = await api('sendMessage', { chat_id: chatId, text: MSG.askDone[u.lang], reply_markup: { inline_keyboard: [[{ text: MSG.nickBtn[u.lang], url: contactUrl(u.lang) }]] } });
-      await toCrm(u, from, 'Asked about ' + l.id + ' ' + l.name + ', ' + fmtUsd(l.type === 'rent' ? l.rent : l.price) + (l.type === 'rent' ? '/month' : ''), { interestedIn: l.id + ' ' + l.name });
-      return done;
+      return askAbout(chatId, from, u, l, false);
     }
     if (data === 'gd:get') return sendGuide(chatId, from, u);
     if (data === 'es:nosize') { if (!u.calc || !u.calc.rent) return goto(chatId, from, u, 'calc1'); u.calc.size = 0; return showEstimate(chatId, from, u); }
     if (/^ek:[spx]:\d+$/.test(data)) { if (isNick(from.id)) return ckAction(chatId, data); return; }
     if (/^(aw|am|ac|ak|ua|ur|uc|uw|pn|pa|pr|wp|wx|rp):/.test(data)) { if (await agentArea.handleCallback(cb, u)) return; }
-    if (data.startsWith('ph:')) {
-      const l = (await loadListings(from.id)).find((x) => x.id === data.slice(3));
-      if (!l || !l.media || !l.media.length) return;
-      ops.track('photos', { ref: l.id });
-      const items = l.media.slice(0, 10);
-      if (items.length === 1) return items[0].t === 'video' ? api('sendVideo', { chat_id: chatId, video: items[0].id }) : api('sendPhoto', { chat_id: chatId, photo: items[0].id });
-      return api('sendMediaGroup', { chat_id: chatId, media: items.map((x) => ({ type: x.t === 'video' ? 'video' : 'photo', media: x.id })) });
-    }
-    if (data.startsWith('cmp:')) {
-      const ids = data.slice(4).split(',').slice(0, 3), all = await loadListings(from.id);
-      const picked = ids.map((id) => all.find((x) => x.id === id)).filter(Boolean);
-      if (picked.length < 2) return api('sendMessage', { chat_id: chatId, text: MSG.refGone[u.lang || 'jp'] });
-      if (!u.lang) u.lang = 'jp';
-      if (!isNick(u.id)) ops.track('compare');
-      return api('sendMessage', { chat_id: chatId, text: compareText(picked, u.lang, { fmtUsd, esc: R.esc, areaText }), parse_mode: 'HTML', disable_web_page_preview: true,
-        reply_markup: { inline_keyboard: picked.map((l) => [{ text: MSG.ask[u.lang].replace('{id}', l.id), callback_data: 'q:' + l.id }]) } });
-    }
+    if (data.startsWith('ph:')) return showPhotos(chatId, from, data.slice(3));
+    if (data.startsWith('cmp:')) return showCompare(chatId, from, u, data.slice(4).split(','));
     if (data === 'al:on') {
       if (!u.lang) u.lang = 'jp';
       save(u);
@@ -772,6 +778,40 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
     return goto(chatId, from, u, 'unknown');
   }
 
+  // The backup in Google Apps Script (deploy/backup/NickBot_Backup.gs) answered clients while this Mac was off, with the same
+  // screens. What it could not do itself comes here when the Mac is back: languages, stopped alerts, deletions, CRM rows, and the
+  // listings, unit cards, photos and comparisons the client asked for (those only within 24 hours, older ones would confuse).
+  async function replay(it) {
+    const id = String((it && it.id) || '');
+    if (!/^\d{3,15}$/.test(id)) return;
+    const chatId = Number(id), from = Object.assign({}, it.from || {}, { id: chatId });
+    if (it.k === 'forget') { store.delete(id); alerts.delete(id); if (crm) await crm.forget(chatId); return; }
+    let u = store.get(id);
+    if (!u) u = { id: chatId, lang: null, answers: {}, awaiting: null, firstSeen: it.at || new Date(clock()).toISOString() };
+    if (it.lang && R.LANGS.includes(it.lang)) u.lang = it.lang;
+    if (!u.lang) u.lang = 'jp';
+    if (from.username) u.username = String(from.username).toLowerCase();
+    if (it.int && typeof it.int === 'object') {
+      u.int = u.int || {};
+      ['from', 'guide', 'budget', 'timeline'].forEach((k) => { if (it.int[k] && !u.int[k]) u.int[k] = String(it.int[k]); });
+      ['searches', 'faq', 'asks'].forEach((k) => { (Array.isArray(it.int[k]) ? it.int[k] : []).forEach((v) => noteInt(u, k, String(v))); });
+    }
+    const fresh = !it.at || clock() - Date.parse(it.at) < DAY;
+    const keysOf = (k) => { const o = {}; Object.keys(k || {}).forEach((x) => { if (/^[a-z0-9]{1,12}$/.test(x)) o[x] = String(k[x]).slice(0, 100); }); return o; };
+    if (it.k === 'search' || it.k === 'alert') { u.keys = keysOf(it.keys); u.lastKind = it.kind === 'rent' ? 'rent' : 'buy'; }
+    save(u);
+    if (it.k === 'stop') return alerts.delete(id);
+    if (it.k === 'keep') { const a = alerts.get(id); if (a) alerts.set(id, Object.assign({}, a, { createdAt: new Date(clock()).toISOString(), askedAt: '' })); return; }
+    if (it.k === 'alert') return setAlert(u);
+    if (it.k === 'crm') return toCrm(u, from, String(it.event || 'Bot activity'));
+    if (it.k === 'ask') { const l = (await loadListings(chatId)).find((x) => x.id === it.ref); return l ? askAbout(chatId, from, u, l, true) : toCrm(u, from, 'Asked about ' + String(it.ref || '').slice(0, 40)); }
+    if (!fresh) return;
+    if (it.k === 'search') return sendListings(chatId, u, u.lastKind);
+    if (it.k === 'ref' && /^[A-Za-z0-9_-]{3,40}$/.test(it.ref || '')) return it.sim ? showSimilar(chatId, from, u, it.ref) : showRef(chatId, from, u, it.ref);
+    if (it.k === 'photos') return showPhotos(chatId, from, String(it.ref || ''));
+    if (it.k === 'cmp' && Array.isArray(it.ids)) return showCompare(chatId, from, u, it.ids.map(String));
+  }
+
   async function handleUpdate(update) {
     try {
       // Private test mode: until Nick opens the bot, only he and his tester accounts can use it. Everyone else gets one polite line.
@@ -801,7 +841,7 @@ function createBot({ api, store, flow, nickId, onError, getListings, listingStat
       } catch (e2) { /* nothing more to do */ }
     }
   }
-  return { handleUpdate, byId, runAlerts, runOps, runAgentChecks: () => agentArea.runChecks(), botLink, ops, flushWatch: () => agentArea.flushWatch() };
+  return { handleUpdate, replay, byId, runAlerts, runOps, runAgentChecks: () => agentArea.runChecks(), botLink, ops, flushWatch: () => agentArea.flushWatch() };
 }
 
-module.exports = { createBot, DISCLAIMER, MSG, commandList, MENU_V };
+module.exports = { createBot, DISCLAIMER, MSG, commandList, MENU_V, GUIDE, MEDIA_BASE };
