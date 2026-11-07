@@ -216,6 +216,15 @@ const cbU = (id, from, data) => ({ update_id: Math.floor(Math.random() * 1e9), c
     assert.strictEqual(logs.length, 1);
   });
 
+  await t('a few seconds of macOS dark wake is not a real wake; 90 seconds awake is', () => {
+    const { createWakeWatch } = require('../engines/wake.js');
+    let clock = 1e9; const w = createWakeWatch({ now: () => clock, tick: 0 });
+    assert.ok(w.settled(), 'awake from the start');
+    clock += 17 * 60000; assert.ok(!w.settled(), 'just woke after 17 minutes asleep');
+    clock += 5000; assert.ok(!w.settled());
+    for (let i = 0; i < 18; i++) { clock += 5000; w.settled(); }
+    assert.ok(w.settled(), 'awake for 90 seconds');
+  });
   console.log(`\nRESULTS: ${passed} / ${total} TESTS PASSED (${Math.round(passed / total * 100)}%)`);
   process.exit(passed === total ? 0 : 1);
 })();

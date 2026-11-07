@@ -115,6 +115,8 @@ const backup = createBackupLink({
   log: (m) => console.log(m),
 });
 console.log('Backup when the Mac is off: ' + (backup ? 'on' : 'off (run deploy/backup/setup-backup.sh to switch it on)'));
+// a few seconds of macOS maintenance wake (lid closed) must not take Telegram back from the backup: engines/wake.js
+const wake = require('./engines/wake.js').createWakeWatch();
 
 async function setupProfile() {
   // the default follows the Telegram app language; a client who picks a language in the bot gets that list for their chat
@@ -144,11 +146,12 @@ async function run() {
   setInterval(() => bot.runOps().catch((e) => console.error('Ops error:', e.message)), 10 * 60 * 1000);
   setInterval(() => bot.runAgentChecks().catch((e) => console.error('Agent check error:', e.message)), 10 * 60 * 1000);
   setInterval(() => bot.runAlerts().catch((e) => console.error('Alert error:', e.message)), 10 * 60 * 1000);
-  if (backup) { await backup.beat(); setInterval(() => backup.beat().catch((e) => console.error('Backup error:', e.message)), 60 * 1000); }
+  if (backup) { await backup.beat(); setInterval(() => { if (wake.settled()) backup.beat().catch((e) => console.error('Backup error:', e.message)); }, 60 * 1000); }
   let offset = 0;
   for (;;) {
     const r = await api('getUpdates', { offset, timeout: 30, allowed_updates: ['message', 'callback_query', 'channel_post'] }); // channel_post: Nick's own listings in a watched channel
     if (!r.ok && /webhook/i.test(r.description || '')) { // the backup took over while this Mac seemed away (asleep, offline): take it back
+      if (!wake.settled()) { await new Promise((ok) => setTimeout(ok, 15000)); continue; } // only once the Mac is really awake, not in a dark wake
       await api('deleteWebhook', { drop_pending_updates: false });
       if (backup) await backup.beat();
       continue;
