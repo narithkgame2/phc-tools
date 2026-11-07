@@ -8,6 +8,7 @@ Nick's choice, 5 Nov 2026 (option C): the bot runs on the Mac; when the Mac is o
 - When the Mac starts again it removes that link (`deleteWebhook`) and polls as before. Its next heartbeat switches the backup off, and Nick hears "The Mac is back".
 - Some things need the Mac: listings, unit cards, photos, compare, alerts and CRM rows. The backup gives the client the same reply the Mac would, keeps a short list of what is still to do, and the Mac finishes it when it is back (`bot.replay`). Listings older than 24 hours are not sent late.
 - Nick's and the agents' own commands get one line: they need the Mac.
+- With the lid closed macOS still wakes the Mac for a few seconds every 15 minutes ("dark wakes", see `pmset -g log`). `engines/wake.js` makes the Mac wait until it has been awake 90 seconds before it sends a heartbeat or takes Telegram back, so these short wakes do not switch anything (fixed 2026-11-07).
 
 ## Secrets
 Only in Apps Script **Script properties** (`TELEGRAM_BOT_TOKEN`, `BACKUP_KEY`) and in `~/.phc-secrets/nick-cambodia-bot.env` (`BACKUP_URL`, `BACKUP_KEY`). `setup-backup.sh` puts them on the clipboard; nobody reads them. Never write them in a file in this repo.
