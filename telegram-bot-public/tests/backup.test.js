@@ -218,12 +218,23 @@ const cbU = (id, from, data) => ({ update_id: Math.floor(Math.random() * 1e9), c
 
   await t('a few seconds of macOS dark wake is not a real wake; 90 seconds awake is', () => {
     const { createWakeWatch } = require('../engines/wake.js');
-    let clock = 1e9; const w = createWakeWatch({ now: () => clock, tick: 0 });
+    let clock = 1e9; const w = createWakeWatch({ now: () => clock, tick: 0, reallyAwake: () => true });
     assert.ok(w.settled(), 'awake from the start');
     clock += 17 * 60000; assert.ok(!w.settled(), 'just woke after 17 minutes asleep');
     clock += 5000; assert.ok(!w.settled());
     for (let i = 0; i < 18; i++) { clock += 5000; w.settled(); }
     assert.ok(w.settled(), 'awake for 90 seconds');
+  });
+  await t('a long dark wake on the charger (lid closed, caffeinate) never counts as awake; opening the lid does', () => {
+    const { createWakeWatch } = require('../engines/wake.js');
+    let clock = 1e9, lidOpen = false; const w = createWakeWatch({ now: () => clock, tick: 0, reallyAwake: () => lidOpen });
+    clock += 15 * 60000; w.settled(); // slept 15 minutes, then a 1.5 hour dark wake (seen 2026-11-11)
+    for (let i = 0; i < 1080; i++) { clock += 5000; assert.ok(!w.settled(), 'still a dark wake'); }
+    lidOpen = true; assert.ok(w.settled(), 'lid opened in the morning');
+  });
+  await t('the lid check answers yes or no on this machine and never throws', () => {
+    const { macReallyAwake } = require('../engines/wake.js');
+    assert.strictEqual(typeof macReallyAwake(), 'boolean');
   });
   console.log(`\nRESULTS: ${passed} / ${total} TESTS PASSED (${Math.round(passed / total * 100)}%)`);
   process.exit(passed === total ? 0 : 1);
