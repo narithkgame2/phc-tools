@@ -510,7 +510,7 @@ regardless of what this reports, exactly as before. Two jobs:
   declarations, which is legal in sloppy mode, illegal in a module).
 - `smoke-test` — Playwright, pinned to `1.61.0` (bump on purpose, not by
   `@latest` drift — no lockfile exists anywhere in this repo to catch that
-  otherwise), loads all 19 tools in a real headless browser, bypasses the
+  otherwise), loads all 20 tools in a real headless browser, bypasses the
   password gate via `sessionStorage.phc_agent_auth='1'` (same key the app
   itself checks), asserts zero console errors.
   **Non-negotiable safety requirement, already implemented and verified
