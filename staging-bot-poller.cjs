@@ -2341,14 +2341,17 @@ async function pollUpdates() {
           return;
         }
 
-        // ── DIRECT TS8 UNIT CODE QUERY (e.g. 42B1, 45AO, 43G, 46R) ──
+        // ── DIRECT UNIT CODE QUERY (TS8, TS9, TS7) ──
         try {
-          const directTS8Project = projectEngine.loadProject('time-square-8');
-          const directUnit = projectEngine.findUnit(directTS8Project, text);
-          if (directUnit) {
-            console.log(`🎯 Direct TS8 proposal requested for unit ${directUnit.unitCode} from ${senderName} (${chatId})`);
-            await sendTS8UnitProposal(chatId, directUnit, directTS8Project);
-            return;
+          const projectIds = ['time-square-8', 'time-square-9', 'time-square-7'];
+          for (const pid of projectIds) {
+            const proj = projectEngine.loadProject(pid);
+            const directUnit = projectEngine.findUnit(proj, text);
+            if (directUnit) {
+              console.log(`🎯 Direct proposal requested for unit ${directUnit.unitCode} (${proj.name}) from ${senderName} (${chatId})`);
+              await sendTS8UnitProposal(chatId, directUnit, proj);
+              return;
+            }
           }
         } catch (e) {
           // ignore if project loading fails
