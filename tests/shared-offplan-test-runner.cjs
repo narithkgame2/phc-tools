@@ -323,6 +323,31 @@ function runTestSuite(engine) {
       assert.ok(card.includes("Courier Tracking:</b>"), "Must include DHL tracking placeholder");
     });
 
+    // Test 20: TS9 and TS11 multi-project catalog pricing and calculations
+    runTest("Multi-project catalog loads TS9 Type M & TS11 Special Layout with accurate schedules", () => {
+      const ts9 = engine.loadProject("time-square-9");
+      const unit10M2 = engine.findUnit(ts9, "10M2");
+      assert.ok(unit10M2, "10M2 must exist in TS9 inventory");
+      assert.strictEqual(unit10M2.grossAreaSqm, 29);
+      assert.strictEqual(unit10M2.listPrice, 58892);
+      assert.strictEqual(unit10M2.discountPercent, 15);
+      assert.strictEqual(unit10M2.netPrice, 50058);
+
+      const calc9 = engine.calculatePaymentPlan(ts9, unit10M2);
+      assert.strictEqual(calc9.schedule.monthlyInstallment, 501);
+      assert.strictEqual(
+        calc9.schedule.bookingDeposit + calc9.schedule.downPaymentDue + calc9.schedule.totalInstallments + calc9.schedule.handoverBalance,
+        calc9.netPrice
+      );
+
+      const ts11 = engine.loadProject("time-square-11");
+      const unit24S5 = engine.findUnit(ts11, "24S5");
+      assert.ok(unit24S5, "24S5 must exist in TS11 inventory");
+      assert.strictEqual(unit24S5.grossAreaSqm, 40);
+      assert.strictEqual(unit24S5.discountPercent, 10);
+      assert.strictEqual(unit24S5.netPrice, 52668);
+    });
+
   } finally {
     teardownSandboxes();
   }

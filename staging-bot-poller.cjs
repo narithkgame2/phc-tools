@@ -107,6 +107,22 @@ function getTS8UnitLayoutImage(unit) {
     if (fs.existsSync(p)) return p;
   }
 
+  // TS9 layout and flyer matching
+  const ts9Dir = fs.existsSync(path.join(__dirname, '..', 'phc-website'))
+    ? path.join(__dirname, '..', 'phc-website', 'Property Listing', 'Time Square 9')
+    : path.join(__dirname, '..', '..', 'phc-website', 'Property Listing', 'Time Square 9');
+
+  if (['M1', 'M2'].includes(col)) {
+    const pFlyer = path.join(ts9Dir, 'Price List', '2026-11-20_TS9_Type_M_Flyer_Starting_50k.jpg');
+    if (fs.existsSync(pFlyer)) return pFlyer;
+    const pLayout = path.join(ts9Dir, 'Unit Layout', 'TS9 Unit Layout Type MK.webp');
+    if (fs.existsSync(pLayout)) return pLayout;
+  }
+  if (['X1', 'X2', 'X3', 'X5'].includes(col)) {
+    const p = path.join(ts9Dir, 'Price List', '2026-11-20_TS9_Type_X_Flyer_Promo.jpg');
+    if (fs.existsSync(p)) return p;
+  }
+
   if (['L', 'M', 'N', 'O', 'P'].includes(col)) {
     const p = path.join(baseDir, '1 Bed Type L,M,N,O,P.jpg');
     if (fs.existsSync(p)) return p;
