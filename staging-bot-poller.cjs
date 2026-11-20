@@ -210,6 +210,132 @@ async function sendTS8OverviewMenu(chatId) {
   });
 }
 
+async function sendTS9OverviewMenu(chatId) {
+  const ts9Dir = fs.existsSync(path.join(__dirname, '..', 'phc-website'))
+    ? path.join(__dirname, '..', 'phc-website', 'Property Listing', 'Time Square 9')
+    : path.join(__dirname, '..', '..', 'phc-website', 'Property Listing', 'Time Square 9');
+  const flyerPath = path.join(ts9Dir, 'Price List', '2026-11-20_TS9_Type_M_Flyer_Starting_50k.jpg');
+
+  const text = `🏢 <b>TIME SQUARE 9 · THE GATSBY RESIDENCE (BKK1)</b>\n` +
+    `📍 <i>Prime Central BKK1, Street 306</i>\n` +
+    `▫️ <b>Developer:</b> Megakim World Corp (Track record: TS1, 2, 3, 5, 6, 7)\n` +
+    `▫️ <b>Handover:</b> Q4 2027 · Foreign Freehold Strata Title\n\n` +
+    `🔥 <b>ACTIVE DEVELOPER PROMOTIONS:</b>\n` +
+    `① <b>New Special Layout Type M:</b> 15% Discount\n` +
+    `   • M2 (29 sqm): Starting from <b>$50,058 Net</b> ($501 / mo)\n` +
+    `   • M1 (50 sqm): Starting from <b>$77,279 Net</b> ($773 / mo)\n` +
+    `② <b>New Layout Type X (43 sqm 1-Bed):</b>\n` +
+    `   • 20F–38F: 15% Disc + <b>$3,000 Rebate</b> + Appliances (TV, Fridge, Washing Machine)\n` +
+    `   • 5F–19F: 15% Discount\n\n` +
+    `Tap a featured unit below or type any unit code (e.g. <code>10M2</code>, <code>5X1</code>, <code>20X2</code>):`;
+
+  const keyboard = {
+    inline_keyboard: [
+      [
+        { text: '⚡ 10M2 (29 sqm · $50,058)', callback_data: 'prop_unit_10M2' },
+        { text: '⚡ 14M2 (29 sqm · $51,899)', callback_data: 'prop_unit_14M2' }
+      ],
+      [
+        { text: '🛋️ 5M1 (50 sqm · $77,279)', callback_data: 'prop_unit_5M1' },
+        { text: '🛋️ 15M1 (50 sqm · $85,374)', callback_data: 'prop_unit_15M1' }
+      ],
+      [
+        { text: '🎁 20X2 (43 sqm + Appliances)', callback_data: 'prop_unit_20X2' },
+        { text: '🎁 38X2 (38F Top Floor)', callback_data: 'prop_unit_38X2' }
+      ],
+      [
+        { text: '🖼️ Type M Flyer ($50k Entry)', callback_data: 'ts9_img_m_flyer' },
+        { text: '🖼️ Type X Flyer (Appliances)', callback_data: 'ts9_img_x_flyer' }
+      ]
+    ]
+  };
+
+  if (flyerPath && fs.existsSync(flyerPath)) {
+    try {
+      const fileData = fs.readFileSync(flyerPath);
+      const formData = new FormData();
+      formData.append('chat_id', chatId);
+      formData.append('photo', new Blob([fileData], { type: 'image/jpeg' }), path.basename(flyerPath));
+      formData.append('caption', text);
+      formData.append('parse_mode', 'HTML');
+      formData.append('reply_markup', JSON.stringify(keyboard));
+      const res = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, { method: 'POST', body: formData });
+      const resData = await res.json();
+      if (resData.ok) return;
+    } catch (e) {
+      // fallback
+    }
+  }
+
+  await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML', reply_markup: keyboard })
+  });
+}
+
+async function sendTS11OverviewMenu(chatId) {
+  const ts11Dir = fs.existsSync(path.join(__dirname, '..', 'phc-website'))
+    ? path.join(__dirname, '..', 'phc-website', 'Property Listing', 'Time Square 11', 'Floor Plan')
+    : path.join(__dirname, '..', '..', 'phc-website', 'Property Listing', 'Time Square 11', 'Floor Plan');
+  const planPath = path.join(ts11Dir, 'TS11_Overall_Floor_Plate_Master_Plan.jpg');
+
+  const text = `🏢 <b>TIME SQUARE 11 · TIME CASTLE (BKK3 / TTP)</b>\n` +
+    `📍 <i>Toul Tom Poung / BKK3 Growth Corridor</i>\n` +
+    `▫️ <b>Developer:</b> Megakim World Corp\n` +
+    `▫️ <b>Handover:</b> Q4 2027 · Foreign Freehold Strata Title\n\n` +
+    `🔥 <b>ACTIVE DEVELOPER PROMOTIONS:</b>\n` +
+    `① <b>Special Layout 1-Bedrooms:</b> 10% Discount\n` +
+    `   • S1 / S3 (30 sqm): Starting from <b>$38,245 Net</b>\n` +
+    `   • S2 / S5 (40 sqm): Starting from <b>$48,676 Net</b> (e.g. 24S5: $52,668)\n` +
+    `② <b>Type A3 / A5 (75 sqm 2-Bedrooms):</b>\n` +
+    `   • 10% Discount + <b>$3,000 Cash Rebate</b>\n` +
+    `   • Included: TV, 3 Air Conditioners, Refrigerator\n\n` +
+    `Tap a featured unit below or type any unit code (e.g. <code>24S5</code>, <code>17S1</code>, <code>10A3</code>):`;
+
+  const keyboard = {
+    inline_keyboard: [
+      [
+        { text: '⚡ 17S1 (30 sqm · $39,443)', callback_data: 'prop_unit_17S1' },
+        { text: '⚡ 24S5 (40 sqm · $52,668)', callback_data: 'prop_unit_24S5' }
+      ],
+      [
+        { text: '🎁 10A3 (75 sqm 2-Bed + 3AC)', callback_data: 'prop_unit_10A3' },
+        { text: '🎁 11A5 (75 sqm 2-Bed + 3AC)', callback_data: 'prop_unit_11A5' }
+      ],
+      [
+        { text: '🛋️ 37B3 (50 sqm 1-Bed · $70,632)', callback_data: 'prop_unit_37B3' },
+        { text: '🛋️ 34B2 (50 sqm 1-Bed · $68,688)', callback_data: 'prop_unit_34B2' }
+      ],
+      [
+        { text: '🖼️ S1/S3 30 sqm Layout', callback_data: 'ts11_img_s1' },
+        { text: '🖼️ S2/S5 40 sqm Layout', callback_data: 'ts11_img_s2' }
+      ]
+    ]
+  };
+
+  if (planPath && fs.existsSync(planPath)) {
+    try {
+      const fileData = fs.readFileSync(planPath);
+      const formData = new FormData();
+      formData.append('chat_id', chatId);
+      formData.append('photo', new Blob([fileData], { type: 'image/jpeg' }), path.basename(planPath));
+      formData.append('caption', text);
+      formData.append('parse_mode', 'HTML');
+      formData.append('reply_markup', JSON.stringify(keyboard));
+      const res = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, { method: 'POST', body: formData });
+      const resData = await res.json();
+      if (resData.ok) return;
+    } catch (e) {
+      // fallback
+    }
+  }
+
+  await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML', reply_markup: keyboard })
+  });
+}
+
 async function sendTS8UnitProposal(chatId, unit, project) {
   const calculation = projectEngine.calculatePaymentPlan(project, unit);
   const cardText = projectEngine.formatProposalCard({
@@ -2375,6 +2501,20 @@ async function pollUpdates() {
           return;
         }
 
+        // ── DEVELOPER PROJECT INTELLIGENCE ENGINE (TS9) ──
+        if (text === '/ts9' || text.toLowerCase() === 'ts9' || text.toLowerCase().includes('time square 9') || text.toLowerCase().includes('gatsby')) {
+          console.log(`🏢 Project Inventory query for Time Square 9 from ${senderName} (${chatId})`);
+          await sendTS9OverviewMenu(chatId);
+          return;
+        }
+
+        // ── DEVELOPER PROJECT INTELLIGENCE ENGINE (TS11) ──
+        if (text === '/ts11' || text.toLowerCase() === 'ts11' || text.toLowerCase().includes('time square 11') || text.toLowerCase().includes('time castle')) {
+          console.log(`🏢 Project Inventory query for Time Square 11 from ${senderName} (${chatId})`);
+          await sendTS11OverviewMenu(chatId);
+          return;
+        }
+
         // ── DIRECT UNIT CODE QUERY (TS8, TS9, TS11, TS7) ──
         try {
           const projectIds = ['time-square-8', 'time-square-9', 'time-square-11', 'time-square-7'];
@@ -2862,6 +3002,72 @@ async function pollUpdates() {
         // ── 5-STEP INTERACTIVE SEARCH CONCIERGE ───────────────────
         if (isSearchCallback(dataStr)) {
           await handleSearchCallback(cb, token);
+          return;
+        }
+
+        // ── DIRECT PROPOSAL TAP FROM OVERVIEW MENUS ───────────────
+        if (dataStr.startsWith('prop_unit_')) {
+          const unitCode = dataStr.replace('prop_unit_', '');
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId, text: `Loading proposal for ${unitCode}...` })
+          });
+          for (const pid of ['time-square-8', 'time-square-9', 'time-square-11', 'time-square-7']) {
+            const pr = projectEngine.loadProject(pid);
+            const u = projectEngine.findUnit(pr, unitCode);
+            if (u) {
+              await sendTS8UnitProposal(msg.chat.id, u, pr);
+              return;
+            }
+          }
+          return;
+        }
+
+        if (dataStr === 'ts9_img_m_flyer' || dataStr === 'ts9_img_x_flyer') {
+          const ts9Dir = fs.existsSync(path.join(__dirname, '..', 'phc-website'))
+            ? path.join(__dirname, '..', 'phc-website', 'Property Listing', 'Time Square 9', 'Price List')
+            : path.join(__dirname, '..', '..', 'phc-website', 'Property Listing', 'Time Square 9', 'Price List');
+          const file = dataStr === 'ts9_img_m_flyer' 
+            ? '2026-11-20_TS9_Type_M_Flyer_Starting_50k.jpg' 
+            : '2026-11-20_TS9_Type_X_Flyer_Promo.jpg';
+          const p = path.join(ts9Dir, file);
+          if (fs.existsSync(p)) {
+            const fileData = fs.readFileSync(p);
+            const formData = new FormData();
+            formData.append('chat_id', msg.chat.id);
+            formData.append('photo', new Blob([fileData], { type: 'image/jpeg' }), path.basename(p));
+            formData.append('caption', `🏢 <b>Time Square 9 Developer Campaign Flyer</b>`);
+            formData.append('parse_mode', 'HTML');
+            await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, { method: 'POST', body: formData });
+          }
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+          return;
+        }
+
+        if (dataStr === 'ts11_img_s1' || dataStr === 'ts11_img_s2') {
+          const ts11Dir = fs.existsSync(path.join(__dirname, '..', 'phc-website'))
+            ? path.join(__dirname, '..', 'phc-website', 'Property Listing', 'Time Square 11', 'Floor Plan')
+            : path.join(__dirname, '..', '..', 'phc-website', 'Property Listing', 'Time Square 11', 'Floor Plan');
+          const file = dataStr === 'ts11_img_s1' 
+            ? 'TS11_Layout_Type_S1_S3_30sqm.jpg' 
+            : 'TS11_Layout_Type_S2_S5_40sqm.jpg';
+          const p = path.join(ts11Dir, file);
+          if (fs.existsSync(p)) {
+            const fileData = fs.readFileSync(p);
+            const formData = new FormData();
+            formData.append('chat_id', msg.chat.id);
+            formData.append('photo', new Blob([fileData], { type: 'image/jpeg' }), path.basename(p));
+            formData.append('caption', `🏢 <b>Time Square 11 Special Layout Floor Plan</b>`);
+            formData.append('parse_mode', 'HTML');
+            await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, { method: 'POST', body: formData });
+          }
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
           return;
         }
 
