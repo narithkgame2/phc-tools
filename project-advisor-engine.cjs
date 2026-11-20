@@ -487,6 +487,7 @@ function formatProposalCard(analysis) {
     `<b>${escapeHtml(project.name)} · Unit ${escapeHtml(bestUnit.unitCode)}</b>\n\n` +
     `<blockquote><b>Unit Details</b>\n\n` +
     `• <b>Unit:</b> ${escapeHtml(bestUnit.unitCode)}\n` +
+    `• <b>Development Status:</b> Off-Plan (Under Construction · Handover ${escapeHtml(completionDate)})\n` +
     `• <b>Floor:</b> ${escapeHtml(String(floorDisplay))}\n` +
     `• <b>Size:</b> ${sizeNum} sqm Gross\n` +
     `• <b>Original Price:</b> $${listPrice}\n` +
