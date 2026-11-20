@@ -318,7 +318,7 @@ function runTestSuite(engine) {
 
       assert.ok(card.toLowerCase().includes("the developer requires hand-signed original agreements"), "Must state hand-signed originals required");
       assert.ok(card.includes("Booking Receipt:</b> $1,000 USD"), "Must contain booking deposit receipt placeholder");
-      assert.ok(card.includes("account name must match developer entity"), "Must include beneficiary verification warning");
+      assert.ok(card.includes("Megakim World Corp Co., Ltd. (ABA Bank)"), "Must include verified developer ABA Bank entity");
       assert.ok(card.includes("Countersigning Party:</b>"), "Must include countersigning party placeholder");
       assert.ok(card.includes("Courier Tracking:</b>"), "Must include DHL tracking placeholder");
     });

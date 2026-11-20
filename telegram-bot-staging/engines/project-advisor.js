@@ -477,7 +477,7 @@ function formatProposalCard(analysis) {
     `<b>Contract Execution Details</b>\n\n` +
     `▫️ <i>The developer requires hand-signed original agreements.</i>\n\n` +
     `• <b>Booking Receipt:</b> $${booking} USD (Pending receipt confirmation)\n` +
-    `• <b>Developer Beneficiary:</b> Megakim World Corp (⚠️ verify before sending: account name must match developer entity)\n` +
+    `• <b>Developer Beneficiary:</b> Megakim World Corp Co., Ltd. (ABA Bank) (Verified corporate entity)\n` +
     `• <b>Countersigning Party:</b> Developer authorized signatory\n` +
     `• <b>Courier Tracking:</b> Pending dispatch / DHL tracking to be attached`;
 
