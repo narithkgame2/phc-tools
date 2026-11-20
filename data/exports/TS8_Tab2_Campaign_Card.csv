@@ -1,0 +1,13 @@
+Field,Value,Notes
+Campaign Name,TS8 Duplex 40-Month Payment Plan Campaign,Developer special promotion
+Discount %,10%,Applied to developer list price
+Standard Rebate ($),3000,Standard Duplex 1/2/3-Bedroom
+Premium Rebate ($),5000,Premium Duplex 1-Bedroom (85 sqm)
+Booking Deposit ($),1000,Secures unit reservation
+Installment Count,40,40 equal consecutive monthly payments
+Installment % Per Month,1.0%,1.0% of net contract price per month
+Physical Handover Quarter,Q4 2028,Handover in Q4 2028 per developer flyer
+Campaign Valid Until,2026-12-31,Fixed date (Never use dynamic TODAY)
+Source Image Link,Property Listing/Time Square 8/Price List/2026-11-20_TS8_Special_Discount_Flyer.jpg,Developer promotional flyer
+Verified By,Nick (Admin),Verified from original marketing materials
+Verified On,2026-11-20,Audit timestamp

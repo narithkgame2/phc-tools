@@ -1,0 +1,7 @@
+Check Item,Formula / Expression,Current Result,Status & Guard Logic
+1. Total Scheduled Sum,"=Quotation!B16 + Quotation!B17 + Quotation!B20 + Quotation!B21",101990,Sum of booking + down payment + 40 mo installments + handover
+2. Target Net Price,"=Quotation!B14",101990,Calculated Net Contract Price
+3. Mathematical Balance Integrity,"=IF(B2=B3, ""✅ PASS (100.0% Exact Match)"", ""❌ FAIL (Discrepancy: $"" & (B2-B3) & "")"")","✅ PASS (100.0% Exact Match)",Asserts booking + down + installments + handover = net price
+4. Calculated Handover %,"=TEXT(Quotation!B22, ""0.0%"")",50.0%,Displays true handover percentage
+5. Campaign Validity Guard,"=IF(DATEVALUE(Quotation!B4) > DATEVALUE('Campaign Card'!$B$10), ""⚠️ WARNING: Quote date is past campaign validity ("" & 'Campaign Card'!$B$10 & "")"", ""✅ PASS: Active campaign"")","✅ PASS: Active campaign",Validates typed quote date against campaign end date (NO TODAY)
+6. Down Payment Preset Guard,"=IF(OR(Quotation!B3=0.1, Quotation!B3=0.2), ""✅ Standard Preset ("" & TEXT(Quotation!B3, ""0%"") & "")"", ""⚠️ CAUTION: Non-preset Down Payment ("" & TEXT(Quotation!B3, ""0%"") & "") - Confirm with developer"")","✅ Standard Preset (10%)",Warns if down payment is not 10% or 20%

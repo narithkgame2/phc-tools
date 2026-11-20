@@ -1,0 +1,23 @@
+Section,Field,Formula / Value,Cell Reference,User Role
+INPUTS,Selected Unit Code,45AO,B2,Editable Input (Dropdown from 'Price List'!A2:A41)
+INPUTS,Down Payment %,10%,B3,Editable Input (10% or 20% preset)
+INPUTS,Quote Date,2026-11-20,B4,Editable Input (Typed string YYYY-MM-DD)
+INPUTS,Booking Date,on booking,B5,Editable Input (Default: 'on booking')
+INPUTS,Offer Valid Until,2026-11-30,B6,Editable Input (Typed string YYYY-MM-DD)
+UNIT SPECS,Marketed Floor,"=VLOOKUP(B2, 'Price List'!$A$2:$E$41, 2, FALSE)",B7,Protected Formula
+UNIT SPECS,Gross Area (sqm),"=VLOOKUP(B2, 'Price List'!$A$2:$E$41, 3, FALSE)",B8,Protected Formula
+UNIT SPECS,Collection Type,"=VLOOKUP(B2, 'Price List'!$A$2:$E$41, 4, FALSE)",B9,Protected Formula
+PRICING,Developer List Price ($),"=VLOOKUP(B2, 'Price List'!$A$2:$E$41, 5, FALSE)",B10,Protected Formula
+PRICING,Campaign Discount %,"='Campaign Card'!$B$3",B11,Protected Formula
+PRICING,Discount Amount ($),"=ROUND(B10 * B11, 0)",B12,Protected Formula
+PRICING,Cash Rebate ($),"=IF(ISNUMBER(SEARCH(""Premium"", B9)), 'Campaign Card'!$B$5, 'Campaign Card'!$B$4)",B13,Protected Formula
+PRICING,Net Contract Price ($),"=B10 - B12 - B13",B14,Protected Formula
+PRICING,Net Price / Gross sqm ($),"=ROUND(B14 / B8, 0)",B15,Protected Formula
+SCHEDULE,Booking Deposit ($),"='Campaign Card'!$B$6",B16,Protected Formula (Due: B5)
+SCHEDULE,Down Payment Balance ($),"=ROUND(B14 * B3, 0) - B16",B17,Protected Formula
+SCHEDULE,Installment Duration,"='Campaign Card'!$B$7",B18,Protected Formula (40 months)
+SCHEDULE,Monthly Installment ($/mo),"=ROUND(B14 * 'Campaign Card'!$B$8, 0)",B19,Protected Formula (1% / mo)
+SCHEDULE,Total Installments ($),"=B18 * B19",B20,Protected Formula
+SCHEDULE,Balance at Handover ($),"=B14 - B16 - B17 - B20",B21,Protected Formula (Exact remainder)
+SCHEDULE,Balance at Handover (%),"=ROUND(B21 / B14, 4)",B22,Protected Formula
+SCHEDULE,Est. Handover Quarter,"='Campaign Card'!$B$9",B23,Protected Formula
