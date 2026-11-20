@@ -40,6 +40,7 @@ let offset = 0;
 // Temporary in-memory lead state tracker
 const leadState = {};
 const userWaitingForCustomSearch = {};
+const uploadState = {};
 
 // Persistent State File
 const fs = require('fs');
@@ -53,6 +54,185 @@ const projectEngine = require('./project-advisor-engine.cjs');
 setInterval(() => {
   syncAllChannels().catch(err => console.error('⚠️ [Channel Sync Error]:', err.message));
 }, 30 * 60 * 1000);
+
+function getTS8UnitImagePath(unit) {
+  const isPrem = unit.grossAreaSqm === 85 && ['B1', 'B2', 'C1', 'C2'].includes(unit.column);
+  const imgName = isPrem
+    ? '2026-11-20_TS8_Premium_Duplex_1Bed_PriceList.jpg'
+    : '2026-11-20_TS8_Standard_Duplex_PriceList.jpg';
+
+  const baseDir = fs.existsSync(path.join(__dirname, '..', 'phc-website'))
+    ? path.join(__dirname, '..', 'phc-website', 'Property Listing', 'Time Square 8', 'Price List')
+    : path.join(__dirname, '..', '..', 'phc-website', 'Property Listing', 'Time Square 8', 'Price List');
+
+  const fullPath = path.join(baseDir, imgName);
+  return fs.existsSync(fullPath) ? fullPath : null;
+}
+
+function getTS8OverviewFlyerPath() {
+  const baseDir = fs.existsSync(path.join(__dirname, '..', 'phc-website'))
+    ? path.join(__dirname, '..', 'phc-website', 'Property Listing', 'Time Square 8', 'Price List')
+    : path.join(__dirname, '..', '..', 'phc-website', 'Property Listing', 'Time Square 8', 'Price List');
+
+  const flyer = path.join(baseDir, '2026-11-20_TS8_Special_Discount_Flyer.jpg');
+  if (fs.existsSync(flyer)) return flyer;
+
+  const std = path.join(baseDir, '2026-11-20_TS8_Standard_Duplex_PriceList.jpg');
+  if (fs.existsSync(std)) return std;
+
+  return null;
+}
+
+function getTS8UnitLayoutImage(unit) {
+  const col = (unit.column || '').toUpperCase();
+  const baseDir = fs.existsSync(path.join(__dirname, '..', 'phc-website'))
+    ? path.join(__dirname, '..', 'phc-website', 'Property Listing', 'Time Square 8', 'Unit Layout')
+    : path.join(__dirname, '..', '..', 'phc-website', 'Property Listing', 'Time Square 8', 'Unit Layout');
+
+  if (['L', 'M', 'N', 'O', 'P'].includes(col)) {
+    const p = path.join(baseDir, '1 Bed Type L,M,N,O,P.jpg');
+    if (fs.existsSync(p)) return p;
+  }
+  if (['K'].includes(col)) {
+    const p = path.join(baseDir, '1 Bed Type K.jpg');
+    if (fs.existsSync(p)) return p;
+  }
+  if (['B', 'C', 'B1', 'B2', 'C1', 'C2'].includes(col)) {
+    const p = path.join(baseDir, '2 Bed Type B, C.jpg');
+    if (fs.existsSync(p)) return p;
+  }
+  if (['Q', 'R'].includes(col)) {
+    const p = path.join(baseDir, '2 Bed Type Q, R.jpg');
+    if (fs.existsSync(p)) return p;
+  }
+  if (['A', 'AA'].includes(col)) {
+    const p = path.join(baseDir, '3 Bed Type A.jpg');
+    if (fs.existsSync(p)) return p;
+  }
+  if (['D', 'E', 'F', 'G', 'H', 'I'].includes(col)) {
+    const p = path.join(baseDir, '1 Bed Type D,E,F,G,H,I.jpg');
+    if (fs.existsSync(p)) return p;
+  }
+
+  const main3D = fs.existsSync(path.join(__dirname, '..', 'phc-website'))
+    ? path.join(__dirname, '..', 'phc-website', 'Property Listing', 'TS8 Main.jpg')
+    : path.join(__dirname, '..', '..', 'phc-website', 'Property Listing', 'TS8 Main.jpg');
+  if (fs.existsSync(main3D)) return main3D;
+
+  return getTS8UnitImagePath(unit);
+}
+
+async function sendTS8OverviewMenu(chatId) {
+  const menuText = projectEngine.formatInventoryMenu('time-square-8');
+  const menuKeyboard = {
+    inline_keyboard: [
+      [
+        { text: '① 1-Bed from $101K (45AO)', callback_data: 'ts8_cat_1bed' },
+        { text: '② Premium from $108K (41C2)', callback_data: 'ts8_cat_premium' }
+      ],
+      [
+        { text: '③ 2-Bed from $143K (43G)', callback_data: 'ts8_cat_2bed' },
+        { text: '④ 3 & 4-Bed ($177K+)', callback_data: 'ts8_cat_34bed' }
+      ],
+      [
+        { text: '⚡ Lowest Project Entry ($101,990)', callback_data: 'ts8_calc_45AO' },
+        { text: '🏙️ Top Penthouse ($245,157)', callback_data: 'ts8_calc_45AA' }
+      ],
+      [
+        { text: '🖼️ Standard Price Sheet', callback_data: 'ts8_img_std' },
+        { text: '🖼️ Premium Price Matrix', callback_data: 'ts8_img_prem' }
+      ],
+      [
+        { text: '📤 Upload New Developer Sheet', callback_data: 'ts8_upload_prompt' },
+        { text: '🔄 Reset All Units', callback_data: 'admin_reset_ts8' }
+      ]
+    ]
+  };
+
+  const flyerPath = getTS8OverviewFlyerPath();
+  if (flyerPath && fs.existsSync(flyerPath)) {
+    try {
+      const fileData = fs.readFileSync(flyerPath);
+      const formData = new FormData();
+      formData.append('chat_id', chatId);
+      formData.append('photo', new Blob([fileData], { type: 'image/jpeg' }), path.basename(flyerPath));
+      formData.append('caption', `🏢 <b>TIME SQUARE 8 · DEVELOPER PROMOTIONAL RELEASE</b>\n📋 <i>Verified Source Document: 2026-11-20</i>\n▫️ <b>Campaign:</b> 40 Months @ 1%/mo · 50% Handover`);
+      formData.append('parse_mode', 'HTML');
+      await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, { method: 'POST', body: formData });
+    } catch (err) {
+      console.error('Failed to send TS8 flyer photo:', err.message);
+    }
+  }
+
+  await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text: menuText,
+      parse_mode: 'HTML',
+      reply_markup: menuKeyboard
+    })
+  });
+}
+
+async function sendTS8UnitProposal(chatId, unit, project) {
+  const calculation = projectEngine.calculatePaymentPlan(project, unit);
+  const cardText = projectEngine.formatProposalCard({
+    project,
+    calculation,
+    bestUnit: unit,
+    budgetMatched: true
+  });
+
+  const isPrem = unit.grossAreaSqm === 85;
+  const isSold = unit.status === 'sold';
+  const soldButton = isSold
+    ? [{ text: `↩️ Undo Sold for ${unit.unitCode}`, callback_data: `admin_undo_ts8_${unit.unitCode}` }]
+    : [{ text: `❌ Mark ${unit.unitCode} as Sold`, callback_data: `admin_sold_ts8_${unit.unitCode}` }];
+
+  const replyMarkup = {
+    inline_keyboard: [
+      soldButton,
+      [
+        { text: '📋 Developer Price Sheet', callback_data: isPrem ? 'ts8_img_prem' : 'ts8_img_std' },
+        { text: '📤 Upload New Sheet', callback_data: 'ts8_upload_prompt' }
+      ],
+      [{ text: '📋 « Back to TS8 Inventory', callback_data: 'ts8_menu_main' }]
+    ]
+  };
+
+  const layoutPath = getTS8UnitLayoutImage(unit);
+  if (layoutPath && fs.existsSync(layoutPath)) {
+    try {
+      const fileData = fs.readFileSync(layoutPath);
+      const formData = new FormData();
+      formData.append('chat_id', chatId);
+      const mime = layoutPath.endsWith('.webp') ? 'image/webp' : 'image/jpeg';
+      formData.append('photo', new Blob([fileData], { type: mime }), path.basename(layoutPath));
+      formData.append('caption', cardText);
+      formData.append('parse_mode', 'HTML');
+      formData.append('reply_markup', JSON.stringify(replyMarkup));
+      const res = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, { method: 'POST', body: formData });
+      const resData = await res.json();
+      if (resData.ok) return;
+      console.error('sendTS8UnitProposal sendPhoto failed:', resData.description);
+    } catch (err) {
+      console.error('Failed to send unit proposal layout photo:', err.message);
+    }
+  }
+
+  await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text: cardText,
+      parse_mode: 'HTML',
+      reply_markup: replyMarkup
+    })
+  });
+}
 
 // Setup Clean Luxury Telegram Menu (setMyCommands)
 async function setupBotCommands() {
@@ -1373,6 +1553,75 @@ async function pollUpdates() {
       offset = update.update_id + 1;
 
       // ───────────────────────────────────────────────────────────
+      // 0. HANDLE DEVELOPER PRICE LIST PHOTO UPLOAD
+      // ───────────────────────────────────────────────────────────
+      if (update.message && update.message.photo && uploadState[update.message.chat.id]) {
+        const chatId = update.message.chat.id;
+        const caption = (update.message.caption || '').trim();
+        const photo = update.message.photo[update.message.photo.length - 1];
+
+        try {
+          const fileRes = await fetch(`https://api.telegram.org/bot${token}/getFile?file_id=${photo.file_id}`);
+          const fileData = await fileRes.json();
+          if (fileData.ok && fileData.result?.file_path) {
+            const dlRes = await fetch(`https://api.telegram.org/file/bot${token}/${fileData.result.file_path}`);
+            const buffer = Buffer.from(await dlRes.arrayBuffer());
+
+            const today = new Date().toISOString().split('T')[0];
+            const baseDir = fs.existsSync(path.join(__dirname, '..', 'phc-website'))
+              ? path.join(__dirname, '..', 'phc-website', 'Property Listing', 'Time Square 8', 'Price List')
+              : path.join(__dirname, '..', '..', 'phc-website', 'Property Listing', 'Time Square 8', 'Price List');
+            const inboxDir = path.join(baseDir, '_inbox');
+
+            if (!fs.existsSync(inboxDir)) fs.mkdirSync(inboxDir, { recursive: true });
+
+            const filename = `${today}_TS8_Developer_PriceList_${Date.now().toString().slice(-4)}.jpg`;
+            const destPath = path.join(inboxDir, filename);
+            fs.writeFileSync(destPath, buffer);
+
+            delete uploadState[chatId];
+
+            const confirmText = `📥 <b>NEW DEVELOPER SHEET HELD IN QUARANTINE</b>\n` +
+              `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+              `<blockquote>▫️ <b>Project:</b> Time Square 8\n` +
+              `▫️ <b>Quarantine Location:</b> <code>_inbox/${filename}</code>\n` +
+              `▫️ <b>Uploaded by:</b> ${escapeHtml(update.message.from.first_name || 'Nick')}\n` +
+              (caption ? `▫️ <b>Notes / Terms:</b> ${escapeHtml(caption)}\n` : '') +
+              `▫️ <b>Status:</b> ⚠️ <b>Pending Verification (Not in live library)</b></blockquote>\n\n` +
+              `▫️ <i>To prevent unverified prices from reaching clients, this sheet is quarantined. Approve to move it to the verified library.</i>`;
+
+            await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: chatId,
+                text: confirmText,
+                parse_mode: 'HTML',
+                reply_markup: {
+                  inline_keyboard: [
+                    [
+                      { text: '✅ Approve & Promote to Library', callback_data: `admin_approve_ts8_${filename}` },
+                      { text: '❌ Reject & Delete', callback_data: `admin_reject_ts8_${filename}` }
+                    ],
+                    [{ text: '📋 « Back to TS8 Price List', callback_data: 'ts8_menu_main' }]
+                  ]
+                }
+              })
+            });
+            continue;
+          }
+        } catch (err) {
+          console.error('Error saving developer sheet:', err.message);
+          delete uploadState[chatId];
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, text: `⚠️ Upload error: ${err.message}` })
+          });
+          continue;
+        }
+      }
+
+      // ───────────────────────────────────────────────────────────
       // 1. HANDLE INCOMING CHAT MESSAGES (/start, /inquire, text)
       // ───────────────────────────────────────────────────────────
       if (update.message && (update.message.text || update.message.caption)) {
@@ -2085,6 +2334,26 @@ async function pollUpdates() {
           return;
         }
 
+        // ── DEVELOPER PROJECT INTELLIGENCE ENGINE (TS8) ──
+        if (text === '/ts8' || text.toLowerCase() === 'ts8' || text.toLowerCase().includes('time square 8') || text.toLowerCase().includes('ts8 duplex')) {
+          console.log(`🏢 Project Inventory query for Time Square 8 from ${senderName} (${chatId})`);
+          await sendTS8OverviewMenu(chatId);
+          return;
+        }
+
+        // ── DIRECT TS8 UNIT CODE QUERY (e.g. 42B1, 45AO, 43G, 46R) ──
+        try {
+          const directTS8Project = projectEngine.loadProject('time-square-8');
+          const directUnit = projectEngine.findUnit(directTS8Project, text);
+          if (directUnit) {
+            console.log(`🎯 Direct TS8 proposal requested for unit ${directUnit.unitCode} from ${senderName} (${chatId})`);
+            await sendTS8UnitProposal(chatId, directUnit, directTS8Project);
+            return;
+          }
+        } catch (e) {
+          // ignore if project loading fails
+        }
+
         if (text === '/search' || text === '/explore' || text === '/rent' || text === '/sale' || text === '/buy' || text === '🏢 Explore Condos (Buy / Rent)' || text === '🏢 Explore Property') {
           console.log(`🔍 5-Step Property Search started by ${senderName} (${chatId})`);
           await handleSearchCommand(chatId, token);
@@ -2633,6 +2902,383 @@ async function pollUpdates() {
               }
             })
           });
+          return;
+        }
+
+        if (dataStr.startsWith('admin_sold_ts8_')) {
+          const callerId = String(update.callback_query?.from?.id || msg.chat?.id || '');
+          const adminId = String(process.env.NICK_TELEGRAM_ID || '353195979');
+          if (callerId !== adminId) {
+            await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ callback_query_id: cbId, text: '🔒 Admin action restricted to Nick.', show_alert: true })
+            });
+            return;
+          }
+
+          const unitCode = dataStr.replace('admin_sold_ts8_', '');
+          const actorName = `Nick (${callerId})`;
+          const soldResult = projectEngine.markUnitSold('time-square-8', unitCode, actorName);
+
+          if (!soldResult.success && soldResult.alreadySold) {
+            await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ callback_query_id: cbId, text: `Unit ${unitCode} was already sold!`, show_alert: true })
+            });
+            return;
+          }
+
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId, text: `Unit ${unitCode} marked as SOLD (Audit logged)` })
+          });
+
+          const nextResult = soldResult.nextBestRecommendation;
+          const nextUnit = nextResult.bestUnit;
+          const project = projectEngine.loadProject('time-square-8');
+
+          await sendTS8UnitProposal(msg.chat.id, nextUnit, project);
+          return;
+        }
+
+        if (dataStr.startsWith('admin_undo_ts8_')) {
+          const callerId = String(update.callback_query?.from?.id || msg.chat?.id || '');
+          const adminId = String(process.env.NICK_TELEGRAM_ID || '353195979');
+          if (callerId !== adminId) {
+            await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ callback_query_id: cbId, text: '🔒 Admin action restricted to Nick.', show_alert: true })
+            });
+            return;
+          }
+
+          const unitCode = dataStr.replace('admin_undo_ts8_', '');
+          const actorName = `Nick (${callerId})`;
+          const undoResult = projectEngine.undoUnitSold('time-square-8', unitCode, actorName);
+
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId, text: `Unit ${unitCode} reverted to AVAILABLE (Audit logged)` })
+          });
+
+          const project = projectEngine.loadProject('time-square-8');
+          const restoredUnit = projectEngine.findUnit(project, unitCode);
+          await sendTS8UnitProposal(msg.chat.id, restoredUnit, project);
+          return;
+        }
+
+        if (dataStr.startsWith('admin_approve_ts8_')) {
+          const callerId = String(update.callback_query?.from?.id || msg.chat?.id || '');
+          const adminId = String(process.env.NICK_TELEGRAM_ID || '353195979');
+          if (callerId !== adminId) {
+            await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ callback_query_id: cbId, text: '🔒 Admin action restricted to Nick.', show_alert: true })
+            });
+            return;
+          }
+
+          const filename = dataStr.replace('admin_approve_ts8_', '');
+          const baseDir = fs.existsSync(path.join(__dirname, '..', 'phc-website'))
+            ? path.join(__dirname, '..', 'phc-website', 'Property Listing', 'Time Square 8', 'Price List')
+            : path.join(__dirname, '..', '..', 'phc-website', 'Property Listing', 'Time Square 8', 'Price List');
+          const inboxPath = path.join(baseDir, '_inbox', filename);
+          const livePath = path.join(baseDir, filename);
+
+          if (fs.existsSync(inboxPath)) {
+            fs.renameSync(inboxPath, livePath);
+            const today = new Date().toISOString().split('T')[0];
+            const project = projectEngine.loadProject('time-square-8');
+            project.provenance.lastUpdated = today;
+            project.provenance.verifiedBy = 'Nick (Admin)';
+            projectEngine.saveProject(project);
+
+            await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ callback_query_id: cbId, text: '✅ Approved & promoted to library!' })
+            });
+
+            await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: msg.chat.id,
+                message_id: msg.message_id,
+                text: `✅ <b>APPROVED & PROMOTED TO VERIFIED LIBRARY</b>\n\nFile <code>${filename}</code> has been moved from quarantine into active TS8 Price List repository.`,
+                parse_mode: 'HTML',
+                reply_markup: {
+                  inline_keyboard: [[{ text: '📋 « Back to TS8 Price List', callback_data: 'ts8_menu_main' }]]
+                }
+              })
+            });
+          } else {
+            await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ callback_query_id: cbId, text: 'File not found in quarantine.', show_alert: true })
+            });
+          }
+          return;
+        }
+
+        if (dataStr.startsWith('admin_reject_ts8_')) {
+          const callerId = String(update.callback_query?.from?.id || msg.chat?.id || '');
+          const adminId = String(process.env.NICK_TELEGRAM_ID || '353195979');
+          if (callerId !== adminId) {
+            await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ callback_query_id: cbId, text: '🔒 Admin action restricted to Nick.', show_alert: true })
+            });
+            return;
+          }
+
+          const filename = dataStr.replace('admin_reject_ts8_', '');
+          const baseDir = fs.existsSync(path.join(__dirname, '..', 'phc-website'))
+            ? path.join(__dirname, '..', 'phc-website', 'Property Listing', 'Time Square 8', 'Price List')
+            : path.join(__dirname, '..', '..', 'phc-website', 'Property Listing', 'Time Square 8', 'Price List');
+          const inboxPath = path.join(baseDir, '_inbox', filename);
+
+          if (fs.existsSync(inboxPath)) {
+            fs.unlinkSync(inboxPath);
+            await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ callback_query_id: cbId, text: '❌ Sheet rejected and deleted.' })
+            });
+
+            await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: msg.chat.id,
+                message_id: msg.message_id,
+                text: `❌ <b>FILE REJECTED & REMOVED</b>\n\nQuarantined file <code>${filename}</code> was deleted. No changes were made to active library.`,
+                parse_mode: 'HTML',
+                reply_markup: {
+                  inline_keyboard: [[{ text: '📋 « Back to TS8 Price List', callback_data: 'ts8_menu_main' }]]
+                }
+              })
+            });
+          } else {
+            await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ callback_query_id: cbId, text: 'File not found in quarantine.', show_alert: true })
+            });
+          }
+          return;
+        }
+
+        if (dataStr === 'admin_reset_ts8') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId, text: 'All units reset to Available!' })
+          });
+
+          const project = projectEngine.loadProject('time-square-8');
+          project.unitTypes.forEach(t => (t.availableUnits || []).forEach(u => u.status = 'available'));
+          projectEngine.saveProject(project);
+
+          const menuText = `✅ <b>DATABASE RESET: All TS8 Duplexes are now Available!</b>\n\n` + projectEngine.formatInventoryMenu('time-square-8');
+
+          await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id,
+              message_id: msg.message_id,
+              text: menuText,
+              parse_mode: 'HTML',
+              reply_markup: {
+                inline_keyboard: [
+                  [
+                    { text: '① 1-Bed from $101K (45AO)', callback_data: 'ts8_cat_1bed' },
+                    { text: '② Premium from $108K (41C2)', callback_data: 'ts8_cat_premium' }
+                  ],
+                  [
+                    { text: '③ 2-Bed from $143K (43G)', callback_data: 'ts8_cat_2bed' },
+                    { text: '④ 3 & 4-Bed ($177K+)', callback_data: 'ts8_cat_34bed' }
+                  ],
+                  [
+                    { text: '⚡ Lowest Project Entry ($101,990)', callback_data: 'ts8_calc_45AO' },
+                    { text: '🏙️ Top Penthouse ($245,157)', callback_data: 'ts8_calc_45AA' }
+                  ],
+                  [
+                    { text: '🖼️ Standard Price Sheet', callback_data: 'ts8_img_std' },
+                    { text: '🖼️ Premium Price Matrix', callback_data: 'ts8_img_prem' }
+                  ],
+                  [
+                    { text: '📤 Upload New Developer Sheet', callback_data: 'ts8_upload_prompt' },
+                    { text: '🔄 Reset All Units', callback_data: 'admin_reset_ts8' }
+                  ]
+                ]
+              }
+            })
+          });
+          return;
+        }
+
+        // ── TS8 INTERACTIVE INVENTORY MENU CALLBACKS ──────────────
+        if (dataStr === 'ts8_menu_main') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+
+          await sendTS8OverviewMenu(msg.chat.id);
+          return;
+        }
+
+        if (dataStr === 'ts8_img_std') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+          const imgPath = fs.existsSync(path.join(__dirname, '..', 'phc-website'))
+            ? path.join(__dirname, '..', 'phc-website', 'Property Listing', 'Time Square 8', 'Price List', '2026-11-20_TS8_Standard_Duplex_PriceList.jpg')
+            : path.join(__dirname, '..', '..', 'phc-website', 'Property Listing', 'Time Square 8', 'Price List', '2026-11-20_TS8_Standard_Duplex_PriceList.jpg');
+
+          if (fs.existsSync(imgPath)) {
+            const fileData = fs.readFileSync(imgPath);
+            const formData = new FormData();
+            formData.append('chat_id', msg.chat.id);
+            formData.append('photo', new Blob([fileData], { type: 'image/jpeg' }), 'TS8_Standard_Duplex_PriceList.jpg');
+            formData.append('caption', `📋 <b>TIME SQUARE 8 · STANDARD DUPLEX PRICE SHEET</b>\n▫️ <i>Verified Source: 2026-11-20</i>\n▫️ 1-Bed ($101K+), 2-Bed ($143K+), 3-Bed ($177K+), 4-Bed ($245K)`);
+            formData.append('parse_mode', 'HTML');
+            formData.append('reply_markup', JSON.stringify({
+              inline_keyboard: [[{ text: '📋 « Back to TS8 Price List', callback_data: 'ts8_menu_main' }]]
+            }));
+            await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, { method: 'POST', body: formData });
+          }
+          return;
+        }
+
+        if (dataStr === 'ts8_img_prem') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+          const imgPath = fs.existsSync(path.join(__dirname, '..', 'phc-website'))
+            ? path.join(__dirname, '..', 'phc-website', 'Property Listing', 'Time Square 8', 'Price List', '2026-11-20_TS8_Premium_Duplex_1Bed_PriceList.jpg')
+            : path.join(__dirname, '..', '..', 'phc-website', 'Property Listing', 'Time Square 8', 'Price List', '2026-11-20_TS8_Premium_Duplex_1Bed_PriceList.jpg');
+
+          if (fs.existsSync(imgPath)) {
+            const fileData = fs.readFileSync(imgPath);
+            const formData = new FormData();
+            formData.append('chat_id', msg.chat.id);
+            formData.append('photo', new Blob([fileData], { type: 'image/jpeg' }), 'TS8_Premium_Duplex_PriceList.jpg');
+            formData.append('caption', `🌟 <b>TIME SQUARE 8 · PREMIUM DUPLEX 1-BED (85 sqm) MATRIX</b>\n▫️ Floors 41F to 47F · Columns B1, B2, C1, C2\n▫️ Net Prices from $108,991 USD ($1,090 / mo)`);
+            formData.append('parse_mode', 'HTML');
+            formData.append('reply_markup', JSON.stringify({
+              inline_keyboard: [[{ text: '📋 « Back to TS8 Price List', callback_data: 'ts8_menu_main' }]]
+            }));
+            await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, { method: 'POST', body: formData });
+          }
+          return;
+        }
+
+        if (dataStr === 'ts8_upload_prompt') {
+          uploadState[msg.chat.id] = { projectId: 'time-square-8', action: 'price_list_upload' };
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+
+          const promptText = `📤 <b>UPLOAD NEW DEVELOPER PRICE SHEET · TIME SQUARE 8</b>\n` +
+            `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+            `<blockquote><b>Instructions:</b>\n` +
+            `1. Send or forward the <b>new price list image or flyer</b> directly to this chat.\n` +
+            `2. Include any new discount or payment plan terms in the photo caption (e.g. <code>10% + $3,000, 40 months 1%/mo</code>).\n\n` +
+            `▫️ The file will be automatically saved to your verified project library with today's date timestamp.</blockquote>\n\n` +
+            `<i>Send the photo now, or tap Cancel below:</i>`;
+
+          await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id,
+              message_id: msg.message_id,
+              text: promptText,
+              parse_mode: 'HTML',
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: '❌ Cancel Upload', callback_data: 'ts8_menu_main' }]
+                ]
+              }
+            })
+          });
+          return;
+        }
+
+        if (dataStr.startsWith('ts8_cat_')) {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+
+          const cat = dataStr.replace('ts8_cat_', '');
+          const project = projectEngine.loadProject('time-square-8');
+          let selectedUnits = [];
+          let catTitle = '';
+
+          if (cat === 'premium') {
+            catTitle = '🌟 PREMIUM DUPLEX 1-BED (85 sqm)';
+            selectedUnits = (project.unitTypes[0]?.availableUnits || []).filter(u => u.status === 'available');
+          } else if (cat === '1bed') {
+            catTitle = '▫️ STANDARD DUPLEX 1-BED (73–79 sqm)';
+            selectedUnits = (project.unitTypes[1]?.availableUnits || []).filter(u => u.status === 'available' && u.bedrooms === 1);
+          } else if (cat === '2bed') {
+            catTitle = '▫️ DUPLEX 2-BEDROOM (104–112 sqm)';
+            selectedUnits = (project.unitTypes[1]?.availableUnits || []).filter(u => u.status === 'available' && u.bedrooms === 2);
+          } else if (cat === '34bed') {
+            catTitle = '▫️ DUPLEX 3 & 4-BEDROOM (124–173 sqm)';
+            selectedUnits = (project.unitTypes[1]?.availableUnits || []).filter(u => u.status === 'available' && (u.bedrooms === 3 || u.bedrooms === 4));
+          }
+
+          selectedUnits.sort((a, b) => a.netPrice - b.netPrice);
+
+          const keyboard = [];
+          for (let i = 0; i < selectedUnits.length; i += 2) {
+            const row = [];
+            const u1 = selectedUnits[i];
+            row.push({ text: `${u1.unitCode} · $${Math.round(u1.netPrice / 1000)}K`, callback_data: `ts8_calc_${u1.unitCode}` });
+            if (i + 1 < selectedUnits.length) {
+              const u2 = selectedUnits[i + 1];
+              row.push({ text: `${u2.unitCode} · $${Math.round(u2.netPrice / 1000)}K`, callback_data: `ts8_calc_${u2.unitCode}` });
+            }
+            keyboard.push(row);
+          }
+          keyboard.push([{ text: '📋 « Back to TS8 Overview', callback_data: 'ts8_menu_main' }]);
+
+          const text = `🏢 <b>TIME SQUARE 8 · ${catTitle}</b>\n` +
+            `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+            `<i>Select any available unit below to calculate its 40-month payment schedule:</i>`;
+
+          await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: msg.chat.id,
+              message_id: msg.message_id,
+              text,
+              parse_mode: 'HTML',
+              reply_markup: { inline_keyboard: keyboard }
+            })
+          });
+          return;
+        }
+
+        if (dataStr.startsWith('ts8_calc_')) {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+
+          const unitCode = dataStr.replace('ts8_calc_', '');
+          const project = projectEngine.loadProject('time-square-8');
+          const unit = projectEngine.findUnit(project, unitCode);
+
+          if (!unit) {
+            await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ chat_id: msg.chat.id, text: `Unit ${unitCode} was not found.` })
+            });
+            return;
+          }
+
+          await sendTS8UnitProposal(msg.chat.id, unit, project);
           return;
         }
 
