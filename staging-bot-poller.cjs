@@ -89,6 +89,24 @@ function getTS8UnitLayoutImage(unit) {
     ? path.join(__dirname, '..', 'phc-website', 'Property Listing', 'Time Square 8', 'Unit Layout')
     : path.join(__dirname, '..', '..', 'phc-website', 'Property Listing', 'Time Square 8', 'Unit Layout');
 
+  // TS11 layout matching
+  const ts11Dir = fs.existsSync(path.join(__dirname, '..', 'phc-website'))
+    ? path.join(__dirname, '..', 'phc-website', 'Property Listing', 'Time Square 11', 'Floor Plan')
+    : path.join(__dirname, '..', '..', 'phc-website', 'Property Listing', 'Time Square 11', 'Floor Plan');
+
+  if (['S1', 'S3'].includes(col)) {
+    const p = path.join(ts11Dir, 'TS11_Layout_Type_S1_S3_30sqm.jpg');
+    if (fs.existsSync(p)) return p;
+  }
+  if (['S2', 'S5'].includes(col)) {
+    const p = path.join(ts11Dir, 'TS11_Layout_Type_S2_S5_40sqm.jpg');
+    if (fs.existsSync(p)) return p;
+  }
+  if (['A1', 'A2', 'A3', 'A5', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3', 'C5', 'D'].includes(col)) {
+    const p = path.join(ts11Dir, 'TS11_Overall_Floor_Plate_Master_Plan.jpg');
+    if (fs.existsSync(p)) return p;
+  }
+
   if (['L', 'M', 'N', 'O', 'P'].includes(col)) {
     const p = path.join(baseDir, '1 Bed Type L,M,N,O,P.jpg');
     if (fs.existsSync(p)) return p;
@@ -2341,9 +2359,9 @@ async function pollUpdates() {
           return;
         }
 
-        // ── DIRECT UNIT CODE QUERY (TS8, TS9, TS7) ──
+        // ── DIRECT UNIT CODE QUERY (TS8, TS9, TS11, TS7) ──
         try {
-          const projectIds = ['time-square-8', 'time-square-9', 'time-square-7'];
+          const projectIds = ['time-square-8', 'time-square-9', 'time-square-11', 'time-square-7'];
           for (const pid of projectIds) {
             const proj = projectEngine.loadProject(pid);
             const directUnit = projectEngine.findUnit(proj, text);
