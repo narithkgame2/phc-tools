@@ -93,7 +93,7 @@ function setupMasterQuotationWorkbook() {
     ["SCHEDULE", "Total Installments ($)", "=C22 * C23", "40 * monthly installment"],
     ["SCHEDULE", "Balance at Handover ($)", "=C17 - C19 - C20 - C24", "Strict calculated remainder"],
     ["SCHEDULE", "Balance at Handover (%)", "=ROUND(C25 / C17, 4)", "True handover share (~50%)"],
-    ["SCHEDULE", "Est. Physical Handover", "=IF(C7="Time Square 8", "Q4 2028", "Q4 2027")", "Handover milestone"],
+    ["SCHEDULE", "Est. Physical Handover", "=IF(C7=\"Time Square 8\", \"Q4 2028\", \"Q4 2027\")", "Handover milestone"],
     ["CLOSING", "Developer Beneficiary", "Megakim World Corp Co., Ltd. (ABA Bank)", "Verified corporate beneficiary entity"],
     ["CLOSING", "Contract Signing", "Hand-Signed Originals Required", "Originals sent via DHL courier (no e-signature)"],
     ["CLOSING", "Campaign Inclusions", "=VLOOKUP(C2, 'Master Price List'!$A$2:$M$404, 13, FALSE)", "Verified promotional items"]
@@ -126,10 +126,10 @@ function setupMasterQuotationWorkbook() {
     ["CHECK ITEM", "FORMULA / VALUE", "STATUS & AUDIT LOGIC"],
     ["1. Total Scheduled Sum", "=Quotation!C19 + Quotation!C20 + Quotation!C24 + Quotation!C25", "Booking + Down + Installments + Handover"],
     ["2. Target Net Contract Price", "=Quotation!C17", "Net purchase price"],
-    ["3. Mathematical Integrity", "=IF(B2=B3, "PASS (100.0% Exact Match)", "FAIL (Discrepancy: $" & (B2-B3) & ")")", "Asserts schedule equals net price"],
-    ["4. Handover Balance %", "=TEXT(Quotation!C26, "0.0%")", "Displayed handover percentage"],
-    ["5. Down Payment Preset Guard", "=IF(OR(Quotation!C3=0.1, Quotation!C3=0.2), "PASS: Standard Preset (" & TEXT(Quotation!C3, "0%") & ")", "CAUTION: Non-preset Down Payment (" & TEXT(Quotation!C3, "0%") & ") - Confirm with developer")", "Audits down payment presets"],
-    ["6. Campaign Validity Guard", "=IF(DATEVALUE(Quotation!C4) > DATEVALUE(Quotation!C6), "WARNING: Quote date is past expiration", "PASS: Active quote")", "Audits quote date without TODAY"]
+    ["3. Mathematical Integrity", "=IF(B2=B3, \"PASS (100.0% Exact Match)\", \"FAIL (Discrepancy: $\" & (B2-B3) & \")\")", "Asserts schedule equals net price"],
+    ["4. Handover Balance %", "=TEXT(Quotation!C26, \"0.0%\")", "Displayed handover percentage"],
+    ["5. Down Payment Preset Guard", "=IF(OR(Quotation!C3=0.1, Quotation!C3=0.2), \"PASS: Standard Preset (\" & TEXT(Quotation!C3, \"0%\") & \")\", \"CAUTION: Non-preset Down Payment (\" & TEXT(Quotation!C3, \"0%\") & \") - Confirm with developer\")", "Audits down payment presets"],
+    ["6. Campaign Validity Guard", "=IF(DATEVALUE(Quotation!C4) > DATEVALUE(Quotation!C6), \"WARNING: Quote date is past expiration\", \"PASS: Active quote\")", "Audits quote date without TODAY"]
   ];
   tabChecks.getRange(1, 1, checkRows.length, 3).setValues(checkRows);
   tabChecks.getRange(1, 1, 1, 3).setBackground("#1a365d").setFontColor("#ffffff").setFontWeight("bold");
