@@ -451,6 +451,36 @@ function formatProposalCard(analysis) {
     advisorSection = `\n▫️ <i>Advisor Note: ${escapeHtml(advisorNote)}</i>`;
   }
 
+  // 4.3 Standard Risk & Due Diligence Profile
+  const titleType = project.projectDetails?.titleType || 'Foreign Freehold Strata Title';
+  const foreignQuota = project.projectDetails?.foreignQuotaRemaining || 'Available (Within 70% statutory quota)';
+  const completionDate = project.projectDetails?.handover || 'Q4 2028';
+  const developerRecord = project.projectDetails?.developerTrackRecord || 'Megakim World Corp: Completed Time Square 1, 2, 3, 5, 6, 7';
+
+  // Fields without verified data print strictly "To be confirmed"
+  const netYield = 'To be confirmed';
+  const cgtImpact = 'To be confirmed';
+  const exitLiquidity = 'To be confirmed';
+
+  const riskSection = `\n\n⸻\n\n` +
+    `<b>Due Diligence & Risk Profile</b>\n\n` +
+    `• <b>Title Type:</b> ${escapeHtml(titleType)}\n` +
+    `• <b>Foreign Quota Remaining:</b> ${escapeHtml(foreignQuota)}\n` +
+    `• <b>Completion Date:</b> ${escapeHtml(completionDate)}\n` +
+    `• <b>Developer Delivery Record:</b> ${escapeHtml(developerRecord)}\n` +
+    `• <b>Net Yield:</b> ${netYield}\n` +
+    `• <b>CGT Impact:</b> ${cgtImpact}\n` +
+    `• <b>Exit Liquidity:</b> ${exitLiquidity}`;
+
+  // 4.4 Closing execution requirements
+  const closingSection = `\n\n⸻\n\n` +
+    `<b>Contract Execution Details</b>\n\n` +
+    `▫️ <i>The developer requires hand-signed original agreements.</i>\n\n` +
+    `• <b>Booking Receipt:</b> $${booking} USD (Pending receipt confirmation)\n` +
+    `• <b>Developer Beneficiary:</b> Megakim World Corp (⚠️ verify before sending: account name must match developer entity)\n` +
+    `• <b>Countersigning Party:</b> Developer authorized signatory\n` +
+    `• <b>Courier Tracking:</b> Pending dispatch / DHL tracking to be attached`;
+
   return (
     budgetWarning +
     `<b>Property Details:</b>\n\n` +
@@ -472,7 +502,10 @@ function formatProposalCard(analysis) {
     `• <b>Interest:</b> 0%\n` +
     `• <b>Rounding Active:</b> ${roundingDisplay}` +
     devFlag +
-    advisorSection + `</blockquote>`
+    advisorSection +
+    riskSection +
+    closingSection +
+    `</blockquote>`
   );
 }
 

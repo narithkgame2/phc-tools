@@ -292,6 +292,37 @@ function runTestSuite(engine) {
       assert.strictEqual(card.includes("(Floor 44)"), false, "Card must not display internal (Floor 44)");
     });
 
+    // Test 18: Standard risk block on proposals with unverified fields as 'To be confirmed'
+    runTest("Proposal card contains standard risk block with required unverified guards", () => {
+      const project = engine.loadProject(TEST_TS8_ID);
+      const unit = engine.findUnit(project, '45AO');
+      const calc = engine.calculatePaymentPlan(project, unit);
+      const card = engine.formatProposalCard({ project, calculation: calc, bestUnit: unit });
+
+      assert.ok(card.includes("Due Diligence & Risk Profile"), "Card must have Risk Profile header");
+      assert.ok(card.includes("• <b>Title Type:</b>"), "Card must state title type");
+      assert.ok(card.includes("• <b>Foreign Quota Remaining:</b>"), "Card must state foreign quota");
+      assert.ok(card.includes("• <b>Completion Date:</b>"), "Card must state completion date");
+      assert.ok(card.includes("• <b>Developer Delivery Record:</b>"), "Card must state delivery record");
+      assert.ok(card.includes("• <b>Net Yield:</b> To be confirmed"), "Net yield must be To be confirmed");
+      assert.ok(card.includes("• <b>CGT Impact:</b> To be confirmed"), "CGT impact must be To be confirmed");
+      assert.ok(card.includes("• <b>Exit Liquidity:</b> To be confirmed"), "Exit liquidity must be To be confirmed");
+    });
+
+    // Test 19: Closing execution requirements (hand signed, DHL placeholder, verified beneficiary)
+    runTest("Proposal card contains compliant hand-signed closing requirements and placeholders", () => {
+      const project = engine.loadProject(TEST_TS8_ID);
+      const unit = engine.findUnit(project, '45AO');
+      const calc = engine.calculatePaymentPlan(project, unit);
+      const card = engine.formatProposalCard({ project, calculation: calc, bestUnit: unit });
+
+      assert.ok(card.toLowerCase().includes("the developer requires hand-signed original agreements"), "Must state hand-signed originals required");
+      assert.ok(card.includes("Booking Receipt:</b> $1,000 USD"), "Must contain booking deposit receipt placeholder");
+      assert.ok(card.includes("account name must match developer entity"), "Must include beneficiary verification warning");
+      assert.ok(card.includes("Countersigning Party:</b>"), "Must include countersigning party placeholder");
+      assert.ok(card.includes("Courier Tracking:</b>"), "Must include DHL tracking placeholder");
+    });
+
   } finally {
     teardownSandboxes();
   }
