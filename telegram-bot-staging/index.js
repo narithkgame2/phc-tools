@@ -177,26 +177,12 @@ async function sendTS8OverviewMenu(chatId) {
   const menuText = projectEngine.formatInventoryMenu('time-square-8');
   const menuKeyboard = {
     inline_keyboard: [
-      [
-        { text: '① 1-Bed from $101K (45AO)', callback_data: 'ts8_cat_1bed' },
-        { text: '② Premium from $108K (41C2)', callback_data: 'ts8_cat_premium' }
-      ],
-      [
-        { text: '③ 2-Bed from $143K (43G)', callback_data: 'ts8_cat_2bed' },
-        { text: '④ 3 & 4-Bed ($177K+)', callback_data: 'ts8_cat_34bed' }
-      ],
-      [
-        { text: '⚡ Lowest Project Entry ($101,990)', callback_data: 'ts8_calc_45AO' },
-        { text: '🏙️ Top Penthouse ($245,157)', callback_data: 'ts8_calc_45AA' }
-      ],
-      [
-        { text: '🖼️ Standard Price Sheet', callback_data: 'ts8_img_std' },
-        { text: '🖼️ Premium Price Matrix', callback_data: 'ts8_img_prem' }
-      ],
-      [
-        { text: '📤 Upload New Developer Sheet', callback_data: 'ts8_upload_prompt' },
-        { text: '🔄 Reset All Units', callback_data: 'admin_reset_ts8' }
-      ]
+      [{ text: '1-Bedroom from $101K (Unit 45AO)', callback_data: 'ts8_cat_1bed' }],
+      [{ text: 'Premium 2-Bedroom from $108K (Unit 41C2)', callback_data: 'ts8_cat_premium' }],
+      [{ text: '2-Bedroom from $143K (Unit 43G)', callback_data: 'ts8_cat_2bed' }],
+      [{ text: '3 & 4-Bedroom from $177K', callback_data: 'ts8_cat_34bed' }],
+      [{ text: 'View Standard Price Sheet', callback_data: 'ts8_img_std' }],
+      [{ text: 'View Premium Price Matrix', callback_data: 'ts8_img_prem' }]
     ]
   };
 
@@ -207,7 +193,7 @@ async function sendTS8OverviewMenu(chatId) {
       const formData = new FormData();
       formData.append('chat_id', chatId);
       formData.append('photo', new Blob([fileData], { type: 'image/jpeg' }), path.basename(flyerPath));
-      formData.append('caption', `🏢 <b>TIME SQUARE 8 · DEVELOPER PROMOTIONAL RELEASE</b>\n📋 <i>Verified Source Document: 2026-11-20</i>\n▫️ <b>Campaign:</b> 40 Months @ 1%/mo · 50% Handover`);
+      formData.append('caption', `<b>TIME SQUARE 8 · DEVELOPER RELEASE</b>\n▫️ <b>Source Document:</b> 2026-11-20\n▫️ <b>Campaign:</b> 40 Months @ 1% / mo · 50% Handover`);
       formData.append('parse_mode', 'HTML');
       await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, { method: 'POST', body: formData });
     } catch (err) {
@@ -233,37 +219,27 @@ async function sendTS9OverviewMenu(chatId) {
     : path.join(__dirname, '..', 'phc-website', 'Property Listing', 'Time Square 9');
   const flyerPath = path.join(ts9Dir, 'Price List', '2026-11-20_TS9_Type_M_Flyer_Starting_50k.jpg');
 
-  const text = `🏢 <b>TIME SQUARE 9 · THE GATSBY RESIDENCE (BKK1)</b>\n` +
-    `📍 <i>Prime Central BKK1, Street 306</i>\n` +
-    `▫️ <b>Developer:</b> Megakim World Corp (Track record: TS1, 2, 3, 5, 6, 7)\n` +
-    `▫️ <b>Handover:</b> Q4 2027 · Foreign Freehold Strata Title\n\n` +
-    `🔥 <b>ACTIVE DEVELOPER PROMOTIONS:</b>\n` +
-    `① <b>New Special Layout Type M:</b> 15% Discount\n` +
-    `   • M2 (29 sqm): Starting from <b>$50,058 Net</b> ($501 / mo)\n` +
-    `   • M1 (50 sqm): Starting from <b>$77,279 Net</b> ($773 / mo)\n` +
-    `② <b>New Layout Type X (43 sqm 1-Bed):</b>\n` +
-    `   • 20F–38F: 15% Disc + <b>$3,000 Rebate</b> + Appliances (TV, Fridge, Washing Machine)\n` +
-    `   • 5F–19F: 15% Discount\n\n` +
-    `Tap a featured unit below or type any unit code (e.g. <code>10M2</code>, <code>5X1</code>, <code>20X2</code>):`;
+  const text = `<b>TIME SQUARE 9 · THE GATSBY RESIDENCE</b>\n\n` +
+    `▫️ <b>Location:</b> BKK1, Street 306\n` +
+    `▫️ <b>Developer:</b> Megakim World Corp\n` +
+    `▫️ <b>Handover:</b> Q4 2027 (Foreign Freehold Strata Title)\n\n` +
+    `<blockquote><b>Active Developer Campaigns</b>\n\n` +
+    `① <b>Special Layout Type M (15% Discount):</b>\n` +
+    `• M2 (29 sqm): From $50,058 Net ($501 / mo)\n` +
+    `• M1 (50 sqm): From $77,279 Net ($773 / mo)\n\n` +
+    `② <b>Type X 1-Bedroom (43 sqm):</b>\n` +
+    `• 20F–38F: 15% Disc + $3,000 Rebate + Home Appliances\n` +
+    `• 5F–19F: 15% Discount</blockquote>\n\n` +
+    `Select a unit below or type any unit code:`;
 
   const keyboard = {
     inline_keyboard: [
-      [
-        { text: '⚡ 10M2 (29 sqm · $50,058)', callback_data: 'prop_unit_10M2' },
-        { text: '⚡ 14M2 (29 sqm · $51,899)', callback_data: 'prop_unit_14M2' }
-      ],
-      [
-        { text: '🛋️ 5M1 (50 sqm · $77,279)', callback_data: 'prop_unit_5M1' },
-        { text: '🛋️ 15M1 (50 sqm · $85,374)', callback_data: 'prop_unit_15M1' }
-      ],
-      [
-        { text: '🎁 20X2 (43 sqm + Appliances)', callback_data: 'prop_unit_20X2' },
-        { text: '🎁 38X2 (38F Top Floor)', callback_data: 'prop_unit_38X2' }
-      ],
-      [
-        { text: '🖼️ Type M Flyer ($50k Entry)', callback_data: 'ts9_img_m_flyer' },
-        { text: '🖼️ Type X Flyer (Appliances)', callback_data: 'ts9_img_x_flyer' }
-      ]
+      [{ text: 'Unit 10M2 · 29 sqm · $50,058 ($501/mo)', callback_data: 'prop_unit_10M2' }],
+      [{ text: 'Unit 14M2 · 29 sqm · $51,899 ($519/mo)', callback_data: 'prop_unit_14M2' }],
+      [{ text: 'Unit 5M1 · 50 sqm · $77,279 ($773/mo)', callback_data: 'prop_unit_5M1' }],
+      [{ text: 'Unit 20X2 · 43 sqm · $68,680 (Appliances)', callback_data: 'prop_unit_20X2' }],
+      [{ text: 'View Type M Developer Price Sheet', callback_data: 'ts9_img_m_flyer' }],
+      [{ text: 'View Type X Promotion Flyer', callback_data: 'ts9_img_x_flyer' }]
     ]
   };
 
@@ -296,37 +272,26 @@ async function sendTS11OverviewMenu(chatId) {
     : path.join(__dirname, '..', 'phc-website', 'Property Listing', 'Time Square 11', 'Floor Plan');
   const planPath = path.join(ts11Dir, 'TS11_Overall_Floor_Plate_Master_Plan.jpg');
 
-  const text = `🏢 <b>TIME SQUARE 11 · TIME CASTLE (BKK3 / TTP)</b>\n` +
-    `📍 <i>Toul Tom Poung / BKK3 Growth Corridor</i>\n` +
+  const text = `<b>TIME SQUARE 11 · TIME CASTLE</b>\n\n` +
+    `▫️ <b>Location:</b> Toul Tom Poung / BKK3\n` +
     `▫️ <b>Developer:</b> Megakim World Corp\n` +
-    `▫️ <b>Handover:</b> Q4 2027 · Foreign Freehold Strata Title\n\n` +
-    `🔥 <b>ACTIVE DEVELOPER PROMOTIONS:</b>\n` +
-    `① <b>Special Layout 1-Bedrooms:</b> 10% Discount\n` +
-    `   • S1 / S3 (30 sqm): Starting from <b>$38,245 Net</b>\n` +
-    `   • S2 / S5 (40 sqm): Starting from <b>$48,676 Net</b> (e.g. 24S5: $52,668)\n` +
-    `② <b>Type A3 / A5 (75 sqm 2-Bedrooms):</b>\n` +
-    `   • 10% Discount + <b>$3,000 Cash Rebate</b>\n` +
-    `   • Included: TV, 3 Air Conditioners, Refrigerator\n\n` +
-    `Tap a featured unit below or type any unit code (e.g. <code>24S5</code>, <code>17S1</code>, <code>10A3</code>):`;
+    `▫️ <b>Handover:</b> Q4 2027 (Foreign Freehold Strata Title)\n\n` +
+    `<blockquote><b>Active Developer Campaigns</b>\n\n` +
+    `① <b>Special Layout 1-Bedrooms (10% Discount):</b>\n` +
+    `• S1 / S3 (30 sqm): From $38,245 Net\n` +
+    `• S2 / S5 (40 sqm): From $48,676 Net (e.g. 24S5: $52,668)\n\n` +
+    `② <b>Type A3 / A5 2-Bedrooms (75 sqm):</b>\n` +
+    `• 10% Disc + $3,000 Rebate + TV, 3 ACs, Refrigerator</blockquote>\n\n` +
+    `Select a unit below or type any unit code:`;
 
   const keyboard = {
     inline_keyboard: [
-      [
-        { text: '⚡ 17S1 (30 sqm · $39,443)', callback_data: 'prop_unit_17S1' },
-        { text: '⚡ 24S5 (40 sqm · $52,668)', callback_data: 'prop_unit_24S5' }
-      ],
-      [
-        { text: '🎁 10A3 (75 sqm 2-Bed + 3AC)', callback_data: 'prop_unit_10A3' },
-        { text: '🎁 11A5 (75 sqm 2-Bed + 3AC)', callback_data: 'prop_unit_11A5' }
-      ],
-      [
-        { text: '🛋️ 37B3 (50 sqm 1-Bed · $70,632)', callback_data: 'prop_unit_37B3' },
-        { text: '🛋️ 34B2 (50 sqm 1-Bed · $68,688)', callback_data: 'prop_unit_34B2' }
-      ],
-      [
-        { text: '🖼️ S1/S3 30 sqm Layout', callback_data: 'ts11_img_s1' },
-        { text: '🖼️ S2/S5 40 sqm Layout', callback_data: 'ts11_img_s2' }
-      ]
+      [{ text: 'Unit 17S1 · 30 sqm · $39,443 Net', callback_data: 'prop_unit_17S1' }],
+      [{ text: 'Unit 24S5 · 40 sqm · $52,668 Net', callback_data: 'prop_unit_24S5' }],
+      [{ text: 'Unit 10A3 · 75 sqm 2-Bed · $84,714 (3 ACs)', callback_data: 'prop_unit_10A3' }],
+      [{ text: 'Unit 11A5 · 75 sqm 2-Bed · $84,990 (3 ACs)', callback_data: 'prop_unit_11A5' }],
+      [{ text: 'View S1 / S3 30 sqm Floor Plan', callback_data: 'ts11_img_s1' }],
+      [{ text: 'View S2 / S5 40 sqm Floor Plan', callback_data: 'ts11_img_s2' }]
     ]
   };
 
@@ -365,17 +330,17 @@ async function sendTS8UnitProposal(chatId, unit, project) {
   const isPrem = unit.grossAreaSqm === 85;
   const isSold = unit.status === 'sold';
   const soldButton = isSold
-    ? [{ text: `↩️ Undo Sold for ${unit.unitCode}`, callback_data: `admin_undo_ts8_${unit.unitCode}` }]
-    : [{ text: `❌ Mark ${unit.unitCode} as Sold`, callback_data: `admin_sold_ts8_${unit.unitCode}` }];
+    ? [{ text: `Undo Sold for ${unit.unitCode}`, callback_data: `admin_undo_ts8_${unit.unitCode}` }]
+    : [{ text: `Mark ${unit.unitCode} as Sold`, callback_data: `admin_sold_ts8_${unit.unitCode}` }];
 
   const replyMarkup = {
     inline_keyboard: [
       soldButton,
       [
-        { text: '📋 Developer Price Sheet', callback_data: isPrem ? 'ts8_img_prem' : 'ts8_img_std' },
-        { text: '📤 Upload New Sheet', callback_data: 'ts8_upload_prompt' }
+        { text: 'Developer Price Sheet', callback_data: isPrem ? 'ts8_img_prem' : 'ts8_img_std' },
+        { text: 'Upload New Sheet', callback_data: 'ts8_upload_prompt' }
       ],
-      [{ text: '📋 « Back to TS8 Inventory', callback_data: 'ts8_menu_main' }]
+      [{ text: '« Back to Inventory', callback_data: 'ts8_menu_main' }]
     ]
   };
 
@@ -2598,8 +2563,8 @@ async function pollUpdates() {
               parse_mode: 'HTML',
               reply_markup: {
                 inline_keyboard: [
-                  [{ text: `❌ Mark ${bestUnit.unitCode} as Sold`, callback_data: `admin_sold_ts7_${bestUnit.unitCode}` }],
-                  [{ text: '🔄 Reset All TS7 Units to Available', callback_data: 'admin_reset_ts7' }]
+                  [{ text: `Mark ${bestUnit.unitCode} as Sold`, callback_data: `admin_sold_ts7_${bestUnit.unitCode}` }],
+                  [{ text: 'Reset All TS7 Units to Available', callback_data: 'admin_reset_ts7' }]
                 ]
               }
             })

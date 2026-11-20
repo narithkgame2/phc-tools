@@ -530,12 +530,11 @@ function formatInventoryMenu(projectId) {
   const b3Avail = stdAvail.filter(u => u.bedrooms === 3).sort((a, b) => a.netPrice - b.netPrice);
   const b4Avail = stdAvail.filter(u => u.bedrooms === 4).sort((a, b) => a.netPrice - b.netPrice);
 
-  let text = `🏢 <b>${pName} · DUPLEX PRICE LIST</b>\n` +
-    `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-    `<blockquote>▫️ <b>Campaign:</b> ${duration} Months @ 1%/mo · ${handoverPct}% Handover\n` +
+  let text = `<b>${pName} · DUPLEX PRICE LIST</b>\n\n` +
+    `<blockquote>▫️ <b>Campaign:</b> ${duration} Months @ 1% / mo · ${handoverPct}% Handover\n` +
     `▫️ <b>Handover:</b> ${handover} · ${project.projectDetails.floors} Storeys\n` +
     `▫️ <b>Location:</b> Boeng Trabaek, Chamkar Mon (Russian Market area)</blockquote>\n\n` +
-    `📋 <b>AVAILABLE COLLECTIONS (LOWEST PRICE FIRST):</b>\n\n`;
+    `<b>Available Collections (Lowest Price First):</b>\n\n`;
 
   const categories = [
     { num: '①', label: 'Duplex 1-Bed (73 to 79 sqm)', tag: 'Lowest Project Entry', list: b1Avail },
@@ -558,8 +557,8 @@ function formatInventoryMenu(projectId) {
       `▫️ <b>Lead Unit:</b> <code>${escapeHtml(lowest.unitCode)}</code> · ${c.list.length} unit${c.list.length > 1 ? 's' : ''} available</blockquote>\n\n`;
   });
 
-  text += `💡 <i>Tap any button below to view all units in that collection or send any unit code directly (e.g. <code>42B1</code>, <code>45AO</code>, <code>43G</code>, <code>46R</code>).</i>\n\n` +
-    `📋 <i>Verified Developer Price List: ${escapeHtml(project.provenance?.priceListDate || '2026-11-20')}</i>`;
+  text += `<i>Select a collection below or type any unit code (e.g. <code>42B1</code>, <code>45AO</code>, <code>43G</code>, <code>46R</code>).</i>\n\n` +
+    `▫️ <i>Verified Developer Price List: ${escapeHtml(project.provenance?.priceListDate || '2026-11-20')}</i>`;
 
   return text;
 }
