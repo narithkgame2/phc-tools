@@ -388,9 +388,11 @@
         .sidebar.collapsed { width: 56px; }
         .sidebar.collapsed .sb-label, .sidebar.collapsed .sb-section-label,
         .sidebar.collapsed .ws-info, .sidebar.collapsed .sb-footer-label { display: none; }
-        .sidebar.collapsed .ws-header { justify-content: center; padding: 12px 8px 10px; }
+        .sidebar.collapsed .ws-header { display: none !important; /* Hide duplicate logo & title in sidebar; topbar handles it */
+ justify-content: center; padding: 12px 8px 10px; }
         .sidebar.collapsed .sb-footer { justify-content: center; }
-        .ws-header { display: flex; align-items: center; gap: 8px; padding: 12px 14px 10px; flex-shrink: 0; border-bottom: 1px solid var(--sb-border); }
+        .ws-header { display: none !important; /* Hide duplicate logo & title in sidebar; topbar handles it */
+ display: flex; align-items: center; gap: 8px; padding: 12px 14px 10px; flex-shrink: 0; border-bottom: 1px solid var(--sb-border); }
         .ws-logo { width: 26px; height: 26px; border-radius: 6px; overflow: hidden; flex-shrink: 0; }
         .ws-logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .ws-info { flex: 1; min-width: 0; }
@@ -681,15 +683,8 @@
         background: linear-gradient(180deg, #fff, #fbf7ef);
         position: relative;
       }
-      .inventory-sheet::after {
-        content: "";
-        position: absolute;
-        top: 0; right: 0; bottom: 0;
-        width: 40px;
-        background: linear-gradient(to right, transparent, rgba(255,255,255,.85));
-        pointer-events: none;
-        border-radius: 0 14px 14px 0;
-      }
+      /* .inventory-sheet::after removed to eliminate white gradient clipping */
+      .inventory-sheet::after { display: none !important; }
       .inv-scroll-hint {
         display: none;
         font-size: 11px;
@@ -4710,6 +4705,198 @@
           page-break-inside: avoid;
         }
       }
+    
+      /* High-End Architectural Input Styling */
+      input[type="text"], input[type="date"], input[type="number"], select, textarea {
+        background: #FFFFFF !important;
+        border: 1px solid #D9D2C5 !important;
+        border-radius: 6px !important;
+        color: #1A1D20 !important;
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
+        font-size: 13.5px !important;
+        padding: 9px 12px !important;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+        box-sizing: border-box !important;
+      }
+      input:focus, select:focus, textarea:focus {
+        border-color: #073642 !important;
+        outline: none !important;
+        box-shadow: 0 0 0 3px rgba(7, 54, 66, 0.08) !important;
+      }
+      .field label {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 10.5px !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.06em !important;
+        text-transform: uppercase !important;
+        color: #55686C !important;
+        margin-bottom: 5px !important;
+      }
+
+      /* Sticky Table Floor Column for smooth horizontal scrolling */
+      .inventory-sheet {
+        position: relative !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        border: 1px solid #E2DDD2 !important;
+        border-radius: 8px !important;
+        background: #FFFFFF !important;
+      }
+      .inventory-table {
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+      }
+      .inventory-floor, .floor-hd, .corner {
+        position: sticky !important;
+        left: 0 !important;
+        z-index: 5 !important;
+        background: #FAF8F5 !important;
+        border-right: 2px solid #D9D2C5 !important;
+      }
+      .inventory-group-row th.corner {
+        background: #073642 !important;
+      }
+      .inventory-type-row th.floor-hd, .inventory-size-row th.floor-hd {
+        background: #F4EFE6 !important;
+        color: #073642 !important;
+      }
+
+      /* Refined Inventory Filter Chips */
+      .inventory-toolbar {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+      .inventory-tools {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        align-items: center;
+      }
+      .inventory-chip {
+        background: #FFFFFF !important;
+        border: 1px solid #E2DDD2 !important;
+        color: #55686C !important;
+        border-radius: 20px !important;
+        padding: 5px 12px !important;
+        font-size: 11.5px !important;
+        font-weight: 500 !important;
+        cursor: pointer !important;
+        transition: all 0.18s ease !important;
+        white-space: nowrap !important;
+      }
+      .inventory-chip:hover {
+        border-color: #9E8052 !important;
+        color: #1A1D20 !important;
+      }
+      .inventory-chip.active {
+        background: #073642 !important;
+        border-color: #073642 !important;
+        color: #FAF8F5 !important;
+        font-weight: 600 !important;
+        box-shadow: 0 2px 8px rgba(7, 54, 66, 0.15) !important;
+      }
+
+      /* Selected Unit Side Card Luxury Restyle */
+      .inventory-side {
+        border: 1px solid #E2DDD2 !important;
+        border-radius: 8px !important;
+        background: #FAF8F5 !important;
+        box-shadow: 0 6px 20px rgba(7, 54, 66, 0.05) !important;
+      }
+
+      /* Mobile Navigation Bar */
+      @media (max-width: 768px) {
+        .proj-bar {
+          padding: 8px 12px !important;
+          height: auto !important;
+          flex-wrap: wrap !important;
+          gap: 8px !important;
+        }
+        .proj-tabs {
+          order: 3 !important;
+          width: 100% !important;
+          overflow-x: auto !important;
+          -webkit-overflow-scrolling: touch !important;
+          padding-bottom: 4px !important;
+        }
+        .desktop-shell {
+          display: block !important;
+          padding-bottom: 70px !important; /* Spacing for bottom bar */
+        }
+        .sidebar {
+          display: none !important;
+        }
+        .container {
+          padding: 12px !important;
+          max-width: 100% !important;
+        }
+        .inventory-layout {
+          grid-template-columns: 1fr !important;
+        }
+        .inventory-side {
+          position: static !important;
+          margin-top: 16px !important;
+          width: 100% !important;
+          box-sizing: border-box !important;
+        }
+        .g3, .g2, .analysis-grid-2, .analysis-grid-3 {
+          grid-template-columns: 1fr !important;
+          gap: 12px !important;
+        }
+        .card {
+          padding: 14px 12px !important;
+          border-radius: 8px !important;
+        }
+        .main-tabs {
+          display: none !important; /* Hide old tabs in favor of bottom bar */
+        }
+      }
+
+      /* Sleek Mobile Bottom Tab Bar */
+      .mobile-bottom-nav {
+        display: none;
+      }
+      @media (max-width: 768px) {
+        .mobile-bottom-nav {
+          display: flex;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 60px;
+          background: #0A1C24;
+          border-top: 1px solid rgba(158, 128, 82, 0.25);
+          z-index: 9999;
+          justify-content: space-around;
+          align-items: center;
+          padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        .m-nav-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          color: rgba(250, 248, 245, 0.6);
+          text-decoration: none;
+          font-size: 10px;
+          font-weight: 500;
+          gap: 3px;
+          flex: 1;
+          height: 100%;
+          cursor: pointer;
+        }
+        .m-nav-item.active {
+          color: #86BE3F;
+          font-weight: 600;
+        }
+        .m-nav-item svg {
+          width: 20px;
+          height: 20px;
+        }
+      }
+    
     </style>
   </head>
   <body>
@@ -11356,7 +11543,199 @@ tr:nth-child(even) td{background:#faf8f4}
 .sig-line{border-top:1px solid #1a2535;padding-top:5px;font-size:11px;color:#4a5e75}
 .disc{margin-top:18px;font-size:9px;color:#8a9aac;line-height:1.65}
 @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.page{padding:18px}}
-</style></head><body>
+
+      /* High-End Architectural Input Styling */
+      input[type="text"], input[type="date"], input[type="number"], select, textarea {
+        background: #FFFFFF !important;
+        border: 1px solid #D9D2C5 !important;
+        border-radius: 6px !important;
+        color: #1A1D20 !important;
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
+        font-size: 13.5px !important;
+        padding: 9px 12px !important;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+        box-sizing: border-box !important;
+      }
+      input:focus, select:focus, textarea:focus {
+        border-color: #073642 !important;
+        outline: none !important;
+        box-shadow: 0 0 0 3px rgba(7, 54, 66, 0.08) !important;
+      }
+      .field label {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 10.5px !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.06em !important;
+        text-transform: uppercase !important;
+        color: #55686C !important;
+        margin-bottom: 5px !important;
+      }
+
+      /* Sticky Table Floor Column for smooth horizontal scrolling */
+      .inventory-sheet {
+        position: relative !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        border: 1px solid #E2DDD2 !important;
+        border-radius: 8px !important;
+        background: #FFFFFF !important;
+      }
+      .inventory-table {
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+      }
+      .inventory-floor, .floor-hd, .corner {
+        position: sticky !important;
+        left: 0 !important;
+        z-index: 5 !important;
+        background: #FAF8F5 !important;
+        border-right: 2px solid #D9D2C5 !important;
+      }
+      .inventory-group-row th.corner {
+        background: #073642 !important;
+      }
+      .inventory-type-row th.floor-hd, .inventory-size-row th.floor-hd {
+        background: #F4EFE6 !important;
+        color: #073642 !important;
+      }
+
+      /* Refined Inventory Filter Chips */
+      .inventory-toolbar {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+      .inventory-tools {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        align-items: center;
+      }
+      .inventory-chip {
+        background: #FFFFFF !important;
+        border: 1px solid #E2DDD2 !important;
+        color: #55686C !important;
+        border-radius: 20px !important;
+        padding: 5px 12px !important;
+        font-size: 11.5px !important;
+        font-weight: 500 !important;
+        cursor: pointer !important;
+        transition: all 0.18s ease !important;
+        white-space: nowrap !important;
+      }
+      .inventory-chip:hover {
+        border-color: #9E8052 !important;
+        color: #1A1D20 !important;
+      }
+      .inventory-chip.active {
+        background: #073642 !important;
+        border-color: #073642 !important;
+        color: #FAF8F5 !important;
+        font-weight: 600 !important;
+        box-shadow: 0 2px 8px rgba(7, 54, 66, 0.15) !important;
+      }
+
+      /* Selected Unit Side Card Luxury Restyle */
+      .inventory-side {
+        border: 1px solid #E2DDD2 !important;
+        border-radius: 8px !important;
+        background: #FAF8F5 !important;
+        box-shadow: 0 6px 20px rgba(7, 54, 66, 0.05) !important;
+      }
+
+      /* Mobile Navigation Bar */
+      @media (max-width: 768px) {
+        .proj-bar {
+          padding: 8px 12px !important;
+          height: auto !important;
+          flex-wrap: wrap !important;
+          gap: 8px !important;
+        }
+        .proj-tabs {
+          order: 3 !important;
+          width: 100% !important;
+          overflow-x: auto !important;
+          -webkit-overflow-scrolling: touch !important;
+          padding-bottom: 4px !important;
+        }
+        .desktop-shell {
+          display: block !important;
+          padding-bottom: 70px !important; /* Spacing for bottom bar */
+        }
+        .sidebar {
+          display: none !important;
+        }
+        .container {
+          padding: 12px !important;
+          max-width: 100% !important;
+        }
+        .inventory-layout {
+          grid-template-columns: 1fr !important;
+        }
+        .inventory-side {
+          position: static !important;
+          margin-top: 16px !important;
+          width: 100% !important;
+          box-sizing: border-box !important;
+        }
+        .g3, .g2, .analysis-grid-2, .analysis-grid-3 {
+          grid-template-columns: 1fr !important;
+          gap: 12px !important;
+        }
+        .card {
+          padding: 14px 12px !important;
+          border-radius: 8px !important;
+        }
+        .main-tabs {
+          display: none !important; /* Hide old tabs in favor of bottom bar */
+        }
+      }
+
+      /* Sleek Mobile Bottom Tab Bar */
+      .mobile-bottom-nav {
+        display: none;
+      }
+      @media (max-width: 768px) {
+        .mobile-bottom-nav {
+          display: flex;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 60px;
+          background: #0A1C24;
+          border-top: 1px solid rgba(158, 128, 82, 0.25);
+          z-index: 9999;
+          justify-content: space-around;
+          align-items: center;
+          padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        .m-nav-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          color: rgba(250, 248, 245, 0.6);
+          text-decoration: none;
+          font-size: 10px;
+          font-weight: 500;
+          gap: 3px;
+          flex: 1;
+          height: 100%;
+          cursor: pointer;
+        }
+        .m-nav-item.active {
+          color: #86BE3F;
+          font-weight: 600;
+        }
+        .m-nav-item svg {
+          width: 20px;
+          height: 20px;
+        }
+      }
+    
+    </style></head><body>
 <div class="page">
 <div class="hdr">
   <div><div class="brand" style="font-family:'Shippori Mincho',serif;font-weight:700;color:#073642;">NICK | カンボジア不動産投資</div><div class="brand-sub" style="color:#9E8052;letter-spacing:1.5px;">買う前に、正しく比較しましょう · Real Estate Advisory</div>
@@ -11403,7 +11782,38 @@ tr:nth-child(even) td{background:#faf8f4}
   <div><div class="sig-lbl">Date</div><div class="sig-line">${today}</div></div>
 </div>
 <div class="disc" style="font-size:7.5px;line-height:1.4;color:#8A9A9D;">※利回り・価格は参考値であり、将来の収益を保証するものではありません。契約前の現地確認とデューデリジェンスを推奨いたします。個別のご判断は、専門家にご相談ください。</div>
-</div><script>window.onload=()=>window.print()<\/script></body></html>`);
+</div><script>window.onload=()=>window.print()<\/script>
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav" id="mobileBottomNav">
+      <div class="m-nav-item active" onclick="goTab('calculator', 1); updateMobileNav(this)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="3.5" width="16" height="17" rx="3"/><path d="M8 8.5h8M8 12.5h8M8 16.5h4"/></svg>
+        <span>Calculator</span>
+      </div>
+      <div class="m-nav-item" onclick="goTab('inventory', 0); updateMobileNav(this)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 7.5h18M3 12h18M3 16.5h18M7.5 4.5v15M16.5 4.5v15"/></svg>
+        <span>Inventory</span>
+      </div>
+      <div class="m-nav-item" onclick="goTab('compare', 6); updateMobileNav(this)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 19V9M12 19V5M18 19v-7M4 19.5h16"/></svg>
+        <span>Compare</span>
+      </div>
+      <div class="m-nav-item" onclick="goTab('roi', 4); updateMobileNav(this)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 18.5 9 11l3.5 3.5L17 7l3 3.5M4 20.5h16"/></svg>
+        <span>ROI</span>
+      </div>
+      <div class="m-nav-item" onclick="openCfg()">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.65 1.65 0 0 0 15 19.4a1.65 1.65 0 0 0-1 .6 1.65 1.65 0 0 0-.33 1V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-.33-1A1.65 1.65 0 0 0 8.35 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-.6-1 1.65 1.65 0 0 0-1-.33H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1-.33A1.65 1.65 0 0 0 4.6 8.35a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.35 4.6a1.65 1.65 0 0 0 1-.6 1.65 1.65 0 0 0 .33-1V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 .33 1 1.65 1.65 0 0 0 1 .6 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8.35c0 .39.14.76.4 1.05.29.3.66.48 1.08.51H21a2 2 0 1 1 0 4h-.09c-.42.03-.79.21-1.08.51-.26.29-.4.66-.43 1.08Z"/></svg>
+        <span>Config</span>
+      </div>
+    </nav>
+    <script>
+      function updateMobileNav(el) {
+        document.querySelectorAll('.m-nav-item').forEach(i => i.classList.remove('active'));
+        if (el) el.classList.add('active');
+      }
+    </script>
+    
+</body></html>`);
         w.document.close();
       }
 
@@ -11700,5 +12110,36 @@ tr:nth-child(even) td{background:#faf8f4}
       }
 
 </script>
-  </body>
+  
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav" id="mobileBottomNav">
+      <div class="m-nav-item active" onclick="goTab('calculator', 1); updateMobileNav(this)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="3.5" width="16" height="17" rx="3"/><path d="M8 8.5h8M8 12.5h8M8 16.5h4"/></svg>
+        <span>Calculator</span>
+      </div>
+      <div class="m-nav-item" onclick="goTab('inventory', 0); updateMobileNav(this)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 7.5h18M3 12h18M3 16.5h18M7.5 4.5v15M16.5 4.5v15"/></svg>
+        <span>Inventory</span>
+      </div>
+      <div class="m-nav-item" onclick="goTab('compare', 6); updateMobileNav(this)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 19V9M12 19V5M18 19v-7M4 19.5h16"/></svg>
+        <span>Compare</span>
+      </div>
+      <div class="m-nav-item" onclick="goTab('roi', 4); updateMobileNav(this)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 18.5 9 11l3.5 3.5L17 7l3 3.5M4 20.5h16"/></svg>
+        <span>ROI</span>
+      </div>
+      <div class="m-nav-item" onclick="openCfg()">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.65 1.65 0 0 0 15 19.4a1.65 1.65 0 0 0-1 .6 1.65 1.65 0 0 0-.33 1V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-.33-1A1.65 1.65 0 0 0 8.35 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-.6-1 1.65 1.65 0 0 0-1-.33H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1-.33A1.65 1.65 0 0 0 4.6 8.35a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.35 4.6a1.65 1.65 0 0 0 1-.6 1.65 1.65 0 0 0 .33-1V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 .33 1 1.65 1.65 0 0 0 1 .6 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8.35c0 .39.14.76.4 1.05.29.3.66.48 1.08.51H21a2 2 0 1 1 0 4h-.09c-.42.03-.79.21-1.08.51-.26.29-.4.66-.43 1.08Z"/></svg>
+        <span>Config</span>
+      </div>
+    </nav>
+    <script>
+      function updateMobileNav(el) {
+        document.querySelectorAll('.m-nav-item').forEach(i => i.classList.remove('active'));
+        if (el) el.classList.add('active');
+      }
+    </script>
+    
+</body>
 </html>
