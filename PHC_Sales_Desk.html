@@ -5827,6 +5827,253 @@
         }
       }
 
+    
+      /* ════════ INVENTORY VIEW SWITCHER & MOBILE CARD LIST ════════ */
+      .inv-view-switcher {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 12px;
+        background: #FAF8F5;
+        border: 1px solid #E2DDD2;
+        padding: 4px;
+        border-radius: 10px;
+        width: fit-content;
+      }
+      .inv-view-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        color: #55686C;
+        background: transparent;
+        border: none;
+        border-radius: 7px;
+        cursor: pointer;
+        transition: all 0.18s ease;
+      }
+      .inv-view-btn.active {
+        background: #073642;
+        color: #FAF8F5;
+        box-shadow: 0 2px 8px rgba(7, 54, 66, 0.15);
+      }
+      .inv-view-btn svg {
+        flex-shrink: 0;
+      }
+      .inv-cards-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .inv-cards-count-bar {
+        font-size: 11.5px;
+        color: #55686C;
+        margin-bottom: 4px;
+      }
+      .inv-cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 12px;
+      }
+      .inv-card-item {
+        background: #FFFFFF;
+        border: 1px solid #E2DDD2;
+        border-radius: 12px;
+        padding: 14px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 8px rgba(7, 54, 66, 0.04);
+        position: relative;
+      }
+      .inv-card-item:hover, .inv-card-item.selected {
+        border-color: #86BE3F;
+        box-shadow: 0 4px 16px rgba(134, 190, 63, 0.18);
+        transform: translateY(-2px);
+      }
+      .inv-card-item.selected {
+        background: #FDFEFA;
+        border-width: 1.5px;
+      }
+      .inv-card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .inv-card-uid-wrap {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .inv-card-uid {
+        font-family: 'Shippori Mincho', Georgia, serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: #073642;
+      }
+      .inv-card-floor-badge {
+        background: #FAF8F5;
+        border: 1px solid #D9D2C5;
+        color: #9E8052;
+        font-size: 10.5px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 4px;
+      }
+      .inv-card-status-badge {
+        font-size: 10.5px;
+        font-weight: 700;
+        padding: 3px 9px;
+        border-radius: 20px;
+        display: inline-flex;
+        align-items: center;
+      }
+      .inv-card-beds {
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #1A1D20;
+      }
+      .inv-card-meta {
+        font-size: 11.5px;
+        color: #55686C;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 3px;
+      }
+      .inv-card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid rgba(7, 54, 66, 0.06);
+        padding-top: 10px;
+        margin-top: 4px;
+      }
+      .inv-card-price-col {
+        display: flex;
+        flex-direction: column;
+      }
+      .inv-card-price-label {
+        font-size: 9px;
+        letter-spacing: 0.08em;
+        font-weight: 700;
+        color: #8A9A9D;
+        text-transform: uppercase;
+      }
+      .inv-card-price-val {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 16px;
+        font-weight: 800;
+        color: #073642;
+      }
+      .inv-card-calc-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: #073642;
+        color: #FAF8F5;
+        border: none;
+        border-radius: 8px;
+        padding: 7px 12px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 11.5px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.18s ease;
+      }
+      .inv-card-calc-btn:hover {
+        background: #86BE3F;
+        color: #04232B;
+      }
+
+      /* Floating Sticky Mobile Bar */
+      .inv-mobile-sticky-bar {
+        display: none;
+      }
+      @media (max-width: 768px) {
+        .inv-view-switcher {
+          width: 100% !important;
+          box-sizing: border-box !important;
+          justify-content: stretch !important;
+        }
+        .inv-view-btn {
+          flex: 1 !important;
+          justify-content: center !important;
+          padding: 8px 10px !important;
+          font-size: 11.5px !important;
+        }
+        .inv-mobile-sticky-bar {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          position: fixed;
+          bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+          left: 10px;
+          right: 10px;
+          z-index: 9999;
+          background: rgba(7, 54, 66, 0.96);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(134, 190, 63, 0.4);
+          border-radius: 14px;
+          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+          padding: 10px 14px;
+          gap: 10px;
+          animation: stickySlideUp 0.22s ease-out forwards;
+        }
+        @keyframes stickySlideUp {
+          from { opacity: 0; transform: translateY(12px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .inv-sticky-info {
+          display: flex;
+          flex-direction: column;
+          min-width: 0;
+          flex: 1;
+        }
+        .inv-sticky-uid {
+          font-family: 'Shippori Mincho', Georgia, serif;
+          font-size: 15px;
+          font-weight: 700;
+          color: #FAF8F5;
+          line-height: 1.1;
+        }
+        .inv-sticky-meta {
+          font-size: 10.5px;
+          color: #C4A87D;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .inv-sticky-price {
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-size: 15px;
+          font-weight: 800;
+          color: #86BE3F;
+          flex-shrink: 0;
+        }
+        .inv-sticky-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          background: #86BE3F;
+          color: #04232B;
+          border: none;
+          border-radius: 8px;
+          padding: 8px 14px;
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-size: 12px;
+          font-weight: 700;
+          cursor: pointer;
+          flex-shrink: 0;
+        }
+      }
+
     </style>
   </head>
   <body>
@@ -7164,6 +7411,17 @@ B1 = East | Gross 50㎡ | Net 45㎡
                     </div>
                   </div>
                 </div>
+              </div>
+              <!-- View Mode Switcher (Matrix vs Cards) -->
+              <div class="inv-view-switcher">
+                <button type="button" class="inv-view-btn active" id="invViewMatrixBtn" onclick="setInventoryViewMode('matrix')">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7.5h18M3 12h18M3 16.5h18M7.5 4.5v15M16.5 4.5v15"/></svg>
+                  <span>Matrix View (表形式)</span>
+                </button>
+                <button type="button" class="inv-view-btn" id="invViewCardsBtn" onclick="setInventoryViewMode('cards')">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                  <span>Card List (<span id="invMatchCount">0</span>)</span>
+                </button>
               </div>
               <div class="inventory-grid" id="inventoryGrid"></div>
             </div>
@@ -8852,6 +9110,18 @@ B1 = East | Gross 50㎡ | Net 45㎡
       let inventorySelectedUnit = "";
       let inventoryBedFilter = "all";
       let inventoryDirectionFilter = "all";
+      let inventoryViewMode = "matrix"; // "matrix" or "cards"
+      let stickyActiveUnit = null;
+
+      function setInventoryViewMode(mode) {
+        inventoryViewMode = mode;
+        renderInventory();
+      }
+
+      function applyStickyUnitToCalculator() {
+        if (!stickyActiveUnit) return;
+        selectInventoryUnit(stickyActiveUnit.proj, stickyActiveUnit.type, stickyActiveUnit.floor);
+      }
       let activeCfgProjectId = null;
       let fxRefreshTimer = null;
       let activeDocType = "quotation";
@@ -9450,6 +9720,24 @@ B1 = East | Gross 50㎡ | Net 45㎡
       }
       function renderInventorySide(row = null) {
         const host = $("inventorySide");
+        const stickyBar = $("invMobileStickyBar");
+        if (stickyBar) {
+          if (row) {
+            stickyActiveUnit = row;
+            const sUid = $("invStickyUid");
+            const sMeta = $("invStickyMeta");
+            const sPrice = $("invStickyPrice");
+            if (sUid) sUid.textContent = `${row.uid} (${row.floor}F)`;
+            if (sMeta) sMeta.textContent = `${row.info?.beds || row.type} · ${row.orientation || 'Unit'}`;
+            if (sPrice) sPrice.textContent = fUSD(row.price);
+            if (window.innerWidth <= 768) {
+              stickyBar.style.display = "flex";
+            }
+          } else {
+            stickyActiveUnit = null;
+            stickyBar.style.display = "none";
+          }
+        }
         if (!host) return;
         if (!row) {
           host.innerHTML = `<div class="inventory-side-k">Selected Unit</div><div class="inventory-side-empty" style="margin-top:8px">Click any unit in the sheet to see its direction, sizes, price, status, and jump directly into the calculator.</div>`;
@@ -9661,7 +9949,84 @@ B1 = East | Gross 50㎡ | Net 45㎡
             return `<tr><th class="inventory-floor">${floor}F<small>Floor</small></th>${cells}</tr>`;
           })
           .join("");
-        grid.innerHTML = `<div class="inventory-sheet"><table class="inventory-table"><thead><tr class="inventory-group-row"><th class="corner"></th>${groupHead}</tr><tr class="inventory-type-row"><th class="floor-hd">Unit</th>${unitHead}</tr><tr class="inventory-size-row"><th class="floor-hd">Detail</th>${detailHead}</tr></thead><tbody>${body}</tbody></table></div>`;
+        // Update View Switcher Buttons & Counter
+        const matrixBtn = $("invViewMatrixBtn");
+        const cardsBtn = $("invViewCardsBtn");
+        if (matrixBtn && cardsBtn) {
+          matrixBtn.classList.toggle("active", inventoryViewMode === "matrix");
+          cardsBtn.classList.toggle("active", inventoryViewMode === "cards");
+        }
+        const matchCountEl = $("invMatchCount");
+        if (matchCountEl) matchCountEl.textContent = matchingRows.length;
+
+        if (inventoryViewMode === "cards") {
+          const cardsHtml = matchingRows.map((row) => {
+            const grossSize = row.info?.grossSize || row.info?.size || "—";
+            const netSize = row.info?.netSize || "—";
+            const isSelected = inventorySelectedUnit === row.uid && activeProjId === row.proj;
+            const statusColor = row.status === "available" ? "#86BE3F" : (row.status === "reserved" ? "#E5A93C" : "#94A3B8");
+            const statusLabel = row.status.charAt(0).toUpperCase() + row.status.slice(1);
+            return `
+              <div class="inv-card-item ${isSelected ? "selected" : ""}" onclick="focusInventoryUnit('${row.proj}','${row.uid}')">
+                <div class="inv-card-top">
+                  <div class="inv-card-uid-wrap">
+                    <span class="inv-card-uid">${row.uid}</span>
+                    <span class="inv-card-floor-badge">${row.floor}F</span>
+                  </div>
+                  <span class="inv-card-status-badge" style="background:${statusColor}18; color:${statusColor}; border:1px solid ${statusColor}40;">
+                    <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${statusColor};margin-right:5px;"></span>
+                    ${statusLabel}
+                  </span>
+                </div>
+                <div>
+                  <div class="inv-card-beds">${row.info?.beds || row.type} · Type ${row.type}</div>
+                  <div class="inv-card-meta">
+                    <span>📐 Gross ${grossSize}</span>
+                    ${netSize !== "—" ? `<span>· Net ${netSize}</span>` : ""}
+                    <span>· 🧭 ${row.orientation || "—"}</span>
+                  </div>
+                </div>
+                <div class="inv-card-footer">
+                  <div class="inv-card-price-col">
+                    <span class="inv-card-price-label">LIST PRICE</span>
+                    <span class="inv-card-price-val">${fUSD(row.price)}</span>
+                  </div>
+                  <button type="button" class="inv-card-calc-btn" onclick="event.stopPropagation(); selectInventoryUnit('${row.proj}','${row.type}',${row.floor})">
+                    <span>Calculate</span>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  </button>
+                </div>
+              </div>
+            `;
+          }).join("");
+
+          grid.innerHTML = `
+            <div class="inv-cards-container">
+              <div class="inv-cards-count-bar">
+                <span>Showing <strong>${matchingRows.length}</strong> matching units in ${project.name}</span>
+              </div>
+              <div class="inv-cards-grid">
+                ${cardsHtml}
+              </div>
+            </div>
+          `;
+        } else {
+          grid.innerHTML = `
+            <div class="inv-scroll-hint" style="margin-bottom:8px;font-size:11.5px;color:#9E8052;font-weight:600;">
+              👉 横にスワイプして全タイプ・号室を確認できます (Swipe left/right)
+            </div>
+            <div class="inventory-sheet">
+              <table class="inventory-table">
+                <thead>
+                  <tr class="inventory-group-row"><th class="corner"></th>${groupHead}</tr>
+                  <tr class="inventory-type-row"><th class="floor-hd">Unit</th>${unitHead}</tr>
+                  <tr class="inventory-size-row"><th class="floor-hd">Detail</th>${detailHead}</tr>
+                </thead>
+                <tbody>${body}</tbody>
+              </table>
+            </div>
+          `;
+        }
         const selectedRow =
           allRows.find((row) => row.uid === inventorySelectedUnit) ||
           matchingRows[0] ||
@@ -10169,6 +10534,16 @@ B1 = East | Gross 50㎡ | Net 45㎡
         document
           .querySelectorAll(".bnav")
           .forEach((t, i) => t.classList.toggle("active", i === idx));
+
+        // Manage floating mobile inventory action bar
+        const stickyBarEl = $("invMobileStickyBar");
+        if (stickyBarEl) {
+          if (id === "inventory" && stickyActiveUnit && window.innerWidth <= 768) {
+            stickyBarEl.style.display = "flex";
+          } else {
+            stickyBarEl.style.display = "none";
+          }
+        }
         document
           .querySelectorAll(".sb-item[data-tab]")
           .forEach((t) => t.classList.toggle("active", t.dataset.tab === id));
@@ -13297,7 +13672,19 @@ tr:nth-child(even) td{background:#faf8f4}
   <div><div class="sig-lbl">Date</div><div class="sig-line">${today}</div></div>
 </div>
 <div class="disc">This document is prepared by NICK | カンボジア不動産投資 for informational purposes only. All figures are subject to verification with the developer. Resale agreements are subject to applicable legal and transfer fees, developer consent, and Cambodia Capital Gains Tax (CGT), currently postponed to 1 January 2027. Buyers and sellers should seek independent legal advice before proceeding.</div>
-</div><script>window.onload=()=>window.print()<\/script></body></html>`);
+</div><script>window.onload=()=>window.print()<\/script>    <!-- Floating Sticky Mobile Unit Action Bar -->
+    <div id="invMobileStickyBar" class="inv-mobile-sticky-bar" style="display:none;">
+      <div class="inv-sticky-info">
+        <div class="inv-sticky-uid" id="invStickyUid">—</div>
+        <div class="inv-sticky-meta" id="invStickyMeta">—</div>
+      </div>
+      <div class="inv-sticky-price" id="invStickyPrice">—</div>
+      <button type="button" class="inv-sticky-btn" id="invStickyBtn" onclick="applyStickyUnitToCalculator()">
+        <span>Calculate</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </body></html>`);
         w.document.close();
       }
 
@@ -13762,5 +14149,17 @@ tr:nth-child(even) td{background:#faf8f4}
       }
 </script>
 
-</body>
+    <!-- Floating Sticky Mobile Unit Action Bar -->
+    <div id="invMobileStickyBar" class="inv-mobile-sticky-bar" style="display:none;">
+      <div class="inv-sticky-info">
+        <div class="inv-sticky-uid" id="invStickyUid">—</div>
+        <div class="inv-sticky-meta" id="invStickyMeta">—</div>
+      </div>
+      <div class="inv-sticky-price" id="invStickyPrice">—</div>
+      <button type="button" class="inv-sticky-btn" id="invStickyBtn" onclick="applyStickyUnitToCalculator()">
+        <span>Calculate</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </body>
 </html>
