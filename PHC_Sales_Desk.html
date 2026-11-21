@@ -3674,17 +3674,18 @@
       }
       .drawer {
         background: #fff;
-        width: min(620px, 100vw);
+        width: min(580px, 100vw);
         height: 100vh;
         overflow-y: auto;
         border-left: 1px solid var(--bd);
-        animation: slideInR 0.22s ease;
+        box-shadow: -8px 0 32px rgba(4, 35, 43, 0.2);
+        animation: slideInR 0.22s cubic-bezier(0.16, 1, 0.3, 1);
         display: flex;
         flex-direction: column;
       }
       @media (max-width: 900px) {
         .drawer {
-          width: min(520px, 100vw);
+          width: min(500px, 100vw);
         }
       }
       @keyframes slideInR {
@@ -3699,40 +3700,53 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 18px 24px;
+        padding: 16px 22px;
         border-bottom: 1px solid var(--bd);
         position: sticky;
         top: 0;
-        z-index: 10;
+        z-index: 20;
         background: #fff;
       }
       .drawer-title {
-        font-size: 11px;
-        letter-spacing: 3px;
+        font-size: 13px;
+        letter-spacing: 2px;
         text-transform: uppercase;
-        color: var(--navy2);
-        font-weight: 700;
+        color: var(--navy);
+        font-weight: 800;
         display: inline-flex;
         align-items: center;
         gap: 8px;
       }
-      .drawer-close {
-        background: none;
-        border: 1px solid var(--bd);
-        color: var(--tx3);
+      .drawer-subtitle {
         font-size: 11px;
-        letter-spacing: 1px;
+        color: var(--tx3);
+        margin-top: 2px;
+        font-weight: 500;
+      }
+      .drawer-close {
+        background: #FAF8F5;
+        border: 1px solid var(--bd);
+        color: var(--tx2);
+        font-size: 11px;
+        letter-spacing: 0.8px;
         text-transform: uppercase;
-        padding: 8px 12px;
-        border-radius: 8px;
+        padding: 7px 14px;
+        border-radius: 999px;
         cursor: pointer;
         display: inline-flex;
         align-items: center;
-        gap: 7px;
+        gap: 6px;
+        font-weight: 700;
+        transition: all 0.15s ease;
+      }
+      .drawer-close:hover {
+        background: #f0ece4;
+        border-color: var(--navy);
+        color: var(--navy);
       }
       .drawer-close svg {
-        width: 13px;
-        height: 13px;
+        width: 12px;
+        height: 12px;
       }
       .ui-icon {
         width: 16px;
@@ -3754,145 +3768,174 @@
         gap: 6px;
       }
       .drawer-body {
-        padding: 24px;
+        padding: 20px 22px;
         flex: 1;
       }
       .drawer-tabs {
         display: flex;
-        flex-wrap: wrap;
-        gap: 6px 10px;
-        border-bottom: 1px solid var(--bd);
-        margin-bottom: 24px;
-        padding-bottom: 8px;
+        gap: 4px;
+        background: #FAF8F5;
+        border: 1px solid var(--bd);
+        border-radius: 10px;
+        padding: 4px;
+        margin-bottom: 20px;
       }
       .drawer-tab {
-        padding: 10px 14px;
+        flex: 1;
+        text-align: center;
+        border: none;
+        background: transparent;
+        padding: 8px 6px;
+        border-radius: 7px;
         font-size: 11px;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.5px;
         color: var(--tx3);
         cursor: pointer;
-        border-bottom: 2px solid transparent;
-        margin-bottom: -1px;
-        transition: all 0.15s;
-        font-weight: 600;
-        background: none;
-        border-top: none;
-        border-left: none;
-        border-right: none;
+        transition: all 0.15s ease;
+      }
+      .drawer-tab:hover {
+        color: var(--navy);
       }
       .drawer-tab.active {
-        color: var(--navy);
-        border-bottom-color: var(--gold);
+        background: var(--navy);
+        color: #FAF8F5;
+        box-shadow: 0 2px 6px rgba(7, 54, 66, 0.2);
       }
       .drawer-sec {
-        font-size: 11px;
-        letter-spacing: 2.5px;
+        font-size: 10.5px;
+        letter-spacing: 2px;
         color: var(--goldd);
         text-transform: uppercase;
-        font-weight: 700;
-        margin: 18px 0 14px;
+        font-weight: 800;
+        margin: 18px 0 12px;
         display: flex;
         align-items: center;
         gap: 8px;
       }
+      .drawer-sec::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: rgba(200, 164, 90, 0.22);
+      }
+      .cfg-card {
+        background: #fff;
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 12px;
+      }
+      .cfg-card-title {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+        color: var(--navy);
+      }
+      .cfg-card-desc {
+        font-size: 11px;
+        color: var(--tx3);
+        margin-top: 2px;
+      }
       .cfg-form-grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 14px 16px;
+        gap: 12px 14px;
       }
       .cfg-note {
         margin: 0 0 14px;
-        padding: 12px 14px;
-        border-radius: 10px;
-        background: linear-gradient(180deg, #fbf8f1, #f6f0e4);
-        border: 1px solid rgba(200, 164, 90, 0.18);
+        padding: 10px 14px;
+        border-radius: 8px;
+        background: rgba(200, 164, 90, 0.08);
+        border: 1px solid rgba(200, 164, 90, 0.2);
         font-size: 11px;
-        color: var(--tx2);
-        line-height: 1.6;
+        color: #634b1a;
+        line-height: 1.5;
       }
       .cfg-preview {
-        margin-top: 16px;
-        border-radius: 14px;
-        border: 1px solid rgba(14, 30, 53, 0.1);
-        background: linear-gradient(180deg, #fff, #faf7f0);
-        padding: 16px;
+        margin-top: 14px;
+        border-radius: 12px;
+        border: 1px solid var(--bd);
+        background: #FAF8F5;
+        padding: 14px 16px;
       }
       .cfg-preview-top {
         display: flex;
         justify-content: space-between;
         align-items: center;
         gap: 10px;
-        margin-bottom: 12px;
+        margin-bottom: 10px;
       }
       .cfg-preview-title {
-        font-size: 11px;
+        font-size: 10px;
         font-weight: 800;
-        letter-spacing: 1.8px;
+        letter-spacing: 1.6px;
         text-transform: uppercase;
         color: var(--navy);
       }
       .cfg-origin-badge {
         border-radius: 999px;
-        padding: 6px 10px;
+        padding: 4px 10px;
         background: rgba(21, 40, 67, 0.06);
         color: var(--tx2);
-        font-size: 11px;
+        font-size: 10px;
         font-weight: 700;
         letter-spacing: 0.5px;
       }
       .cfg-preview-grid {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 10px;
+        gap: 8px;
       }
       .cfg-preview-box {
-        padding: 12px;
-        border-radius: 12px;
+        padding: 10px 12px;
+        border-radius: 8px;
         background: #fff;
-        border: 1px solid rgba(14, 30, 53, 0.08);
+        border: 1px solid var(--bd);
       }
       .cfg-preview-k {
-        font-size: 11px;
+        font-size: 9px;
         font-weight: 800;
-        letter-spacing: 1.6px;
+        letter-spacing: 1.4px;
         text-transform: uppercase;
         color: var(--tx3);
       }
       .cfg-preview-v {
-        margin-top: 7px;
+        margin-top: 5px;
         font-size: 12px;
         font-weight: 700;
         color: var(--navy);
-        line-height: 1.45;
+        line-height: 1.4;
         white-space: pre-line;
       }
       .cfg-preview-s {
-        margin-top: 6px;
-        font-size: 11px;
+        margin-top: 4px;
+        font-size: 10px;
         color: var(--tx3);
-        line-height: 1.5;
+        line-height: 1.4;
       }
       .cfg-advanced {
-        margin-top: 16px;
-        border: 1px solid rgba(14, 30, 53, 0.08);
-        border-radius: 12px;
+        margin-top: 12px;
+        border: 1px solid var(--bd);
+        border-radius: 10px;
         background: #fff;
         overflow: hidden;
       }
       .cfg-advanced summary {
         list-style: none;
         cursor: pointer;
-        padding: 14px 16px;
+        padding: 12px 14px;
         font-size: 11px;
         font-weight: 800;
-        letter-spacing: 1.5px;
+        letter-spacing: 1.2px;
         text-transform: uppercase;
         color: var(--navy);
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 10px;
+        background: #FAF8F5;
       }
       .cfg-advanced summary::-webkit-details-marker {
         display: none;
@@ -3900,24 +3943,113 @@
       .cfg-advanced summary::after {
         content: "+";
         font-size: 16px;
+        font-weight: 700;
         line-height: 1;
-        color: var(--goldd);
+        color: var(--navy);
       }
       .cfg-advanced[open] summary::after {
         content: "−";
       }
+      .cfg-adv-chip {
+        font-size: 9.5px;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: rgba(14, 30, 53, 0.06);
+        color: var(--tx2);
+        font-weight: 600;
+      }
       .cfg-advanced-body {
-        padding: 0 16px 16px;
-        border-top: 1px solid rgba(14, 30, 53, 0.08);
+        padding: 14px;
+        border-top: 1px solid var(--bd);
       }
       .cfg-advanced-copy {
-        margin: 12px 0 14px;
+        margin-bottom: 12px;
         font-size: 11px;
         color: var(--tx3);
-        line-height: 1.6;
+        line-height: 1.5;
       }
       .cfg-span-2 {
         grid-column: 1 / -1;
+      }
+      .cfg-helper-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 8px 12px;
+        background: rgba(200, 164, 90, 0.08);
+        border: 1px solid rgba(200, 164, 90, 0.22);
+        border-radius: 8px;
+        font-size: 11px;
+        color: #634b1a;
+        line-height: 1.5;
+      }
+      .cfg-helper-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #9E8052;
+        margin-top: 5px;
+        flex-shrink: 0;
+      }
+      .logo-drop {
+        border: 2px dashed var(--bd);
+        border-radius: 10px;
+        padding: 24px 18px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: #FAF8F5;
+      }
+      .logo-drop:hover {
+        border-color: var(--navy);
+        background: #f0ece4;
+      }
+      .cfg-logo-circle {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      .drawer-footer {
+        position: sticky;
+        bottom: 0;
+        background: #fff;
+        border-top: 1px solid var(--bd);
+        padding: 14px 22px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05);
+        z-index: 20;
+      }
+      .drawer-footer-status {
+        font-size: 11px;
+        color: var(--tx2);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .drawer-save {
+        background: var(--navy);
+        color: #FAF8F5;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        letter-spacing: 0.5px;
+        transition: all 0.2s ease;
+      }
+      .drawer-save:hover {
+        background: #0c4a5b;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(7, 54, 66, 0.25);
       }
       @media (max-width: 700px) {
         .cfg-form-grid {
@@ -3929,78 +4061,10 @@
         .cfg-span-2 {
           grid-column: auto;
         }
+        .drawer-tabs {
+          overflow-x: auto;
+        }
       }
-      .drawer-sec::after {
-        content: "";
-        flex: 1;
-        height: 1px;
-        background: rgba(200, 164, 90, 0.2);
-      }
-      .logo-drop {
-        border: 2px dashed var(--bd);
-        border-radius: 8px;
-        padding: 18px;
-        text-align: center;
-        cursor: pointer;
-        transition: all 0.2s;
-        background: var(--cream2);
-      }
-      .logo-drop:hover {
-        border-color: var(--gold);
-      }
-      .drawer-save {
-        width: 100%;
-        background: linear-gradient(135deg, var(--navy3), var(--navy));
-        border: none;
-        color: #fff;
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        padding: 13px;
-        cursor: pointer;
-        border-radius: 8px;
-        margin-top: 14px;
-        transition: 0.18s ease;
-      }
-      .drawer-save.saved {
-        background: linear-gradient(135deg, #1e8455, #16603e);
-      }
-
-      
-      .doc-lang-toggle {
-        display: inline-flex;
-        align-items: center;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        border-radius: 20px;
-        padding: 2px;
-        gap: 2px;
-        margin: 0 8px;
-        flex-shrink: 0;
-      }
-      .doc-lang-btn {
-        background: transparent;
-        border: none;
-        color: rgba(255, 255, 255, 0.65);
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 0.5px;
-        padding: 4px 10px;
-        border-radius: 16px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-      }
-      .doc-lang-btn:hover {
-        color: #fff;
-      }
-      .doc-lang-btn.active {
-        background: #86BE3F;
-        color: #073642;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
-      }
-
-
       /* DOCUMENT OVERLAY */
       .doc-overlay {
         position: fixed;
@@ -6571,379 +6635,338 @@
     >
       <div class="drawer">
         <div class="drawer-hd">
-          <span class="drawer-title"><svg class="ui-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.65 1.65 0 0 0 15 19.4a1.65 1.65 0 0 0-1 .6 1.65 1.65 0 0 0-.33 1V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-.33-1A1.65 1.65 0 0 0 8.35 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-.6-1 1.65 1.65 0 0 0-1-.33H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1-.33A1.65 1.65 0 0 0 4.6 8.35a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.35 4.6a1.65 1.65 0 0 0 1-.6 1.65 1.65 0 0 0 .33-1V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 .33 1 1.65 1.65 0 0 0 1 .6 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8.35c0 .39.14.76.4 1.05.29.3.66.48 1.08.51H21a2 2 0 1 1 0 4h-.09c-.42.03-.79.21-1.08.51-.26.29-.4.66-.43 1.08Z"/></svg>Configure</span>
-          <button class="drawer-close" onclick="closeCfg()"><svg class="ui-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>Close</button>
+          <div>
+            <span class="drawer-title">
+              <svg class="ui-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.65 1.65 0 0 0 15 19.4a1.65 1.65 0 0 0-1 .6 1.65 1.65 0 0 0-.33 1V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-.33-1A1.65 1.65 0 0 0 8.35 19.4a1.65 1.65 0 0 0-1.82.33l-.06-.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-.6-1 1.65 1.65 0 0 0-1-.33H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1-.33A1.65 1.65 0 0 0 4.6 8.35a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06-.06A1.65 1.65 0 0 0 19.4 8.35c0 .39.14.76.4 1.05.29.3.66.48 1.08.51H21a2 2 0 1 1 0 4h-.09c-.42.03-.79.21-1.08.51-.26.29-.4.66-.43 1.08Z"/></svg>
+              Configure
+            </span>
+            <div class="drawer-subtitle">Consultant Profile, Branding &amp; Project Defaults</div>
+          </div>
+          <button type="button" class="drawer-close" onclick="closeCfg()">
+            <svg class="ui-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>Close
+          </button>
         </div>
         <div class="drawer-body">
           <div class="drawer-tabs">
-            <button
-              class="drawer-tab active"
-              onclick="cfgTab('consultant', this)"
-            >
-              Consultant
-            </button>
-            <button class="drawer-tab" onclick="cfgTab('logo', this)">
-              Logo
-            </button>
-            <button class="drawer-tab" onclick="cfgTab('commission', this)">
-              Commission
-            </button>
-            <button class="drawer-tab" onclick="cfgTab('currency', this)">
-              Currency
-            </button>
-            <button class="drawer-tab" onclick="cfgTab('projects', this)">
-              Projects
-            </button>
+            <button type="button" class="drawer-tab active" onclick="cfgTab('consultant', this)">Profile</button>
+            <button type="button" class="drawer-tab" onclick="cfgTab('logo', this)">Logo</button>
+            <button type="button" class="drawer-tab" onclick="cfgTab('commission', this)">Commission</button>
+            <button type="button" class="drawer-tab" onclick="cfgTab('currency', this)">Currency</button>
+            <button type="button" class="drawer-tab" onclick="cfgTab('projects', this)">Projects</button>
           </div>
+
+          <!-- TAB 1: CONSULTANT PROFILE -->
           <div id="cfgConsultant">
-            <div class="drawer-sec">Brand Profile</div>
-            <div class="cfg-note">
-              Most users only need these core fields. They drive the header,
-              footer, and printable materials by default.
-            </div>
-            <div class="cfg-form-grid">
-              <div class="field">
-                <label>Your Name</label
-                ><input
-                  type="text"
-                  id="cfgName"
-                  placeholder="e.g. Sophea Chan"
-                />
-              </div>
-              <div class="field">
-                <label>Agency / Title</label
-                ><input
-                  type="text"
-                  id="cfgAgency"
-                  placeholder="e.g. Your Agency Name"
-                />
-              </div>
-              <div class="field cfg-span-2">
-                <label>Phone / WhatsApp</label
-                ><input
-                  type="text"
-                  id="cfgPhone"
-                  placeholder="e.g. +855 12 345 678"
-                />
+            <div class="cfg-card">
+              <div class="cfg-card-title">Consultant Profile &amp; Contact</div>
+              <div class="cfg-card-desc">Appears in quotation headers, signature footers, and advisory documents.</div>
+              <div class="cfg-form-grid" style="margin-top: 12px">
+                <div class="field">
+                  <label>Consultant Name</label>
+                  <input type="text" id="cfgName" placeholder="e.g. Nick" />
+                </div>
+                <div class="field">
+                  <label>Agency / Title</label>
+                  <input type="text" id="cfgAgency" placeholder="e.g. Cambodia Property Advisor" />
+                </div>
+                <div class="field cfg-span-2">
+                  <label>Phone / WhatsApp / LINE</label>
+                  <input type="text" id="cfgPhone" placeholder="e.g. +855 12 345 678" />
+                </div>
               </div>
             </div>
-            <div class="drawer-sec">Quotation Template</div>
-            <div class="cfg-note">
-              Keep this short. Leave subtitle blank to use the active project
-              automatically.
-            </div>
-            <div class="cfg-form-grid">
-              <div class="field">
-                <label>Quotation Title</label
-                ><input
-                  type="text"
-                  id="cfgQuoteDocTitle"
-                  placeholder="e.g. Buyer Quotation"
-                />
-              </div>
-              <div class="field">
-                <label>Quotation Subtitle</label
-                ><input
-                  type="text"
-                  id="cfgQuoteDocSubtitle"
-                  placeholder="Leave blank to use project name"
-                />
-              </div>
-              <div class="field cfg-span-2">
-                <label>Quotation Footer Disclaimer</label
-                ><textarea
-                  id="cfgQuoteFooterDisclaimer"
-                  placeholder="Prepared for informational purposes only. All prices and promotions subject to developer confirmation."
-                  style="min-height: 140px; resize: vertical"
-                ></textarea>
+
+            <div class="cfg-card" style="margin-top: 12px">
+              <div class="cfg-card-title">Quotation &amp; Document Headings</div>
+              <div class="cfg-card-desc">Customize document presentation titles and disclaimer text.</div>
+              <div class="cfg-form-grid" style="margin-top: 12px">
+                <div class="field">
+                  <label>Quotation Document Title</label>
+                  <input type="text" id="cfgQuoteDocTitle" placeholder="Buyer Quotation" />
+                </div>
+                <div class="field">
+                  <label>Quotation Subtitle</label>
+                  <input type="text" id="cfgQuoteDocSubtitle" placeholder="Leave blank to use project name" />
+                </div>
+                <div class="field cfg-span-2">
+                  <label>Quotation Disclaimer Footer</label>
+                  <textarea
+                    id="cfgQuoteFooterDisclaimer"
+                    style="min-height: 80px; resize: vertical;"
+                    placeholder="Prepared for informational purposes only. All prices and promotions subject to developer confirmation."
+                  ></textarea>
+                </div>
               </div>
             </div>
-            <div class="cfg-preview">
+
+            <div class="cfg-preview" style="margin-top: 12px">
               <div class="cfg-preview-top">
-                <div class="cfg-preview-title">What Will Print</div>
-                <div class="cfg-origin-badge" id="cfgOriginBadge"></div>
+                <div class="cfg-preview-title">Live Print Preview Summary</div>
+                <div class="cfg-origin-badge" id="cfgOriginBadge">Active Defaults</div>
               </div>
               <div class="cfg-preview-grid" id="cfgPreview"></div>
             </div>
-            <details class="cfg-advanced">
-              <summary>Advanced Overrides</summary>
+
+            <details class="cfg-advanced" style="margin-top: 12px">
+              <summary>
+                <span>Advanced Document Field Overrides</span>
+                <span class="cfg-adv-chip">Labels &amp; Roles</span>
+              </summary>
               <div class="cfg-advanced-body">
-                <div class="cfg-advanced-copy">
-                  Use these only if the default Brand Profile output is not
-                  enough. Most teams can leave them blank.
-                </div>
+                <div class="cfg-advanced-copy">Override specific quotation field labels. Most advisors keep default settings.</div>
                 <div class="cfg-form-grid">
                   <div class="field cfg-span-2">
-                    <label>Quotation Header Subline</label
-                    ><input
-                      type="text"
-                      id="cfgQuoteHeaderSub"
-                      placeholder="買う前に、正しく比較しましょう"
-                    />
+                    <label>Header Tagline / Subtitle</label>
+                    <input type="text" id="cfgQuoteHeaderSub" placeholder="買う前に、正しく比較しましょう" />
+                  </div>
+                  <div class="field">
+                    <label>Issue Date Label</label>
+                    <input type="text" id="cfgQuoteHeaderRightText" placeholder="Issue Date" />
+                  </div>
+                  <div class="field">
+                    <label>Prepared For Label</label>
+                    <input type="text" id="cfgQuotePreparedForLabel" placeholder="Prepared for" />
+                  </div>
+                  <div class="field">
+                    <label>Booking Stage Label</label>
+                    <input type="text" id="cfgQuoteBookingLabel" placeholder="Booking" />
+                  </div>
+                  <div class="field">
+                    <label>SPA Stage Label</label>
+                    <input type="text" id="cfgQuoteSpaLabel" placeholder="SPA" />
+                  </div>
+                  <div class="field">
+                    <label>Footer Role Title</label>
+                    <input type="text" id="cfgQuoteFooterRole" placeholder="カンボジア不動産アドバイザー" />
+                  </div>
+                  <div class="field">
+                    <label>Footer Consultant Name</label>
+                    <input type="text" id="cfgQuoteFooterSignatureName" placeholder="Nick" />
                   </div>
                   <div class="field cfg-span-2">
-                    <label>Issue Date Label</label
-                    ><input
-                      type="text"
-                      id="cfgQuoteHeaderRightText"
-                      placeholder="e.g. Issue Date"
-                    />
-                  </div>
-                  <div class="field">
-                    <label>Quotation Prepared-For Label</label
-                    ><input
-                      type="text"
-                      id="cfgQuotePreparedForLabel"
-                      placeholder="e.g. Prepared for"
-                    />
-                  </div>
-                  <div class="field">
-                    <label>Quotation Booking Label</label
-                    ><input
-                      type="text"
-                      id="cfgQuoteBookingLabel"
-                      placeholder="e.g. Booking"
-                    />
-                  </div>
-                  <div class="field">
-                    <label>Quotation SPA Label</label
-                    ><input
-                      type="text"
-                      id="cfgQuoteSpaLabel"
-                      placeholder="e.g. SPA"
-                    />
-                  </div>
-                  <div class="field">
-                    <label>Quotation Footer Role</label
-                    ><input
-                      type="text"
-                      id="cfgQuoteFooterRole"
-                      placeholder="カンボジア不動産アドバイザー"
-                    />
-                  </div>
-                  <div class="field">
-                    <label>Quotation Footer Name</label
-                    ><input
-                      type="text"
-                      id="cfgQuoteFooterSignatureName"
-                      placeholder="e.g. Sophea Chan"
-                    />
-                  </div>
-                  <div class="field cfg-span-2">
-                    <label>Quotation Footer Subline</label
-                    ><input
-                      type="text"
-                      id="cfgQuoteFooterSignatureSubline"
-                      placeholder="カンボジア不動産アドバイザー"
-                    />
+                    <label>Footer Subline</label>
+                    <input type="text" id="cfgQuoteFooterSignatureSubline" placeholder="カンボジア不動産アドバイザー" />
                   </div>
                 </div>
               </div>
             </details>
           </div>
+
+          <!-- TAB 2: LOGO -->
           <div id="cfgLogo" style="display: none">
-            <div class="drawer-sec">Agency Logo</div>
-            <div
-              class="logo-drop"
-              onclick="document.getElementById('logoInput').click()"
-            >
-              <img
-                id="logoPreview"
-                style="
-                  max-height: 55px;
-                  max-width: 160px;
-                  object-fit: contain;
-                  margin: 0 auto 8px;
-                  display: none;
-                "
-              />
-              <div id="logoPlaceholder">
-                <div class="empty-icon" style="margin: 0 auto 6px"><svg class="ui-icon lg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 9h.01"/><path d="M9 13h.01"/><path d="M9 17h.01"/><path d="M15 9h.01"/><path d="M15 13h.01"/><path d="M15 17h.01"/></svg></div>
-                <div style="font-size: 11px; color: var(--tx3)">
-                  Click to upload logo
+            <div class="cfg-card">
+              <div class="cfg-card-title">Brand Emblem &amp; Logo</div>
+              <div class="cfg-card-desc">Uploaded logo replaces the default emblem across all documents and top headers.</div>
+              
+              <div class="logo-drop" onclick="document.getElementById('logoInput').click()" style="margin-top: 14px">
+                <img
+                  id="logoPreview"
+                  style="
+                    max-height: 70px;
+                    max-width: 180px;
+                    object-fit: contain;
+                    margin: 0 auto 10px;
+                    display: none;
+                  "
+                />
+                <div id="logoPlaceholder">
+                  <div class="cfg-logo-circle">
+                    <svg viewBox="0 0 1250 1250" style="width: 48px; height: 48px;">
+                      <defs><clipPath id="cfg_lc"><circle cx="625" cy="625" r="612"/></clipPath></defs>
+                      <g clip-path="url(#cfg_lc)"><rect width="1250" height="1250" fill="#073642"/><rect y="876" width="1250" height="374" fill="#86BE3F"/></g>
+                      <g fill="none" stroke="#86BE3F" stroke-width="38" stroke-linecap="butt" stroke-linejoin="miter">
+                        <path d="M 362 652 A 315 315 0 1 1 925 582"/>
+                        <path d="M 912 636 A 315 315 0 0 1 418 718"/>
+                        <path d="M 452 488 L 628 312 L 804 488"/>
+                        <path d="M 480 505 L 480 648 L 362 648"/>
+                        <path d="M 776 505 L 776 648 L 912 648"/>
+                      </g>
+                      <g fill="#86BE3F">
+                        <polygon points="628,400 670,442 586,442"/>
+                        <polygon points="628,348 702,422 690,434 628,372 566,434 554,422"/>
+                      </g>
+                    </svg>
+                  </div>
+                  <div style="font-size: 11px; font-weight: 700; color: var(--navy); margin-top: 8px;">Official Brand Emblem Active</div>
+                  <div style="font-size: 10px; color: var(--tx3); margin-top: 3px;">Click to upload a custom agency logo (PNG/SVG)</div>
                 </div>
               </div>
+              <input
+                type="file"
+                id="logoInput"
+                accept="image/*"
+                style="display: none"
+                onchange="handleLogoUpload(event)"
+              />
+              <div style="display: flex; justify-content: center; margin-top: 12px">
+                <button type="button" class="mini-btn alt" onclick="resetToDefaultLogo()">Reset to Official Emblem</button>
+              </div>
             </div>
-            <input
-              type="file"
-              id="logoInput"
-              accept="image/*"
-              style="display: none"
-              onchange="handleLogoUpload(event)"
-            />
           </div>
+
+          <!-- TAB 3: COMMISSION -->
           <div id="cfgCommission" style="display: none">
-            <div class="drawer-sec">Commission Rates</div>
-            <div
-              id="commissionFields"
-              style="display: flex; flex-direction: column; gap: 10px"
-            ></div>
-          </div>
-          <div id="cfgCurrency" style="display: none">
-            <div class="drawer-sec">Exchange Rates</div>
-            <div
-              style="
-                padding: 10px 12px;
-                background: rgba(21, 40, 67, 0.04);
-                border: 1px solid rgba(21, 40, 67, 0.08);
-                border-radius: 10px;
-                font-size: 10px;
-                color: var(--tx3);
-                line-height: 1.7;
-              "
-            >
-              Pull latest daily FX data from Frankfurter, or override manually.
-              Rates are stored as <strong>1 USD = X currency</strong>.
-            </div>
-            <div
-              style="
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 10px;
-                margin-top: 12px;
-              "
-            >
+            <div class="cfg-card">
+              <div class="cfg-card-title">Project Commission Rates (%)</div>
+              <div class="cfg-card-desc">Default commission percentages used for pipeline revenue estimates.</div>
               <div
-                id="fxStatus"
-                style="font-size: 10px; color: var(--tx2); line-height: 1.5"
+                id="commissionFields"
+                style="display: flex; flex-direction: column; gap: 8px; margin-top: 14px"
               ></div>
-              <button
-                type="button"
-                class="mini-btn"
-                onclick="fetchLatestFxRates()"
-              >
-                Fetch Latest
-              </button>
             </div>
-            <div
-              id="currencyFields"
-              style="display: flex; flex-direction: column; gap: 10px; margin-top: 12px"
-            ></div>
           </div>
-          <div id="cfgProjects" style="display: none">
-            <div class="drawer-sec">Project Timeline & Price Lists</div>
-            <div class="field">
-              <label>Project</label>
-              <select
-                id="cfgProjectSelect"
-                onchange="changeProjectCfgSelection(this.value)"
-              ></select>
-            </div>
-            <div class="project-meta-grid" style="margin-top: 10px">
-              <div class="field">
-                <label>Completion / Handover Month</label>
-                <input type="month" id="cfgCompletionMonth" />
-              </div>
-              <div class="field">
-                <label>Rental Delay After Completion (Months)</label>
-                <input type="number" id="cfgRentalDelay" min="0" value="0" />
-              </div>
-            </div>
-            <div class="field" style="margin-top: 10px">
-              <label>Unit Detail Map</label>
-              <textarea
-                id="cfgUnitMetaMap"
-                style="min-height: 110px; resize: vertical"
-                placeholder="Use one per line. Example:
-A1 = North | Gross 75㎡ | Net 68㎡
-B1 = East | Gross 50㎡ | Net 45㎡
-39A1 = South-East | Net 69㎡"
-              ></textarea>
-            </div>
-            <div
-              style="
-                font-size: 10px;
-                color: var(--tx3);
-                line-height: 1.6;
-                margin-top: 6px;
-              "
-            >
-              Use a unit type like <strong>A1</strong> to set default direction and
-              sizes for all floors, or use an exact unit ID like
-              <strong>39A1</strong> to override a specific floor.
-            </div>
-            <div class="price-library-box">
+
+          <!-- TAB 4: CURRENCY -->
+          <div id="cfgCurrency" style="display: none">
+            <div class="cfg-card">
+              <div class="cfg-card-title">Live Currency Exchange Rates</div>
+              <div class="cfg-card-desc">Stored as 1 USD = X Currency. Automatically converts quotation figures.</div>
               <div
                 style="
                   display: flex;
                   align-items: center;
                   justify-content: space-between;
                   gap: 10px;
+                  margin-top: 12px;
+                  padding: 10px 12px;
+                  background: #FAF8F5;
+                  border: 1px solid var(--bd);
+                  border-radius: 8px;
                 "
               >
-                <div>
-                  <div
-                    style="font-size: 11px; font-weight: 700; color: var(--navy)"
-                  >
-                    Price List Image Library
-                  </div>
-                  <div
-                    style="font-size: 9.5px; color: var(--tx3); margin-top: 3px"
-                  >
-                    Upload multiple screenshots or photos for this project's
-                    official price list. These images are stored as visual
-                    reference only.
-                  </div>
-                  <div class="notice-chip">Reference Only · Not Auto-Read Yet</div>
-                </div>
+                <div
+                  id="fxStatus"
+                  style="font-size: 10px; color: var(--tx2); line-height: 1.5"
+                ></div>
                 <button
                   type="button"
                   class="mini-btn"
-                  onclick="document.getElementById('cfgPriceListInput').click()"
+                  onclick="fetchLatestFxRates()"
                 >
-                  Upload
+                  ↻ Fetch Latest
                 </button>
               </div>
-              <input
-                type="file"
-                id="cfgPriceListInput"
-                accept="image/*"
-                multiple
-                style="display: none"
-                onchange="handlePriceListUpload(event)"
-              />
-              <div id="cfgPriceListGrid" class="price-library-grid"></div>
-              <div id="cfgPriceListStatus" class="library-status">
-                <div class="library-status-h" id="cfgPriceListStatusHead"></div>
-                <div class="library-status-s" id="cfgPriceListStatusSub"></div>
-              </div>
-              <div style="display: flex; justify-content: flex-end; margin-top: 10px">
-                <button
-                  type="button"
-                  class="mini-btn"
-                  style="margin-right: 8px"
-                  onclick="openPriceListModal(activeCfgProjectId || activeProjId)"
-                >
-                  Preview Library
-                </button>
-                <button
-                  type="button"
-                  class="mini-btn alt"
-                  onclick="clearProjectImages()"
-                >
-                  Clear Images
-                </button>
-              </div>
+              <div
+                id="currencyFields"
+                style="display: flex; flex-direction: column; gap: 8px; margin-top: 12px"
+              ></div>
             </div>
           </div>
-          <div class="health-panel">
-            <span class="health-inline-label">Last updated:</span>
-            <span id="healthLastSavedInline">Not yet</span>
+
+          <!-- TAB 5: PROJECTS (CLEAN & REFINED) -->
+          <div id="cfgProjects" style="display: none">
+            <div class="cfg-card">
+              <div class="cfg-card-title">Project Handover &amp; Rental Timeline</div>
+              <div class="cfg-card-desc">Configure milestone completion dates and default rental timing.</div>
+              
+              <div class="field" style="margin-top: 12px">
+                <label>Active Project</label>
+                <select
+                  id="cfgProjectSelect"
+                  onchange="changeProjectCfgSelection(this.value)"
+                ></select>
+              </div>
+              <div class="analysis-grid-2" style="margin-top: 10px">
+                <div class="field">
+                  <label>Completion / Handover Month</label>
+                  <input type="month" id="cfgCompletionMonth" />
+                </div>
+                <div class="field">
+                  <label>Rental Delay After Handover (Months)</label>
+                  <input type="number" id="cfgRentalDelay" min="0" value="0" />
+                </div>
+              </div>
+              <div class="cfg-helper-note" style="margin-top: 12px">
+                <span class="cfg-helper-dot"></span>
+                <span>Sets the final milestone date in the Payment Schedule and starts rental cash flow modeling in the ROI Calculator.</span>
+              </div>
+            </div>
+
+            <!-- Unit Detail Map Accordion -->
+            <details class="cfg-advanced" style="margin-top: 12px">
+              <summary>
+                <span>Unit Layout &amp; Orientation Overrides (Optional)</span>
+                <span class="cfg-adv-chip">Inventory Overrides</span>
+              </summary>
+              <div class="cfg-advanced-body">
+                <div class="cfg-advanced-copy">
+                  Customize orientation, gross size, and net size per unit type (e.g. A1) or specific floor unit (e.g. 39A1). Standard project values are loaded by default.
+                </div>
+                <div class="field">
+                  <textarea
+                    id="cfgUnitMetaMap"
+                    style="min-height: 100px; resize: vertical; font-family: monospace; font-size: 11px;"
+                    placeholder="Example:
+A1 = North | Gross 75㎡ | Net 68㎡
+B1 = East | Gross 50㎡ | Net 45㎡
+39A1 = South-East | Net 69㎡"
+                  ></textarea>
+                </div>
+              </div>
+            </details>
+
+            <!-- Price List Reference (Collapsed by default so it never gets in the way) -->
+            <details class="cfg-advanced" style="margin-top: 12px">
+              <summary>
+                <span>Price List Image Archive (Reference Only)</span>
+                <span class="cfg-adv-chip">Visual Archive</span>
+              </summary>
+              <div class="cfg-advanced-body">
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px;">
+                  <div>
+                    <div style="font-size: 11px; font-weight: 700; color: var(--navy)">Visual Price Sheet Archive</div>
+                    <div style="font-size: 10px; color: var(--tx3); margin-top: 2px">Upload reference screenshots for this project.</div>
+                  </div>
+                  <button
+                    type="button"
+                    class="mini-btn"
+                    onclick="document.getElementById('cfgPriceListInput').click()"
+                  >
+                    Upload Images
+                  </button>
+                </div>
+                <input
+                  type="file"
+                  id="cfgPriceListInput"
+                  accept="image/*"
+                  multiple
+                  style="display: none"
+                  onchange="handlePriceListUpload(event)"
+                />
+                <div id="cfgPriceListGrid" class="price-library-grid"></div>
+                <div id="cfgPriceListStatus" class="library-status">
+                  <div class="library-status-h" id="cfgPriceListStatusHead"></div>
+                  <div class="library-status-s" id="cfgPriceListStatusSub"></div>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px">
+                  <button
+                    type="button"
+                    class="mini-btn"
+                    onclick="openPriceListModal(activeCfgProjectId || activeProjId)"
+                  >
+                    View Fullscreen
+                  </button>
+                  <button
+                    type="button"
+                    class="mini-btn alt"
+                    onclick="clearProjectImages()"
+                  >
+                    Clear Images
+                  </button>
+                </div>
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <!-- STICKY FOOTER -->
+        <div class="drawer-footer">
+          <div class="drawer-footer-status">
+            <span class="health-inline-label">Last Saved:</span>
+            <span id="healthLastSavedInline" style="font-weight: 600; color: var(--navy)">Not yet</span>
+            <span id="cfgStatus" style="display: none; color: var(--grn); font-weight: 700; margin-left: 6px;">✓ Saved</span>
           </div>
           <button class="drawer-save" id="cfgSaveBtn" onclick="saveCfg()">Save Settings</button>
-          <div
-            id="cfgStatus"
-            style="
-              margin-top: 8px;
-              font-size: 11px;
-              color: var(--grn);
-              display: none;
-              text-align: center;
-            "
-          >
-            Saved
-          </div>
         </div>
       </div>
     </div>
@@ -12354,6 +12377,15 @@ B1 = East | Gross 50㎡ | Net 45㎡
         }
         renderCfgPreview();
         setCfgStatus("Saved");
+      }
+      function resetToDefaultLogo() {
+        cfgLogo = null;
+        try { localStorage.removeItem(LS_KEYS.cfgLogo); } catch(e) {}
+        const preview = $("logoPreview");
+        const placeholder = $("logoPlaceholder");
+        if (preview) { preview.src = ""; preview.style.display = "none"; }
+        if (placeholder) placeholder.style.display = "block";
+        renderCfgPreview();
       }
       function handleLogoUpload(e) {
         const file = e.target.files[0];
