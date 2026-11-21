@@ -12059,7 +12059,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
       </div>
     </div>
 
-    <!-- 3-Box Price Summary matching Sales Desk Calculator (Image 2) -->
+    <!-- 3-Box Price Summary matching Sales Desk Calculator -->
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 16px">
       <div style="background:#FAF8F5;border:1px solid #E2DDD2;border-radius:8px;padding:12px 14px;text-align:center">
         <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx3);font-weight:600;margin-bottom:4px">List Price</div>
@@ -12078,74 +12078,70 @@ B1 = East | Gross 50㎡ | Net 45㎡
       </div>
     </div>
 
-    <!-- Payment Schedule section header with thin line -->
-    <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--goldd);font-weight:700;margin:18px 0 10px;display:flex;align-items:center;gap:10px">
+    <!-- Payment Schedule section header with thin divider -->
+    <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--goldd);font-weight:700;margin:18px 0 8px;display:flex;align-items:center;gap:10px">
       <span>Payment Schedule</span>
       <span style="flex:1;height:1px;background:#E2DDD2"></span>
     </div>
 
-    <!-- Payment Schedule Cards matching Image 2 -->
-    <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px">
-      <!-- 1: Booking -->
-      <div style="background:#FAF8F5;border:1px solid #EFEBE4;border-radius:8px;padding:9px 12px;display:grid;grid-template-columns:26px 1fr auto;align-items:center;gap:10px">
-        <div style="width:24px;height:24px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">1</div>
-        <div>
-          <div style="font-size:11px;font-weight:600;color:var(--navy)">Booking Fee</div>
-          <div style="font-size:9.5px;color:var(--tx3);margin-top:1px">Upon reservation</div>
-        </div>
-        <div style="text-align:right">
-          <div style="font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:var(--navy)">${fUSD(r.bk)}</div>
-        </div>
-      </div>
-
-      <!-- 2: SPA -->
-      <div style="background:#FAF8F5;border:1px solid #EFEBE4;border-radius:8px;padding:9px 12px;display:grid;grid-template-columns:26px 1fr auto;align-items:center;gap:10px">
-        <div style="width:24px;height:24px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">2</div>
-        <div>
-          <div style="font-size:11px;font-weight:600;color:var(--navy)">SPA Payment (${r.spaPct}%)</div>
-          <div style="font-size:9.5px;color:var(--tx3);margin-top:1px">Less booking · Net ${fUSD(r.spaNet)}</div>
-        </div>
-        <div style="text-align:right">
-          <div style="font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:var(--navy)">${fUSD(r.spaTotal)}</div>
-        </div>
-      </div>
-
-      <!-- 3: Monthly instalments -->
-      <div style="background:#FAF8F5;border:1px solid #EFEBE4;border-radius:8px;padding:9px 12px;display:grid;grid-template-columns:26px 1fr auto;align-items:center;gap:10px">
-        <div style="width:24px;height:24px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">3</div>
-        <div>
-          <div style="font-size:11px;font-weight:600;color:var(--navy)">Monthly Instalments</div>
-          <div style="font-size:9.5px;color:var(--tx3);margin-top:1px">${r.months} × ${fUSD(r.moAmt)}/mo</div>
-        </div>
-        <div style="text-align:right">
-          <div style="font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:var(--navy)">${fUSD(r.moTotal)}</div>
-        </div>
-      </div>
-
-      <!-- 4: Handover -->
-      <div style="background:#FAF8F5;border:1px solid #EFEBE4;border-radius:8px;padding:9px 12px;display:grid;grid-template-columns:26px 1fr auto;align-items:center;gap:10px">
-        <div style="width:24px;height:24px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">4</div>
-        <div>
-          <div style="font-size:11px;font-weight:600;color:var(--navy)">Handover Payment (${r.hoPct}%)</div>
-          <div style="font-size:9.5px;color:var(--tx3);margin-top:1px">Upon key collection</div>
-        </div>
-        <div style="text-align:right">
-          <div style="font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:var(--navy)">${fUSD(r.hoTotal)}</div>
-        </div>
-      </div>
-
-      <!-- Total Purchase Price row -->
-      <div style="background:rgba(200,164,90,0.12);border:1px solid rgba(200,164,90,0.3);border-radius:8px;padding:10px 12px;display:grid;grid-template-columns:26px 1fr auto;align-items:center;gap:10px;margin-top:4px">
-        <div style="width:24px;height:24px;border-radius:50%;background:var(--goldd);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800">✓</div>
-        <div>
-          <div style="font-size:11.5px;font-weight:700;color:var(--navy)">Total Purchase Price</div>
-          <div style="font-size:9.5px;color:var(--tx3);margin-top:1px">100% full acquisition price</div>
-        </div>
-        <div style="text-align:right">
-          <div style="font-family:'Inter',sans-serif;font-size:15px;font-weight:800;color:var(--navy)">${fUSD(r.net)}</div>
-        </div>
-      </div>
-    </div>
+    <!-- Hybrid Payment Schedule Table: Clean with % and accurate stage totals -->
+    <table class="dtbl" style="margin-bottom:14px;border:1px solid #E2DDD2;border-radius:8px;overflow:hidden">
+      <thead>
+        <tr>
+          <th style="width:36px;text-align:center">#</th>
+          <th>Stage</th>
+          <th style="width:70px;text-align:center">%</th>
+          <th class="dr" style="text-align:right">Amount (USD)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align:center;font-weight:700;color:var(--navy)">1</td>
+          <td>
+            <div style="font-size:11.5px;font-weight:600;color:var(--navy)">Booking Fee</div>
+            <div style="font-size:9.5px;color:var(--tx3);margin-top:2px">Upon reservation</div>
+          </td>
+          <td style="text-align:center;color:var(--tx3)">—</td>
+          <td class="dr" style="font-size:12px;font-weight:600;color:var(--navy)">${fUSD(r.bk)}</td>
+        </tr>
+        <tr>
+          <td style="text-align:center;font-weight:700;color:var(--navy)">2</td>
+          <td>
+            <div style="font-size:11.5px;font-weight:600;color:var(--navy)">SPA (Down Payment)</div>
+            <div style="font-size:9.5px;color:var(--tx3);margin-top:2px">Less booking · Net ${fUSD(r.spaNet)}</div>
+          </td>
+          <td style="text-align:center;font-weight:600;color:var(--navy)">${r.spaPct}%</td>
+          <td class="dr" style="font-size:12px;font-weight:600;color:var(--navy)">${fUSD(r.spaTotal)}</td>
+        </tr>
+        <tr>
+          <td style="text-align:center;font-weight:700;color:var(--navy)">3</td>
+          <td>
+            <div style="font-size:11.5px;font-weight:600;color:var(--navy)">Monthly Instalments</div>
+            <div style="font-size:9.5px;color:var(--tx3);margin-top:2px">${r.months} months × ${fUSD(r.moAmt)} / month</div>
+          </td>
+          <td style="text-align:center;font-weight:600;color:var(--navy)">${r.moPct}%</td>
+          <td class="dr" style="font-size:12px;font-weight:700;color:var(--navy)">${fUSD(r.moTotal)}</td>
+        </tr>
+        <tr>
+          <td style="text-align:center;font-weight:700;color:var(--navy)">4</td>
+          <td>
+            <div style="font-size:11.5px;font-weight:600;color:var(--navy)">Handover Payment</div>
+            <div style="font-size:9.5px;color:var(--tx3);margin-top:2px">Upon key collection &amp; title transfer</div>
+          </td>
+          <td style="text-align:center;font-weight:600;color:var(--navy)">${r.hoPct}%</td>
+          <td class="dr" style="font-size:12px;font-weight:600;color:var(--navy)">${fUSD(r.hoTotal)}</td>
+        </tr>
+        <tr class="tot" style="background:#FAF8F5;border-top:1.5px solid #9E8052">
+          <td></td>
+          <td>
+            <div style="font-size:12px;font-weight:700;color:var(--navy)">Total Purchase Price</div>
+            <div style="font-size:9.5px;color:var(--tx3);margin-top:1px">100% full acquisition price</div>
+          </td>
+          <td style="text-align:center;font-weight:700;color:var(--navy);font-size:11.5px">100%</td>
+          <td class="dr" style="font-size:14px;font-weight:800;color:var(--navy)">${fUSD(r.net)}</td>
+        </tr>
+      </tbody>
+    </table>
 
     ${r.promo?.label ? `<div style="padding:9px 12px;background:rgba(200,164,90,.08);border:1px solid rgba(200,164,90,.25);border-radius:6px;font-size:9.5px;color:#7a5c1a;margin-top:8px"><span class="inline-icon">${uiIcon("spark", "ui-icon sm")}<strong>${r.promo.label}</strong></span> — Subject to developer confirmation.</div>` : ""}
     ${docFoot()}
