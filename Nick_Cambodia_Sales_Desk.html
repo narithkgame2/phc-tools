@@ -4853,7 +4853,7 @@
                 ><input
                   type="text"
                   id="cfgName"
-                  placeholder="e.g. Sophea Chan"
+                  placeholder="Nick"
                 />
               </div>
               <div class="field">
@@ -4861,7 +4861,7 @@
                 ><input
                   type="text"
                   id="cfgAgency"
-                  placeholder="e.g. Your Agency Name"
+                  placeholder="NICK | カンボジア不動産投資"
                 />
               </div>
               <div class="field cfg-span-2">
@@ -4869,7 +4869,7 @@
                 ><input
                   type="text"
                   id="cfgPhone"
-                  placeholder="e.g. +855 12 345 678"
+                  placeholder="+855 86 552 459"
                 />
               </div>
             </div>
@@ -4972,7 +4972,7 @@
                     ><input
                       type="text"
                       id="cfgQuoteFooterSignatureName"
-                      placeholder="e.g. Sophea Chan"
+                      placeholder="Nick"
                     />
                   </div>
                   <div class="field cfg-span-2">
@@ -5237,7 +5237,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
     <div id="onboardingBanner" style="display:none;background:linear-gradient(135deg,var(--navy),var(--navy3));color:#fff;padding:14px 16px;border-bottom:1px solid rgba(200,164,90,.2)">
       <div style="max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
         <div style="flex:1;min-width:200px">
-          <div style="font-size:13px;font-weight:700;margin-bottom:3px">👋 Welcome to Property Hub Sales Desk</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:3px;font-family:'Shippori Mincho',serif;color:var(--sb-text-s);letter-spacing:0.02em;">NICK | カンボジア不動産投資 · Sales Desk</div><div style="font-size:11px;color:var(--sb-gold);letter-spacing:0.05em;">買う前に、正しく比較しましょう</div>
           <div style="font-size:12px;opacity:.8">Get started: <strong>1. Select a project</strong> → <strong>2. Pick a unit</strong> → <strong>3. Calculate payment plan</strong></div>
         </div>
         <div style="display:flex;gap:8px;flex-shrink:0">
@@ -5543,7 +5543,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
           <span class="sb-icon"><svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M17 3 7 21"/><circle cx="7.5" cy="6.5" r="2.5"/><circle cx="16.5" cy="17.5" r="2.5"/></svg></span><span class="sb-label">Resale</span>
         </a>
 
-        <div class="sb-section-label">Other Tools</div>
+        <div class="sb-section-label" style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;">PHC Suite (Internal)</div>
         <a class="sb-item" href="PHC_Lead_Tracker.html">
           <span class="sb-icon"><svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M6 9h12M6 6h12M6 12h8"/></svg></span><span class="sb-label">Lead Tracker</span>
         </a>
@@ -7446,10 +7446,10 @@ B1 = East | Gross 50㎡ | Net 45㎡
           : null;
         const client = deal.clientName || "Valued Client";
         const con = cfg.name || "Your Consultant";
-        const agency = cfg.agency || "Property Hub";
+        const agency = cfg.agency || "NICK | カンボジア不動産投資";
         const phone = cfg.phone || "";
-        const greeting = `Dear ${client},\n\nGreetings from *${agency}*! 🏠`;
-        const sig = `\n\nWarm regards,\n*${con}*\n${agency}${phone ? "\n" + phone : ""}`;
+        const greeting = `Dear ${client},\n\nプノンペン在住のニックです。(*${agency}*)\nカンボジア不動産を、数字と現地目線でお届けします。`;
+        const sig = `\n\n個別相談は公式LINEへ: https://line.me/ti/p/@615ueovq\nWhatsApp: +855 86 552 459\nTelegram: @Nick_REAKH\n*${con} (日本人向け不動産コンサルタント)*\n${agency}`;
 
         const templates = {
           booking: `${greeting}\n\nWe're thrilled to confirm your *Booking* for:\n\n📍 *${p.name}*\n🏠 Unit: *${deal.uid}* · ${deal.info?.beds} · ${deal.info?.size}\n💰 Sale Price: *${fUSD(deal.net)}*${bookingRow ? "\n📅 Booking Date: *" + fmtDate(bookingRow.date instanceof Date ? bookingRow.date : new Date(bookingRow.date)) + "*" : ""}\n\nYour booking fee of *${fUSD(deal.calc?.bk || 1000)}* has been received. Our team will be in touch shortly to arrange the SPA signing.${sig}`,
@@ -7468,11 +7468,11 @@ B1 = East | Gross 50㎡ | Net 45㎡
         lastCalc = null;
       let saves = [],
         pipeline = [];
-      let cfg = { name: "", agency: "Property Hub", phone: "" },
+      let cfg = { name: "Nick", agency: "NICK | カンボジア不動産投資", phone: "+855 86 552 459" },
         cfgLogo = null,
         cfgComm = {},
         cfgProjects = {};
-      cfg.quoteHeaderSub = "Property Consultants · Phnom Penh";
+      cfg.quoteHeaderSub = "買う前に、正しく比較しましょう · Real Estate Advisory";
       cfg.quoteHeaderRightText = "";
       cfg.quoteDocTitle = "";
       cfg.quoteDocSubtitle = "";
@@ -7567,10 +7567,10 @@ B1 = East | Gross 50㎡ | Net 45㎡
           "cfgQuoteFooterDisclaimer",
           cfg.quoteFooterDisclaimer,
         );
-        const agency = filledValue(draftAgency, "Property Hub");
+        const agency = filledValue(draftAgency, "NICK | カンボジア不動産投資");
         const headerSub = filledValue(
           draftHeaderSub,
-          "Property Consultants · Phnom Penh",
+          "買う前に、正しく比較しましょう · Real Estate Advisory",
         );
         const issueLabel = filledValue(draftIssueLabel, "Issue Date");
         const title = filledValue(draftTitle, "Buyer Quotation");
@@ -9962,7 +9962,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
         const r = lastCalc,
           p = PROJECTS[r.proj || activeProjId];
         const client = $("clientName").value || "[Client]";
-        const text = `🏠 *${p.name} — Unit ${r.uid}*\n\nDear ${client},\n\n📋 ${r.uid} · ${r.info?.beds} · ${r.info?.size}\n💰 List: ${fUSD(r.orig)} → Save: ${fUSD(r.discAmt)} (${r.discLabel})\n✅ Final: *${fUSD(r.net)}*\n\n*Payment Plan*\n📌 Booking: ${fUSD(r.bk)}\n📝 SPA (${r.spaPct}%): ${fUSD(r.spaNet)} net\n📅 Monthly: ${r.months} × ${fUSD(r.moAmt)}\n🏠 Handover (${r.hoPct}%): ${fUSD(r.hoTotal)}\n\n${cfg.name ? cfg.name + "\n" : ""}${cfg.phone ? cfg.phone + "\n" : ""}_${cfg.agency || "Property Hub"} · ${dateStr()}_`;
+        const text = `🏠 *${p.name} — Unit ${r.uid}*\n\nDear ${client},\n\n📋 ${r.uid} · ${r.info?.beds} · ${r.info?.size}\n💰 List: ${fUSD(r.orig)} → Save: ${fUSD(r.discAmt)} (${r.discLabel})\n✅ Final: *${fUSD(r.net)}*\n\n*Payment Plan*\n📌 Booking: ${fUSD(r.bk)}\n📝 SPA (${r.spaPct}%): ${fUSD(r.spaNet)} net\n📅 Monthly: ${r.months} × ${fUSD(r.moAmt)}\n🏠 Handover (${r.hoPct}%): ${fUSD(r.hoTotal)}\n\n${cfg.name ? cfg.name + "\n" : ""}${cfg.phone ? cfg.phone + "\n" : ""}_${cfg.agency || "NICK | カンボジア不動産投資"} · ${dateStr()}_`;
         $("waPreview").textContent = text;
         $("waModal").classList.add("visible");
       }
@@ -10066,10 +10066,10 @@ B1 = East | Gross 50㎡ | Net 45㎡
 
       // ── LETTERHEAD & FOOTER ──
       function letterhead() {
-        const agency = cfgValue("agency", "Property Hub");
+        const agency = cfgValue("agency", "NICK | カンボジア不動産投資");
         const subline = cfgValue(
           "quoteHeaderSub",
-          "Property Consultants · Phnom Penh",
+          "買う前に、正しく比較しましょう · Real Estate Advisory",
         );
         const issueLabel = cfgValue("quoteHeaderRightText", "Issue Date");
         const logoHtml = cfgLogo
@@ -10078,7 +10078,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
         return `<div class="lh"><div><div>${logoHtml}</div><div class="lh-sub-text">${subline}</div></div><div class="lh-meta"><strong>${issueLabel}</strong><div class="issue-date">${dateStr()}</div></div></div>`;
       }
       function docFoot(role = "") {
-        const agency = cfgValue("agency", "Property Hub");
+        const agency = cfgValue("agency", "NICK | カンボジア不動産投資");
         const footerRole = role || cfgValue("quoteFooterRole", "Property Advisor");
         const disclaimer = cfgValue(
           "quoteFooterDisclaimer",
@@ -10106,7 +10106,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
       function genCoverPage(r, docType) {
         const p = PROJECTS[r.proj || activeProjId];
         const client = $("clientName").value || "Valued Client";
-        const agency = cfgValue("agency", "Property Hub");
+        const agency = cfgValue("agency", "NICK | カンボジア不動産投資");
         const coverSubline = cfgValue(
           "quoteHeaderSub",
           "Property Consultants · Phnom Penh, Cambodia",
@@ -11328,14 +11328,14 @@ B1 = East | Gross 50㎡ | Net 45㎡
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',sans-serif;color:#1a2535;background:#fff}
 .page{max-width:760px;margin:0 auto;padding:32px 36px 48px}
-.hdr{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:18px;border-bottom:3px solid #083467;margin-bottom:22px}
-.brand{font-size:17px;font-weight:800;color:#083467}.brand-sub{font-size:8.5px;color:#c8a45a;letter-spacing:2px;text-transform:uppercase;margin-top:3px}
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:18px;border-bottom:3px solid #073642;margin-bottom:22px}
+.brand{font-size:17px;font-weight:800;color:#073642}.brand-sub{font-size:8.5px;color:#9E8052;letter-spacing:2px;text-transform:uppercase;margin-top:3px}
 .brand-contact{font-size:10px;color:#4a5e75;margin-top:5px}
-.doc-r{text-align:right}.doc-h{font-family:'DM Serif Display',serif;font-size:22px;color:#083467}
+.doc-r{text-align:right}.doc-h{font-family:'DM Serif Display',serif;font-size:22px;color:#073642}
 .doc-sub{font-size:10px;color:#8a9aac;margin-top:3px}
-.sec{font-size:8.5px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:#083467;margin:20px 0 10px;padding-bottom:5px;border-bottom:1px solid #dde3ec}
+.sec{font-size:8.5px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:#073642;margin:20px 0 10px;padding-bottom:5px;border-bottom:1px solid #dde3ec}
 .igrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px}
-.ibox{padding:10px 12px;background:#f3efe8;border-radius:8px}
+.ibox{padding:10px 12px;background:#FAF8F5;border-radius:8px}
 .ik{font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:#8a9aac;font-weight:700}
 .iv{font-size:13px;font-weight:700;color:#1a2535;margin-top:3px}
 .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px}
@@ -11343,13 +11343,13 @@ body{font-family:'DM Sans',sans-serif;color:#1a2535;background:#fff}
 .kk{font-size:7.5px;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;margin-bottom:5px}
 .kv{font-family:'DM Serif Display',serif;font-size:1.25rem;font-weight:700}
 table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:18px}
-th{background:#083467;color:#fff;padding:8px 10px;text-align:left;font-size:8.5px;letter-spacing:1px;text-transform:uppercase;font-weight:600}
+th{background:#073642;color:#fff;padding:8px 10px;text-align:left;font-size:8.5px;letter-spacing:1px;text-transform:uppercase;font-weight:600}
 td{padding:7px 10px;border-bottom:1px solid #eee}
 tr:nth-child(even) td{background:#faf8f4}
 .ho td{color:#9a7a3e;font-weight:600}
-.summary-tbl{border:2px solid #083467;border-radius:8px;overflow:hidden;margin-bottom:22px}
-.summary-tbl tr.gold td{background:#083467;color:#c8a45a;font-weight:800;font-size:13px}
-.summary-tbl tr.mid td{background:#f3efe8;color:#083467;font-weight:700}
+.summary-tbl{border:2px solid #073642;border-radius:8px;overflow:hidden;margin-bottom:22px}
+.summary-tbl tr.gold td{background:#073642;color:#9E8052;font-weight:800;font-size:13px}
+.summary-tbl tr.mid td{background:#FAF8F5;color:#073642;font-weight:700}
 .summary-tbl tr.total td{background:#0a1e35;color:#fff;font-weight:800;font-size:15px}
 .footer{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:28px;padding-top:18px;border-top:1px solid #dde3ec}
 .sig-lbl{font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;color:#8a9aac;font-weight:700;margin-bottom:28px}
@@ -11359,8 +11359,8 @@ tr:nth-child(even) td{background:#faf8f4}
 </style></head><body>
 <div class="page">
 <div class="hdr">
-  <div><div class="brand">Property Hub Cambodia</div><div class="brand-sub">カンボジア不動産 · Real Estate Advisory</div>
-  <div class="brand-contact">BKK1, Phnom Penh &nbsp;·&nbsp; 011 666 952 &nbsp;·&nbsp; propertyhubcambodia.com</div></div>
+  <div><div class="brand" style="font-family:'Shippori Mincho',serif;font-weight:700;color:#073642;">NICK | カンボジア不動産投資</div><div class="brand-sub" style="color:#9E8052;letter-spacing:1.5px;">買う前に、正しく比較しましょう · Real Estate Advisory</div>
+  <div class="brand-contact" style="font-size:8.5px;color:#55686C;">プノンペン在住 &nbsp;·&nbsp; 公式LINE: @615ueovq &nbsp;·&nbsp; WhatsApp: +855 86 552 459 &nbsp;·&nbsp; Telegram: @Nick_REAKH</div></div>
   <div class="doc-r"><div class="doc-h">Resale Transfer Summary</div><div class="doc-sub">Prepared: ${today}</div></div>
 </div>
 
@@ -11377,7 +11377,7 @@ tr:nth-child(even) td{background:#faf8f4}
 <div class="sec">Transfer Summary</div>
 <div class="kpis">
   <div class="kpi"><div class="kk" style="color:#9a7a3e">Buyer Pays Seller</div><div class="kv" style="color:#9a7a3e">${fUSD(sellerGets)}</div></div>
-  <div class="kpi"><div class="kk" style="color:#083467">Continues to Dev</div><div class="kv" style="color:#083467">${fUSD(remTotal)}</div></div>
+  <div class="kpi"><div class="kk" style="color:#073642">Continues to Dev</div><div class="kv" style="color:#073642">${fUSD(remTotal)}</div></div>
   <div class="kpi"><div class="kk" style="color:#1d3557">Buyer Total Cost</div><div class="kv" style="color:#1d3557">${fUSD(buyerTotal)}</div></div>
   <div class="kpi"><div class="kk" style="color:${profit>=0?'#1a7a4a':'#b03030'}">${profit>=0?'Seller Profit':'Seller Loss'}</div><div class="kv" style="color:${profit>=0?'#1a7a4a':'#b03030'}">${profit>=0?'+':''}${fUSD(profit)}</div></div>
 </div>
@@ -11402,7 +11402,7 @@ tr:nth-child(even) td{background:#faf8f4}
   <div><div class="sig-lbl">Property Consultant</div><div class="sig-line">Nick · NICK | カンボジア不動産投資</div></div>
   <div><div class="sig-lbl">Date</div><div class="sig-line">${today}</div></div>
 </div>
-<div class="disc">This document is prepared by Property Hub Cambodia for informational purposes only. All figures are subject to verification with the developer. Resale agreements are subject to applicable legal and transfer fees, developer consent, and Cambodia Capital Gains Tax (CGT), currently postponed to 1 January 2027. Buyers and sellers should seek independent legal advice before proceeding.</div>
+<div class="disc" style="font-size:7.5px;line-height:1.4;color:#8A9A9D;">※利回り・価格は参考値であり、将来の収益を保証するものではありません。契約前の現地確認とデューデリジェンスを推奨いたします。個別のご判断は、専門家にご相談ください。</div>
 </div><script>window.onload=()=>window.print()<\/script></body></html>`);
         w.document.close();
       }
