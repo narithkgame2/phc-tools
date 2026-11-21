@@ -6454,9 +6454,14 @@
           break-after: page !important;
         }
 
-        .trkr-tbl tr {
+        .trkr-tbl tr,
+        .tot-row {
           page-break-inside: avoid !important;
           break-inside: avoid !important;
+        }
+
+        tfoot {
+          display: table-row-group !important;
         }
       }
     </style>
@@ -12787,7 +12792,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
     ${letterhead()}
     <div class="doc-title">Payment Schedule</div><div class="doc-subtitle">${p.name} · Client Payment Overview</div>
     <div class="doc-unit-badge"><div><div class="doc-uid">${r.uid}</div><div class="doc-ud">${r.info?.beds} · ${r.info?.size}${r.info?.orientation ? ` · ${r.info.orientation}` : ""} · Floor ${r.floor}F<br>Client: <strong>${client}</strong></div></div><div style="text-align:right"><div style="font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-size:1.1rem;color:var(--navy)">${fUSD(total)}</div><div style="font-size:8px;color:var(--tx3)">Total Purchase Price</div><div style="font-size:9px;color:var(--tx3);margin-top:4px">${bookingLabel}: ${bookingDisplay}</div><div style="font-size:9px;color:var(--tx3);margin-top:4px">${spaLabel}: ${spaDisplay}</div></div></div>
-    <div style="overflow-x:auto"><table class="trkr-tbl"><thead><tr><th>#</th><th>Due Date</th><th>Stage</th><th style="text-align:right">Amount</th><th style="text-align:right">Cumulative</th><th style="text-align:right">Balance</th></tr></thead><tbody>${tableRows}</tbody><tfoot><tr class="tot-row"><td colspan="3"><strong>TOTAL</strong></td><td class="amt"><strong>${fUSD(total)}</strong></td><td class="cumul">${fUSD(total)}</td><td class="bal">$0.00</td></tr></tfoot></table></div>
+    <div style="overflow-x:auto"><table class="trkr-tbl"><thead><tr><th>#</th><th>Due Date</th><th>Stage</th><th style="text-align:right">Amount</th><th style="text-align:right">Cumulative</th><th style="text-align:right">Balance</th></tr></thead><tbody>${tableRows}<tr class="tot-row"><td colspan="3"><strong>TOTAL</strong></td><td class="amt"><strong>${fUSD(total)}</strong></td><td class="cumul">${fUSD(total)}</td><td class="bal">$0.00</td></tr></tbody></table></div>
     ${docFoot()}
   </div></div>`;
       }
@@ -12841,7 +12846,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
     <div class="doc-unit-badge"><div><div class="doc-uid">${r.uid}</div><div class="doc-ud">${r.info?.beds} · ${r.info?.size}${r.info?.orientation ? ` · ${r.info.orientation}` : ""} · Floor ${r.floor}F<br>Client: <strong>${client}</strong></div></div><div style="text-align:right"><div style="font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-size:1.1rem;color:var(--navy)">${fUSD(total)}</div><div style="font-size:8px;color:var(--tx3)">Total Purchase Price</div><div style="font-size:9px;color:var(--tx3);margin-top:4px">${bookingLabel}: ${bookingDisplay}</div><div style="font-size:9px;color:var(--tx3);margin-top:4px">${spaLabel}: ${spaDisplay}</div></div></div>
     <div class="prog-section"><div class="prog-top"><div><div class="prog-pct">${paidPct}%</div><div class="prog-sub">Paid to Date</div></div><div style="text-align:right;font-size:8.5px;color:var(--tx3)">As of ${dateStr()}</div></div><div class="prog-bar-outer"><div class="prog-bar-inner" style="width:${paidPct}%"></div></div><div class="prog-stats"><div class="prog-stat-box"><div class="prog-stat-val" style="color:var(--grn)">${fUSD(paidSoFar)}</div><div class="prog-stat-lbl">Paid</div></div><div class="prog-stat-box"><div class="prog-stat-val" style="color:var(--red)">${fUSD(total - paidSoFar)}</div><div class="prog-stat-lbl">Balance</div></div><div class="prog-stat-box"><div class="prog-stat-val">${rows.filter((x) => getPaymentStatusMeta(x, today).isPaid).length} / ${rows.length}</div><div class="prog-stat-lbl">Payments</div></div></div></div>
     <div class="trkr-legend"><div class="trkr-legend-item"><span class="status-dot dot-paid"></span>Paid</div><div class="trkr-legend-item"><span class="status-dot dot-today"></span>Due Today</div><div class="trkr-legend-item"><span class="status-dot dot-due"></span>Overdue</div><div class="trkr-legend-item"><span class="status-dot dot-future"></span>Upcoming</div></div>
-    <div style="overflow-x:auto"><table class="trkr-tbl"><thead><tr><th>#</th><th>Due Date</th><th>Stage</th><th style="text-align:right">Amount</th><th style="text-align:right">Cumulative</th><th style="text-align:right">Balance</th></tr></thead><tbody>${tableRows}</tbody><tfoot><tr class="tot-row"><td colspan="3"><strong>TOTAL</strong></td><td class="amt"><strong>${fUSD(total)}</strong></td><td class="cumul">${fUSD(total)}</td><td class="bal">$0.00</td></tr></tfoot></table></div>
+    <div style="overflow-x:auto"><table class="trkr-tbl"><thead><tr><th>#</th><th>Due Date</th><th>Stage</th><th style="text-align:right">Amount</th><th style="text-align:right">Cumulative</th><th style="text-align:right">Balance</th></tr></thead><tbody>${tableRows}<tr class="tot-row"><td colspan="3"><strong>TOTAL</strong></td><td class="amt"><strong>${fUSD(total)}</strong></td><td class="cumul">${fUSD(total)}</td><td class="bal">$0.00</td></tr></tbody></table></div>
     <div class="ack-block"><div class="ack-title">Client Acknowledgement</div><div class="ack-text">I, the undersigned, confirm that I have received, read, and understood this Payment Tracker for Unit <strong>${r.uid}</strong> at <strong>${p.name}</strong>. I acknowledge the total purchase price of <strong>${fUSD(total)}</strong>, the payment stages outlined above, and my obligation to make each payment on or before the due date.</div><div class="ack-sigs"><div class="ack-sig-block"><div class="ack-sig-line"></div><div class="ack-sig-lbl">Client Signature &amp; Date</div><div class="ack-sig-name">${client}</div></div><div class="ack-sig-block"><div class="ack-sig-line"></div><div class="ack-sig-lbl">Consultant Signature &amp; Date</div><div class="ack-sig-name">${cfgValue("name", "Consultant")}</div></div></div></div>
     ${docFoot()}
   </div></div>`;
