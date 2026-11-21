@@ -12186,22 +12186,19 @@ B1 = East | Gross 50㎡ | Net 45㎡
       </div>
     </div>
 
-    <!-- 3-Box Price Summary matching Sales Desk Calculator -->
+    <!-- 3-Box Price Summary: Clean and minimal without redundant sublines -->
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 16px">
-      <div style="background:#FAF8F5;border:1px solid #E2DDD2;border-radius:8px;padding:12px 14px;text-align:center">
-        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx3);font-weight:600;margin-bottom:4px">${listLbl}</div>
-        <div style="font-family:'Inter',sans-serif;font-size:16px;font-weight:700;color:var(--tx2);text-decoration:line-through;text-decoration-color:rgba(14,30,53,0.3)">${fUSD(r.orig)}</div>
-        <div style="font-size:9px;color:var(--tx3);margin-top:2px">${listSub}</div>
+      <div style="background:#FAF8F5;border:1px solid #E2DDD2;border-radius:8px;padding:14px 12px;text-align:center">
+        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx3);font-weight:600;margin-bottom:6px">${listLbl}</div>
+        <div style="font-family:'Inter',sans-serif;font-size:17px;font-weight:700;color:var(--tx2);text-decoration:line-through;text-decoration-color:rgba(14,30,53,0.35)">${fUSD(r.orig)}</div>
       </div>
-      <div style="background:#FAF8F5;border:1px solid #E2DDD2;border-radius:8px;padding:12px 14px;text-align:center">
-        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx3);font-weight:600;margin-bottom:4px">${saveLbl}</div>
-        <div style="font-family:'Inter',sans-serif;font-size:16px;font-weight:700;color:var(--grn)">${fUSD(r.discAmt)}</div>
-        <div style="font-size:9px;color:var(--grn);font-weight:600;margin-top:2px">${saveSub}</div>
+      <div style="background:#FAF8F5;border:1px solid #E2DDD2;border-radius:8px;padding:14px 12px;text-align:center">
+        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx3);font-weight:600;margin-bottom:6px">${saveLbl}</div>
+        <div style="font-family:'Inter',sans-serif;font-size:17px;font-weight:700;color:var(--grn)">${fUSD(r.discAmt)}</div>
       </div>
-      <div style="background:var(--navy);border:1px solid var(--navy);border-radius:8px;padding:12px 14px;text-align:center;box-shadow:0 3px 10px rgba(7,54,66,0.15)">
-        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(250,248,245,0.7);font-weight:600;margin-bottom:4px">${finalLbl}</div>
-        <div style="font-family:'Inter',sans-serif;font-size:17px;font-weight:800;color:#FAF8F5">${fUSD(r.net)}</div>
-        <div style="font-size:9px;color:rgba(250,248,245,0.55);margin-top:2px">${finalSub}</div>
+      <div style="background:var(--navy);border:1px solid var(--navy);border-radius:8px;padding:14px 12px;text-align:center;box-shadow:0 3px 10px rgba(7,54,66,0.15)">
+        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(250,248,245,0.7);font-weight:600;margin-bottom:6px">${finalLbl}</div>
+        <div style="font-family:'Inter',sans-serif;font-size:18px;font-weight:800;color:#FAF8F5">${fUSD(r.net)}</div>
       </div>
     </div>
 
