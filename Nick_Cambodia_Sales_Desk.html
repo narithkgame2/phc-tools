@@ -3738,6 +3738,44 @@
         background: linear-gradient(135deg, #1e8455, #16603e);
       }
 
+      
+      .doc-lang-toggle {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 20px;
+        padding: 2px;
+        gap: 2px;
+        margin: 0 8px;
+        flex-shrink: 0;
+      }
+      .doc-lang-btn {
+        background: transparent;
+        border: none;
+        color: rgba(255, 255, 255, 0.65);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        padding: 4px 10px;
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .doc-lang-btn:hover {
+        color: #fff;
+      }
+      .doc-lang-btn.active {
+        background: #86BE3F;
+        color: #073642;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+      }
+      @media print {
+        .doc-lang-toggle {
+          display: none !important;
+        }
+      }
+
       /* DOCUMENT OVERLAY */
       .doc-overlay {
         position: fixed;
@@ -6591,6 +6629,10 @@ B1 = East | Gross 50㎡ | Net 45㎡
     <div class="doc-overlay" id="docOverlay">
       <div class="doc-nav-bar">
         <button class="doc-nav-back" onclick="closeDoc()">← Back</button>
+        <div class="doc-lang-toggle" title="Switch document language">
+          <button type="button" class="doc-lang-btn active" id="docLangEnBtn" onclick="setDocLang('en')">EN</button>
+          <button type="button" class="doc-lang-btn" id="docLangJaBtn" onclick="setDocLang('ja')">JP</button>
+        </div>
         <span class="doc-nav-type" id="docNavType">Document</span>
         <button class="doc-nav-print inline-icon" onclick="printCurrentDoc()"><svg class="ui-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 8V3h10v5"/><rect x="5" y="8" width="14" height="8" rx="2"/><path d="M7 16h10v5H7z"/></svg>Print / PDF</button>
       </div>
@@ -11939,18 +11981,40 @@ B1 = East | Gross 50㎡ | Net 45㎡
         reader.readAsDataURL(file);
       }
 
+      // ── DOCUMENT LANGUAGE & BRANDING ──
+      let activeDocLang = localStorage.getItem("nick_doc_lang") || "en";
+
+      function setDocLang(lang) {
+        activeDocLang = lang === "ja" ? "ja" : "en";
+        try { localStorage.setItem("nick_doc_lang", activeDocLang); } catch (e) {}
+        updateDocLangUI();
+        if ($("docOverlay").classList.contains("visible") && activeDocType) {
+          openDoc(activeDocType);
+        }
+      }
+
+      function updateDocLangUI() {
+        const enBtn = $("docLangEnBtn");
+        const jaBtn = $("docLangJaBtn");
+        if (enBtn) enBtn.classList.toggle("active", activeDocLang === "en");
+        if (jaBtn) jaBtn.classList.toggle("active", activeDocLang === "ja");
+      }
+
       // ── LETTERHEAD & FOOTER ──
-      function letterhead() {
-        const agency = cfgValue("agency", "NICK | カンボジア不動産投資");
-        let subline = cfgValue("quoteHeaderSub", "買う前に、正しく比較しましょう");
-        subline = subline.replace(/\s*·\s*Real Estate Advisory/gi, "").trim();
-        const issueLabel = cfgValue("quoteHeaderRightText", "Issue Date");
-        const logoHtml = cfgLogo && !cfgLogo.includes('data:image/png')
-          ? `<img src="${cfgLogo}" style="max-height:52px;max-width:160px;object-fit:contain;display:block;margin-bottom:3px">`
-          : `<div style="display:flex;align-items:center;gap:12px;">
-              <div style="width:40px;height:40px;border-radius:50%;overflow:hidden;flex-shrink:0;"><svg viewBox="0 0 1250 1250" xmlns="http://www.w3.org/2000/svg">
-<defs><clipPath id="lc"><circle cx="625" cy="625" r="612"/></clipPath></defs>
-<g clip-path="url(#lc)"><rect width="1250" height="1250" fill="#073642"/><rect y="876" width="1250" height="374" fill="#86BE3F"/></g>
+      function letterhead(lang = activeDocLang) {
+        const isJa = lang === "ja";
+        const agency = isJa
+          ? cfgValue("agency", "NICK | カンボジア不動産投資")
+          : "NICK | Cambodia Property Investment";
+        const subline = isJa
+          ? cfgValue("quoteHeaderSub", "買う前に、正しく比較しましょう")
+          : "Compare with real numbers before you buy";
+        const issueLabel = "Issue Date";
+
+        const logoRoundel = isJa
+          ? `<div style="width:40px;height:40px;border-radius:50%;overflow:hidden;flex-shrink:0;"><svg viewBox="0 0 1250 1250" xmlns="http://www.w3.org/2000/svg">
+<defs><clipPath id="lc_ja"><circle cx="625" cy="625" r="612"/></clipPath></defs>
+<g clip-path="url(#lc_ja)"><rect width="1250" height="1250" fill="#073642"/><rect y="876" width="1250" height="374" fill="#86BE3F"/></g>
 <g fill="none" stroke="#86BE3F" stroke-width="38" stroke-linecap="butt" stroke-linejoin="miter">
   <path d="M 362 652 A 315 315 0 1 1 925 582"/>
   <path d="M 912 636 A 315 315 0 0 1 418 718"/>
@@ -11964,7 +12028,28 @@ B1 = East | Gross 50㎡ | Net 45㎡
   <path d="M 846 520 Q 848 470 826 438 Q 810 470 798 488 L 780 505 L 832 540 Z"/>
 </g>
 <text x="625" y="1112" text-anchor="middle" font-family="'Noto Sans JP','Hiragino Sans',sans-serif" font-weight="700" font-size="215" fill="#fff" letter-spacing="14">日本語</text>
-</svg></div>
+</svg></div>`
+          : `<div style="width:40px;height:40px;border-radius:50%;overflow:hidden;flex-shrink:0;"><svg viewBox="0 0 1250 1250" xmlns="http://www.w3.org/2000/svg">
+<defs><clipPath id="lc_en"><circle cx="625" cy="625" r="612"/></clipPath></defs>
+<g clip-path="url(#lc_en)"><rect width="1250" height="1250" fill="#073642"/><rect y="920" width="1250" height="330" fill="#86BE3F"/></g>
+<g fill="none" stroke="#86BE3F" stroke-width="40" stroke-linecap="butt" stroke-linejoin="miter">
+  <path d="M 362 652 A 315 315 0 1 1 925 582"/>
+  <path d="M 912 636 A 315 315 0 0 1 418 718"/>
+  <path d="M 452 488 L 628 312 L 804 488"/>
+  <path d="M 480 505 L 480 648 L 362 648"/>
+  <path d="M 776 505 L 776 648 L 912 648"/>
+</g>
+<g fill="#86BE3F">
+  <path d="M 628 212 L 660 318 L 596 318 Z"/>
+  <path d="M 404 520 Q 402 470 424 438 Q 440 470 452 488 L 470 505 L 418 540 Z"/>
+  <path d="M 846 520 Q 848 470 826 438 Q 810 470 798 488 L 780 505 L 832 540 Z"/>
+</g>
+</svg></div>`;
+
+        const logoHtml = cfgLogo && !cfgLogo.includes('data:image/png')
+          ? `<img src="${cfgLogo}" style="max-height:52px;max-width:160px;object-fit:contain;display:block;margin-bottom:3px">`
+          : `<div style="display:flex;align-items:center;gap:12px;">
+              ${logoRoundel}
               <div>
                 <div style="font-family:'Shippori Mincho',Georgia,serif;font-size:16px;font-weight:700;color:var(--navy);letter-spacing:0.04em;">${agency}</div>
                 <div style="font-size:10px;color:var(--tx2);letter-spacing:0.06em;margin-top:2px;">${subline}</div>
@@ -11972,7 +12057,9 @@ B1 = East | Gross 50㎡ | Net 45㎡
             </div>`;
         return `<div class="lh"><div>${logoHtml}</div><div class="lh-meta"><strong>${issueLabel}</strong><div class="issue-date">${dateStr()}</div></div></div>`;
       }
-      function docFoot(role = "") {
+
+      function docFoot(role = "", lang = activeDocLang) {
+        const isJa = lang === "ja";
         let disclaimer = cfgValue("quoteFooterDisclaimer", "");
         if (
           disclaimer.includes("※利回り・価格は参考値") ||
@@ -11982,13 +12069,10 @@ B1 = East | Gross 50㎡ | Net 45㎡
         ) {
           disclaimer = "";
         }
-        const footerName = cfgValue("quoteFooterSignatureName", "Nick");
-        let footerSubline = role || cfgValue("quoteFooterSignatureSubline", "カンボジア不動産アドバイザー");
-        footerSubline = footerSubline
-          .replace(/\s*·\s*NICK[^\n]*/g, "")
-          .replace(/Property\s*Advisor/gi, "カンボジア不動産アドバイザー")
-          .trim();
-        if (!footerSubline) footerSubline = "カンボジア不動産アドバイザー";
+        const footerName = isJa ? "Nick" : "NICK";
+        const footerSubline = isJa
+          ? "カンボジア不動産アドバイザー"
+          : "Cambodia Property Advisor";
 
         return `<div class="doc-foot">
           ${disclaimer ? `<div class="doc-disc">${disclaimer}</div>` : ""}
@@ -12003,30 +12087,39 @@ B1 = East | Gross 50㎡ | Net 45㎡
           </div>
         </div>`;
       }
-      function projRenderStrip(r, mode = "default") {
+
+      function projRenderStrip(r, mode = "quotation", lang = activeDocLang) {
         const p = PROJECTS[r.proj || activeProjId];
+        const isJa = lang === "ja";
         if (mode === "quotation") {
-          return `<div class="proj-render-strip"><div class="prs-inner"><div class="prs-name">${cfgValue("quoteDocTitle", "Buyer Quotation")}</div></div></div>`;
+          const title = isJa ? "お見積書 / Buyer Quotation" : "Buyer Quotation";
+          return `<div class="proj-render-strip"><div class="prs-inner"><div class="prs-name">${title}</div></div></div>`;
         }
-        const subline =
-          `Unit ${r.uid} · ${r.info?.beds} · Floor ${r.floor}F`;
+        const subline = `Unit ${r.uid} · ${r.info?.beds} · Floor ${r.floor}F`;
         return `<div class="proj-render-strip"><div class="prs-inner"><div class="prs-dev">${p.dev} · ${p.location}</div><div class="prs-name">${p.name}</div><div class="prs-loc">${subline}</div></div></div>`;
       }
-      function genCoverPage(r, docType) {
+
+      function genCoverPage(r, docType, lang = activeDocLang) {
         const p = PROJECTS[r.proj || activeProjId];
-        const client = $("clientName").value || "Valued Client";
-        const agency = cfgValue("agency", "NICK | カンボジア不動産投資");
-        const coverSubline = cfgValue("quoteHeaderSub", "買う前に、正しく比較しましょう");
+        const isJa = lang === "ja";
+        const client = $("clientName").value || (isJa ? "お客様" : "Valued Client");
+        const agency = isJa
+          ? cfgValue("agency", "NICK | カンボジア不動産投資")
+          : "NICK | Cambodia Property Investment";
+        const coverSubline = isJa
+          ? cfgValue("quoteHeaderSub", "買う前に、正しく比較しましょう")
+          : "Compare with real numbers before you buy";
+        const prepFor = isJa ? "ご提案先" : "Prepared Exclusively For";
         return `<div class="doc-page"><div class="cover-page"><div class="cover-gold-bar"></div><div class="cover-pattern"></div><div class="cover-inner">
     <div class="cover-logo-area"><div class="cover-logo-txt">${agency}</div><div class="cover-logo-sub">${coverSubline}</div></div>
     <div class="cover-center"><div class="cover-proj-render">🏙<div class="cover-proj-label"><div class="cpl-dev">${p.dev} · ${p.location}</div><div class="cpl-name">${p.name}</div></div></div></div>
     <div class="cover-bottom">
-      <div class="cover-doc-type">Prepared Exclusively For</div>
+      <div class="cover-doc-type">${prepFor}</div>
       <div class="cover-doc-title">${docType}</div>
       <div class="cover-meta-grid">
-        <div class="cover-meta-item"><div class="cm-lbl">Client</div><div class="cm-val">${client}</div></div>
-        <div class="cover-meta-item"><div class="cm-lbl">Unit</div><div class="cm-val">${r.uid}</div><div class="cm-sub">${r.info?.beds} · ${r.info?.size}</div></div>
-        <div class="cover-meta-item"><div class="cm-lbl">Date</div><div class="cm-val">${new Date().toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })}</div>${cfg.name ? `<div class="cm-sub">${cfg.name}</div>` : ""}</div>
+        <div class="cover-meta-item"><div class="cm-lbl">${isJa ? "お客様名" : "Client"}</div><div class="cm-val">${client}</div></div>
+        <div class="cover-meta-item"><div class="cm-lbl">${isJa ? "お部屋番号" : "Unit"}</div><div class="cm-val">${r.uid}</div><div class="cm-sub">${r.info?.beds} · ${r.info?.size}</div></div>
+        <div class="cover-meta-item"><div class="cm-lbl">${isJa ? "作成日" : "Date"}</div><div class="cm-val">${new Date().toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })}</div><div class="cm-sub">${isJa ? "Nick" : "NICK"}</div></div>
       </div>
       <div class="cover-conf">CONFIDENTIAL · Prepared solely for the named recipient</div>
     </div>
@@ -12034,24 +12127,58 @@ B1 = East | Gross 50㎡ | Net 45㎡
       }
 
       // ── DOCS ──
-      function genQuotation(r) {
+      function genQuotation(r, lang = activeDocLang) {
         const p = PROJECTS[r.proj || activeProjId];
-        const client = $("clientName").value || "Valued Client";
-        const preparedForLabel = cfgValue(
-          "quotePreparedForLabel",
-          "Prepared for",
-        );
+        const isJa = lang === "ja";
+        const client = $("clientName").value || (isJa ? "お客様" : "Valued Client");
+        const preparedForLabel = isJa ? "ご提案先 / Prepared for" : "Prepared for";
         const grossDisplay = r.info?.grossSize || r.info?.size || "";
         const netDisplay = r.info?.netSize || "";
 
+        const zoneLabel = isJa ? "高層階" : "High Zone";
+        const grossText = isJa ? `総面積: ${grossDisplay}` : `Gross Size: ${grossDisplay}`;
+        const netText = isJa ? `専有面積: ${netDisplay}` : `Net Size: ${netDisplay}`;
+
+        // Box labels
+        const listLbl = isJa ? "定価 (List Price)" : "List Price";
+        const listSub = isJa ? "定価" : "List price";
+        const saveLbl = isJa ? "割引額 (You Save)" : "You Save";
+        const saveSub = r.discLabel || (isJa ? "割引" : "Discount");
+        const finalLbl = isJa ? "最終販売価格 (Final Price)" : "Final Price";
+        const finalSub = isJa ? "お支払い総額" : "Final price";
+
+        // Table strings
+        const schHeading = isJa ? "お支払いスケジュール / Payment Schedule" : "Payment Schedule";
+        const colNum = "#";
+        const colStage = isJa ? "支払い項目 (Stage)" : "Stage";
+        const colPct = "%";
+        const colAmt = isJa ? "金額 (Amount USD)" : "Amount (USD)";
+
+        const row1Title = isJa ? "予約金 (Booking Fee)" : "Booking Fee";
+        const row1Sub = isJa ? "予約時にお支払い" : "Upon reservation";
+
+        const row2Title = isJa ? "契約頭金 (SPA Payment)" : "SPA (Down Payment)";
+        const row2Sub = isJa ? `予約金を充当 · 差引支払額 ${fUSD(r.spaNet)}` : `Less booking · Net ${fUSD(r.spaNet)}`;
+
+        const row3Title = isJa ? "月々分割払い (Monthly Instalments)" : "Monthly Instalments";
+        const row3Sub = isJa ? `${r.months}ヶ月 × ${fUSD(r.moAmt)} / 月` : `${r.months} months × ${fUSD(r.moAmt)} / month`;
+
+        const row4Title = isJa ? "引渡時残金 (Handover Payment)" : "Handover Payment";
+        const row4Sub = isJa ? "物件完成・鍵の引渡時" : "Upon key collection & title transfer";
+
+        const totTitle = isJa ? "ご購入総額 (Total Purchase Price)" : "Total Purchase Price";
+        const totSub = isJa ? "物件取得総額" : "100% full acquisition price";
+
+        const promoSub = isJa ? "デベロッパーの承認条件に基づきます。" : "Subject to developer confirmation.";
+
         return `<div class="doc-page"><div class="doc-inner">
-    ${letterhead()}${projRenderStrip(r, "quotation")}
+    ${letterhead(lang)}${projRenderStrip(r, "quotation", lang)}
     <div class="doc-title">${p.name}</div><div class="doc-subtitle">${p.location}</div>
     <div class="doc-unit-badge">
       <div>
         <div class="doc-uid">${r.uid}</div>
-        <div class="doc-ud">${r.info?.beds || ""}${r.info?.series ? " · " + r.info.series : ""}${r.floor >= 35 ? " · High Zone" : ""}</div>
-        ${grossDisplay || netDisplay ? `<div style="font-size:9px;color:var(--tx2);margin-top:6px;line-height:1.6">${grossDisplay ? `Gross Size: ${grossDisplay}` : ""}${grossDisplay && netDisplay ? "<br>" : ""}${netDisplay ? `Net Size: ${netDisplay}` : ""}</div>` : ""}
+        <div class="doc-ud">${r.info?.beds || ""}${r.info?.series ? " · " + r.info.series : ""}${r.floor >= 35 ? " · " + zoneLabel : ""}</div>
+        ${grossDisplay || netDisplay ? `<div style="font-size:9px;color:var(--tx2);margin-top:6px;line-height:1.6">${grossDisplay ? grossText : ""}${grossDisplay && netDisplay ? " · " : ""}${netDisplay ? netText : ""}</div>` : ""}
       </div>
       <div style="text-align:right">
         <div style="font-size:8px;letter-spacing:1.5px;color:var(--tx3);text-transform:uppercase">${preparedForLabel}</div>
@@ -12062,25 +12189,25 @@ B1 = East | Gross 50㎡ | Net 45㎡
     <!-- 3-Box Price Summary matching Sales Desk Calculator -->
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 16px">
       <div style="background:#FAF8F5;border:1px solid #E2DDD2;border-radius:8px;padding:12px 14px;text-align:center">
-        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx3);font-weight:600;margin-bottom:4px">List Price</div>
+        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx3);font-weight:600;margin-bottom:4px">${listLbl}</div>
         <div style="font-family:'Inter',sans-serif;font-size:16px;font-weight:700;color:var(--tx2);text-decoration:line-through;text-decoration-color:rgba(14,30,53,0.3)">${fUSD(r.orig)}</div>
-        <div style="font-size:9px;color:var(--tx3);margin-top:2px">List price</div>
+        <div style="font-size:9px;color:var(--tx3);margin-top:2px">${listSub}</div>
       </div>
       <div style="background:#FAF8F5;border:1px solid #E2DDD2;border-radius:8px;padding:12px 14px;text-align:center">
-        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx3);font-weight:600;margin-bottom:4px">You Save</div>
+        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx3);font-weight:600;margin-bottom:4px">${saveLbl}</div>
         <div style="font-family:'Inter',sans-serif;font-size:16px;font-weight:700;color:var(--grn)">${fUSD(r.discAmt)}</div>
-        <div style="font-size:9px;color:var(--grn);font-weight:600;margin-top:2px">${r.discLabel || "Discount"}</div>
+        <div style="font-size:9px;color:var(--grn);font-weight:600;margin-top:2px">${saveSub}</div>
       </div>
       <div style="background:var(--navy);border:1px solid var(--navy);border-radius:8px;padding:12px 14px;text-align:center;box-shadow:0 3px 10px rgba(7,54,66,0.15)">
-        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(250,248,245,0.7);font-weight:600;margin-bottom:4px">Final Price</div>
+        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(250,248,245,0.7);font-weight:600;margin-bottom:4px">${finalLbl}</div>
         <div style="font-family:'Inter',sans-serif;font-size:17px;font-weight:800;color:#FAF8F5">${fUSD(r.net)}</div>
-        <div style="font-size:9px;color:rgba(250,248,245,0.55);margin-top:2px">Final price</div>
+        <div style="font-size:9px;color:rgba(250,248,245,0.55);margin-top:2px">${finalSub}</div>
       </div>
     </div>
 
     <!-- Payment Schedule section header with thin divider -->
     <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--goldd);font-weight:700;margin:18px 0 8px;display:flex;align-items:center;gap:10px">
-      <span>Payment Schedule</span>
+      <span>${schHeading}</span>
       <span style="flex:1;height:1px;background:#E2DDD2"></span>
     </div>
 
@@ -12088,18 +12215,18 @@ B1 = East | Gross 50㎡ | Net 45㎡
     <table class="dtbl" style="margin-bottom:14px;border:1px solid #E2DDD2;border-radius:8px;overflow:hidden">
       <thead>
         <tr>
-          <th style="width:36px;text-align:center">#</th>
-          <th>Stage</th>
-          <th style="width:70px;text-align:center">%</th>
-          <th class="dr" style="text-align:right">Amount (USD)</th>
+          <th style="width:36px;text-align:center">${colNum}</th>
+          <th>${colStage}</th>
+          <th style="width:70px;text-align:center">${colPct}</th>
+          <th class="dr" style="text-align:right">${colAmt}</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td style="text-align:center;font-weight:700;color:var(--navy)">1</td>
           <td>
-            <div style="font-size:11.5px;font-weight:600;color:var(--navy)">Booking Fee</div>
-            <div style="font-size:9.5px;color:var(--tx3);margin-top:2px">Upon reservation</div>
+            <div style="font-size:11.5px;font-weight:600;color:var(--navy)">${row1Title}</div>
+            <div style="font-size:9.5px;color:var(--tx3);margin-top:2px">${row1Sub}</div>
           </td>
           <td style="text-align:center;color:var(--tx3)">—</td>
           <td class="dr" style="font-size:12px;font-weight:600;color:var(--navy)">${fUSD(r.bk)}</td>
@@ -12107,8 +12234,8 @@ B1 = East | Gross 50㎡ | Net 45㎡
         <tr>
           <td style="text-align:center;font-weight:700;color:var(--navy)">2</td>
           <td>
-            <div style="font-size:11.5px;font-weight:600;color:var(--navy)">SPA (Down Payment)</div>
-            <div style="font-size:9.5px;color:var(--tx3);margin-top:2px">Less booking · Net ${fUSD(r.spaNet)}</div>
+            <div style="font-size:11.5px;font-weight:600;color:var(--navy)">${row2Title}</div>
+            <div style="font-size:9.5px;color:var(--tx3);margin-top:2px">${row2Sub}</div>
           </td>
           <td style="text-align:center;font-weight:600;color:var(--navy)">${r.spaPct}%</td>
           <td class="dr" style="font-size:12px;font-weight:600;color:var(--navy)">${fUSD(r.spaTotal)}</td>
@@ -12116,8 +12243,8 @@ B1 = East | Gross 50㎡ | Net 45㎡
         <tr>
           <td style="text-align:center;font-weight:700;color:var(--navy)">3</td>
           <td>
-            <div style="font-size:11.5px;font-weight:600;color:var(--navy)">Monthly Instalments</div>
-            <div style="font-size:9.5px;color:var(--tx3);margin-top:2px">${r.months} months × ${fUSD(r.moAmt)} / month</div>
+            <div style="font-size:11.5px;font-weight:600;color:var(--navy)">${row3Title}</div>
+            <div style="font-size:9.5px;color:var(--tx3);margin-top:2px">${row3Sub}</div>
           </td>
           <td style="text-align:center;font-weight:600;color:var(--navy)">${r.moPct}%</td>
           <td class="dr" style="font-size:12px;font-weight:700;color:var(--navy)">${fUSD(r.moTotal)}</td>
@@ -12125,8 +12252,8 @@ B1 = East | Gross 50㎡ | Net 45㎡
         <tr>
           <td style="text-align:center;font-weight:700;color:var(--navy)">4</td>
           <td>
-            <div style="font-size:11.5px;font-weight:600;color:var(--navy)">Handover Payment</div>
-            <div style="font-size:9.5px;color:var(--tx3);margin-top:2px">Upon key collection &amp; title transfer</div>
+            <div style="font-size:11.5px;font-weight:600;color:var(--navy)">${row4Title}</div>
+            <div style="font-size:9.5px;color:var(--tx3);margin-top:2px">${row4Sub}</div>
           </td>
           <td style="text-align:center;font-weight:600;color:var(--navy)">${r.hoPct}%</td>
           <td class="dr" style="font-size:12px;font-weight:600;color:var(--navy)">${fUSD(r.hoTotal)}</td>
@@ -12134,8 +12261,8 @@ B1 = East | Gross 50㎡ | Net 45㎡
         <tr class="tot" style="background:#FAF8F5;border-top:1.5px solid #9E8052">
           <td></td>
           <td>
-            <div style="font-size:12px;font-weight:700;color:var(--navy)">Total Purchase Price</div>
-            <div style="font-size:9.5px;color:var(--tx3);margin-top:1px">100% full acquisition price</div>
+            <div style="font-size:12px;font-weight:700;color:var(--navy)">${totTitle}</div>
+            <div style="font-size:9.5px;color:var(--tx3);margin-top:1px">${totSub}</div>
           </td>
           <td style="text-align:center;font-weight:700;color:var(--navy);font-size:11.5px">100%</td>
           <td class="dr" style="font-size:14px;font-weight:800;color:var(--navy)">${fUSD(r.net)}</td>
@@ -12143,8 +12270,8 @@ B1 = East | Gross 50㎡ | Net 45㎡
       </tbody>
     </table>
 
-    ${r.promo?.label ? `<div style="padding:9px 12px;background:rgba(200,164,90,.08);border:1px solid rgba(200,164,90,.25);border-radius:6px;font-size:9.5px;color:#7a5c1a;margin-top:8px"><span class="inline-icon">${uiIcon("spark", "ui-icon sm")}<strong>${r.promo.label}</strong></span> — Subject to developer confirmation.</div>` : ""}
-    ${docFoot()}
+    ${r.promo?.label ? `<div style="padding:9px 12px;background:rgba(200,164,90,.08);border:1px solid rgba(200,164,90,.25);border-radius:6px;font-size:9.5px;color:#7a5c1a;margin-top:8px"><span class="inline-icon">${uiIcon("spark", "ui-icon sm")}<strong>${r.promo.label}</strong></span> — ${promoSub}</div>` : ""}
+    ${docFoot("", lang)}
   </div></div>`;
       }
       function genAdvisory(r) {
@@ -12355,6 +12482,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
       }
 
       function openDoc(type) {
+        updateDocLangUI();
         if (!lastCalc) return;
         if ((type === "schedule" || type === "tracker") && !$("spaDate").value) {
           alert(
