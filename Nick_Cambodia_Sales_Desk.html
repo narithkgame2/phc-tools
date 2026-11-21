@@ -9040,7 +9040,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
         const agency = filledValue(draftAgency, "NICK | カンボジア不動産投資");
         const headerSub = filledValue(
           draftHeaderSub,
-          "買う前に、正しく比較しましょう · Real Estate Advisory",
+          "買う前に、正しく比較しましょう",
         );
         const issueLabel = filledValue(draftIssueLabel, "Issue Date");
         const title = filledValue(draftTitle, "Buyer Quotation");
@@ -9052,8 +9052,8 @@ B1 = East | Gross 50㎡ | Net 45㎡
         );
         const footerSub = filledValue(
           draftFooterSubline,
-          agency ? `${footerRole} · ${agency}` : footerRole,
-        );
+          footerRole,
+        ).replace(/\s*·\s*NICK[^\n]*/g, "").trim();
         const disclaimer = filledValue(
           draftDisclaimer,
           `Prepared for informational purposes only. All prices and promotions subject to developer confirmation.${agency ? " " + agency + " acts as authorised marketing agent." : ""}`,
@@ -9089,8 +9089,11 @@ B1 = East | Gross 50㎡ | Net 45㎡
         // Aggressively scrub any legacy Property Hub / PHC branding
         if (!next.name || /property|advisor|consultant/i.test(next.name)) next.name = "Nick";
         if (!next.agency || /property\s*hub/i.test(next.agency)) next.agency = "NICK | カンボジア不動産投資";
-        if (!next.quoteHeaderSub || /property\s*consultants/i.test(next.quoteHeaderSub)) {
+        if (!next.quoteHeaderSub || /property\s*consultants|real\s*estate\s*advisory/i.test(next.quoteHeaderSub)) {
           next.quoteHeaderSub = "買う前に、正しく比較しましょう";
+        }
+        if (next.quoteHeaderSub) {
+          next.quoteHeaderSub = next.quoteHeaderSub.replace(/\s*·\s*Real Estate Advisory/gi, "").trim();
         }
         if (!next.quoteFooterRole || /sales\s*consultant|property\s*advisor/i.test(next.quoteFooterRole)) {
           next.quoteFooterRole = "カンボジア不動産アドバイザー";
@@ -9101,8 +9104,15 @@ B1 = East | Gross 50㎡ | Net 45㎡
         if (!next.quoteFooterSignatureSubline || /property\s*hub|property\s*advisor/i.test(next.quoteFooterSignatureSubline)) {
           next.quoteFooterSignatureSubline = "カンボジア不動産アドバイザー";
         }
-        if (!next.quoteFooterDisclaimer || /property\s*hub/i.test(next.quoteFooterDisclaimer)) {
-          next.quoteFooterDisclaimer = "※利回り・価格は参考値であり、将来の収益を保証するものではありません。詳細条件は開発元との契約書に基づきます。NICK | カンボジア不動産投資 (公式LINE: @615ueovq)";
+        if (next.quoteFooterSignatureSubline) {
+          next.quoteFooterSignatureSubline = next.quoteFooterSignatureSubline.replace(/\s*·\s*NICK[^\n]*/g, "").trim();
+        }
+        if (next.quoteFooterDisclaimer && (
+          next.quoteFooterDisclaimer.includes("※利回り・価格は参考値") ||
+          next.quoteFooterDisclaimer.includes("@615ueovq") ||
+          /property\s*hub/i.test(next.quoteFooterDisclaimer)
+        )) {
+          next.quoteFooterDisclaimer = "";
         }
         return next;
       }
@@ -11903,7 +11913,8 @@ B1 = East | Gross 50㎡ | Net 45㎡
       // ── LETTERHEAD & FOOTER ──
       function letterhead() {
         const agency = cfgValue("agency", "NICK | カンボジア不動産投資");
-        const subline = cfgValue("quoteHeaderSub", "買う前に、正しく比較しましょう");
+        let subline = cfgValue("quoteHeaderSub", "買う前に、正しく比較しましょう");
+        subline = subline.replace(/\s*·\s*Real Estate Advisory/gi, "").trim();
         const issueLabel = cfgValue("quoteHeaderRightText", "Issue Date");
         const logoHtml = cfgLogo && !cfgLogo.includes('data:image/png')
           ? `<img src="${cfgLogo}" style="max-height:52px;max-width:160px;object-fit:contain;display:block;margin-bottom:3px">`
@@ -11933,13 +11944,31 @@ B1 = East | Gross 50㎡ | Net 45㎡
         return `<div class="lh"><div>${logoHtml}</div><div class="lh-meta"><strong>${issueLabel}</strong><div class="issue-date">${dateStr()}</div></div></div>`;
       }
       function docFoot(role = "") {
-        const disclaimer = cfgValue(
-          "quoteFooterDisclaimer",
-          `※利回り・価格は参考値であり、将来の収益を保証するものではありません。詳細条件は開発元との契約書に基づきます。NICK | カンボジア不動産投資 (公式LINE: @615ueovq)`,
-        );
+        let disclaimer = cfgValue("quoteFooterDisclaimer", "");
+        if (
+          disclaimer.includes("※利回り・価格は参考値") ||
+          disclaimer.includes("将来の収益を保証するものではありません") ||
+          disclaimer.includes("@615ueovq") ||
+          /property\s*hub/i.test(disclaimer)
+        ) {
+          disclaimer = "";
+        }
         const footerName = cfgValue("quoteFooterSignatureName", "Nick");
-        const footerSubline = cfgValue("quoteFooterSignatureSubline", "カンボジア不動産アドバイザー");
-        return `<div class="doc-foot"><div class="doc-disc">${disclaimer}</div><div class="sig-wrap"><div class="sig-line"></div><div class="sig-name">${footerName}</div><div class="sig-role">${footerSubline}</div></div></div>`;
+        let footerSubline = role || cfgValue("quoteFooterSignatureSubline", "カンボジア不動産アドバイザー");
+        footerSubline = footerSubline
+          .replace(/\s*·\s*NICK[^\n]*/g, "")
+          .replace(/Property\s*Advisor/gi, "カンボジア不動産アドバイザー")
+          .trim();
+        if (!footerSubline) footerSubline = "カンボジア不動産アドバイザー";
+
+        return `<div class="doc-foot">
+          ${disclaimer ? `<div class="doc-disc">${disclaimer}</div>` : `<div class="doc-disc" style="display:none;"></div>`}
+          <div class="sig-wrap" style="margin-left:auto;">
+            <div class="sig-line"></div>
+            <div class="sig-name">${footerName}</div>
+            <div class="sig-role">${footerSubline}</div>
+          </div>
+        </div>`;
       }
       function projRenderStrip(r, mode = "default") {
         const p = PROJECTS[r.proj || activeProjId];
@@ -11954,7 +11983,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
         const p = PROJECTS[r.proj || activeProjId];
         const client = $("clientName").value || "Valued Client";
         const agency = cfgValue("agency", "NICK | カンボジア不動産投資");
-        const coverSubline = cfgValue("quoteHeaderSub", "買う前に、正しく比較しましょう · Real Estate Advisory");
+        const coverSubline = cfgValue("quoteHeaderSub", "買う前に、正しく比較しましょう");
         return `<div class="doc-page"><div class="cover-page"><div class="cover-gold-bar"></div><div class="cover-pattern"></div><div class="cover-inner">
     <div class="cover-logo-area"><div class="cover-logo-txt">${agency}</div><div class="cover-logo-sub">${coverSubline}</div></div>
     <div class="cover-center"><div class="cover-proj-render">🏙<div class="cover-proj-label"><div class="cpl-dev">${p.dev} · ${p.location}</div><div class="cpl-name">${p.name}</div></div></div></div>
@@ -12026,7 +12055,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
     <div style="padding:28px;border:1px solid rgba(14,30,53,.1);border-radius:10px;background:#fbfaf7;color:var(--tx2);font-size:11px;line-height:1.7">
       Complete the <strong>ROI Calculator</strong> inputs first. The advisory reads directly from the live ROI model and groups acquisition/setup assumptions together with the ROI analysis.
     </div>
-    ${docFoot(cfgValue("quoteFooterRole", "Property Advisor"))}
+    ${docFoot(cfgValue("quoteFooterRole", "カンボジア不動産アドバイザー"))}
   </div></div>`;
         }
         const advisoryState = roiCostConfirmed
@@ -12116,7 +12145,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
     </tbody></table>
     <div class="adv-verdict">This advisory is based on the live ROI assumptions entered for this client, not generic market defaults. The model assumes ${investor.app}% annual appreciation, ${investor.vac}% vacancy, ${investor.mgmt}% management, and rental income beginning on ${fmtDate(investor.timeline.rentalStartDate)}. ${r.floor >= 35 ? "High-floor positioning may support a rental premium, but the proposal keeps the financial case grounded in the entered rent assumption." : "The proposal is framed on practical yield and cash deployment rather than speculative premium pricing."}<br><br><span class="adv-rec">Recommended review focus: total cash required, rental start timing, and 5-year exit outcome.</span></div>
     <div class="adv-note-small">All projections are estimates based on the assumptions shown above. They are not a guarantee of future performance.</div>
-    ${docFoot(cfgValue("quoteFooterRole", "Property Advisor"))}
+    ${docFoot(cfgValue("quoteFooterRole", "カンボジア不動産アドバイザー"))}
   </div></div>`;
       }
       function genSchedule(r) {
@@ -13628,7 +13657,7 @@ tr:nth-child(even) td{background:#faf8f4}
     </style></head><body>
 <div class="page">
 <div class="hdr">
-  <div><div class="brand" style="font-family:'Shippori Mincho',serif;font-weight:700;color:#073642;">NICK | カンボジア不動産投資</div><div class="brand-sub" style="color:#9E8052;letter-spacing:1.5px;">買う前に、正しく比較しましょう · Real Estate Advisory</div>
+  <div><div class="brand" style="font-family:'Shippori Mincho',serif;font-weight:700;color:#073642;">NICK | カンボジア不動産投資</div><div class="brand-sub" style="color:#9E8052;letter-spacing:1.5px;">買う前に、正しく比較しましょう</div>
   <div class="brand-contact" style="font-size:8.5px;color:#55686C;">プノンペン在住 &nbsp;·&nbsp; 公式LINE: @615ueovq &nbsp;·&nbsp; WhatsApp: +855 86 552 459 &nbsp;·&nbsp; Telegram: @Nick_REAKH</div></div>
   <div class="doc-r"><div class="doc-h">Resale Transfer Summary</div><div class="doc-sub">Prepared: ${today}</div></div>
 </div>
@@ -13668,7 +13697,7 @@ tr:nth-child(even) td{background:#faf8f4}
 <div class="footer">
   <div><div class="sig-lbl">Seller Signature</div><div class="sig-line">${rsData.sellerName||'_________________'}</div></div>
   <div><div class="sig-lbl">Buyer Signature</div><div class="sig-line">${rsData.buyerName||'_________________'}</div></div>
-  <div><div class="sig-lbl">Advisory Desk</div><div class="sig-line">${advisor || "Nick"} · NICK | カンボジア不動産投資</div></div>
+  <div><div class="sig-lbl">Advisory Desk</div><div class="sig-line">${advisor || "Nick"}</div></div>
   <div><div class="sig-lbl">Date</div><div class="sig-line">${today}</div></div>
 </div>
 <div class="disc">This document is prepared by NICK | カンボジア不動産投資 for informational purposes only. All figures are subject to verification with the developer. Resale agreements are subject to applicable legal and transfer fees, developer consent, and Cambodia Capital Gains Tax (CGT), currently postponed to 1 January 2027. Buyers and sellers should seek independent legal advice before proceeding.</div>
