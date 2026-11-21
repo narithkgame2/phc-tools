@@ -3999,11 +3999,7 @@
         color: #073642;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
       }
-      @media print {
-        .doc-lang-toggle {
-          display: none !important;
-        }
-      }
+
 
       /* DOCUMENT OVERLAY */
       .doc-overlay {
@@ -4966,46 +4962,7 @@
         }
       }
 
-      @media print {
-        * {
-          -webkit-print-color-adjust: exact !important;
-          print-color-adjust: exact !important;
-        }
-        body > * {
-          display: none !important;
-        }
-        .doc-nav-bar,
-        .bot-nav,
-        .proj-bar,
-        .main-tabs {
-          display: none !important;
-        }
-        .doc-overlay {
-          display: block !important;
-          position: static !important;
-          background: #fff !important;
-          inset: auto !important;
-          overflow: visible !important;
-        }
-        .doc-page {
-          box-shadow: none !important;
-          border-radius: 0 !important;
-          margin: 0 !important;
-        }
-        .doc-inner {
-          padding: 20px 26px !important;
-        }
-        body {
-          background: #fff !important;
-        }
-        .cover-page {
-          min-height: 100vh;
-          page-break-after: always;
-        }
-        .trkr-tbl tr {
-          page-break-inside: avoid;
-        }
-      }
+
     
       /* ════════ REFINED LUXURY DESIGN & RESPONSIVE STYLES ════════ */
       .hamburger-btn {
@@ -6370,6 +6327,138 @@
         }
       }
 
+    
+      /* ════════ AUTHORITATIVE PRINT & PDF EXPORT STYLES ════════ */
+      @media print {
+        @page {
+          size: A4 portrait;
+          margin: 8mm 10mm 8mm 10mm;
+        }
+
+        *, *:before, *:after {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+          box-sizing: border-box !important;
+        }
+
+        html, body {
+          background: #fff !important;
+          color: #073642 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          width: 100% !important;
+          height: auto !important;
+          min-height: 0 !important;
+          overflow: visible !important;
+        }
+
+        /* 1. HIDE ALL APPLICATION SHELL, NAVIGATION, SIDEBARS, DRAWERS, AND MODALS */
+        body > *:not(#docOverlay),
+        .topbar,
+        .proj-bar,
+        .main-tabs,
+        .desktop-shell,
+        .sidebar,
+        .bot-nav,
+        .bnav,
+        .mobile-bottom-nav,
+        #mobileBottomNav,
+        #mobileMoreSheet,
+        #invMobileStickyBar,
+        .inv-mobile-sticky-bar,
+        .nav-drawer-overlay,
+        .nav-drawer,
+        .gallery-modal,
+        .modal-bg,
+        .overlay,
+        .hamburger-btn,
+        .doc-nav-bar,
+        .doc-lang-toggle,
+        .doc-nav-back,
+        .doc-nav-print,
+        .doc-nav-type {
+          display: none !important;
+          visibility: hidden !important;
+          position: absolute !important;
+          top: -99999px !important;
+          left: -99999px !important;
+          width: 0 !important;
+          height: 0 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          border: none !important;
+          opacity: 0 !important;
+          pointer-events: none !important;
+        }
+
+        /* 2. RENDER ONLY THE DOCUMENT OVERLAY AND ITS GENERATED PAGES */
+        body > #docOverlay,
+        #docOverlay,
+        .doc-overlay {
+          display: block !important;
+          visibility: visible !important;
+          position: static !important;
+          inset: auto !important;
+          width: 100% !important;
+          max-width: 100% !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          background: #fff !important;
+          overflow: visible !important;
+          box-shadow: none !important;
+          border: none !important;
+          z-index: auto !important;
+        }
+
+        #docContent {
+          display: block !important;
+          width: 100% !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          background: #fff !important;
+        }
+
+        .doc-page {
+          background: #fff !important;
+          max-width: 100% !important;
+          width: 100% !important;
+          margin: 0 auto !important;
+          padding: 0 !important;
+          border: none !important;
+          border-radius: 0 !important;
+          box-shadow: none !important;
+          overflow: visible !important;
+          page-break-after: auto;
+          break-after: auto;
+        }
+
+        .doc-inner {
+          padding: 4mm 6mm !important;
+        }
+
+        /* 3. PREVENT UNWANTED PAGE BREAKS INSIDE SECTIONS */
+        .doc-unit-badge,
+        .dtbl,
+        .dtbl tr,
+        .summary-tbl,
+        .summary-tbl tr,
+        .doc-title,
+        .doc-subtitle {
+          page-break-inside: avoid !important;
+          break-inside: avoid !important;
+        }
+
+        .cover-page {
+          min-height: 95vh !important;
+          page-break-after: always !important;
+          break-after: page !important;
+        }
+
+        .trkr-tbl tr {
+          page-break-inside: avoid !important;
+          break-inside: avoid !important;
+        }
+      }
     </style>
   </head>
   <body>
