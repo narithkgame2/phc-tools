@@ -1848,75 +1848,214 @@
         margin-top: 5px;
       }
 
-      /* ROI */
+      /* ROI Upgrade */
       .analysis-shell {
         display: grid;
         gap: 12px;
       }
-      .analysis-presets {
+      .roi-deal-ribbon {
         display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #faf6f0;
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        padding: 12px 18px;
+        margin-bottom: 12px;
+        gap: 12px;
+      }
+      .roi-deal-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
         flex-wrap: wrap;
+      }
+      .roi-deal-badge {
+        display: inline-flex;
+        align-items: center;
+        background: var(--navy);
+        color: #fff;
+        font-size: 9.5px;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+        padding: 4px 8px;
+        border-radius: 6px;
+        text-transform: uppercase;
+      }
+      .roi-deal-text {
+        display: flex;
+        align-items: center;
         gap: 8px;
-        margin-bottom: 2px;
+        flex-wrap: wrap;
+      }
+      .roi-deal-title {
+        font-size: 13px;
+        font-weight: 800;
+        color: var(--navy);
+        letter-spacing: 0.3px;
+      }
+      .roi-deal-dot {
+        color: var(--tx3);
+        font-weight: 700;
+      }
+      .roi-deal-meta {
+        font-size: 12px;
+        color: var(--tx2);
+        font-weight: 500;
+      }
+      .roi-deal-sync-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border: 1px solid var(--bd);
+        background: #fff;
+        color: var(--navy);
+        border-radius: 999px;
+        padding: 7px 14px;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        white-space: nowrap;
+      }
+      .roi-deal-sync-btn:hover {
+        background: var(--cream2);
+        border-color: var(--navy2);
+      }
+      .roi-sec-header {
+        margin-bottom: 10px;
+      }
+      .roi-sec-title {
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 1.6px;
+        text-transform: uppercase;
+        color: var(--navy2);
+      }
+      .roi-sec-sub {
+        font-size: 11px;
+        color: var(--tx3);
+        margin-top: 2px;
+      }
+      .analysis-presets {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
       }
       .analysis-preset {
         border: 1px solid var(--bd);
         background: #fff;
         color: var(--tx2);
-        border-radius: 999px;
-        padding: 9px 12px;
+        border-radius: 10px;
+        padding: 10px 12px;
         font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 1px;
-        text-transform: uppercase;
         cursor: pointer;
+        text-align: left;
+        line-height: 1.4;
+        transition: all 0.15s ease;
+      }
+      .analysis-preset strong {
+        display: block;
+        color: var(--navy);
+        font-weight: 700;
+        font-size: 11.5px;
+      }
+      .analysis-preset:hover {
+        border-color: rgba(7, 54, 66, 0.3);
+        background: #faf8f5;
       }
       .analysis-preset.active {
-        border-color: rgba(200, 164, 90, 0.4);
-        background: rgba(200, 164, 90, 0.08);
+        border-color: var(--navy);
+        background: rgba(7, 54, 66, 0.05);
+        box-shadow: inset 0 0 0 1px var(--navy);
+      }
+      .analysis-preset.active strong {
         color: var(--navy);
       }
-      .analysis-step {
-        border: 1px solid var(--bd);
-        border-radius: 14px;
-        background: linear-gradient(180deg, #fff, #faf7f0);
-        padding: 14px;
+      .roi-grid-2col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
       }
-      .analysis-step-hd {
+      .roi-box {
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        background: #fff;
+        padding: 16px;
+      }
+      .roi-box-header {
         display: flex;
         align-items: center;
         gap: 10px;
-        margin-bottom: 12px;
+        margin-bottom: 14px;
       }
-      .analysis-step-no {
-        width: 28px;
-        height: 28px;
+      .roi-box-num {
+        width: 24px;
+        height: 24px;
         border-radius: 50%;
         background: var(--navy);
         color: #fff;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-size: 11px;
+        font-size: 10px;
         font-weight: 800;
-        letter-spacing: 0.8px;
       }
-      .analysis-step-title {
+      .roi-box-title {
         font-size: 11px;
         font-weight: 800;
-        letter-spacing: 1.8px;
+        letter-spacing: 1.5px;
         text-transform: uppercase;
         color: var(--navy2);
       }
-      .analysis-step-copy {
-        margin-top: 3px;
+      .roi-box-sub {
         font-size: 11px;
         color: var(--tx3);
-        line-height: 1.6;
+        margin-top: 1px;
       }
-      .analysis-stack {
-        display: grid;
-        gap: 10px;
+      .roi-settled-fact-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 9px 12px;
+        background: rgba(200, 164, 90, 0.08);
+        border: 1px solid rgba(200, 164, 90, 0.22);
+        border-radius: 8px;
+        font-size: 11px;
+        color: #634b1a;
+        line-height: 1.5;
+      }
+      .roi-settled-fact-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #9E8052;
+        margin-top: 5px;
+        flex-shrink: 0;
+      }
+      .roi-timeline-pill {
+        border: 1px solid var(--bd);
+        border-radius: 10px;
+        background: #faf8f5;
+        padding: 10px 14px;
+      }
+      .roi-timeline-lbl {
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--tx3);
+      }
+      .roi-timeline-val {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--navy);
+        margin-top: 2px;
+      }
+      .roi-timeline-desc {
+        font-size: 11px;
+        color: var(--tx3);
+        margin-top: 2px;
       }
       .analysis-grid-2 {
         display: grid;
@@ -1928,50 +2067,8 @@
         grid-template-columns: repeat(3, 1fr);
         gap: 10px;
       }
-      .analysis-kpis {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-      }
-      .analysis-kpi {
-        background: rgba(21, 40, 67, 0.04);
-        border: 1px solid rgba(14, 30, 53, 0.08);
-        border-radius: 12px;
-        padding: 12px;
-      }
-      .analysis-kpi.primary {
-        background: linear-gradient(135deg, var(--navy3), var(--navy));
-        border-color: var(--navy);
-      }
-      .analysis-kpi-k {
-        font-size: 11px;
-        font-weight: 800;
-        letter-spacing: 1.6px;
-        text-transform: uppercase;
-        color: var(--tx3);
-      }
-      .analysis-kpi.primary .analysis-kpi-k {
-        color: rgba(255, 255, 255, 0.5);
-      }
-      .analysis-kpi-v {
-        margin-top: 6px;
-        font-family: "Inter", sans-serif;
-        font-size: 1.35rem;
-        color: var(--navy);
-      }
-      .analysis-kpi.primary .analysis-kpi-v {
-        color: #fff;
-      }
-      .analysis-kpi-s {
-        margin-top: 3px;
-        font-size: 11px;
-        color: var(--tx3);
-      }
-      .analysis-kpi.primary .analysis-kpi-s {
-        color: rgba(255, 255, 255, 0.48);
-      }
       .analysis-advanced {
-        border: 1px solid rgba(14, 30, 53, 0.08);
+        border: 1px solid var(--bd);
         border-radius: 12px;
         background: #fff;
         overflow: hidden;
@@ -1979,39 +2076,152 @@
       .analysis-advanced summary {
         list-style: none;
         cursor: pointer;
-        padding: 14px;
+        padding: 13px 16px;
         font-size: 11px;
         font-weight: 800;
-        letter-spacing: 1.5px;
+        letter-spacing: 1.2px;
         text-transform: uppercase;
         color: var(--navy);
         display: flex;
         align-items: center;
         justify-content: space-between;
+        background: #faf8f5;
       }
       .analysis-advanced summary::-webkit-details-marker {
         display: none;
       }
       .analysis-advanced summary::after {
         content: "+";
-        color: var(--goldd);
+        color: var(--navy);
         font-size: 16px;
+        font-weight: 700;
       }
       .analysis-advanced[open] summary::after {
         content: "−";
       }
-      .analysis-advanced-body {
-        padding: 0 14px 14px;
-        border-top: 1px solid rgba(14, 30, 53, 0.08);
-      }
-      .analysis-note {
-        padding: 12px 14px;
-        border-radius: 10px;
-        background: rgba(21, 40, 67, 0.04);
-        border: 1px solid rgba(21, 40, 67, 0.08);
-        font-size: 11px;
+      .roi-adv-badge {
+        font-size: 9.5px;
+        padding: 3px 8px;
+        border-radius: 999px;
+        background: rgba(14, 30, 53, 0.08);
         color: var(--tx2);
-        line-height: 1.7;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
+      .analysis-advanced-body {
+        padding: 14px 16px;
+        border-top: 1px solid var(--bd);
+      }
+      .roi-res-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+      }
+      .roi-hero-kpis {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+      }
+      .roi-kpi-hero {
+        background: #faf8f5;
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        padding: 14px 16px;
+      }
+      .roi-kpi-hero.featured {
+        background: linear-gradient(135deg, #073642 0%, #0d4655 100%);
+        border-color: #073642;
+        color: #fff;
+        box-shadow: 0 4px 14px rgba(7, 54, 66, 0.18);
+      }
+      .roi-kpi-label {
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+        color: var(--tx3);
+      }
+      .roi-kpi-hero.featured .roi-kpi-label {
+        color: rgba(255, 255, 255, 0.75);
+      }
+      .roi-kpi-value {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 1.55rem;
+        font-weight: 800;
+        color: var(--navy);
+        margin-top: 6px;
+        line-height: 1.1;
+      }
+      .roi-kpi-hero.featured .roi-kpi-value {
+        color: #86BE3F;
+      }
+      .roi-kpi-sub {
+        font-size: 10.5px;
+        color: var(--tx3);
+        margin-top: 5px;
+      }
+      .roi-kpi-hero.featured .roi-kpi-sub {
+        color: rgba(255, 255, 255, 0.7);
+      }
+      .roi-sub-kpis {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+      .roi-kpi-subcard {
+        background: #fff;
+        border: 1px solid var(--bd);
+        border-radius: 10px;
+        padding: 12px 14px;
+      }
+      .roi-kpi-subcard-k {
+        font-size: 9.5px;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        color: var(--tx3);
+      }
+      .roi-kpi-subcard-v {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--navy);
+        margin-top: 4px;
+      }
+      .roi-kpi-subcard-s {
+        font-size: 10.5px;
+        color: var(--tx3);
+        margin-top: 3px;
+      }
+      .roi-disclaimer {
+        margin-top: 14px;
+        padding: 11px 14px;
+        background: rgba(200, 164, 90, 0.08);
+        border: 1px solid rgba(200, 164, 90, 0.25);
+        border-radius: 8px;
+        font-size: 11px;
+        color: #7a5c1a;
+        text-align: center;
+        line-height: 1.5;
+      }
+      @media (max-width: 768px) {
+        .roi-grid-2col {
+          grid-template-columns: 1fr;
+        }
+        .analysis-presets {
+          grid-template-columns: 1fr 1fr;
+        }
+        .roi-hero-kpis {
+          grid-template-columns: 1fr 1fr;
+        }
+        .roi-sub-kpis {
+          grid-template-columns: 1fr;
+        }
+        .roi-deal-ribbon {
+          flex-direction: column;
+          align-items: flex-start;
+        }
       }
       .loan-summary {
         display: grid;
@@ -7535,50 +7745,87 @@ B1 = East | Gross 50㎡ | Net 45㎡
 
       <!-- ═══ ROI ═══ -->
       <div id="tab-roi" class="tab-panel">
-        <div class="card">
-          <div class="card-title">ROI Calculator</div>
-          <div class="analysis-shell">
-            <div class="analysis-presets" id="roiPresets">
-              <button class="analysis-preset active" onclick="applyRoiPreset('balanced', this)">Balanced</button>
-              <button class="analysis-preset" onclick="applyRoiPreset('cash-buyer', this)">Cash Buyer</button>
-              <button class="analysis-preset" onclick="applyRoiPreset('yield-first', this)">Yield First</button>
-              <button class="analysis-preset" onclick="applyRoiPreset('growth-first', this)">Growth First</button>
+        
+        <!-- Active Deal Ribbon -->
+        <div class="roi-deal-ribbon">
+          <div class="roi-deal-left">
+            <span class="roi-deal-badge">ACTIVE DEAL</span>
+            <div class="roi-deal-text">
+              <span class="roi-deal-title" id="roiDealUnitLabel">Time Square 9 · Unit 39D</span>
+              <span class="roi-deal-dot">·</span>
+              <span class="roi-deal-meta" id="roiDealMetaLabel">1 Bed (75㎡) · Floor 39F · $157,500</span>
             </div>
-            <div class="analysis-step">
-              <div class="analysis-step-hd">
-                <div class="analysis-step-no">1</div>
+          </div>
+          <button type="button" class="roi-deal-sync-btn" onclick="syncActiveDealToROI()">
+            <svg class="ui-icon sm" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            <span>Re-sync from Calculator</span>
+          </button>
+        </div>
+
+        <!-- Strategy Presets -->
+        <div class="card" style="margin-bottom: 12px; padding: 14px 18px;">
+          <div class="roi-sec-header">
+            <div class="roi-sec-title">Investment Strategy Presets</div>
+            <div class="roi-sec-sub">Select a preset or customize parameters below to model real investor yields</div>
+          </div>
+          <div class="analysis-presets" id="roiPresets">
+            <button type="button" class="analysis-preset active" onclick="applyRoiPreset('balanced', this)">
+              <strong>Balanced</strong>30% Down · 6% Growth
+            </button>
+            <button type="button" class="analysis-preset" onclick="applyRoiPreset('cash-buyer', this)">
+              <strong>Cash Buyer</strong>100% Cash · Pure Yield
+            </button>
+            <button type="button" class="analysis-preset" onclick="applyRoiPreset('yield-first', this)">
+              <strong>Yield First</strong>Optimized Rent &amp; Occupancy
+            </button>
+            <button type="button" class="analysis-preset" onclick="applyRoiPreset('growth-first', this)">
+              <strong>Capital Growth</strong>8% Growth · 12-Yr Hold
+            </button>
+          </div>
+        </div>
+
+        <!-- Inputs Card: 2 Column Layout (Acquisition & Cash Flow) -->
+        <div class="card" style="margin-bottom: 12px;">
+          <div class="roi-grid-2col">
+            
+            <!-- Column 1: Acquisition Basis -->
+            <div class="roi-box">
+              <div class="roi-box-header">
+                <span class="roi-box-num">1</span>
                 <div>
-                  <div class="analysis-step-title">Purchase</div>
-                  <div class="analysis-step-copy">Set the acquisition basis before modeling rent or growth.</div>
+                  <div class="roi-box-title">Acquisition &amp; Financing</div>
+                  <div class="roi-box-sub">Purchase basis and capital deployed</div>
                 </div>
               </div>
               <div class="analysis-grid-2">
                 <div class="field">
                   <label>Purchase Price (USD)</label>
-                  <input type="number" id="roiPrice" placeholder="e.g. 120000" oninput="syncRoiCashInputs('price'); calcROI()" />
+                  <input type="number" id="roiPrice" placeholder="e.g. 157500" oninput="syncRoiCashInputs('price'); calcROI()" />
                 </div>
                 <div class="field">
                   <label>Down Payment %</label>
                   <input type="number" id="roiDownPct" value="30" min="0" max="100" oninput="syncRoiCashInputs('pct'); calcROI()" />
                 </div>
               </div>
-              <div class="analysis-grid-2">
+              <div class="analysis-grid-2" style="margin-top: 10px;">
                 <div class="field">
                   <label>Cash Invested (USD)</label>
                   <input type="number" id="roiCashInvested" placeholder="Auto from down payment" oninput="syncRoiCashInputs('cash'); calcROI()" />
                 </div>
                 <div class="field">
-                  <label>Purchase Date</label>
+                  <label>Purchase / Booking Date</label>
                   <input type="date" id="roiPurchaseDate" oninput="calcROI()" />
                 </div>
               </div>
             </div>
-            <div class="analysis-step">
-              <div class="analysis-step-hd">
-                <div class="analysis-step-no">2</div>
+
+            <!-- Column 2: Rental Income & Operations -->
+            <div class="roi-box">
+              <div class="roi-box-header">
+                <span class="roi-box-num">2</span>
                 <div>
-                  <div class="analysis-step-title">Income</div>
-                  <div class="analysis-step-copy">Control rent and annual operating costs directly.</div>
+                  <div class="roi-box-title">Rental Income &amp; Operations</div>
+                  <div class="roi-box-sub">Expected market rent and ongoing deductions</div>
                 </div>
               </div>
               <div class="analysis-grid-3">
@@ -7595,185 +7842,225 @@ B1 = East | Gross 50㎡ | Net 45㎡
                   <input type="number" id="roiMgmt" value="10" min="0" oninput="calcROI()" />
                 </div>
               </div>
-              <details class="analysis-advanced">
-                <summary>Advanced Income Assumptions</summary>
-                <div class="analysis-advanced-body">
-                  <div class="analysis-grid-2" style="margin-top: 12px">
-                    <div class="field">
-                      <label>Furnishing / Setup Budget (USD)</label>
-                      <input type="number" id="roiFurnishing" value="0" min="0" oninput="this.dataset.autoSeed=''; markRoiCostDraft(); calcROI()" />
-                    </div>
-                    <div class="field">
-                      <label>Tenant Placement Fee (USD)</label>
-                      <input type="number" id="roiPlacement" value="0" min="0" oninput="this.dataset.autoSeed=''; markRoiCostDraft(); calcROI()" />
-                    </div>
-                  </div>
-                  <div class="analysis-grid-2" style="margin-top: 12px">
-                    <div class="field">
-                      <label>Stamp Duty %</label>
-                      <input type="number" id="roiStampDuty" value="4" min="0" oninput="markRoiCostDraft(); calcROI()" />
-                    </div>
-                    <div class="field">
-                      <label>Transfer Fee (USD)</label>
-                      <input type="number" id="roiTransferFee" value="1600" min="0" oninput="this.dataset.autoSeed=''; markRoiCostDraft(); calcROI()" />
-                    </div>
-                  </div>
-                  <div class="analysis-grid-2" style="margin-top: 12px">
-                    <div class="field">
-                      <label>Other Annual Costs (USD)</label>
-                      <input type="number" id="roiOtherAnnual" value="0" min="0" oninput="markRoiCostDraft(); calcROI()" />
-                    </div>
-                    <div class="field">
-                      <label>Annual Property Tax (USD)</label>
-                      <input type="number" id="roiAnnualTax" value="0" min="0" oninput="this.dataset.autoSeed=''; markRoiCostDraft(); calcROI()" />
-                    </div>
-                  </div>
-                  <div class="analysis-grid-2" style="margin-top: 12px">
-                    <div class="field">
-                      <label>Exit Cost %</label>
-                      <input type="number" id="roiExitCost" value="3" min="0" oninput="markRoiCostDraft(); calcROI()" />
-                    </div>
-                  </div>
-                  <div style="margin-top: 14px; display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap; border:1px solid rgba(14,30,53,.1); border-radius:10px; padding:12px 14px; background:#fffdfa">
-                    <div>
-                      <div style="font-size:8px; letter-spacing:1.8px; text-transform:uppercase; color:var(--tx3); font-weight:700">Investor Cost Assumptions</div>
-                      <div id="roiCostStatus" style="font-size:11px; color:var(--tx2); margin-top:4px">Suggested values loaded. Confirm or edit before using Advisory Report.</div>
-                    </div>
-                    <div style="display:flex; gap:8px; flex-wrap:wrap">
-                      <button type="button" onclick="confirmRoiCostAssumptions()" style="border:none;border-radius:999px;padding:9px 13px;background:var(--navy);color:#fff;font-size:10px;font-weight:700;cursor:pointer">Confirm for Advisory</button>
-                      <button type="button" onclick="markRoiCostDraft()" style="border:1px solid rgba(14,30,53,.14);border-radius:999px;padding:9px 13px;background:#fff;color:var(--tx2);font-size:10px;font-weight:700;cursor:pointer">Mark as Draft</button>
-                    </div>
-                  </div>
-                </div>
-              </details>
+              <div class="roi-settled-fact-note" style="margin-top: 10px;">
+                <div class="roi-settled-fact-dot"></div>
+                <div><strong>Advisory Standard:</strong> 10% vacancy (~1 mo/yr) and 10% management fee reflect authentic Phnom Penh net cash flow.</div>
+              </div>
             </div>
-            <div class="analysis-step">
-              <div class="analysis-step-hd">
-                <div class="analysis-step-no">3</div>
-                <div>
-                  <div class="analysis-step-title">Timing</div>
-                  <div class="analysis-step-copy">Control rental start and hold period explicitly for each project.</div>
-                </div>
-              </div>
-              <div class="analysis-grid-2">
+
+          </div>
+
+          <!-- Advanced Acquisition Costs & Setup Details Accordion -->
+          <details class="analysis-advanced" style="margin-top: 14px;">
+            <summary>
+              <span>Upfront Acquisition Costs &amp; Annual Deductions</span>
+              <span class="roi-adv-badge" id="roiCostBadge">Default Assumptions</span>
+            </summary>
+            <div class="analysis-advanced-body">
+              <div class="analysis-grid-3" style="margin-top: 12px">
                 <div class="field">
-                  <label>Rental Start</label>
-                  <select id="roiStartMode" onchange="toggleROITimingMode(); calcROI()">
-                    <option value="project">Use Project Completion</option>
-                    <option value="custom">Custom Delay</option>
-                  </select>
+                  <label>Furnishing / Setup (USD)</label>
+                  <input type="number" id="roiFurnishing" value="0" min="0" oninput="this.dataset.autoSeed=''; markRoiCostDraft(); calcROI()" />
                 </div>
-                <div class="field" id="roiCustomDelayField" style="display: none">
-                  <label>Custom Delay Before Rental (Months)</label>
-                  <input type="number" id="roiCustomDelay" min="0" value="0" oninput="calcROI()" />
+                <div class="field">
+                  <label>Tenant Placement (USD)</label>
+                  <input type="number" id="roiPlacement" value="0" min="0" oninput="this.dataset.autoSeed=''; markRoiCostDraft(); calcROI()" />
+                </div>
+                <div class="field">
+                  <label>Exit Brokerage Cost %</label>
+                  <input type="number" id="roiExitCost" value="3" min="0" oninput="markRoiCostDraft(); calcROI()" />
                 </div>
               </div>
-              <div class="timeline-note">
-                <div class="timeline-note-h">Rental Timeline</div>
-                <div class="timeline-note-v" id="roiStartDateLabel">—</div>
-                <div class="timeline-note-s" id="roiStartDateNote">Rental income starts from the month after the estimated handover for off-plan projects.</div>
+              <div class="analysis-grid-3" style="margin-top: 10px">
+                <div class="field">
+                  <label>Stamp Duty % (Standard 4%)</label>
+                  <input type="number" id="roiStampDuty" value="4" min="0" oninput="markRoiCostDraft(); calcROI()" />
+                </div>
+                <div class="field">
+                  <label>Transfer Fee (USD)</label>
+                  <input type="number" id="roiTransferFee" value="1600" min="0" oninput="this.dataset.autoSeed=''; markRoiCostDraft(); calcROI()" />
+                </div>
+                <div class="field">
+                  <label>Annual Property Tax (USD)</label>
+                  <input type="number" id="roiAnnualTax" value="0" min="0" oninput="this.dataset.autoSeed=''; markRoiCostDraft(); calcROI()" />
+                </div>
               </div>
-              <div class="analysis-grid-2" style="margin-top: 10px">
-                <div class="slider-card" style="margin-bottom: 0">
-                  <div class="slider-hd">
-                    <span class="slider-title">Annual Appreciation</span><span class="slider-val" id="appDisp">6%</span>
-                  </div>
-                  <div class="slider-wrap">
-                    <div class="slider-fill" id="appFill" style="width: 33%"></div>
-                    <input type="range" id="roiApp" min="1" max="15" value="6" oninput="syncRoiSlider('app'); calcROI()" />
-                  </div>
-                  <div class="slider-lbls"><span>1%</span><span>8%</span><span>15%</span></div>
+              <div class="field" style="margin-top: 10px">
+                <label>Other Annual Expenses (USD)</label>
+                <input type="number" id="roiOtherAnnual" value="0" min="0" oninput="markRoiCostDraft(); calcROI()" />
+              </div>
+              <div style="margin-top: 14px; display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap; border:1px solid rgba(14,30,53,.1); border-radius:10px; padding:12px 14px; background:#fffdfa">
+                <div>
+                  <div style="font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:var(--tx3); font-weight:700">Investor Cost Assumptions</div>
+                  <div id="roiCostStatus" style="font-size:11px; color:var(--tx2); margin-top:3px">Standard developer and market setup costs loaded.</div>
                 </div>
-                <div class="slider-card" style="margin-bottom: 0">
-                  <div class="slider-hd">
-                    <span class="slider-title">Hold Period</span><span class="slider-val" id="yrsDisp">10 yrs</span>
-                  </div>
-                  <div class="slider-wrap">
-                    <div class="slider-fill" id="yrsFill" style="width: 47%"></div>
-                    <input type="range" id="roiYrs" min="1" max="20" value="10" oninput="syncRoiSlider('yrs'); calcROI()" />
-                  </div>
-                  <div class="slider-lbls"><span>1 yr</span><span>10 yrs</span><span>20 yrs</span></div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap">
+                  <button type="button" onclick="confirmRoiCostAssumptions()" style="border:none;border-radius:999px;padding:8px 14px;background:var(--navy);color:#fff;font-size:11px;font-weight:700;cursor:pointer">Confirm for Advisory</button>
+                  <button type="button" onclick="markRoiCostDraft()" style="border:1px solid rgba(14,30,53,.14);border-radius:999px;padding:8px 14px;background:#fff;color:var(--tx2);font-size:11px;font-weight:700;cursor:pointer">Mark as Draft</button>
                 </div>
+              </div>
+            </div>
+          </details>
+
+          <!-- Timeline & Growth Settings Box -->
+          <div class="roi-box" style="margin-top: 14px;">
+            <div class="roi-box-header">
+              <span class="roi-box-num">3</span>
+              <div>
+                <div class="roi-box-title">Handover Timing &amp; Capital Appreciation</div>
+                <div class="roi-box-sub">Align with off-plan construction schedule and hold horizon</div>
+              </div>
+            </div>
+            <div class="analysis-grid-2">
+              <div class="field">
+                <label>Rental Cash Flow Start</label>
+                <select id="roiStartMode" onchange="toggleROITimingMode(); calcROI()">
+                  <option value="project">Automatic (Month after estimated handover)</option>
+                  <option value="custom">Custom Delay</option>
+                </select>
+              </div>
+              <div class="field" id="roiCustomDelayField" style="display: none">
+                <label>Custom Delay Before Rental (Months)</label>
+                <input type="number" id="roiCustomDelay" min="0" value="0" oninput="calcROI()" />
+              </div>
+              <div class="roi-timeline-pill">
+                <div class="roi-timeline-lbl">ESTIMATED RENTAL START</div>
+                <div class="roi-timeline-val" id="roiStartDateLabel">—</div>
+                <div class="roi-timeline-desc" id="roiStartDateNote">Income begins the month following handover completion.</div>
+              </div>
+            </div>
+
+            <div class="analysis-grid-2" style="margin-top: 12px">
+              <div class="slider-card" style="margin-bottom: 0">
+                <div class="slider-hd">
+                  <span class="slider-title">Annual Appreciation</span><span class="slider-val" id="appDisp">6%</span>
+                </div>
+                <div class="slider-wrap">
+                  <div class="slider-fill" id="appFill" style="width: 35%"></div>
+                  <input type="range" id="roiApp" min="1" max="15" value="6" oninput="syncRoiSlider('app'); calcROI()" />
+                </div>
+                <div class="slider-lbls"><span>1% (Conservative)</span><span>6% (Standard)</span><span>15% (Optimistic)</span></div>
+              </div>
+              <div class="slider-card" style="margin-bottom: 0">
+                <div class="slider-hd">
+                  <span class="slider-title">Investment Hold Period</span><span class="slider-val" id="yrsDisp">10 yrs</span>
+                </div>
+                <div class="slider-wrap">
+                  <div class="slider-fill" id="yrsFill" style="width: 47%"></div>
+                  <input type="range" id="roiYrs" min="1" max="20" value="10" oninput="syncRoiSlider('yrs'); calcROI()" />
+                </div>
+                <div class="slider-lbls"><span>1 yr</span><span>10 yrs</span><span>20 yrs</span></div>
               </div>
             </div>
           </div>
+
         </div>
+
+        <!-- Hero Results Card -->
         <div id="roiResult" style="display: none">
-          <div class="card">
-            <div class="card-title">ROI Summary</div>
-            <div class="analysis-kpis">
-              <div class="analysis-kpi primary">
-                <div class="analysis-kpi-k">Gross Yield</div>
-                <div class="analysis-kpi-v" id="roiGross">—</div>
-                <div class="analysis-kpi-s">on total acquisition</div>
-              </div>
-              <div class="analysis-kpi primary">
-                <div class="analysis-kpi-k">Net Yield</div>
-                <div class="analysis-kpi-v" id="roiNet">—</div>
-                <div class="analysis-kpi-s">after operating costs</div>
-              </div>
-              <div class="analysis-kpi">
-                <div class="analysis-kpi-k">Annual Income</div>
-                <div class="analysis-kpi-v" id="roiInc">—</div>
-                <div class="analysis-kpi-s">net cash flow</div>
-              </div>
-              <div class="analysis-kpi">
-                <div class="analysis-kpi-k">Cash-on-Cash</div>
-                <div class="analysis-kpi-v" id="roiCashOnCash">—</div>
-                <div class="analysis-kpi-s">down payment + setup costs</div>
-              </div>
-              <div class="analysis-kpi">
-                <div class="analysis-kpi-k">Break-Even</div>
-                <div class="analysis-kpi-v" id="roiBE">—</div>
-                <div class="analysis-kpi-s">years</div>
-              </div>
-              <div class="analysis-kpi">
-                <div class="analysis-kpi-k">Exit Proceeds</div>
-                <div class="analysis-kpi-v" id="roiExitNet">—</div>
-                <div class="analysis-kpi-s">after exit cost</div>
+          <div class="card" style="margin-bottom: 12px; border-top: 3px solid var(--navy);">
+            
+            <div class="roi-res-header">
+              <div>
+                <div class="card-title" style="margin-bottom: 2px;">Investment Yield &amp; Returns Summary</div>
+                <div style="font-size: 11px; color: var(--tx3);">Transparent cash flow modeling based on actual developer terms</div>
               </div>
             </div>
-            <div class="bar-wrap">
-              <div
-                style="
-                  font-size: 8.5px;
-                  letter-spacing: 2px;
-                  color: var(--navy2);
-                  text-transform: uppercase;
-                  font-weight: 700;
-                  margin-bottom: 10px;
-                "
-              >
-                Value Growth
+
+            <!-- 4 Main KPI Cards -->
+            <div class="roi-hero-kpis">
+              <div class="roi-kpi-hero">
+                <div class="roi-kpi-label">Gross Yield (表面利回り)</div>
+                <div class="roi-kpi-value" id="roiGross">—</div>
+                <div class="roi-kpi-sub">Gross annual rent ÷ Purchase price</div>
+              </div>
+              <div class="roi-kpi-hero featured">
+                <div class="roi-kpi-label">Real Net Yield (実質利回り)</div>
+                <div class="roi-kpi-value" id="roiNet">—</div>
+                <div class="roi-kpi-sub">After building fee, vacancy &amp; mgmt</div>
+              </div>
+              <div class="roi-kpi-hero">
+                <div class="roi-kpi-label">Monthly Net Cash Flow</div>
+                <div class="roi-kpi-value" id="roiMonthlyNet">—</div>
+                <div class="roi-kpi-sub">Net take-home monthly income</div>
+              </div>
+              <div class="roi-kpi-hero">
+                <div class="roi-kpi-label">Annual Net Income</div>
+                <div class="roi-kpi-value" id="roiInc">—</div>
+                <div class="roi-kpi-sub">Annualized net cash returns</div>
+              </div>
+            </div>
+
+            <!-- Secondary 3 KPIs -->
+            <div class="roi-sub-kpis" style="margin-top: 10px;">
+              <div class="roi-kpi-subcard">
+                <div class="roi-kpi-subcard-k">Cash-on-Cash Return</div>
+                <div class="roi-kpi-subcard-v" id="roiCashOnCash">—</div>
+                <div class="roi-kpi-subcard-s">Annual net ÷ Actual upfront cash</div>
+              </div>
+              <div class="roi-kpi-subcard">
+                <div class="roi-kpi-subcard-k">Break-Even Period</div>
+                <div class="roi-kpi-subcard-v"><span id="roiBE">—</span> <span style="font-size: 13px; font-weight: normal; color: var(--tx3);">years</span></div>
+                <div class="roi-kpi-subcard-s">Full capital payback horizon</div>
+              </div>
+              <div class="roi-kpi-subcard">
+                <div class="roi-kpi-subcard-k">Projected Exit Proceeds</div>
+                <div class="roi-kpi-subcard-v" id="roiExitNet">—</div>
+                <div class="roi-kpi-subcard-s">Net capital after exit fees at year end</div>
+              </div>
+            </div>
+
+            <!-- Asset Growth Chart -->
+            <div class="bar-wrap" style="margin-top: 14px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+                <div style="font-size: 9px; letter-spacing: 1.8px; color: var(--navy2); text-transform: uppercase; font-weight: 700;">
+                  Capital Appreciation &amp; Asset Value Over Time
+                </div>
+                <div style="font-size: 11px; color: var(--tx3);">
+                  Hold Period: <strong id="roiChartHoldLabel">10 Years</strong> · <strong id="roiChartAppLabel">6% p.a.</strong>
+                </div>
               </div>
               <div class="bar-chart" id="barChart"></div>
             </div>
-            <div style="overflow-x: auto; margin-top: 12px">
+
+            <!-- Projection Table -->
+            <div style="overflow-x: auto; margin-top: 14px; border-radius: 8px; border: 1px solid var(--bd);">
               <table class="proj-table">
                 <thead>
                   <tr>
                     <th>Year</th>
-                    <th>Value</th>
-                    <th>Rental</th>
-                    <th>Total Return</th>
-                    <th>ROI %</th>
+                    <th>Property Value</th>
+                    <th>Cumulative Net Rent</th>
+                    <th>Total Net Return</th>
+                    <th>Total ROI %</th>
                   </tr>
                 </thead>
                 <tbody id="projBody"></tbody>
               </table>
             </div>
+
+            <!-- Mandatory Disclaimer -->
+            <div class="roi-disclaimer">
+              ※利回り・価格は参考値であり、将来の収益を保証するものではありません。
+            </div>
+
           </div>
         </div>
-        <div id="roiEmpty" class="card">
+
+        <!-- Empty State Card (Fallback if no price/rent) -->
+        <div id="roiEmpty" class="card" style="display: none;">
           <div class="empty">
             <span class="empty-icon"><svg class="ui-icon lg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m7 14 4-4 3 3 5-7"/></svg></span>
-            <div class="empty-h">Investment Projections</div>
+            <div class="empty-h">Investment Projections Ready</div>
             <div class="empty-s">
-              Enter purchase price and monthly rent to see returns projected
-              year by year.
+              Click <strong>&quot;Re-sync from Calculator&quot;</strong> above or enter purchase price and monthly rent to view full cash flow projections.
             </div>
+            <button type="button" class="btn primary" onclick="syncActiveDealToROI()" style="margin-top: 14px;">
+              Re-sync from Calculator
+            </button>
           </div>
         </div>
+
       </div>
 
       <!-- ═══ MORTGAGE ═══ -->
@@ -9048,11 +9335,18 @@ B1 = East | Gross 50㎡ | Net 45㎡
       }
       function updateRoiCostStatus() {
         const el = $("roiCostStatus");
-        if (!el) return;
-        el.textContent = roiCostConfirmed
-          ? "Confirmed. Advisory Report will use these cost assumptions."
-          : "Suggested values loaded. Confirm or edit before using Advisory Report.";
-        el.style.color = roiCostConfirmed ? "var(--grn)" : "var(--tx2)";
+        const badge = $("roiCostBadge");
+        if (el) {
+          el.textContent = roiCostConfirmed
+            ? "Confirmed. Advisory Report will use these cost assumptions."
+            : "Standard developer and market setup costs loaded.";
+          el.style.color = roiCostConfirmed ? "var(--grn)" : "var(--tx2)";
+        }
+        if (badge) {
+          badge.textContent = roiCostConfirmed ? "Assumptions Confirmed" : "Default Assumptions";
+          badge.style.background = roiCostConfirmed ? "rgba(26,122,74,.12)" : "rgba(14,30,53,.08)";
+          badge.style.color = roiCostConfirmed ? "var(--grn)" : "var(--tx2)";
+        }
       }
       function markRoiCostDraft() {
         roiCostConfirmed = false;
@@ -10628,6 +10922,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
           .forEach((t) => t.classList.toggle("active", t.dataset.tab === id));
         if (id === "pipeline") renderPipeline();
         if (id === "inventory") renderInventory();
+        if (id === "roi") initRoiTab();
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
 
@@ -12519,10 +12814,62 @@ B1 = East | Gross 50㎡ | Net 45㎡
         $("docOverlay").classList.remove("visible");
       }
 
+      function updateRoiActiveDealBanner() {
+        const p = PROJECTS[activeProjId];
+        const unitType = $("unitType")?.value || "";
+        const floor = $("floor")?.value || "";
+        const r = lastCalc;
+        
+        const unitLabel = $("roiDealUnitLabel");
+        const metaLabel = $("roiDealMetaLabel");
+        
+        if (r && r.info) {
+          if (unitLabel) unitLabel.textContent = `${p ? p.name : 'Project'} · Unit ${r.floor}${r.type}`;
+          if (metaLabel) {
+            const beds = r.info.beds || "1 Bed";
+            const size = r.info.size || "";
+            const priceStr = fUSD(Math.round(r.net));
+            metaLabel.textContent = `${beds}${size ? ' (' + size + ')' : ''} · Floor ${r.floor}F · ${priceStr}`;
+          }
+        } else if (p && unitType && floor) {
+          if (unitLabel) unitLabel.textContent = `${p.name} · Unit ${floor}${unitType}`;
+          if (metaLabel) metaLabel.textContent = `Floor ${floor}F · Base unit selected`;
+        } else {
+          if (unitLabel) unitLabel.textContent = p ? p.name : "Active Deal";
+          if (metaLabel) metaLabel.textContent = "Select unit in Calculator or enter custom basis";
+        }
+      }
+
+      function syncActiveDealToROI() {
+        if (!lastCalc && typeof calculate === "function") {
+          calculate();
+        }
+        if (lastCalc) {
+          syncAnalysisFromCalc(lastCalc);
+        }
+        updateRoiActiveDealBanner();
+        calcROI();
+      }
+
+      function initRoiTab() {
+        if (!lastCalc && typeof calculate === "function") {
+          calculate();
+        }
+        if (lastCalc) {
+          const roiPrice = $("roiPrice");
+          if (!roiPrice || !roiPrice.value || parseFloat(roiPrice.value) === 0) {
+            syncAnalysisFromCalc(lastCalc);
+          }
+        }
+        updateRoiActiveDealBanner();
+        calcROI();
+      }
+
       // ── ROI ──
       function calcROI() {
         const investor = getInvestorModel();
         renderROITimeline();
+        updateRoiActiveDealBanner();
         if (!investor || !investor.price || !investor.rent) {
           $("roiResult").style.display = "none";
           $("roiEmpty").style.display = "block";
@@ -12535,6 +12882,15 @@ B1 = East | Gross 50㎡ | Net 45㎡
           ((investor.annualNet / investor.totalAcquisition) * 100).toFixed(1) +
           "%";
         $("roiInc").textContent = fUSD(investor.annualNet);
+        if ($("roiMonthlyNet")) {
+          $("roiMonthlyNet").textContent = (investor.monthlyNet >= 0 ? "+" : "") + fUSD(investor.monthlyNet) + " / mo";
+        }
+        if ($("roiChartHoldLabel")) {
+          $("roiChartHoldLabel").textContent = investor.yrs + " Years";
+        }
+        if ($("roiChartAppLabel")) {
+          $("roiChartAppLabel").textContent = investor.app + "% p.a.";
+        }
         $("roiCashOnCash").textContent =
           investor.upfrontCash > 0
             ? ((investor.annualNet / investor.upfrontCash) * 100).toFixed(1) + "%"
