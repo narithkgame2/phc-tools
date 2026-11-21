@@ -1262,28 +1262,47 @@
         flex-shrink: 0;
       }
       .plan-pills {
-        display: flex;
-        gap: 6px;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
         margin-top: 8px;
       }
+      @media (max-width: 480px) {
+        .plan-pills {
+          grid-template-columns: 1fr;
+        }
+      }
       .plan-pill {
-        background: var(--cream2);
-        border: 1.5px solid var(--bd);
+        background: #FAF8F5;
+        border: 1.5px solid #E2DDD2;
         border-radius: 8px;
-        padding: 10px 14px;
+        padding: 11px 14px;
         cursor: pointer;
-        font-size: 11px;
-        color: var(--tx2);
-        font-weight: 500;
-        line-height: 1.6;
-        transition: all 0.15s;
+        transition: all 0.15s ease;
+        text-align: left;
+      }
+      .plan-pill:hover {
+        border-color: #9E8052;
+        background: #fff;
       }
       .plan-pill.active {
-        border-color: var(--navy);
+        border-color: #073642;
+        background: #fff;
+        box-shadow: 0 3px 10px rgba(7, 54, 66, 0.08);
+      }
+      .plan-pill .pp-title {
+        font-size: 12px;
+        font-weight: 700;
         color: var(--navy);
-        background: rgba(21, 40, 67, 0.04);
-        box-shadow: 0 0 0 3px rgba(21, 40, 67, 0.06);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 3px;
+      }
+      .plan-pill .pp-sub {
+        font-size: 10px;
+        color: var(--tx3);
+        line-height: 1.4;
       }
       .custom-fields {
         display: none;
@@ -6688,9 +6707,10 @@ B1 = East | Gross 50㎡ | Net 45㎡
         <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleNavDrawer()" title="All Features & Menu">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
-        <div class="logo-mark" style="width:36px;height:36px;border-radius:50%;overflow:hidden;flex-shrink:0;"><svg viewBox="0 0 1250 1250" xmlns="http://www.w3.org/2000/svg">
-<defs><clipPath id="lc"><circle cx="625" cy="625" r="612"/></clipPath></defs>
-<g clip-path="url(#lc)"><rect width="1250" height="1250" fill="#073642"/><rect y="876" width="1250" height="374" fill="#86BE3F"/></g>
+        <div class="logo-mark" style="width:36px;height:36px;border-radius:50%;overflow:hidden;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.2);"><svg viewBox="0 0 1250 1250" xmlns="http://www.w3.org/2000/svg">
+<defs><clipPath id="lc_main"><circle cx="625" cy="625" r="612"/></clipPath></defs>
+<g clip-path="url(#lc_main)"><rect width="1250" height="1250" fill="#073642"/></g>
+<g transform="translate(0 105)">
 <g fill="none" stroke="#86BE3F" stroke-width="38" stroke-linecap="butt" stroke-linejoin="miter">
   <path d="M 362 652 A 315 315 0 1 1 925 582"/>
   <path d="M 912 636 A 315 315 0 0 1 418 718"/>
@@ -6703,11 +6723,10 @@ B1 = East | Gross 50㎡ | Net 45㎡
   <path d="M 404 520 Q 402 470 424 438 Q 440 470 452 488 L 470 505 L 418 540 Z"/>
   <path d="M 846 520 Q 848 470 826 438 Q 810 470 798 488 L 780 505 L 832 540 Z"/>
 </g>
-<text x="625" y="1112" text-anchor="middle" font-family="'Noto Sans JP','Hiragino Sans',sans-serif" font-weight="700" font-size="215" fill="#fff" letter-spacing="14">日本語</text>
+</g>
 </svg></div>
         <div class="logo-text">
-          <div class="lt1" style="font-family:'Shippori Mincho',Georgia,serif;font-weight:700;color:var(--sb-text-s);letter-spacing:0.02em;">NICK | カンボジア不動産投資</div>
-          <div class="lt2" style="color:var(--sb-gold);font-size:11px;letter-spacing:0.05em;">買う前に、正しく比較しましょう · Sales Desk</div>
+          <div class="lt1" style="font-family:'Shippori Mincho',Georgia,serif;font-weight:700;color:var(--sb-text-s);letter-spacing:0.03em;font-size:15px;line-height:1.2;">NICK | カンボジア不動産投資</div>
         </div>
       </div>
       <div class="proj-tabs" id="projTabs"></div>
@@ -7062,23 +7081,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
             <span class="promo-tag" id="promoTagText">PROMO</span
             ><span id="promoText"></span>
           </div>
-          <div id="priceListRef" class="price-ref-card">
-            <div class="price-ref-top">
-              <div>
-                <div class="price-ref-title">Price List Library</div>
-                <div class="price-ref-sub" id="priceListRefSub"></div>
-                <div class="price-ref-meta" id="priceListRefMeta"></div>
-                <div class="notice-chip">Reference Only · No OCR Import</div>
-              </div>
-              <button
-                class="mini-btn"
-                type="button"
-                onclick="openPriceListModal()"
-              >
-                View
-              </button>
-            </div>
-          </div>
+
           <div id="noDataNotice" style="display:none;padding:14px 16px;background:rgba(204,157,77,.08);border:1.5px solid rgba(204,157,77,.3);border-radius:10px;margin-bottom:14px">
             <div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:3px">Price list not yet imported</div>
             <div style="font-size:12px;color:var(--tx2);line-height:1.5">Unit pricing for <strong id="noDataProjName"></strong> has not been added yet. Use <em>Pricing Override</em> below to enter a custom price manually, or contact sales to get the latest list.</div>
@@ -7108,68 +7111,60 @@ B1 = East | Gross 50㎡ | Net 45㎡
             <span id="fxTimestamp" style="color:var(--tx3)"></span>
             <button onclick="fetchLatestFxRates()" style="background:none;border:none;color:var(--goldd);font-size:11px;font-weight:700;cursor:pointer;padding:0;text-decoration:underline">Refresh</button>
           </div>
-          <div class="ovr-toggle" onclick="toggleOvr()">
-            <span class="ovr-arrow" id="ovrArrow">▶</span>
-            <span class="ovr-label">Pricing Override</span>
-            <span class="ovr-chip" id="ovrChip">Optional</span>
+          <div class="ovr-toggle" onclick="toggleOvr()" style="display:flex;align-items:center;justify-content:space-between;background:#FAF8F5;border:1px solid #E2DDD2;border-radius:8px;padding:9px 12px;margin:12px 0 0;cursor:pointer;transition:all .15s ease">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span class="ovr-arrow" id="ovrArrow" style="font-size:10px;color:var(--goldd);transition:transform .2s">▶</span>
+              <span style="font-size:11px;font-weight:700;color:var(--navy);letter-spacing:.8px;text-transform:uppercase">Pricing Override</span>
+              <span class="ovr-chip" id="ovrChip" style="font-size:9.5px;letter-spacing:0.5px;background:rgba(7,54,66,0.06);color:var(--tx3);padding:2px 7px;border-radius:12px;border:none">Optional</span>
+            </div>
             <button
               class="ovr-clear"
               id="ovrClear"
-              style="display: none"
+              style="display: none;font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;border:1px solid #E2DDD2;background:#fff;color:var(--tx3)"
               onclick="
                 event.stopPropagation();
                 clearOvr();
               "
             >
-              Clear
+              Reset
             </button>
           </div>
           <div id="ovrPanel" style="display: none">
-            <div class="ovr-panel">
-              <div
-                style="
-                  font-size: 8.5px;
-                  letter-spacing: 2px;
-                  color: var(--goldd);
-                  text-transform: uppercase;
-                  font-weight: 700;
-                  margin-bottom: 10px;
-                "
-              >
-                <span class="inline-icon"><svg class="ui-icon sm" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z"/></svg>Negotiated Pricing</span>
-              </div>
+            <div style="background:#FAF8F5;border:1px solid #E2DDD2;border-top:none;border-radius:0 0 8px 8px;padding:14px;margin-bottom:12px">
               <div class="g3">
                 <div class="field">
-                  <label>Custom Price $</label
-                  ><input
+                  <label style="font-size:10.5px;font-weight:600;color:var(--navy)">Custom Price ($)</label>
+                  <input
                     type="number"
                     id="ovrPrice"
                     placeholder="e.g. 115000"
                     oninput="ovrChanged()"
+                    style="background:#fff;border:1px solid #D8D2C5;border-radius:6px;padding:8px 10px;font-size:13px"
                   />
                 </div>
                 <div class="field">
-                  <label>Discount %</label
-                  ><input
+                  <label style="font-size:10.5px;font-weight:600;color:var(--navy)">Discount (%)</label>
+                  <input
                     type="number"
                     id="ovrPct"
                     placeholder="e.g. 12"
                     oninput="ovrChanged()"
+                    style="background:#fff;border:1px solid #D8D2C5;border-radius:6px;padding:8px 10px;font-size:13px"
                   />
                 </div>
                 <div class="field">
-                  <label>Flat Discount $</label
-                  ><input
+                  <label style="font-size:10.5px;font-weight:600;color:var(--navy)">Flat Discount ($)</label>
+                  <input
                     type="number"
                     id="ovrFlat"
                     placeholder="e.g. 5000"
                     oninput="ovrChanged()"
+                    style="background:#fff;border:1px solid #D8D2C5;border-radius:6px;padding:8px 10px;font-size:13px"
                   />
                 </div>
               </div>
-              <div class="ovr-hint">
-                Use <strong>Custom Price</strong> to override list price. Use
-                <strong>% or Flat $</strong> for negotiated discounts.
+              <div style="font-size:10.5px;color:var(--tx3);margin-top:8px;line-height:1.5">
+                Override list price directly, or enter a negotiated percentage or flat dollar discount.
               </div>
             </div>
           </div>
@@ -7177,26 +7172,29 @@ B1 = East | Gross 50㎡ | Net 45㎡
             Payment Plan <span style="font-size:11px;font-weight:500;color:var(--tx3);text-transform:none;letter-spacing:0;margin-left:6px">Step 2 of 3</span>
           </div>
           <div class="plan-pills" id="planPills"></div>
-          <div id="customPlanFields" class="custom-fields">
+          <div id="customPlanFields" class="custom-fields" style="display:none;background:#FAF8F5;border:1px solid #E2DDD2;border-radius:8px;padding:14px;margin-top:10px">
+            <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:700;color:var(--goldd);margin-bottom:10px">
+              Custom Schedule Breakdown
+            </div>
             <div class="g2" style="margin-bottom: 10px">
               <div class="field">
-                <label>Booking $</label
-                ><input type="number" id="cBooking" value="1000" />
+                <label style="font-size:10.5px;font-weight:600;color:var(--navy)">Booking Deposit ($)</label>
+                <input type="number" id="cBooking" value="1000" style="background:#fff;border:1px solid #D8D2C5;border-radius:6px;padding:8px 10px;font-size:13px" />
               </div>
               <div class="field">
-                <label>SPA %</label>
-                <input type="number" id="cSPA" value="20" oninput="validateCustomPlan()" />
+                <label style="font-size:10.5px;font-weight:600;color:var(--navy)">SPA Down Payment (%)</label>
+                <input type="number" id="cSPA" value="20" oninput="validateCustomPlan()" style="background:#fff;border:1px solid #D8D2C5;border-radius:6px;padding:8px 10px;font-size:13px" />
                 <div id="cSPA_err" style="display:none;font-size:11px;color:var(--red);margin-top:3px"></div>
               </div>
             </div>
             <div class="g2">
               <div class="field">
-                <label>Months</label
-                ><input type="number" id="cMonths" value="45" />
+                <label style="font-size:10.5px;font-weight:600;color:var(--navy)">Instalment Period (Months)</label>
+                <input type="number" id="cMonths" value="45" style="background:#fff;border:1px solid #D8D2C5;border-radius:6px;padding:8px 10px;font-size:13px" />
               </div>
               <div class="field">
-                <label>Handover %</label>
-                <input type="number" id="cHO" value="35" oninput="validateCustomPlan()" />
+                <label style="font-size:10.5px;font-weight:600;color:var(--navy)">Handover Balance (%)</label>
+                <input type="number" id="cHO" value="35" oninput="validateCustomPlan()" style="background:#fff;border:1px solid #D8D2C5;border-radius:6px;padding:8px 10px;font-size:13px" />
                 <div id="cHO_err" style="display:none;font-size:11px;color:var(--red);margin-top:3px"></div>
               </div>
             </div>
@@ -10715,12 +10713,12 @@ B1 = East | Gross 50㎡ | Net 45㎡
         const c = $("planPills");
         c.innerHTML = "";
         [
-          ["std", "Standard Plan", "20% SPA · 45%×45mo · 35% HO"],
-          ["custom", "Custom Plan", "Set your own %"],
+          ["std", "Standard Plan", "20% SPA · 45% (45 mos) · 35% Handover"],
+          ["custom", "Custom Plan", "Set custom down payment & instalments"],
         ].forEach(([k, lbl, sub]) => {
           const d = document.createElement("div");
           d.className = "plan-pill" + (k === activePlan ? " active" : "");
-          d.innerHTML = `${lbl}<br><span style="font-size:9px;opacity:.55">${sub}</span>`;
+          d.innerHTML = `<div class="pp-title"><span>${lbl}</span><span style="font-size:11px;font-weight:700;color:${k === activePlan ? '#86BE3F' : 'rgba(7,54,66,0.3)'}">${k === activePlan ? '●' : '○'}</span></div><div class="pp-sub">${sub}</div>`;
           d.onclick = () => selectPlan(k, d);
           c.appendChild(d);
         });
