@@ -1,15 +1,20 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════════
- *  PHC COMPLETE CLIENT PROPOSAL & BUYING ADVISORY WORKBOOK
- *  Standardized Real Estate Client Deliverables System
+ *  PHC MASTER MULTI-PROJECT QUOTATION & CLIENT ADVISORY WORKBOOK
+ *  Standardized Real Estate Client Deliverables & Deal Analysis System
  * ═══════════════════════════════════════════════════════════════════════════
+ *  Portfolio Scope:
+ *   - Architecture handles all developer projects across Phnom Penh.
+ *   - Current Core Focus: Time Square developments (TS7, TS8, TS9, TS11).
+ *   - Seamlessly extensible to Le Conde, J-Tower 3, Odom, and upcoming releases.
+ * 
  *  Tabs Generated:
  *   1. Quotation: Dynamic Project-to-Unit Cascading Selector & Proposal
  *   2. Property Comparison: Side-by-side 4-option comparison with ROI yields
  *   3. Associated Costs: Complete breakdown of Cambodian property taxes & fees
  *   4. Off-Plan Buying Process: 12-stage milestone roadmap
  *   5. Completed vs Off-Plan: Side-by-side buyer decision guide
- *   6. Master Price List: All 403 verified developer units
+ *   6. Master Price List: All 403 verified developer units across active portfolio
  *   7. Projects: Project metadata registry & dynamic cascading unit filter
  *   8. Checks: Mathematical integrity assertions (100% exact match guard)
  * ═══════════════════════════════════════════════════════════════════════════
