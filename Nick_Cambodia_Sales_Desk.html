@@ -8069,10 +8069,10 @@ B1 = East | Gross 50㎡ | Net 45㎡
       const PROJECTS = {
         ts9: {
           id: "ts9",
-          name: "Time Square 9 (The Gatsby BKK1)",
+          name: "Time Square 9",
           dev: "TS9",
           tabLabel: "BKK1",
-          location: "Phnom Penh",
+          location: "Phnom Penh, BKK1",
           commission: 9,
           discounts: { standard: 10, promo: 14 },
           promoGroups: {
@@ -8428,10 +8428,10 @@ B1 = East | Gross 50㎡ | Net 45㎡
         },
         ts8: {
           id: "ts8",
-          name: "Time Square 8 (Chamkar Mon)",
+          name: "Time Square 8",
           dev: "TS8",
           tabLabel: "TTP",
-          location: "Phnom Penh",
+          location: "Phnom Penh, Chamkar Mon",
           commission: 10,
           discounts: { standard: 0, promo: 0 },
           promoGroups: {
@@ -8520,10 +8520,10 @@ B1 = East | Gross 50㎡ | Net 45㎡
         },
         ts7: {
           id: "ts7",
-          name: "Time Square 7 (Toul Kork)",
+          name: "Time Square 7",
           dev: "TS7",
           tabLabel: "TK",
-          location: "Phnom Penh",
+          location: "Phnom Penh, Toul Kork",
           commission: 10,
           discounts: { standard: 0, promo: 0 },
           promoGroups: {
@@ -8690,10 +8690,10 @@ B1 = East | Gross 50㎡ | Net 45㎡
         },
         ts11: {
           id: "ts11",
-          name: "Time Square 11 (Time Castle BKK3)",
+          name: "Time Square 11",
           dev: "TS11",
           tabLabel: "BKK3",
-          location: "Phnom Penh",
+          location: "Phnom Penh, BKK3",
           commission: 10,
           discounts: { standard: 0, promo: 0 },
           promoGroups: {},
@@ -12037,43 +12037,116 @@ B1 = East | Gross 50㎡ | Net 45㎡
       function genQuotation(r) {
         const p = PROJECTS[r.proj || activeProjId];
         const client = $("clientName").value || "Valued Client";
-        const bookingDate = $("bookingDate").value;
-        const investor = getInvestorModel(r);
         const preparedForLabel = cfgValue(
           "quotePreparedForLabel",
           "Prepared for",
         );
-        const bookingLabel = cfgValue("quoteBookingLabel", "Booking");
-        const spaLabel = cfgValue("quoteSpaLabel", "SPA");
-        const bookingDisplay = formatDocDate(bookingDate, "To be confirmed");
-        const spaDisplay = formatDocDate($("spaDate").value, "N/A");
         const grossDisplay = r.info?.grossSize || r.info?.size || "";
         const netDisplay = r.info?.netSize || "";
-        const unitFacts = [
-          r.info?.orientation ? `Orientation ${r.info.orientation}` : "",
-          grossDisplay ? `Gross ${grossDisplay}` : "",
-          netDisplay ? `Net ${netDisplay}` : "",
-          investor?.pricePerSqm ? `Price per sqm ${fUSD(investor.pricePerSqm)}` : "",
-          activeCurr !== "USD" ? `${activeCurr} ${formatFx(activeCurr, r.net)}` : "",
-        ]
-          .filter(Boolean)
-          .join(" · ");
+
         return `<div class="doc-page"><div class="doc-inner">
     ${letterhead()}${projRenderStrip(r, "quotation")}
     <div class="doc-title">${p.name}</div><div class="doc-subtitle">${p.location}</div>
-    <div class="doc-unit-badge"><div><div class="doc-uid">${r.uid}</div><div class="doc-ud">${r.info?.beds}${r.info?.series ? " · " + r.info.series : ""}${r.floor >= 35 ? " · High Zone" : ""}</div>${grossDisplay || netDisplay ? `<div style="font-size:9px;color:var(--tx2);margin-top:7px;line-height:1.6">${grossDisplay ? `Gross Size: ${grossDisplay}` : ""}${grossDisplay && netDisplay ? "<br>" : ""}${netDisplay ? `Net Size: ${netDisplay}` : ""}</div>` : ""}</div><div style="text-align:right"><div style="font-size:8px;letter-spacing:1.5px;color:var(--tx3);text-transform:uppercase">${preparedForLabel}</div><div style="font-weight:700;color:var(--navy);font-size:16px;line-height:1.25">${client}</div><div style="font-size:9px;color:var(--tx3);margin-top:7px">${bookingLabel}: ${bookingDisplay}</div><div style="font-size:9px;color:var(--tx3);margin-top:4px">${spaLabel}: ${spaDisplay}</div></div></div>
-    <div class="dpr"><span>List Price</span><span>${fUSD(r.orig)}</span></div>
-    <div class="dpr"><span>Discount (${r.discLabel})</span><span style="color:var(--grn)">− ${fUSD(r.discAmt)}</span></div>
-    <div class="dpr hl"><span>Final Sale Price</span><span style="color:var(--goldd)">${fUSD(r.net)}</span></div>
-    ${unitFacts ? `<div style="font-size:9px;color:var(--tx3);letter-spacing:1px;text-transform:uppercase;margin:8px 0 14px">${unitFacts}</div>` : ""}
-    <div class="dsec">Payment Schedule</div>
-    <table class="dtbl"><thead><tr><th>#</th><th>Stage</th><th>%</th><th class="dr">Amount (USD)</th></tr></thead><tbody>
-      <tr><td>1</td><td>Booking Fee</td><td>—</td><td class="dr">${fUSD(r.bk)}</td></tr>
-      <tr><td>2</td><td>SPA (Down Payment)</td><td>${r.spaPct}%</td><td class="dr">${fUSD(r.spaTotal)}</td></tr>
-      <tr><td>3</td><td>Instalment 1% × ${r.months} months</td><td>${r.moPct}%</td><td class="dr">${fUSD(r.moAmt)}</td></tr>
-      <tr><td>4</td><td>Handover Payment</td><td>${r.hoPct}%</td><td class="dr">${fUSD(r.hoTotal)}</td></tr>
-      <tr class="tot"><td></td><td><strong>Total Purchase Price</strong></td><td></td><td class="dr"><strong>${fUSD(r.net)}</strong></td></tr>
-    </tbody></table>
+    <div class="doc-unit-badge">
+      <div>
+        <div class="doc-uid">${r.uid}</div>
+        <div class="doc-ud">${r.info?.beds || ""}${r.info?.series ? " · " + r.info.series : ""}${r.floor >= 35 ? " · High Zone" : ""}</div>
+        ${grossDisplay || netDisplay ? `<div style="font-size:9px;color:var(--tx2);margin-top:6px;line-height:1.6">${grossDisplay ? `Gross Size: ${grossDisplay}` : ""}${grossDisplay && netDisplay ? "<br>" : ""}${netDisplay ? `Net Size: ${netDisplay}` : ""}</div>` : ""}
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:8px;letter-spacing:1.5px;color:var(--tx3);text-transform:uppercase">${preparedForLabel}</div>
+        <div style="font-weight:700;color:var(--navy);font-size:16px;line-height:1.25">${client}</div>
+      </div>
+    </div>
+
+    <!-- 3-Box Price Summary matching Sales Desk Calculator (Image 2) -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 16px">
+      <div style="background:#FAF8F5;border:1px solid #E2DDD2;border-radius:8px;padding:12px 14px;text-align:center">
+        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx3);font-weight:600;margin-bottom:4px">List Price</div>
+        <div style="font-family:'Inter',sans-serif;font-size:16px;font-weight:700;color:var(--tx2);text-decoration:line-through;text-decoration-color:rgba(14,30,53,0.3)">${fUSD(r.orig)}</div>
+        <div style="font-size:9px;color:var(--tx3);margin-top:2px">List price</div>
+      </div>
+      <div style="background:#FAF8F5;border:1px solid #E2DDD2;border-radius:8px;padding:12px 14px;text-align:center">
+        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx3);font-weight:600;margin-bottom:4px">You Save</div>
+        <div style="font-family:'Inter',sans-serif;font-size:16px;font-weight:700;color:var(--grn)">${fUSD(r.discAmt)}</div>
+        <div style="font-size:9px;color:var(--grn);font-weight:600;margin-top:2px">${r.discLabel || "Discount"}</div>
+      </div>
+      <div style="background:var(--navy);border:1px solid var(--navy);border-radius:8px;padding:12px 14px;text-align:center;box-shadow:0 3px 10px rgba(7,54,66,0.15)">
+        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(250,248,245,0.7);font-weight:600;margin-bottom:4px">Final Price</div>
+        <div style="font-family:'Inter',sans-serif;font-size:17px;font-weight:800;color:#FAF8F5">${fUSD(r.net)}</div>
+        <div style="font-size:9px;color:rgba(250,248,245,0.55);margin-top:2px">Final price</div>
+      </div>
+    </div>
+
+    <!-- Payment Schedule section header with thin line -->
+    <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--goldd);font-weight:700;margin:18px 0 10px;display:flex;align-items:center;gap:10px">
+      <span>Payment Schedule</span>
+      <span style="flex:1;height:1px;background:#E2DDD2"></span>
+    </div>
+
+    <!-- Payment Schedule Cards matching Image 2 -->
+    <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px">
+      <!-- 1: Booking -->
+      <div style="background:#FAF8F5;border:1px solid #EFEBE4;border-radius:8px;padding:9px 12px;display:grid;grid-template-columns:26px 1fr auto;align-items:center;gap:10px">
+        <div style="width:24px;height:24px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">1</div>
+        <div>
+          <div style="font-size:11px;font-weight:600;color:var(--navy)">Booking Fee</div>
+          <div style="font-size:9.5px;color:var(--tx3);margin-top:1px">Upon reservation</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:var(--navy)">${fUSD(r.bk)}</div>
+        </div>
+      </div>
+
+      <!-- 2: SPA -->
+      <div style="background:#FAF8F5;border:1px solid #EFEBE4;border-radius:8px;padding:9px 12px;display:grid;grid-template-columns:26px 1fr auto;align-items:center;gap:10px">
+        <div style="width:24px;height:24px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">2</div>
+        <div>
+          <div style="font-size:11px;font-weight:600;color:var(--navy)">SPA Payment (${r.spaPct}%)</div>
+          <div style="font-size:9.5px;color:var(--tx3);margin-top:1px">Less booking · Net ${fUSD(r.spaNet)}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:var(--navy)">${fUSD(r.spaTotal)}</div>
+        </div>
+      </div>
+
+      <!-- 3: Monthly instalments -->
+      <div style="background:#FAF8F5;border:1px solid #EFEBE4;border-radius:8px;padding:9px 12px;display:grid;grid-template-columns:26px 1fr auto;align-items:center;gap:10px">
+        <div style="width:24px;height:24px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">3</div>
+        <div>
+          <div style="font-size:11px;font-weight:600;color:var(--navy)">Monthly Instalments</div>
+          <div style="font-size:9.5px;color:var(--tx3);margin-top:1px">${r.months} × ${fUSD(r.moAmt)}/mo</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:var(--navy)">${fUSD(r.moTotal)}</div>
+        </div>
+      </div>
+
+      <!-- 4: Handover -->
+      <div style="background:#FAF8F5;border:1px solid #EFEBE4;border-radius:8px;padding:9px 12px;display:grid;grid-template-columns:26px 1fr auto;align-items:center;gap:10px">
+        <div style="width:24px;height:24px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">4</div>
+        <div>
+          <div style="font-size:11px;font-weight:600;color:var(--navy)">Handover Payment (${r.hoPct}%)</div>
+          <div style="font-size:9.5px;color:var(--tx3);margin-top:1px">Upon key collection</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:var(--navy)">${fUSD(r.hoTotal)}</div>
+        </div>
+      </div>
+
+      <!-- Total Purchase Price row -->
+      <div style="background:rgba(200,164,90,0.12);border:1px solid rgba(200,164,90,0.3);border-radius:8px;padding:10px 12px;display:grid;grid-template-columns:26px 1fr auto;align-items:center;gap:10px;margin-top:4px">
+        <div style="width:24px;height:24px;border-radius:50%;background:var(--goldd);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800">✓</div>
+        <div>
+          <div style="font-size:11.5px;font-weight:700;color:var(--navy)">Total Purchase Price</div>
+          <div style="font-size:9.5px;color:var(--tx3);margin-top:1px">100% full acquisition price</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-family:'Inter',sans-serif;font-size:15px;font-weight:800;color:var(--navy)">${fUSD(r.net)}</div>
+        </div>
+      </div>
+    </div>
+
     ${r.promo?.label ? `<div style="padding:9px 12px;background:rgba(200,164,90,.08);border:1px solid rgba(200,164,90,.25);border-radius:6px;font-size:9.5px;color:#7a5c1a;margin-top:8px"><span class="inline-icon">${uiIcon("spark", "ui-icon sm")}<strong>${r.promo.label}</strong></span> — Subject to developer confirmation.</div>` : ""}
     ${docFoot()}
   </div></div>`;
