@@ -4083,50 +4083,69 @@
       }
       .doc-foot {
         border-top: 1px solid #E2DDD2;
-        padding-top: 18px;
-        margin-top: 26px;
+        padding-top: 24px;
+        margin-top: 28px;
         display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        flex-wrap: wrap;
-        gap: 12px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        width: 100%;
+        box-sizing: border-box;
       }
       .doc-disc {
         font-size: 10px;
         color: #8A9A9D;
-        max-width: 340px;
+        max-width: 480px;
         line-height: 1.6;
+        margin-bottom: 14px;
+        text-align: center;
       }
       .sig-wrap {
         display: flex;
         flex-direction: column;
-        align-items: flex-end;
-        text-align: right;
-        min-width: 170px;
-        margin-left: auto;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        margin: 0 auto;
       }
-      .sig-line {
-        width: 140px;
-        height: 1.5px;
-        background: linear-gradient(90deg, transparent, #C4A87D 30%, #9E8052 100%);
+      .sig-accent {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
         margin-bottom: 8px;
-        border: none;
+        width: 160px;
+      }
+      .sig-accent-bar {
+        height: 1px;
+        flex: 1;
+        background: linear-gradient(90deg, transparent, #C4A87D);
+      }
+      .sig-accent-bar:last-child {
+        background: linear-gradient(90deg, #C4A87D, transparent);
+      }
+      .sig-accent-glyph {
+        font-size: 8px;
+        color: #9E8052;
+        letter-spacing: 0;
+        line-height: 1;
       }
       .sig-name {
         font-family: 'Shippori Mincho', Georgia, serif;
-        font-size: 18px;
+        font-size: 20px;
         font-weight: 700;
         color: #073642;
-        letter-spacing: 0.03em;
+        letter-spacing: 0.05em;
         line-height: 1.2;
       }
       .sig-role {
         font-family: 'Plus Jakarta Sans', 'Noto Sans JP', sans-serif;
         font-size: 11px;
         font-weight: 600;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.08em;
         color: #9E8052;
-        margin-top: 3px;
+        margin-top: 4px;
         line-height: 1.3;
       }
 
@@ -11972,9 +11991,13 @@ B1 = East | Gross 50㎡ | Net 45㎡
         if (!footerSubline) footerSubline = "カンボジア不動産アドバイザー";
 
         return `<div class="doc-foot">
-          ${disclaimer ? `<div class="doc-disc">${disclaimer}</div>` : `<div class="doc-disc" style="display:none;"></div>`}
-          <div class="sig-wrap" style="margin-left:auto;">
-            <div class="sig-line"></div>
+          ${disclaimer ? `<div class="doc-disc">${disclaimer}</div>` : ""}
+          <div class="sig-wrap">
+            <div class="sig-accent">
+              <span class="sig-accent-bar"></span>
+              <span class="sig-accent-glyph">◆</span>
+              <span class="sig-accent-bar"></span>
+            </div>
             <div class="sig-name">${footerName}</div>
             <div class="sig-role">${footerSubline}</div>
           </div>
