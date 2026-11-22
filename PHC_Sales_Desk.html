@@ -6552,15 +6552,23 @@
           flex-shrink: 0 !important;
         }
         .trkr-tbl {
-          font-size: 9.5px !important;
-          min-width: 480px !important;
+          font-size: 9px !important;
+          width: 100% !important;
+          min-width: 360px !important;
         }
         .trkr-tbl th, .trkr-tbl td {
-          padding: 6px 5px !important;
+          padding: 6px 4px !important;
         }
         .trkr-tbl th {
+          font-size: 8px !important;
+          letter-spacing: 0.3px !important;
+          white-space: nowrap !important;
+        }
+        .trkr-tbl td.amt,
+        .trkr-tbl td.cumul,
+        .trkr-tbl td.bal {
           font-size: 8.5px !important;
-          letter-spacing: 0.5px !important;
+          padding: 6px 3px !important;
         }
 
         /* ── Configuration Modal on Mobile ── */
@@ -13010,24 +13018,18 @@
 </svg></div>`;
 
         const hasValidCustomLogo = cfgLogo && typeof cfgLogo === 'string' && cfgLogo.trim().length > 10;
-        const logoHtml = hasValidCustomLogo
-          ? `<div style="display:flex;align-items:center;gap:12px;">
-              <img src="${cfgLogo}" style="max-height:48px;max-width:160px;object-fit:contain;display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-              <div style="display:none;align-items:center;gap:12px;">
-                ${logoRoundel}
-                <div>
-                  <div style="font-family:'Shippori Mincho',Georgia,serif;font-size:16px;font-weight:700;color:var(--navy);letter-spacing:0.04em;">${agency}</div>
-                  <div style="font-size:10px;color:var(--tx2);letter-spacing:0.06em;margin-top:2px;">${subline}</div>
-                </div>
-              </div>
-            </div>`
-          : `<div style="display:flex;align-items:center;gap:12px;">
-              ${logoRoundel}
-              <div>
-                <div style="font-family:'Shippori Mincho',Georgia,serif;font-size:16px;font-weight:700;color:var(--navy);letter-spacing:0.04em;">${agency}</div>
-                <div style="font-size:10px;color:var(--tx2);letter-spacing:0.06em;margin-top:2px;">${subline}</div>
-              </div>
-            </div>`;
+        const logoGraphic = hasValidCustomLogo
+          ? `<img src="${cfgLogo}" style="max-height:42px;max-width:110px;object-fit:contain;display:block;" onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='block';">
+             <div style="display:none;">${logoRoundel}</div>`
+          : logoRoundel;
+
+        const logoHtml = `<div style="display:flex;align-items:center;gap:12px;">
+            ${logoGraphic}
+            <div>
+              <div style="font-family:'Shippori Mincho',Georgia,serif;font-size:16px;font-weight:700;color:var(--navy);letter-spacing:0.04em;">${agency}</div>
+              <div style="font-size:10px;color:var(--tx2);letter-spacing:0.06em;margin-top:2px;">${subline}</div>
+            </div>
+          </div>`;
         return `<div class="lh"><div>${logoHtml}</div><div class="lh-meta"><strong>${issueLabel}</strong><div class="issue-date">${dateStr()}</div></div></div>`;
       }
 
