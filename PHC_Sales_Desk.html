@@ -13194,8 +13194,16 @@
         const netDisplay = r.info?.netSize || "";
 
         const zoneLabel = isJa ? "高層階" : "High Zone";
+        const floorText = r.floor ? `Floor ${r.floor}F` : "";
         const grossText = isJa ? `総面積: ${grossDisplay}` : `Gross Size: ${grossDisplay}`;
         const netText = isJa ? `専有面積: ${netDisplay}` : `Net Size: ${netDisplay}`;
+
+        const quoteMetaBits = [
+          floorText,
+          r.floor >= 35 ? zoneLabel : "",
+          grossDisplay ? grossText : "",
+          netDisplay ? netText : ""
+        ].filter(Boolean).join(" · ");
 
         // Box labels
         const listLbl = isJa ? "定価 (List Price)" : "List Price";
@@ -13238,7 +13246,7 @@
         <div style="margin:4px 0 3px;">
           <span class="unit-badge" style="display:inline-block;background:var(--navy);color:#FAF8F5;font-size:11px;font-weight:700;letter-spacing:1px;padding:3px 10px;border-radius:20px;">${r.info?.beds || "Unit"} · Type ${r.type}</span>
         </div>
-        ${grossDisplay || netDisplay || r.floor >= 35 ? `<div style="font-size:9.5px;color:var(--tx2);margin-top:4px;line-height:1.5;">${grossDisplay ? grossText : ""}${grossDisplay && netDisplay ? " · " : ""}${netDisplay ? netText : ""}${r.floor >= 35 ? (grossDisplay || netDisplay ? " · " : "") + zoneLabel : ""}</div>` : ""}
+        ${quoteMetaBits ? `<div style="font-size:9.5px;color:var(--tx2);margin-top:4px;line-height:1.5;">${quoteMetaBits}</div>` : ""}
       </div>
       <div style="text-align:right">
         <div style="font-size:8px;letter-spacing:1.5px;color:var(--tx3);text-transform:uppercase">${preparedForLabel}</div>
