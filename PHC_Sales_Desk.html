@@ -6507,9 +6507,8 @@
           box-shadow: 0 4px 20px rgba(0,0,0,0.12) !important;
         }
         .doc-inner {
-          padding: 18px 12px 30px !important;
-          overflow-x: auto !important;
-          -webkit-overflow-scrolling: touch !important;
+          padding: 24px 16px 36px !important;
+          overflow: visible !important;
         }
         .doc-nav-bar {
           padding: 8px 12px !important;
@@ -6552,23 +6551,23 @@
           flex-shrink: 0 !important;
         }
         .trkr-tbl {
-          font-size: 9px !important;
+          font-size: 10px !important;
           width: 100% !important;
-          min-width: 360px !important;
+          min-width: 440px !important;
         }
         .trkr-tbl th, .trkr-tbl td {
-          padding: 6px 4px !important;
+          padding: 7px 6px !important;
         }
         .trkr-tbl th {
-          font-size: 8px !important;
-          letter-spacing: 0.3px !important;
+          font-size: 9px !important;
+          letter-spacing: 0.6px !important;
           white-space: nowrap !important;
         }
         .trkr-tbl td.amt,
         .trkr-tbl td.cumul,
         .trkr-tbl td.bal {
-          font-size: 8.5px !important;
-          padding: 6px 3px !important;
+          font-size: 10px !important;
+          padding: 7px 6px !important;
         }
 
         /* ── Configuration Modal on Mobile ── */
@@ -13360,7 +13359,6 @@
           handoverStr = $("handoverDate").value;
         const p = PROJECTS[r.proj || activeProjId];
         const client = $("clientName").value || (isJa ? "お客様" : "Valued Client");
-        const preparedForLabel = isJa ? "ご提案先 / Prepared for" : "Prepared for";
         const bookingLabel = isJa ? "予約金 (Booking)" : cfgValue("quoteBookingLabel", "Booking");
         const spaLabel = isJa ? "契約頭金 (SPA)" : cfgValue("quoteSpaLabel", "SPA");
         const bookingDisplay = formatDocDate(bookingDateStr, isJa ? "確認中" : "To be confirmed");
@@ -13368,29 +13366,25 @@
 
         const grossDisplay = r.info?.grossSize || r.info?.size || "";
         const netDisplay = r.info?.netSize || "";
-        const zoneLabel = isJa ? "高層階" : "High Zone";
-        const grossText = isJa ? `総面積: ${grossDisplay}` : `Gross Size: ${grossDisplay}`;
-        const netText = isJa ? `専有面積: ${netDisplay}` : `Net Size: ${netDisplay}`;
+        const unitDetail = [
+          r.info?.beds || "",
+          grossDisplay,
+          r.info?.orientation || "",
+          r.floor ? `Floor ${r.floor}F` : ""
+        ].filter(Boolean).join(" · ");
 
-        // 3-Box labels
-        const listLbl = isJa ? "定価 (List Price)" : "List Price";
-        const saveLbl = isJa ? "割引額 (You Save)" : "You Save";
-        const finalLbl = isJa ? "最終販売価格 (Final Price)" : "Final Price";
-        const schHeading = isJa ? "お支払いスケジュール / Payment Schedule" : "Payment Schedule";
-
-        const today = startOfToday();
         const rows = buildScheduleRows(r, bookingDateStr, spaDateStr, handoverStr);
         if (!rows)
           return `<div class="doc-page"><div class="doc-inner"><p style="padding:30px;text-align:center;color:var(--tx3)">${isJa ? "SPA契約日を入力してください。" : "Please enter SPA Signing Date."}</p></div></div>`;
         const total = r.net;
 
         const colNum = "#";
-        const colDueDate = isJa ? "期日 (Due Date)" : "Due Date";
-        const colStage = isJa ? "支払い項目 (Stage)" : "Stage";
-        const colAmt = isJa ? "金額 (Amount)" : "Amount (USD)";
-        const colCumul = isJa ? "累計額 (Cumulative)" : "Cumulative";
-        const colBal = isJa ? "残金 (Balance)" : "Balance";
-        const totLabel = isJa ? "ご購入総額 (TOTAL)" : "TOTAL";
+        const colDueDate = isJa ? "期日" : "Due Date";
+        const colStage = isJa ? "支払い項目" : "Stage";
+        const colAmt = isJa ? "金額 (USD)" : "Amount";
+        const colCumul = isJa ? "累計額" : "Cumulative";
+        const colBal = isJa ? "残金" : "Balance";
+        const totLabel = isJa ? "ご購入総額" : "TOTAL";
 
         const tableRows = rows
           .map((row, idx) => {
@@ -13398,52 +13392,28 @@
                 .slice(0, idx + 1)
                 .reduce((s, x) => s + x.amount, 0),
               bal = total - cumul;
-            return `<tr><td style="font-weight:700;color:var(--navy);font-size:10px;text-align:center;">${row.num}</td><td style="white-space:nowrap;font-weight:600;">${formatScheduleDateLabel(row)}</td><td style="color:var(--tx);font-weight:500;">${row.stage}</td><td class="amt" style="font-weight:600;">${fUSD(row.amount)}</td><td class="cumul" style="color:var(--tx2);">${fUSD(cumul)}</td><td class="bal" style="font-weight:700;color:var(--navy);">${fUSD(Math.max(0, bal))}</td></tr>`;
+            return `<tr><td style="font-weight:600;color:var(--tx3);text-align:center;">${row.num}</td><td style="white-space:nowrap">${formatScheduleDateLabel(row)}</td><td style="color:var(--tx2)">${row.stage}</td><td class="amt">${fUSD(row.amount)}</td><td class="cumul">${fUSD(cumul)}</td><td class="bal">${fUSD(Math.max(0, bal))}</td></tr>`;
           })
           .join("");
 
         return `<div class="doc-page"><div class="doc-inner">
-    ${letterhead(lang)}${projRenderStrip(r, "schedule", lang)}
-    <div class="doc-title">${p.name}</div><div class="doc-subtitle">${p.location || ""}</div>
+    ${letterhead(lang)}
+    <div class="doc-title">${isJa ? "お支払いスケジュール" : "Payment Schedule"}</div>
+    <div class="doc-subtitle">${p.name} · ${isJa ? "支払い計画書" : "Client Payment Overview"}</div>
     <div class="doc-unit-badge">
       <div>
         <div class="doc-uid">${r.uid}</div>
-        <div class="doc-ud">${r.info?.beds || ""}${r.info?.series ? " · " + r.info.series : ""}${r.floor >= 35 ? " · " + zoneLabel : ""}</div>
-        ${grossDisplay || netDisplay ? `<div style="font-size:9px;color:var(--tx2);margin-top:6px;line-height:1.6">${grossDisplay ? grossText : ""}${grossDisplay && netDisplay ? " · " : ""}${netDisplay ? netText : ""}</div>` : ""}
+        <div class="doc-ud">${unitDetail}<br>${isJa ? "ご提案先" : "Client"}: <strong>${client}</strong></div>
       </div>
       <div style="text-align:right">
-        <div style="font-size:8px;letter-spacing:1.5px;color:var(--tx3);text-transform:uppercase">${preparedForLabel}</div>
-        <div style="font-weight:700;color:var(--navy);font-size:16px;line-height:1.25">${client}</div>
-        <div style="font-size:9.5px;color:var(--tx3);margin-top:4px;">${bookingLabel}: ${bookingDisplay}</div>
-        <div style="font-size:9.5px;color:var(--tx3);margin-top:2px;">${spaLabel}: ${spaDisplay}</div>
+        <div style="font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-size:1.15rem;font-weight:700;color:var(--navy)">${fUSD(total)}</div>
+        <div style="font-size:8px;color:var(--tx3);text-transform:uppercase;letter-spacing:0.5px">${isJa ? "ご購入総額" : "Total Purchase Price"}</div>
+        <div style="font-size:9px;color:var(--tx3);margin-top:4px">${bookingLabel}: ${bookingDisplay}</div>
+        <div style="font-size:9px;color:var(--tx3);margin-top:2px">${spaLabel}: ${spaDisplay}</div>
       </div>
     </div>
-
-    <!-- 3-Box Price Summary: Desktop-matching executive pricing blocks -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 16px;">
-      <div style="background:#FAF8F5;border:1px solid #E2DDD2;border-radius:8px;padding:14px 12px;text-align:center;">
-        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx3);font-weight:600;margin-bottom:6px;">${listLbl}</div>
-        <div style="font-family:'Inter',sans-serif;font-size:17px;font-weight:700;color:var(--tx2);${r.discAmt ? 'text-decoration:line-through;text-decoration-color:rgba(14,30,53,0.35);' : ''}">${fUSD(r.orig || total)}</div>
-      </div>
-      <div style="background:#FAF8F5;border:1px solid #E2DDD2;border-radius:8px;padding:14px 12px;text-align:center;">
-        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx3);font-weight:600;margin-bottom:6px;">${saveLbl}</div>
-        <div style="font-family:'Inter',sans-serif;font-size:17px;font-weight:700;color:var(--grn);">${fUSD(r.discAmt || 0)}</div>
-      </div>
-      <div style="background:var(--navy);border:1px solid var(--navy);border-radius:8px;padding:14px 12px;text-align:center;box-shadow:0 3px 10px rgba(7,54,66,0.15);">
-        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(250,248,245,0.7);font-weight:600;margin-bottom:6px;">${finalLbl}</div>
-        <div style="font-family:'Inter',sans-serif;font-size:18px;font-weight:800;color:#FAF8F5;">${fUSD(total)}</div>
-      </div>
-    </div>
-
-    <!-- Payment Schedule section header with thin divider -->
-    <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--goldd);font-weight:700;margin:18px 0 8px;display:flex;align-items:center;gap:10px;">
-      <span>${schHeading}</span>
-      <span style="flex:1;height:1px;background:#E2DDD2;"></span>
-    </div>
-
-    <!-- Multi-Stage Payment Schedule Table with Smooth Scroll Container -->
-    <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;margin:12px 0 16px;border-radius:8px;border:1px solid #E2DDD2;">
-      <table class="trkr-tbl" style="width:100%;border-collapse:collapse;">
+    <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;margin:16px 0;">
+      <table class="trkr-tbl">
         <thead>
           <tr>
             <th style="width:32px;text-align:center;">${colNum}</th>
@@ -13457,10 +13427,10 @@
         <tbody>
           ${tableRows}
           <tr class="tot-row">
-            <td colspan="3" style="padding:10px 12px;"><strong>${totLabel}</strong></td>
-            <td class="amt" style="padding:10px 8px;"><strong>${fUSD(total)}</strong></td>
-            <td class="cumul" style="padding:10px 8px;">${fUSD(total)}</td>
-            <td class="bal" style="padding:10px 8px;">$0.00</td>
+            <td colspan="3"><strong>${totLabel}</strong></td>
+            <td class="amt"><strong>${fUSD(total)}</strong></td>
+            <td class="cumul">${fUSD(total)}</td>
+            <td class="bal">$0.00</td>
           </tr>
         </tbody>
       </table>
