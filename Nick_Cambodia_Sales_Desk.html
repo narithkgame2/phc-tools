@@ -5821,13 +5821,25 @@
         background: rgba(255, 255, 255, 0.12) !important;
         flex-shrink: 0 !important;
       }
+      .hero-search-row {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        flex: 1 !important;
+        min-width: 0 !important;
+      }
       .hero-search-wrap {
         display: flex !important;
         align-items: center !important;
         gap: 8px !important;
         flex: 1 !important;
         min-width: 0 !important;
-        padding: 0 6px !important;
+        padding: 0 10px !important;
+        height: 40px !important;
+        background: rgba(255, 255, 255, 0.05) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        border-radius: 9px !important;
+        box-sizing: border-box !important;
       }
       .hero-search-icon {
         color: #C4A87D !important;
@@ -6112,23 +6124,49 @@
           font-weight: 700 !important;
         }
 
-        /* ── Hero Search Capsule (Mobile 2-Row Stack) ── */
+        /* ── Hero Search Capsule (Mobile Style Matching PHC Website) ── */
         .hero-filter-bar {
-          border-radius: 14px !important;
+          border-radius: 12px !important;
           overflow: hidden !important;
-          margin-bottom: 14px !important;
+          margin-bottom: 12px !important;
           background: #0A1C24 !important;
+          border: 1px solid rgba(255, 255, 255, 0.12) !important;
         }
         .hero-bar-main {
           display: flex !important;
           flex-direction: column !important;
-          gap: 8px !important;
+          gap: 10px !important;
           padding: 10px !important;
           min-height: auto !important;
         }
-        /* Top line: Search Input with dark background + Filter button + Search button */
-        .hero-search-wrap {
+        .hero-status-toggle {
           width: 100% !important;
+          display: flex !important;
+          background: rgba(255, 255, 255, 0.06) !important;
+          border-radius: 8px !important;
+          padding: 3px !important;
+          box-sizing: border-box !important;
+        }
+        .hero-toggle-btn {
+          flex: 1 !important;
+          text-align: center !important;
+          padding: 7px 0 !important;
+          font-size: 11px !important;
+          border-radius: 6px !important;
+          min-height: 34px !important;
+        }
+        .hero-divider {
+          display: none !important;
+        }
+        .hero-search-row {
+          display: flex !important;
+          align-items: center !important;
+          gap: 8px !important;
+          width: 100% !important;
+        }
+        .hero-search-wrap {
+          flex: 1 !important;
+          min-width: 0 !important;
           height: 42px !important;
           background: rgba(255, 255, 255, 0.06) !important;
           border: 1px solid rgba(255, 255, 255, 0.14) !important;
@@ -6152,37 +6190,39 @@
           padding: 0 !important;
           width: 100% !important;
         }
-        .hero-status-toggle {
-          width: 100% !important;
-          display: flex !important;
-          background: rgba(255, 255, 255, 0.06) !important;
-          border-radius: 8px !important;
-          padding: 3px !important;
-          box-sizing: border-box !important;
-        }
-        .hero-toggle-btn {
-          flex: 1 !important;
-          text-align: center !important;
-          padding: 7px 0 !important;
-          font-size: 11px !important;
-          border-radius: 6px !important;
-          min-height: 36px !important;
-        }
-        .hero-divider {
-          display: none !important;
-        }
         .hero-filter-toggle-btn {
           width: 42px !important;
           height: 42px !important;
           flex-shrink: 0 !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          background: rgba(255, 255, 255, 0.06) !important;
+          border: 1px solid rgba(196, 168, 125, 0.4) !important;
+          border-radius: 9px !important;
+          color: #C4A87D !important;
         }
         .hero-action-btn {
+          width: 42px !important;
           height: 42px !important;
-          padding: 0 14px !important;
+          padding: 0 !important;
           flex-shrink: 0 !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          background: linear-gradient(135deg, #C4A87D, #9E8052) !important;
+          border-radius: 9px !important;
+          border: none !important;
+          color: #073642 !important;
+          box-shadow: 0 2px 8px rgba(158, 128, 82, 0.3) !important;
+        }
+        .hero-action-text {
+          display: none !important;
         }
         .hero-filters-shelf {
           padding: 12px 10px !important;
+          border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+          background: rgba(4, 35, 43, 0.4) !important;
         }
         .hero-filters-grid {
           grid-template-columns: 1fr !important;
@@ -6190,18 +6230,23 @@
         }
         .hero-filter-select {
           height: 44px !important;
-          font-size: 13.5px !important;
+          font-size: 13px !important;
           width: 100% !important;
+          background: rgba(255, 255, 255, 0.06) !important;
+          color: #FAF8F5 !important;
+          border: 1px solid rgba(255, 255, 255, 0.12) !important;
+          border-radius: 8px !important;
+          padding: 0 10px !important;
         }
         .hero-reset-btn {
-          height: 42px !important;
+          height: 40px !important;
           width: 100% !important;
         }
 
-        /* ── Inventory Sheet Mobile Scrolling ── */
+        /* ── Inventory Sheet Mobile 2D Scrolling & Available Units ── */
         .inventory-layout {
           grid-template-columns: 1fr !important;
-          gap: 14px !important;
+          gap: 12px !important;
         }
         .inventory-side {
           position: static !important;
@@ -6212,7 +6257,8 @@
         .inventory-sheet {
           position: relative !important;
           overflow-x: auto !important;
-          overflow-y: hidden !important;
+          overflow-y: auto !important;
+          max-height: 52vh !important;
           -webkit-overflow-scrolling: touch !important;
           touch-action: pan-x pan-y !important;
           border: 1px solid #E2DDD2 !important;
@@ -6220,9 +6266,25 @@
           background: #FFFFFF !important;
           width: 100% !important;
           max-width: 100% !important;
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06) !important;
         }
         .inventory-table {
           min-width: 760px !important;
+          border-collapse: separate !important;
+          border-spacing: 0 !important;
+        }
+        .inventory-table thead th {
+          position: sticky !important;
+          z-index: 8 !important;
+        }
+        .inventory-table thead tr.inventory-group-row th {
+          top: 0 !important;
+        }
+        .inventory-table thead tr.inventory-type-row th {
+          top: 38px !important;
+        }
+        .inventory-table thead tr.inventory-size-row th {
+          top: 76px !important;
         }
         .inventory-floor, .floor-hd, .corner {
           position: sticky !important;
@@ -6231,12 +6293,23 @@
           background: #FAF8F5 !important;
           box-shadow: 2px 0 6px rgba(0, 0, 0, 0.08) !important;
         }
+        .inventory-table thead th.corner {
+          z-index: 20 !important;
+          left: 0 !important;
+        }
+        .inventory-table thead th.floor-hd {
+          z-index: 20 !important;
+          left: 0 !important;
+        }
         .inv-scroll-hint {
           display: block !important;
           font-size: 11.5px !important;
           color: #9E8052 !important;
           font-weight: 600 !important;
           margin-bottom: 8px !important;
+        }
+        .inventory-grid {
+          padding-bottom: 85px !important;
         }
 
         /* ── Standard Inputs & Touch Targets ── */
@@ -7911,7 +7984,7 @@
             <div>
               <div class="hero-filter-bar" id="inventoryHeroBar">
                 <div class="hero-bar-main">
-                  <!-- Quick Status Toggles -->
+                  <!-- Quick Status Toggles (Available vs All) -->
                   <div class="hero-status-toggle">
                     <button type="button" class="hero-toggle-btn active" id="heroBtnAvailable" onclick="setQuickStatus('available')">AVAILABLE</button>
                     <button type="button" class="hero-toggle-btn" id="heroBtnAll" onclick="setQuickStatus('all')">ALL</button>
@@ -7919,45 +7992,47 @@
                   
                   <div class="hero-divider"></div>
                   
-                  <!-- Search Input -->
-                  <div class="hero-search-wrap">
-                    <svg class="hero-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                      <circle cx="11" cy="11" r="8"></circle>
-                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                    <input
-                      type="text"
-                      id="inventorySearch"
-                      class="hero-search-input"
-                      placeholder="Search unit, floor, size, direction..."
-                      oninput="renderInventory()"
-                    />
+                  <!-- Unified Search Row (Matching PHC Website Style) -->
+                  <div class="hero-search-row">
+                    <div class="hero-search-wrap">
+                      <svg class="hero-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                      </svg>
+                      <input
+                        type="text"
+                        id="inventorySearch"
+                        class="hero-search-input"
+                        placeholder="Search unit, floor, size, direction..."
+                        oninput="renderInventory()"
+                      />
+                    </div>
+
+                    <!-- Filter Toggle Button with Sliders Icon -->
+                    <button type="button" class="hero-filter-toggle-btn" id="heroFilterToggleBtn" onclick="toggleHeroFilters()" title="Filters (Bedroom, Facing, Status)">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="4" y1="21" x2="4" y2="14"></line>
+                        <line x1="4" y1="10" x2="4" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12" y2="3"></line>
+                        <line x1="20" y1="21" x2="20" y2="16"></line>
+                        <line x1="20" y1="12" x2="20" y2="3"></line>
+                        <line x1="1" y1="14" x2="7" y2="14"></line>
+                        <line x1="9" y1="8" x2="15" y2="8"></line>
+                        <line x1="17" y1="16" x2="23" y2="16"></line>
+                      </svg>
+                      <span class="hero-filter-badge" id="heroFilterBadge" style="display:none;">0</span>
+                    </button>
+
+                    <!-- Gold Search Action Button (Square button matching PHC website) -->
+                    <button type="button" class="hero-action-btn" onclick="renderInventory()" title="Search inventory">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                      </svg>
+                      <span class="hero-action-text">Search</span>
+                    </button>
                   </div>
-
-                  <!-- Filter Toggle Button with Sliders Icon -->
-                  <button type="button" class="hero-filter-toggle-btn" id="heroFilterToggleBtn" onclick="toggleHeroFilters()" title="Filters (Bedroom, Facing, Status)">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <line x1="4" y1="21" x2="4" y2="14"></line>
-                      <line x1="4" y1="10" x2="4" y2="3"></line>
-                      <line x1="12" y1="21" x2="12" y2="12"></line>
-                      <line x1="12" y1="8" x2="12" y2="3"></line>
-                      <line x1="20" y1="21" x2="20" y2="16"></line>
-                      <line x1="20" y1="12" x2="20" y2="3"></line>
-                      <line x1="1" y1="14" x2="7" y2="14"></line>
-                      <line x1="9" y1="8" x2="15" y2="8"></line>
-                      <line x1="17" y1="16" x2="23" y2="16"></line>
-                    </svg>
-                    <span class="hero-filter-badge" id="heroFilterBadge" style="display:none;">0</span>
-                  </button>
-
-                  <!-- Gold Search Action Button -->
-                  <button type="button" class="hero-action-btn" onclick="renderInventory()">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                      <circle cx="11" cy="11" r="8"></circle>
-                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                    <span>Search</span>
-                  </button>
                 </div>
 
                 <!-- Collapsible Disclosed Filter Shelf -->
