@@ -10064,11 +10064,9 @@
       }
       const proj = () => PROJECTS[activeProjId];
       const fUSD = (n) =>
-        "$" +
-        n.toLocaleString("en-US", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        });
+        typeof n === "number" && !isNaN(n)
+          ? "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+          : "$0.00";
       function formatFx(code, n) {
         const meta = CURRENCY_META[code] || CURRENCY_META.USD;
         const rate = fxRates[code] || 1;
@@ -13011,8 +13009,18 @@
 </g>
 </svg></div>`;
 
-        const logoHtml = cfgLogo
-          ? `<img src="${cfgLogo}" style="max-height:48px;max-width:160px;object-fit:contain;display:block;margin-bottom:3px">`
+        const hasValidCustomLogo = cfgLogo && typeof cfgLogo === 'string' && cfgLogo.trim().length > 10;
+        const logoHtml = hasValidCustomLogo
+          ? `<div style="display:flex;align-items:center;gap:12px;">
+              <img src="${cfgLogo}" style="max-height:48px;max-width:160px;object-fit:contain;display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+              <div style="display:none;align-items:center;gap:12px;">
+                ${logoRoundel}
+                <div>
+                  <div style="font-family:'Shippori Mincho',Georgia,serif;font-size:16px;font-weight:700;color:var(--navy);letter-spacing:0.04em;">${agency}</div>
+                  <div style="font-size:10px;color:var(--tx2);letter-spacing:0.06em;margin-top:2px;">${subline}</div>
+                </div>
+              </div>
+            </div>`
           : `<div style="display:flex;align-items:center;gap:12px;">
               ${logoRoundel}
               <div>
@@ -13350,10 +13358,24 @@
           handoverStr = $("handoverDate").value;
         const p = PROJECTS[r.proj || activeProjId];
         const client = $("clientName").value || (isJa ? "お客様" : "Valued Client");
+        const preparedForLabel = isJa ? "ご提案先 / Prepared for" : "Prepared for";
         const bookingLabel = isJa ? "予約金 (Booking)" : cfgValue("quoteBookingLabel", "Booking");
         const spaLabel = isJa ? "契約頭金 (SPA)" : cfgValue("quoteSpaLabel", "SPA");
         const bookingDisplay = formatDocDate(bookingDateStr, isJa ? "確認中" : "To be confirmed");
         const spaDisplay = formatDocDate(spaDateStr, isJa ? "未定" : "N/A");
+
+        const grossDisplay = r.info?.grossSize || r.info?.size || "";
+        const netDisplay = r.info?.netSize || "";
+        const zoneLabel = isJa ? "高層階" : "High Zone";
+        const grossText = isJa ? `総面積: ${grossDisplay}` : `Gross Size: ${grossDisplay}`;
+        const netText = isJa ? `専有面積: ${netDisplay}` : `Net Size: ${netDisplay}`;
+
+        // 3-Box labels
+        const listLbl = isJa ? "定価 (List Price)" : "List Price";
+        const saveLbl = isJa ? "割引額 (You Save)" : "You Save";
+        const finalLbl = isJa ? "最終販売価格 (Final Price)" : "Final Price";
+        const schHeading = isJa ? "お支払いスケジュール / Payment Schedule" : "Payment Schedule";
+
         const today = startOfToday();
         const rows = buildScheduleRows(r, bookingDateStr, spaDateStr, handoverStr);
         if (!rows)
@@ -13363,7 +13385,7 @@
         const colNum = "#";
         const colDueDate = isJa ? "期日 (Due Date)" : "Due Date";
         const colStage = isJa ? "支払い項目 (Stage)" : "Stage";
-        const colAmt = isJa ? "金額 (Amount)" : "Amount";
+        const colAmt = isJa ? "金額 (Amount)" : "Amount (USD)";
         const colCumul = isJa ? "累計額 (Cumulative)" : "Cumulative";
         const colBal = isJa ? "残金 (Balance)" : "Balance";
         const totLabel = isJa ? "ご購入総額 (TOTAL)" : "TOTAL";
@@ -13374,18 +13396,73 @@
                 .slice(0, idx + 1)
                 .reduce((s, x) => s + x.amount, 0),
               bal = total - cumul;
-            const date = row.date instanceof Date ? row.date : new Date(row.date);
-            return `<tr><td style="font-weight:600;color:var(--tx3);font-size:9.5px">${row.num}</td><td style="white-space:nowrap">${formatScheduleDateLabel(row)}</td><td style="color:var(--tx2)">${row.stage}</td><td class="amt">${fUSD(row.amount)}</td><td class="cumul">${fUSD(cumul)}</td><td class="bal">${fUSD(Math.max(0, bal))}</td></tr>`;
+            return `<tr><td style="font-weight:700;color:var(--navy);font-size:10px;text-align:center;">${row.num}</td><td style="white-space:nowrap;font-weight:600;">${formatScheduleDateLabel(row)}</td><td style="color:var(--tx);font-weight:500;">${row.stage}</td><td class="amt" style="font-weight:600;">${fUSD(row.amount)}</td><td class="cumul" style="color:var(--tx2);">${fUSD(cumul)}</td><td class="bal" style="font-weight:700;color:var(--navy);">${fUSD(Math.max(0, bal))}</td></tr>`;
           })
           .join("");
 
-        const subTitle = isJa ? "支払い計画書 · Overview" : "Client Payment Overview";
-
         return `<div class="doc-page"><div class="doc-inner">
     ${letterhead(lang)}${projRenderStrip(r, "schedule", lang)}
-    <div class="doc-title">${p.name}</div><div class="doc-subtitle">${p.location ? p.location + " · " : ""}${subTitle}</div>
-    <div class="doc-unit-badge"><div><div class="doc-uid">${r.uid}</div><div class="doc-ud">${r.info?.beds || ""} · ${r.info?.grossSize || r.info?.size || ""}${r.info?.orientation ? ` · ${r.info.orientation}` : ""} · Floor ${r.floor}F<br>${isJa ? "ご提案先" : "Client"}: <strong>${client}</strong></div></div><div style="text-align:right"><div style="font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-size:1.15rem;font-weight:700;color:var(--navy)">${fUSD(total)}</div><div style="font-size:8.5px;color:var(--tx3);text-transform:uppercase;letter-spacing:0.5px">${isJa ? "ご購入総額" : "Total Purchase Price"}</div><div style="font-size:9.5px;color:var(--tx3);margin-top:4px">${bookingLabel}: ${bookingDisplay}</div><div style="font-size:9.5px;color:var(--tx3);margin-top:4px">${spaLabel}: ${spaDisplay}</div></div></div>
-    <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0 16px;"><table class="trkr-tbl"><thead><tr><th style="width:28px">${colNum}</th><th>${colDueDate}</th><th>${colStage}</th><th style="text-align:right">${colAmt}</th><th style="text-align:right">${colCumul}</th><th style="text-align:right">${colBal}</th></tr></thead><tbody>${tableRows}<tr class="tot-row"><td colspan="3"><strong>${totLabel}</strong></td><td class="amt"><strong>${fUSD(total)}</strong></td><td class="cumul">${fUSD(total)}</td><td class="bal">$0.00</td></tr></tbody></table></div>
+    <div class="doc-title">${p.name}</div><div class="doc-subtitle">${p.location || ""}</div>
+    <div class="doc-unit-badge">
+      <div>
+        <div class="doc-uid">${r.uid}</div>
+        <div class="doc-ud">${r.info?.beds || ""}${r.info?.series ? " · " + r.info.series : ""}${r.floor >= 35 ? " · " + zoneLabel : ""}</div>
+        ${grossDisplay || netDisplay ? `<div style="font-size:9px;color:var(--tx2);margin-top:6px;line-height:1.6">${grossDisplay ? grossText : ""}${grossDisplay && netDisplay ? " · " : ""}${netDisplay ? netText : ""}</div>` : ""}
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:8px;letter-spacing:1.5px;color:var(--tx3);text-transform:uppercase">${preparedForLabel}</div>
+        <div style="font-weight:700;color:var(--navy);font-size:16px;line-height:1.25">${client}</div>
+        <div style="font-size:9.5px;color:var(--tx3);margin-top:4px;">${bookingLabel}: ${bookingDisplay}</div>
+        <div style="font-size:9.5px;color:var(--tx3);margin-top:2px;">${spaLabel}: ${spaDisplay}</div>
+      </div>
+    </div>
+
+    <!-- 3-Box Price Summary: Desktop-matching executive pricing blocks -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 16px;">
+      <div style="background:#FAF8F5;border:1px solid #E2DDD2;border-radius:8px;padding:14px 12px;text-align:center;">
+        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx3);font-weight:600;margin-bottom:6px;">${listLbl}</div>
+        <div style="font-family:'Inter',sans-serif;font-size:17px;font-weight:700;color:var(--tx2);${r.discAmt ? 'text-decoration:line-through;text-decoration-color:rgba(14,30,53,0.35);' : ''}">${fUSD(r.orig || total)}</div>
+      </div>
+      <div style="background:#FAF8F5;border:1px solid #E2DDD2;border-radius:8px;padding:14px 12px;text-align:center;">
+        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx3);font-weight:600;margin-bottom:6px;">${saveLbl}</div>
+        <div style="font-family:'Inter',sans-serif;font-size:17px;font-weight:700;color:var(--grn);">${fUSD(r.discAmt || 0)}</div>
+      </div>
+      <div style="background:var(--navy);border:1px solid var(--navy);border-radius:8px;padding:14px 12px;text-align:center;box-shadow:0 3px 10px rgba(7,54,66,0.15);">
+        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(250,248,245,0.7);font-weight:600;margin-bottom:6px;">${finalLbl}</div>
+        <div style="font-family:'Inter',sans-serif;font-size:18px;font-weight:800;color:#FAF8F5;">${fUSD(total)}</div>
+      </div>
+    </div>
+
+    <!-- Payment Schedule section header with thin divider -->
+    <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--goldd);font-weight:700;margin:18px 0 8px;display:flex;align-items:center;gap:10px;">
+      <span>${schHeading}</span>
+      <span style="flex:1;height:1px;background:#E2DDD2;"></span>
+    </div>
+
+    <!-- Multi-Stage Payment Schedule Table with Smooth Scroll Container -->
+    <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;margin:12px 0 16px;border-radius:8px;border:1px solid #E2DDD2;">
+      <table class="trkr-tbl" style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr>
+            <th style="width:32px;text-align:center;">${colNum}</th>
+            <th>${colDueDate}</th>
+            <th>${colStage}</th>
+            <th style="text-align:right;">${colAmt}</th>
+            <th style="text-align:right;">${colCumul}</th>
+            <th style="text-align:right;">${colBal}</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tableRows}
+          <tr class="tot-row">
+            <td colspan="3" style="padding:10px 12px;"><strong>${totLabel}</strong></td>
+            <td class="amt" style="padding:10px 8px;"><strong>${fUSD(total)}</strong></td>
+            <td class="cumul" style="padding:10px 8px;">${fUSD(total)}</td>
+            <td class="bal" style="padding:10px 8px;">$0.00</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     ${docFoot("", lang)}
   </div></div>`;
       }
@@ -14979,18 +15056,7 @@ tr:nth-child(even) td{background:#faf8f4}
   <div><div class="sig-lbl">Date</div><div class="sig-line">${today}</div></div>
 </div>
 <div class="disc">This document is prepared by NICK | カンボジア不動産投資 for informational purposes only. All figures are subject to verification with the developer. Resale agreements are subject to applicable legal and transfer fees, developer consent, and Cambodia Capital Gains Tax (CGT), currently postponed to 1 January 2027. Buyers and sellers should seek independent legal advice before proceeding.</div>
-</div><script>window.onload=()=>window.print()<\/script>    <!-- Floating Sticky Mobile Unit Action Bar -->
-    <div id="invMobileStickyBar" class="inv-mobile-sticky-bar" style="display:none;">
-      <div class="inv-sticky-info">
-        <div class="inv-sticky-uid" id="invStickyUid">—</div>
-        <div class="inv-sticky-meta" id="invStickyMeta">—</div>
-      </div>
-      <div class="inv-sticky-price" id="invStickyPrice">—</div>
-      <button type="button" class="inv-sticky-btn" id="invStickyBtn" onclick="applyStickyUnitToCalculator()">
-        <span>Calculate</span>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </button>
-    </div>
+</div><script>window.onload=()=>window.print()<\/script>
   </body></html>`);
         w.document.close();
       }
@@ -15456,7 +15522,8 @@ tr:nth-child(even) td{background:#faf8f4}
       }
 </script>
 
-    <!-- Floating Sticky Mobile Unit Action Bar -->
+
+      <!-- Floating Sticky Mobile Unit Action Bar -->
     <div id="invMobileStickyBar" class="inv-mobile-sticky-bar" style="display:none;">
       <div class="inv-sticky-info">
         <div class="inv-sticky-uid" id="invStickyUid">—</div>
