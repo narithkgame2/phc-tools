@@ -1393,6 +1393,23 @@
   </div>
 
   <script>
+    // Toast Notification System
+    let toastTimer = null;
+    function simToast(msg, icon = '✨') {
+      const toast = document.getElementById('toast');
+      const msgEl = document.getElementById('toastMsg');
+      const iconEl = document.getElementById('toastIcon');
+      if (!toast) return;
+      if (msgEl) msgEl.innerText = msg;
+      if (iconEl) iconEl.innerText = icon;
+      toast.classList.add('show');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500);
+    }
+    window.simToast = simToast;
+
     function toggleCardLang(lang) {
       const b = document.getElementById('card1Bubble');
       const k = document.getElementById('card1Keyboard');
@@ -2618,8 +2635,11 @@
     }
 
     function fetchLiveState() {
-      fetch('/state')
-        .then(r => r.json())
+      fetch('data/bot-state.json')
+        .then(r => {
+          if (!r.ok) return fetch('/state').then(res => res.json());
+          return r.json();
+        })
         .then(data => {
           const el = document.getElementById('stateCode');
           if (el) el.textContent = JSON.stringify(data, null, 2);
@@ -2683,8 +2703,11 @@
       
       grid.innerHTML = '<div style="color:var(--text-muted); font-size:13px; padding:20px; text-align:center;">Fetching synced channels...</div>';
 
-      fetch('/inventory')
-        .then(r => r.json())
+      fetch('data/multi-channel-inventory.json')
+        .then(r => {
+          if (!r.ok) return fetch('/inventory').then(res => res.json());
+          return r.json();
+        })
         .then(data => {
           cachedInventory = (data && data.listings) ? data.listings : [];
           if (badge) badge.innerText = `${cachedInventory.length} Units Synced`;

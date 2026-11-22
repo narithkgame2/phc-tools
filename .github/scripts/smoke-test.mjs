@@ -62,6 +62,13 @@ async function mockExternalCalls(page) {
   await page.route(/api\.frankfurter\.dev\//, (route) => {
     route.fulfill({ status: 200, contentType: "application/json", body: '{"rates":{}}' });
   });
+  // bot-system-cockpit.html routes for state and inventory endpoints in CI
+  await page.route(/\/state|\/api\/state/, (route) => {
+    route.fulfill({ status: 200, contentType: "application/json", body: "{}" });
+  });
+  await page.route(/\/inventory|\/channels|\/api\/inventory/, (route) => {
+    route.fulfill({ status: 200, contentType: "application/json", body: '{"listings":[]}' });
+  });
 }
 
 async function main() {
