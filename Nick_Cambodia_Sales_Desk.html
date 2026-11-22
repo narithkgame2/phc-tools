@@ -6245,8 +6245,18 @@
 
         /* ── Inventory Sheet Mobile 2D Scrolling & Available Units ── */
         .inventory-layout {
-          grid-template-columns: 1fr !important;
+          display: grid !important;
+          grid-template-columns: minmax(0, 1fr) !important;
+          width: 100% !important;
+          max-width: 100% !important;
+          min-width: 0 !important;
           gap: 12px !important;
+        }
+        .inventory-layout > div {
+          min-width: 0 !important;
+          max-width: 100% !important;
+          width: 100% !important;
+          overflow: visible !important;
         }
         .inventory-side {
           position: static !important;
@@ -6254,44 +6264,50 @@
           margin-top: 14px !important;
           box-sizing: border-box !important;
         }
+        .inventory-grid {
+          min-width: 0 !important;
+          max-width: 100% !important;
+          width: 100% !important;
+          padding-bottom: 85px !important;
+        }
         .inventory-sheet {
+          display: block !important;
           position: relative !important;
           overflow-x: auto !important;
           overflow-y: auto !important;
-          max-height: 52vh !important;
+          max-height: 54vh !important;
           -webkit-overflow-scrolling: touch !important;
-          touch-action: pan-x pan-y !important;
-          border: 1px solid #E2DDD2 !important;
-          border-radius: 8px !important;
+          border: 1px solid #D9D2C5 !important;
+          border-radius: 10px !important;
           background: #FFFFFF !important;
           width: 100% !important;
           max-width: 100% !important;
-          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06) !important;
+          min-width: 0 !important;
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
         }
         .inventory-table {
-          min-width: 760px !important;
+          width: max-content !important;
+          min-width: 100% !important;
           border-collapse: separate !important;
           border-spacing: 0 !important;
         }
+        /* Mobile Sticky Table Headers */
         .inventory-table thead th {
           position: sticky !important;
           z-index: 8 !important;
         }
         .inventory-table thead tr.inventory-group-row th {
           top: 0 !important;
+          font-size: 10px !important;
+          padding: 6px 4px !important;
         }
         .inventory-table thead tr.inventory-type-row th {
-          top: 38px !important;
+          top: 30px !important;
+          padding: 4px 2px !important;
         }
         .inventory-table thead tr.inventory-size-row th {
-          top: 76px !important;
-        }
-        .inventory-floor, .floor-hd, .corner {
-          position: sticky !important;
-          left: 0 !important;
-          z-index: 10 !important;
-          background: #FAF8F5 !important;
-          box-shadow: 2px 0 6px rgba(0, 0, 0, 0.08) !important;
+          top: 66px !important;
+          padding: 4px 2px !important;
         }
         .inventory-table thead th.corner {
           z-index: 20 !important;
@@ -6301,15 +6317,81 @@
           z-index: 20 !important;
           left: 0 !important;
         }
-        .inv-scroll-hint {
-          display: block !important;
-          font-size: 11.5px !important;
-          color: #9E8052 !important;
-          font-weight: 600 !important;
-          margin-bottom: 8px !important;
+        /* Compact Sticky Floor Column on Mobile */
+        .inventory-floor, .floor-hd, .corner {
+          position: sticky !important;
+          left: 0 !important;
+          z-index: 10 !important;
+          background: #FAF8F5 !important;
+          box-shadow: 2px 0 6px rgba(0, 0, 0, 0.08) !important;
+          width: 58px !important;
+          min-width: 58px !important;
+          max-width: 58px !important;
+          padding: 6px 2px !important;
+          font-size: 11px !important;
+          text-align: center !important;
+          border-right: 2px solid #D9D2C5 !important;
         }
-        .inventory-grid {
-          padding-bottom: 85px !important;
+        .inventory-floor small {
+          font-size: 8px !important;
+          margin-top: 1px !important;
+          display: block !important;
+        }
+        /* Compact Mobile Unit Cells */
+        .inventory-table th, .inventory-table td {
+          min-width: 76px !important;
+          width: 76px !important;
+          padding: 3px !important;
+        }
+        .inventory-unit {
+          min-width: 70px !important;
+          min-height: 52px !important;
+          padding: 5px 3px !important;
+          border-radius: 6px !important;
+        }
+        .inventory-unit .u-code {
+          font-size: 10.5px !important;
+          font-weight: 800 !important;
+        }
+        .inventory-unit .u-price {
+          font-size: 9px !important;
+          font-weight: 700 !important;
+          margin: 1px 0 !important;
+        }
+        .inventory-unit .u-size {
+          font-size: 8px !important;
+          white-space: nowrap !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+        }
+        .inventory-unit-head .code {
+          font-size: 11px !important;
+          font-weight: 800 !important;
+        }
+        .inventory-unit-head .dir {
+          font-size: 8.5px !important;
+        }
+        .inventory-detail-head .beds {
+          font-size: 9px !important;
+          font-weight: 700 !important;
+        }
+        .inventory-detail-head .size {
+          font-size: 8px !important;
+          white-space: nowrap !important;
+        }
+        .inv-scroll-hint {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          gap: 6px !important;
+          font-size: 11px !important;
+          color: #9E8052 !important;
+          font-weight: 700 !important;
+          margin-bottom: 8px !important;
+          padding: 6px 10px !important;
+          background: rgba(158, 128, 82, 0.08) !important;
+          border: 1px solid rgba(158, 128, 82, 0.2) !important;
+          border-radius: 8px !important;
         }
 
         /* ── Standard Inputs & Touch Targets ── */
@@ -10770,8 +10852,8 @@
           `;
         } else {
           grid.innerHTML = `
-            <div class="inv-scroll-hint" style="margin-bottom:8px;font-size:11.5px;color:#9E8052;font-weight:600;">
-              👉 横にスワイプして全タイプ・号室を確認できます (Swipe left/right)
+            <div class="inv-scroll-hint">
+              <span>↔ 横にスワイプして全号室を確認できます (Swipe left / right)</span>
             </div>
             <div class="inventory-sheet">
               <table class="inventory-table">
