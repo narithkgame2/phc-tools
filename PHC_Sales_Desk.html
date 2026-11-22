@@ -4297,12 +4297,23 @@
       }
       /* DOCUMENT OVERLAY */
       .doc-overlay {
-        position: fixed;
-        inset: 0;
-        background: #f0ece4;
-        z-index: 600;
-        overflow-y: auto;
+        position: fixed !important;
+        inset: 0 !important;
+        background: #f0ece4 !important;
+        z-index: 100005 !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
         display: none;
+      }
+      body.doc-open .mobile-bottom-nav,
+      body.doc-open #invMobileStickyBar,
+      body.doc-open .inv-mobile-sticky-bar,
+      body:has(#docOverlay.visible) .mobile-bottom-nav,
+      body:has(#docOverlay.visible) #invMobileStickyBar,
+      body:has(#docOverlay.visible) .inv-mobile-sticky-bar {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
       }
       .doc-overlay.visible {
         display: block;
@@ -6481,25 +6492,61 @@
         }
 
         /* ── Document Preview Modal on Mobile ── */
+        .doc-overlay {
+          padding-bottom: 50px !important;
+        }
         .doc-page {
-          margin: 8px auto !important;
+          margin: 8px auto 60px !important;
           width: calc(100% - 12px) !important;
           max-width: 100% !important;
           border-radius: 8px !important;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.12) !important;
         }
         .doc-inner {
-          padding: 16px 12px !important;
+          padding: 18px 12px 30px !important;
           overflow-x: auto !important;
           -webkit-overflow-scrolling: touch !important;
         }
         .doc-nav-bar {
-          padding: 8px 10px !important;
+          padding: 8px 12px !important;
           gap: 8px !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: space-between !important;
         }
-        .doc-nav-back, .doc-nav-print {
-          height: 38px !important;
+        .doc-nav-type {
+          display: none !important;
+        }
+        .doc-lang-toggle {
+          margin-right: auto !important;
+          margin-left: 4px !important;
+        }
+        .doc-nav-back {
+          height: 36px !important;
+          padding: 0 10px !important;
+          font-size: 11px !important;
+          font-weight: 700 !important;
+          border-radius: 6px !important;
+          flex-shrink: 0 !important;
+        }
+        .doc-nav-print {
+          height: 36px !important;
           padding: 0 12px !important;
           font-size: 11px !important;
+          font-weight: 700 !important;
+          border-radius: 6px !important;
+          flex-shrink: 0 !important;
+        }
+        .trkr-tbl {
+          font-size: 9.5px !important;
+          min-width: 480px !important;
+        }
+        .trkr-tbl th, .trkr-tbl td {
+          padding: 6px 5px !important;
+        }
+        .trkr-tbl th {
+          font-size: 8.5px !important;
+          letter-spacing: 0.5px !important;
         }
 
         /* ── Configuration Modal on Mobile ── */
@@ -13416,11 +13463,19 @@
         else if (type === "schedule") html = genSchedule(lastCalc);
         else if (type === "tracker") html = genTracker(lastCalc);
         $("docContent").innerHTML = html;
+        const stickyBar = $("invMobileStickyBar");
+        if (stickyBar) stickyBar.style.display = "none";
+        document.body.classList.add("doc-open");
         $("docOverlay").classList.add("visible");
         $("docOverlay").scrollTop = 0;
       }
       function closeDoc() {
         $("docOverlay").classList.remove("visible");
+        document.body.classList.remove("doc-open");
+        const stickyBar = $("invMobileStickyBar");
+        if (stickyBar && typeof activeTab !== 'undefined' && activeTab === "inventory" && typeof stickyActiveUnit !== 'undefined' && stickyActiveUnit && window.innerWidth <= 768) {
+          stickyBar.style.display = "flex";
+        }
       }
 
       function updateRoiActiveDealBanner() {
