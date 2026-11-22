@@ -4426,12 +4426,16 @@
       }
       @media (max-width: 600px) {
         .lh {
-          flex-direction: column;
-          align-items: flex-start;
+          display: flex !important;
+          flex-direction: row !important;
+          justify-content: space-between !important;
+          align-items: flex-start !important;
+          gap: 12px !important;
         }
         .lh-meta {
-          text-align: left;
-          min-width: 0;
+          text-align: right !important;
+          min-width: 90px !important;
+          flex-shrink: 0 !important;
         }
       }
       .doc-title {
@@ -6515,10 +6519,20 @@
           justify-content: space-between !important;
         }
         .doc-nav-type {
-          display: none !important;
+          font-size: 11px !important;
+          font-weight: 600 !important;
+          letter-spacing: 1px !important;
+          text-transform: uppercase !important;
+          color: rgba(255, 255, 255, 0.85) !important;
+          text-align: center !important;
+          display: block !important;
+          flex: 1 !important;
+          white-space: nowrap !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+          padding: 0 4px !important;
         }
         .doc-lang-toggle {
-          margin-right: auto !important;
           margin-left: 4px !important;
         }
         .doc-nav-back {
@@ -12997,8 +13011,8 @@
 </g>
 </svg></div>`;
 
-        const logoHtml = cfgLogo && !cfgLogo.includes('data:image/png')
-          ? `<img src="${cfgLogo}" style="max-height:52px;max-width:160px;object-fit:contain;display:block;margin-bottom:3px">`
+        const logoHtml = cfgLogo
+          ? `<img src="${cfgLogo}" style="max-height:48px;max-width:160px;object-fit:contain;display:block;margin-bottom:3px">`
           : `<div style="display:flex;align-items:center;gap:12px;">
               ${logoRoundel}
               <div>
@@ -13044,6 +13058,10 @@
         const isJa = lang === "ja";
         if (mode === "quotation") {
           const title = isJa ? "お見積書 / Buyer Quotation" : "Buyer Quotation";
+          return `<div class="proj-render-strip"><div class="prs-inner"><div class="prs-name">${title}</div></div></div>`;
+        }
+        if (mode === "schedule") {
+          const title = isJa ? "お支払いスケジュール / Payment Schedule" : "Payment Schedule";
           return `<div class="proj-render-strip"><div class="prs-inner"><div class="prs-name">${title}</div></div></div>`;
         }
         const subline = `Unit ${r.uid} · ${r.info?.beds} · Floor ${r.floor}F`;
@@ -13325,21 +13343,31 @@
     ${docFoot(cfgValue("quoteFooterRole", "カンボジア不動産アドバイザー"))}
   </div></div>`;
       }
-      function genSchedule(r) {
+      function genSchedule(r, lang = activeDocLang) {
+        const isJa = lang === "ja";
         const bookingDateStr = $("bookingDate").value,
           spaDateStr = $("spaDate").value,
           handoverStr = $("handoverDate").value;
         const p = PROJECTS[r.proj || activeProjId];
-        const client = $("clientName").value || "Valued Client";
-        const bookingLabel = cfgValue("quoteBookingLabel", "Booking");
-        const spaLabel = cfgValue("quoteSpaLabel", "SPA");
-        const bookingDisplay = formatDocDate(bookingDateStr, "To be confirmed");
-        const spaDisplay = formatDocDate(spaDateStr, "N/A");
+        const client = $("clientName").value || (isJa ? "お客様" : "Valued Client");
+        const bookingLabel = isJa ? "予約金 (Booking)" : cfgValue("quoteBookingLabel", "Booking");
+        const spaLabel = isJa ? "契約頭金 (SPA)" : cfgValue("quoteSpaLabel", "SPA");
+        const bookingDisplay = formatDocDate(bookingDateStr, isJa ? "確認中" : "To be confirmed");
+        const spaDisplay = formatDocDate(spaDateStr, isJa ? "未定" : "N/A");
         const today = startOfToday();
         const rows = buildScheduleRows(r, bookingDateStr, spaDateStr, handoverStr);
         if (!rows)
-          return `<div class="doc-page"><div class="doc-inner"><p style="padding:30px;text-align:center;color:var(--tx3)">Please enter SPA Signing Date.</p></div></div>`;
+          return `<div class="doc-page"><div class="doc-inner"><p style="padding:30px;text-align:center;color:var(--tx3)">${isJa ? "SPA契約日を入力してください。" : "Please enter SPA Signing Date."}</p></div></div>`;
         const total = r.net;
+
+        const colNum = "#";
+        const colDueDate = isJa ? "期日 (Due Date)" : "Due Date";
+        const colStage = isJa ? "支払い項目 (Stage)" : "Stage";
+        const colAmt = isJa ? "金額 (Amount)" : "Amount";
+        const colCumul = isJa ? "累計額 (Cumulative)" : "Cumulative";
+        const colBal = isJa ? "残金 (Balance)" : "Balance";
+        const totLabel = isJa ? "ご購入総額 (TOTAL)" : "TOTAL";
+
         const tableRows = rows
           .map((row, idx) => {
             const cumul = rows
@@ -13347,15 +13375,18 @@
                 .reduce((s, x) => s + x.amount, 0),
               bal = total - cumul;
             const date = row.date instanceof Date ? row.date : new Date(row.date);
-            return `<tr><td style="font-weight:600;color:var(--tx3);font-size:9px">${row.num}</td><td>${formatScheduleDateLabel(row)}</td><td style="color:var(--tx2)">${row.stage}</td><td class="amt">${fUSD(row.amount)}</td><td class="cumul">${fUSD(cumul)}</td><td class="bal">${fUSD(Math.max(0, bal))}</td></tr>`;
+            return `<tr><td style="font-weight:600;color:var(--tx3);font-size:9.5px">${row.num}</td><td style="white-space:nowrap">${formatScheduleDateLabel(row)}</td><td style="color:var(--tx2)">${row.stage}</td><td class="amt">${fUSD(row.amount)}</td><td class="cumul">${fUSD(cumul)}</td><td class="bal">${fUSD(Math.max(0, bal))}</td></tr>`;
           })
           .join("");
+
+        const subTitle = isJa ? "支払い計画書 · Overview" : "Client Payment Overview";
+
         return `<div class="doc-page"><div class="doc-inner">
-    ${letterhead()}
-    <div class="doc-title">Payment Schedule</div><div class="doc-subtitle">${p.name} · Client Payment Overview</div>
-    <div class="doc-unit-badge"><div><div class="doc-uid">${r.uid}</div><div class="doc-ud">${r.info?.beds} · ${r.info?.size}${r.info?.orientation ? ` · ${r.info.orientation}` : ""} · Floor ${r.floor}F<br>Client: <strong>${client}</strong></div></div><div style="text-align:right"><div style="font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-size:1.1rem;color:var(--navy)">${fUSD(total)}</div><div style="font-size:8px;color:var(--tx3)">Total Purchase Price</div><div style="font-size:9px;color:var(--tx3);margin-top:4px">${bookingLabel}: ${bookingDisplay}</div><div style="font-size:9px;color:var(--tx3);margin-top:4px">${spaLabel}: ${spaDisplay}</div></div></div>
-    <div style="overflow-x:auto"><table class="trkr-tbl"><thead><tr><th>#</th><th>Due Date</th><th>Stage</th><th style="text-align:right">Amount</th><th style="text-align:right">Cumulative</th><th style="text-align:right">Balance</th></tr></thead><tbody>${tableRows}<tr class="tot-row"><td colspan="3"><strong>TOTAL</strong></td><td class="amt"><strong>${fUSD(total)}</strong></td><td class="cumul">${fUSD(total)}</td><td class="bal">$0.00</td></tr></tbody></table></div>
-    ${docFoot()}
+    ${letterhead(lang)}${projRenderStrip(r, "schedule", lang)}
+    <div class="doc-title">${p.name}</div><div class="doc-subtitle">${p.location ? p.location + " · " : ""}${subTitle}</div>
+    <div class="doc-unit-badge"><div><div class="doc-uid">${r.uid}</div><div class="doc-ud">${r.info?.beds || ""} · ${r.info?.grossSize || r.info?.size || ""}${r.info?.orientation ? ` · ${r.info.orientation}` : ""} · Floor ${r.floor}F<br>${isJa ? "ご提案先" : "Client"}: <strong>${client}</strong></div></div><div style="text-align:right"><div style="font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-size:1.15rem;font-weight:700;color:var(--navy)">${fUSD(total)}</div><div style="font-size:8.5px;color:var(--tx3);text-transform:uppercase;letter-spacing:0.5px">${isJa ? "ご購入総額" : "Total Purchase Price"}</div><div style="font-size:9.5px;color:var(--tx3);margin-top:4px">${bookingLabel}: ${bookingDisplay}</div><div style="font-size:9.5px;color:var(--tx3);margin-top:4px">${spaLabel}: ${spaDisplay}</div></div></div>
+    <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0 16px;"><table class="trkr-tbl"><thead><tr><th style="width:28px">${colNum}</th><th>${colDueDate}</th><th>${colStage}</th><th style="text-align:right">${colAmt}</th><th style="text-align:right">${colCumul}</th><th style="text-align:right">${colBal}</th></tr></thead><tbody>${tableRows}<tr class="tot-row"><td colspan="3"><strong>${totLabel}</strong></td><td class="amt"><strong>${fUSD(total)}</strong></td><td class="cumul">${fUSD(total)}</td><td class="bal">$0.00</td></tr></tbody></table></div>
+    ${docFoot("", lang)}
   </div></div>`;
       }
       function genTracker(r) {
@@ -13460,7 +13491,7 @@
         if (type === "quotation") html = genQuotation(lastCalc);
         else if (type === "advisory") html = genAdvisory(lastCalc);
         else if (type === "combined") html = genCombined(lastCalc);
-        else if (type === "schedule") html = genSchedule(lastCalc);
+        else if (type === "schedule") html = genSchedule(lastCalc, activeDocLang);
         else if (type === "tracker") html = genTracker(lastCalc);
         $("docContent").innerHTML = html;
         const stickyBar = $("invMobileStickyBar");
