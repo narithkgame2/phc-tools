@@ -10789,7 +10789,6 @@
       }
     
       function renderInventory() {
-        const filtersEl = $("inventoryFilters");
         const grid = $("inventoryGrid");
         if (!grid) return;
         const q = ($("inventorySearch")?.value || "").trim().toLowerCase();
@@ -11212,10 +11211,10 @@
       function loadProjectCfg(id) {
         activeCfgProjectId = id;
         const data = getProjectCfg(id);
-        $("cfgProjectSelect").value = id;
-        $("cfgCompletionMonth").value = data.completionMonth || "";
-        $("cfgRentalDelay").value = data.rentalDelayMonths || 0;
-        $("cfgUnitMetaMap").value = formatUnitMetaMapText(data.unitMetaMap);
+        if ($("cfgProjectSelect")) $("cfgProjectSelect").value = id;
+        if ($("cfgCompletionMonth")) $("cfgCompletionMonth").value = data.completionMonth || "";
+        if ($("cfgRentalDelay")) $("cfgRentalDelay").value = data.rentalDelayMonths || 0;
+        if ($("cfgUnitMetaMap")) $("cfgUnitMetaMap").value = formatUnitMetaMapText(data.unitMetaMap);
         renderProjectPriceGrid(id);
         renderProjectLibraryStatus(id);
       }
@@ -12134,7 +12133,7 @@
           moAmt = moTotal / months,
           hoTotal = (net * hoPct) / 100;
         const commission =
-          (net * (cfgComm[activeProjId] || p.commission)) / 100;
+          (net * (cfgComm[targetProjId] || p.commission)) / 100;
         return {
           orig,
           discAmt: discAmt || 0,
