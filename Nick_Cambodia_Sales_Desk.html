@@ -754,7 +754,7 @@
       .inventory-unit-head .dir {
         font-size: 11px;
         letter-spacing: 0.6px;
-        text-transform: uppercase;
+        text-transform: none;
         color: var(--tx3);
         font-weight: 700;
       }
@@ -10234,6 +10234,24 @@
         };
         return jaMap[ori] || ori;
       }
+      function cleanFacingDirection(ori) {
+        if (!ori) return "—";
+        if (/north-east/i.test(ori)) return "(Facing North-East)";
+        if (/north-west/i.test(ori)) return "(Facing North-West)";
+        if (/south-east/i.test(ori)) return "(Facing South-East)";
+        if (/south-west/i.test(ori)) return "(Facing South-West)";
+        if (/north\s*facing/i.test(ori)) return "(Facing North)";
+        if (/south\s*facing/i.test(ori)) return "(Facing South)";
+        if (/east\s*facing/i.test(ori)) return "(Facing East)";
+        if (/west\s*facing/i.test(ori)) return "(Facing West)";
+        if (/inner\s*east/i.test(ori)) return "(Inner East)";
+        if (/inner\s*lightwell/i.test(ori)) return "(Inner Lightwell)";
+        if (/inner\s*courtyard/i.test(ori)) return "(Inner Courtyard)";
+        if (/ocean\s*view/i.test(ori)) return "(Ocean View)";
+        if (/mountain/i.test(ori)) return "(Mountain View)";
+        const base = ori.replace(/\s*\([^)]*\)/g, "").trim();
+        return base ? `(${base})` : "—";
+      }
       function addMonths(d, m) {
         const r = new Date(d);
         r.setMonth(r.getMonth() + m);
@@ -10914,7 +10932,7 @@
           .flatMap((group) =>
             group.types.map((type) => {
               const info = getUnitMeta(activeProjId, type);
-              return `<th><div class="inventory-unit-head"><div class="code">${type}</div><div class="dir">${info.orientation || "—"}</div></div></th>`;
+              return `<th><div class="inventory-unit-head"><div class="code">${type}</div><div class="dir">${cleanFacingDirection(info.orientation)}</div></div></th>`;
             }),
           )
           .join("");
@@ -10959,13 +10977,13 @@
                       <button class="inventory-mark ${row.status}" title="Change status" onclick="event.stopPropagation();setInventoryStatus('${activeProjId}','${row.uid}','${nextInventoryStatus(row.status)}')"></button>
                       <div class="u-code">${row.uid}</div>
                       <div class="u-price">${statusText}</div>
-                      <div class="u-size">${row.info?.size || ""}${row.orientation ? ` · ${row.orientation}` : ""}</div>
+                      <div class="u-size">${row.info?.size || ""}</div>
                     </div>
                   </td>`;
                 }),
               )
               .join("");
-            return `<tr><th class="inventory-floor">${floor}F<small>Floor</small></th>${cells}</tr>`;
+            return `<tr><th class="inventory-floor">${floor}<small>Floor</small></th>${cells}</tr>`;
           })
           .join("");
         // Update View Switcher Buttons & Counter
@@ -11038,7 +11056,7 @@
               <table class="inventory-table">
                 <thead>
                   <tr class="inventory-group-row"><th class="corner"></th>${groupHead}</tr>
-                  <tr class="inventory-type-row"><th class="floor-hd">Unit</th>${unitHead}</tr>
+                  <tr class="inventory-type-row"><th class="floor-hd">Unit Type</th>${unitHead}</tr>
                   <tr class="inventory-size-row"><th class="floor-hd">Detail</th>${detailHead}</tr>
                 </thead>
                 <tbody>${body}</tbody>
