@@ -6867,7 +6867,7 @@
         <div class="drawer-hd">
           <div>
             <span class="drawer-title">
-              <svg class="ui-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.65 1.65 0 0 0 15 19.4a1.65 1.65 0 0 0-1 .6 1.65 1.65 0 0 0-.33 1V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-.33-1A1.65 1.65 0 0 0 8.35 19.4a1.65 1.65 0 0 0-1.82.33l-.06-.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-.6-1 1.65 1.65 0 0 0-1-.33H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1-.33A1.65 1.65 0 0 0 4.6 8.35a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06-.06A1.65 1.65 0 0 0 19.4 8.35c0 .39.14.76.4 1.05.29.3.66.48 1.08.51H21a2 2 0 1 1 0 4h-.09c-.42.03-.79.21-1.08.51-.26.29-.4.66-.43 1.08Z"/></svg>
+              <svg class="ui-icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
               Configure
             </span>
             <div class="drawer-subtitle">Consultant Profile, Branding &amp; Project Defaults</div>
@@ -7122,106 +7122,33 @@
           <!-- TAB 5: PROJECTS (CLEAN & REFINED) -->
           <div id="cfgProjects" style="display: none">
             <div class="cfg-card">
-              <div class="cfg-card-title">Project Handover &amp; Rental Timeline</div>
-              <div class="cfg-card-desc">Configure milestone completion dates and default rental timing.</div>
-              
-              <div class="field" style="margin-top: 12px">
-                <label>Active Project</label>
-                <select
-                  id="cfgProjectSelect"
-                  onchange="changeProjectCfgSelection(this.value)"
-                ></select>
-              </div>
-              <div class="analysis-grid-2" style="margin-top: 10px">
-                <div class="field">
-                  <label>Completion / Handover Month</label>
-                  <input type="month" id="cfgCompletionMonth" />
+              <div class="cfg-card-title">Project Directory &amp; Handover Schedule</div>
+              <div class="cfg-card-desc">Target handover completion dates for payment schedules and ROI cash flow modeling.</div>
+
+              <!-- Executive Stats Bar -->
+              <div class="comm-stats-bar" style="margin-top: 12px">
+                <div class="comm-stat-cell">
+                  <span class="comm-stat-num" id="projActiveCount">9 Projects</span>
+                  <span class="comm-stat-lbl">Active Portfolios</span>
                 </div>
-                <div class="field">
-                  <label>Rental Delay After Handover (Months)</label>
-                  <input type="number" id="cfgRentalDelay" min="0" value="0" />
+                <div class="comm-stat-cell">
+                  <span class="comm-stat-num" id="projDeliveryRange">2027 – 2028</span>
+                  <span class="comm-stat-lbl">Delivery Range</span>
+                </div>
+                <div class="comm-stat-cell">
+                  <span class="comm-stat-num">BKK1 · TTP · TK</span>
+                  <span class="comm-stat-lbl">Key Prime Hubs</span>
                 </div>
               </div>
-              <div class="cfg-helper-note" style="margin-top: 12px">
+
+              <!-- Project Cards Grid -->
+              <div id="projectTimelineCards" class="comm-cards-grid" style="margin-top: 12px"></div>
+
+              <div class="cfg-helper-note" style="margin-top: 14px">
                 <span class="cfg-helper-dot"></span>
-                <span>Sets the final milestone date in the Payment Schedule and starts rental cash flow modeling in the ROI Calculator.</span>
+                <span>Handover dates automatically determine the final milestone in the Payment Schedule and initialize rental returns in the ROI Calculator.</span>
               </div>
             </div>
-
-            <!-- Unit Detail Map Accordion -->
-            <details class="cfg-advanced" style="margin-top: 12px">
-              <summary>
-                <span>Unit Layout &amp; Orientation Overrides (Optional)</span>
-                <span class="cfg-adv-chip">Inventory Overrides</span>
-              </summary>
-              <div class="cfg-advanced-body">
-                <div class="cfg-advanced-copy">
-                  Customize orientation, gross size, and net size per unit type (e.g. A1) or specific floor unit (e.g. 39A1). Standard project values are loaded by default.
-                </div>
-                <div class="field">
-                  <textarea
-                    id="cfgUnitMetaMap"
-                    style="min-height: 100px; resize: vertical; font-family: monospace; font-size: 11px;"
-                    placeholder="Example:
-A1 = North | Gross 75㎡ | Net 68㎡
-B1 = East | Gross 50㎡ | Net 45㎡
-39A1 = South-East | Net 69㎡"
-                  ></textarea>
-                </div>
-              </div>
-            </details>
-
-            <!-- Price List Reference (Collapsed by default so it never gets in the way) -->
-            <details class="cfg-advanced" style="margin-top: 12px">
-              <summary>
-                <span>Price List Image Archive (Reference Only)</span>
-                <span class="cfg-adv-chip">Visual Archive</span>
-              </summary>
-              <div class="cfg-advanced-body">
-                <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px;">
-                  <div>
-                    <div style="font-size: 11px; font-weight: 700; color: var(--navy)">Visual Price Sheet Archive</div>
-                    <div style="font-size: 10px; color: var(--tx3); margin-top: 2px">Upload reference screenshots for this project.</div>
-                  </div>
-                  <button
-                    type="button"
-                    class="mini-btn"
-                    onclick="document.getElementById('cfgPriceListInput').click()"
-                  >
-                    Upload Images
-                  </button>
-                </div>
-                <input
-                  type="file"
-                  id="cfgPriceListInput"
-                  accept="image/*"
-                  multiple
-                  style="display: none"
-                  onchange="handlePriceListUpload(event)"
-                />
-                <div id="cfgPriceListGrid" class="price-library-grid"></div>
-                <div id="cfgPriceListStatus" class="library-status">
-                  <div class="library-status-h" id="cfgPriceListStatusHead"></div>
-                  <div class="library-status-s" id="cfgPriceListStatusSub"></div>
-                </div>
-                <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px">
-                  <button
-                    type="button"
-                    class="mini-btn"
-                    onclick="openPriceListModal(activeCfgProjectId || activeProjId)"
-                  >
-                    View Fullscreen
-                  </button>
-                  <button
-                    type="button"
-                    class="mini-btn alt"
-                    onclick="clearProjectImages()"
-                  >
-                    Clear Images
-                  </button>
-                </div>
-              </div>
-            </details>
           </div>
         </div>
 
@@ -7325,7 +7252,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
       <div class="proj-tabs" id="projTabs"></div>
       <div class="proj-bar-right">
         <a href="index.html" class="hub-link">← Hub</a>
-        <button class="cfg-btn" id="cfgBtnMain" onclick="openCfg()"><svg class="ui-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.65 1.65 0 0 0 15 19.4a1.65 1.65 0 0 0-1 .6 1.65 1.65 0 0 0-.33 1V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-.33-1A1.65 1.65 0 0 0 8.35 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-.6-1 1.65 1.65 0 0 0-1-.33H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1-.33A1.65 1.65 0 0 0 4.6 8.35a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.35 4.6a1.65 1.65 0 0 0 1-.6 1.65 1.65 0 0 0 .33-1V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 .33 1 1.65 1.65 0 0 0 1 .6 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8.35c0 .39.14.76.4 1.05.29.3.66.48 1.08.51H21a2 2 0 1 1 0 4h-.09c-.42.03-.79.21-1.08.51-.26.29-.4.66-.43 1.08Z"/></svg><span>Configure</span><span id="cfgWarningDot" style="display:none;width:7px;height:7px;background:var(--amber);border-radius:50%;flex-shrink:0;margin-left:2px"></span></button>
+        <button class="cfg-btn" id="cfgBtnMain" onclick="openCfg()"><svg class="ui-icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg><span>Configure</span><span id="cfgWarningDot" style="display:none;width:7px;height:7px;background:var(--amber);border-radius:50%;flex-shrink:0;margin-left:2px"></span></button>
       </div>
     </div>
 
@@ -9888,7 +9815,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
       function uiIcon(name, cls = "ui-icon", extra = "") {
         const attrs = `class="${cls}" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" ${extra}`.trim();
         const paths = {
-          settings: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.5 1.5 0 0 0 .3 1.7l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.5 1.5 0 0 0-1.7-.3 1.5 1.5 0 0 0-.9 1.4V22a2 2 0 1 1-4 0v-.1a1.5 1.5 0 0 0-.9-1.4 1.5 1.5 0 0 0-1.7.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.5 1.5 0 0 0 .3-1.7 1.5 1.5 0 0 0-1.4-.9H2a2 2 0 1 1 0-4h.1a1.5 1.5 0 0 0 1.4-.9 1.5 1.5 0 0 0-.3-1.7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.5 1.5 0 0 0 1.7.3 1.5 1.5 0 0 0 .9-1.4V2a2 2 0 1 1 4 0v.1a1.5 1.5 0 0 0 .9 1.4 1.5 1.5 0 0 0 1.7-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.5 1.5 0 0 0-.3 1.7 1.5 1.5 0 0 0 1.4.9H22a2 2 0 1 1 0 4h-.1a1.5 1.5 0 0 0-1.4.9Z"/>',
+          settings: '<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',
           x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
           bell: '<path d="M15 17h5l-1.4-1.4a2 2 0 0 1-.6-1.4V11a6 6 0 0 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"/><path d="M10 21a2 2 0 0 0 4 0"/>',
           phone: '<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.4 19.4 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7l.5 3a2 2 0 0 1-.6 1.8l-1.2 1.2a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 1.8-.6l3 .5a2 2 0 0 1 1.7 2Z"/>',
@@ -10996,18 +10923,14 @@ B1 = East | Gross 50㎡ | Net 45㎡
         loadProjectCfg(id);
       }
       function saveActiveProjectCfg() {
-        const id = activeCfgProjectId || $("cfgProjectSelect")?.value;
-        if (!id) return;
-        const data = getProjectCfg(id);
-        data.completionMonth = $("cfgCompletionMonth").value || "";
-        data.rentalDelayMonths = Math.max(
-          0,
-          parseInt($("cfgRentalDelay").value || "0", 10) || 0,
-        );
-        data.unitMetaMap = parseUnitMetaMapText(
-          $("cfgUnitMetaMap")?.value || "",
-        );
-        if (id === activeProjId) syncHandoverFromProject();
+        PROJ_ORDER.forEach((id) => {
+          const hInput = $("projHandover_" + id);
+          if (hInput) {
+            const data = getProjectCfg(id);
+            data.completionMonth = hInput.value || "";
+          }
+        });
+        if (activeProjId) syncHandoverFromProject();
       }
       function handlePriceListUpload(e) {
         const files = Array.from(e.target.files || []);
@@ -12598,8 +12521,7 @@ B1 = East | Gross 50㎡ | Net 45㎡
         $("cfgOverlay").style.display = "flex";
         buildCommissionFields();
         buildCurrencyFields();
-        buildProjectSelectOptions();
-        changeProjectCfgSelection($("cfgProjectSelect").value || activeProjId);
+        buildProjectTimelineCards();
         renderCfgPreview();
         updateHealthPanel();
       }
@@ -12618,6 +12540,68 @@ B1 = East | Gross 50㎡ | Net 45㎡
           .forEach((t) => t.classList.remove("active"));
         btn.classList.add("active");
       }
+      function buildProjectTimelineCards() {
+        const c = $("projectTimelineCards");
+        if (!c) return;
+        c.innerHTML = "";
+        let count = 0;
+        let years = [];
+        PROJ_ORDER.forEach((id) => {
+          const p = PROJECTS[id];
+          if (!p) return;
+          count++;
+          const cfgData = getProjectCfg(id);
+          const d = DEFAULT_PROJECT_CFG[id] || {};
+          const val = cfgData.completionMonth || d.completionMonth || "";
+          if (val) {
+            const y = parseInt(val.split("-")[0], 10);
+            if (y && !years.includes(y)) years.push(y);
+          }
+          const row = document.createElement("div");
+          row.className = "comm-card-item";
+          row.innerHTML = `
+            <div class="comm-item-left">
+              <div class="comm-item-badge">${p.tabLabel || p.dev || id.toUpperCase()}</div>
+              <div style="min-width:0">
+                <div class="comm-item-name">${p.name}</div>
+                <div class="comm-item-sub">${p.location || p.dev} · Handover Target</div>
+              </div>
+            </div>
+            <div class="comm-item-right" style="display: flex; align-items: center; gap: 8px;">
+              <input 
+                type="month" 
+                id="projHandover_${id}" 
+                value="${val}" 
+                class="comm-input" 
+                style="width: 135px; text-align: center; font-size: 11.5px; font-weight: 600; padding: 6px 8px;"
+                onchange="updateProjTimelineStats()"
+              />
+            </div>
+          `;
+          c.appendChild(row);
+        });
+        updateProjTimelineStats();
+      }
+
+      function updateProjTimelineStats() {
+        let count = 0;
+        let years = [];
+        PROJ_ORDER.forEach((id) => {
+          const el = $("projHandover_" + id);
+          const val = el ? el.value : (getProjectCfg(id).completionMonth || "");
+          if (el) count++;
+          if (val) {
+            const y = parseInt(val.split("-")[0], 10);
+            if (y && !years.includes(y)) years.push(y);
+          }
+        });
+        years.sort((a, b) => a - b);
+        if ($("projActiveCount")) $("projActiveCount").textContent = count + " Projects";
+        if ($("projDeliveryRange")) {
+          $("projDeliveryRange").textContent = years.length > 1 ? `${years[0]} – ${years[years.length - 1]}` : (years[0] ? String(years[0]) : "2027 – 2028");
+        }
+      }
+
       function buildCommissionFields() {
         const c = $("commissionFields");
         if (!c) return;
@@ -12701,6 +12685,14 @@ B1 = East | Gross 50㎡ | Net 45㎡
         saveCurrencyInputs();
         fxMeta.source = "manual";
         fxMeta.updatedAt = new Date().toISOString();
+        PROJ_ORDER.forEach((id) => {
+          const hInput = $("projHandover_" + id);
+          if (hInput) {
+            const data = getProjectCfg(id);
+            data.completionMonth = hInput.value || "";
+          }
+        });
+        if (activeProjId) syncHandoverFromProject();
         saveActiveProjectCfg();
         renderPriceListRef();
         renderROITimeline();
@@ -15074,7 +15066,7 @@ tr:nth-child(even) td{background:#faf8f4}
         <span>ROI</span>
       </div>
       <div class="m-nav-item" data-tab="config" onclick="openCfg()">
-        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.65 1.65 0 0 0 15 19.4a1.65 1.65 0 0 0-1 .6 1.65 1.65 0 0 0-.33 1V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-.33-1A1.65 1.65 0 0 0 8.35 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-.6-1 1.65 1.65 0 0 0-1-.33H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1-.33A1.65 1.65 0 0 0 4.6 8.35a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.35 4.6a1.65 1.65 0 0 0 1-.6 1.65 1.65 0 0 0 .33-1V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 .33 1 1.65 1.65 0 0 0 1 .6 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8.35c0 .39.14.76.4 1.05.29.3.66.48 1.08.51H21a2 2 0 1 1 0 4h-.09c-.42.03-.79.21-1.08.51-.26.29-.4.66-.43 1.08Z"/></svg>
+        <svg class="ui-icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
         <span>Config</span>
       </div>
     </nav>
@@ -15153,7 +15145,7 @@ tr:nth-child(even) td{background:#faf8f4}
 
         <div class="drawer-sec-title">CONFIG &amp; CLOSING DESK</div>
         <a class="drawer-item" onclick="openCfg(); closeNavDrawer();">
-          <span class="d-icon"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.65 1.65 0 0 0 15 19.4a1.65 1.65 0 0 0-1 .6 1.65 1.65 0 0 0-.33 1V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-.33-1A1.65 1.65 0 0 0 8.35 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-.6-1 1.65 1.65 0 0 0-1-.33H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1-.33A1.65 1.65 0 0 0 4.6 8.35a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06-.06A1.65 1.65 0 0 0 8.35 4.6a1.65 1.65 0 0 0 1-.6 1.65 1.65 0 0 0 .33-1V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 .33 1 1.65 1.65 0 0 0 1 .6 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8.35c0 .39.14.76.4 1.05.29.3.66.48 1.08.51H21a2 2 0 1 1 0 4h-.09c-.42.03-.79.21-1.08.51-.26.29-.4.66-.43 1.08Z"/></svg></span>
+          <span class="d-icon"><svg class="ui-icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></span>
           <span>Desk Configuration (設定)</span>
         </a>
         <a class="drawer-item" href="https://line.me/ti/p/@615ueovq" target="_blank" rel="noopener">
