@@ -7118,7 +7118,13 @@
     <!-- REMINDER MODAL -->
     <div class="modal-bg" id="remindModal">
       <div class="modal" style="max-width: 480px">
-        <h3 class="inline-icon"><svg class="ui-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 17h5l-1.4-1.4a2 2 0 0 1-.6-1.4V11a6 6 0 0 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>Smart Reminders</h3>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px;">
+          <h3 class="inline-icon" style="margin:0"><svg class="ui-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 17h5l-1.4-1.4a2 2 0 0 1-.6-1.4V11a6 6 0 0 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>Smart Reminders</h3>
+          <div style="display:flex;gap:4px;" id="remindLangSwitch">
+            <button type="button" class="rst" id="remindLangEnBtn" onclick="setRemindLang('en')">EN</button>
+            <button type="button" class="rst" id="remindLangJaBtn" onclick="setRemindLang('ja')">JP</button>
+          </div>
+        </div>
         <div class="modal-sub" id="remindModalSub">
           Payment stage message templates
         </div>
@@ -7131,11 +7137,15 @@
           ></div>
         </div>
         <div class="modal-btns">
-          <button class="modal-btn primary inline-icon" onclick="sendRemind()">
+          <button type="button" class="modal-btn primary inline-icon" id="copyRemindBtn" onclick="copyRemindMsg()">
+            <svg class="ui-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy Message
+          </button>
+          <button type="button" class="modal-btn secondary inline-icon" onclick="sendRemind()" style="background:#25D366;color:#fff;border-color:#25D366;">
             <svg class="ui-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.4 19.4 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7l.5 3a2 2 0 0 1-.6 1.8l-1.2 1.2a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 1.8-.6l3 .5a2 2 0 0 1 1.7 2Z"/></svg>
             Open WhatsApp
           </button>
-          <button class="modal-btn secondary" onclick="closeRemind()">
+          <button type="button" class="modal-btn secondary" onclick="closeRemind()">
             Cancel
           </button>
         </div>
@@ -9872,7 +9882,8 @@
       };
 
       // ── WA REMINDER TEMPLATES ──
-      function buildReminderMsg(deal, stageKey) {
+      let activeRemindLang = localStorage.getItem("nick_remind_lang") || "en";
+      function buildReminderMsg(deal, stageKey, lang = activeRemindLang) {
         const p = PROJECTS[deal.proj];
         const np = getNextPayment(deal);
         const bookingRow = getScheduleRowByKind(deal, "booking");
@@ -9882,14 +9893,34 @@
         const installmentMeta = installmentRow
           ? getPaymentStatusMeta(installmentRow)
           : null;
-        const client = deal.clientName || "Valued Client";
-        const agency = cfg.agency || "NICK | カンボジア不動産投資";
+        const client = deal.clientName || (lang === "ja" ? "お客様" : "Valued Client");
         const projName = (p.name || "").toUpperCase();
         const unitDesc = [deal.uid, deal.info?.beds, deal.info?.size].filter(Boolean).join(" | ");
-        const sig = `\n\n※利回り・価格は参考値であり、将来の収益を保証するものではありません。\n\n**CONTACT**\n${agency}\n公式LINE: https://line.me/ti/p/@615ueovq`;
-        const bDate = bookingRow ? fmtDate(bookingRow.date instanceof Date ? bookingRow.date : new Date(bookingRow.date)) : "To be confirmed";
-        const sDate = spaRow ? fmtDate(spaRow.date instanceof Date ? spaRow.date : new Date(spaRow.date)) : "To be confirmed";
-        const iDate = installmentRow ? fmtDate(installmentMeta.date) : np ? fmtDate(np.date) : "To be confirmed";
+        const bDate = bookingRow ? fmtDate(bookingRow.date instanceof Date ? bookingRow.date : new Date(bookingRow.date)) : (lang === "ja" ? "未定" : "To be confirmed");
+        const sDate = spaRow ? fmtDate(spaRow.date instanceof Date ? spaRow.date : new Date(spaRow.date)) : (lang === "ja" ? "未定" : "To be confirmed");
+        const iDate = installmentRow ? fmtDate(installmentMeta.date) : np ? fmtDate(np.date) : (lang === "ja" ? "未定" : "To be confirmed");
+        const hDate = handoverRow ? fmtDate(handoverRow.date instanceof Date ? handoverRow.date : new Date(handoverRow.date)) : (lang === "ja" ? "未定" : "To be confirmed");
+
+        if (lang === "ja") {
+          const iStatusJa = installmentMeta && installmentMeta.daysUntil < 0
+            ? `お支払い期限を${Math.abs(installmentMeta.daysUntil)}日過ぎています`
+            : installmentMeta
+              ? `お支払い期限まであと${installmentMeta.daysUntil}日`
+              : np
+                ? `お支払い期限まであと${np.daysUntil}日`
+                : "未定";
+          const jaSig = `\n\n※利回り・価格は参考値であり、将来の収益を保証するものではありません。\n\n**お問い合わせ**\nNICK | カンボジア不動産投資\n公式LINE: https://line.me/ti/p/@615ueovq`;
+          const jaTemplates = {
+            booking: `**${p.name} | ご予約確認**\n\n${client} 様\n\nご予約内容は以下の通りでございます。\n\n▫️ 物件名: ${p.name}\n▫️ 号室: ${unitDesc}\n▫️ 販売価格: ${fUSD(deal.net)}\n▫️ ご予約日: ${bDate}\n▫️ 受領済み予約金: ${fUSD(deal.calc?.bk || 1000)}\n\n🔎 次のステップ: SPA（売買契約書）締結の手続きについて改めてご連絡いたします。${jaSig}`,
+            spa: `**${p.name} | SPAお支払いのご案内**\n\n${client} 様\n\nSPA（売買契約書）お支払いの時期が近づいております。\n\n▫️ 物件名: ${p.name}\n▫️ 号室: ${deal.uid}\n▫️ お支払い予定額: ${fUSD(deal.calc?.spaNet || 0)}\n▫️ お支払い期日: ${sDate}\n\n🔎 お手続きや送金方法についてご不明点がございましたら、公式LINEよりお気軽にご連絡ください。${jaSig}`,
+            installment: `**${p.name} | 分割お支払いのご案内**\n\n${client} 様\n\n分割お支払いスケジュールの状況をお知らせいたします。\n\n▫️ 物件名: ${p.name}\n▫️ 号室: ${deal.uid}\n▫️ お支払い額: ${fUSD(installmentRow?.amount || np?.amount || 0)}\n▫️ お支払い期日: ${iDate}\n▫️ ステータス: ${iStatusJa}\n\n🔎 お手続き完了後、送金控えを公式LINEにてお送りください。${jaSig}`,
+            handover: `**${p.name} | お引き渡しのご案内**\n\n${client} 様\n\nご購入物件のお引き渡し時期が近づいております。\n\n▫️ 物件名: ${p.name}\n▫️ 号室: ${unitDesc}\n▫️ 残代金: ${fUSD(handoverRow?.amount || deal.calc?.hoTotal || 0)}\n▫️ 予定時期: ${hDate}\n\n🔎 鍵のお引き渡しおよび現地確認の日程調整のため、残代金のご準備をお願いいたします。${jaSig}`,
+            followup: `**${p.name} | ご購入物件のご案内**\n\n${client} 様\n\nご購入物件の状況確認のためご連絡いたしました。\n\n▫️ 号室: ${unitDesc}\n▫️ ご購入価格: ${fUSD(deal.net)}\n\n🔎 書類手続き、お支払い計画、工事進捗などでご質問がございましたらお気軽にお知らせください。${jaSig}`,
+          };
+          return jaTemplates[stageKey] || jaTemplates.followup;
+        }
+
+        const enSig = `\n\nNote: Prices and yields are for reference only and do not guarantee future returns.\n\n**CONTACT**\nNICK | Cambodia Property Investment\nTelegram: https://t.me/Nick_REAKH`;
         const iStatus = installmentMeta && installmentMeta.daysUntil < 0
           ? `Overdue by ${Math.abs(installmentMeta.daysUntil)} days`
           : installmentMeta
@@ -9897,14 +9928,13 @@
             : np
               ? `Due in ${np.daysUntil} days`
               : "To be confirmed";
-        const hDate = handoverRow ? fmtDate(handoverRow.date instanceof Date ? handoverRow.date : new Date(handoverRow.date)) : "To be confirmed";
 
         const templates = {
-          booking: `**${projName} | BOOKING CONFIRMATION**\n\nDear ${client},\n\nWe are pleased to confirm your booking details below.\n\n▫️ Project: ${p.name}\n▫️ Unit: ${unitDesc}\n▫️ Sale Price: ${fUSD(deal.net)}\n▫️ Booking Date: ${bDate}\n▫️ Booking Fee Received: ${fUSD(deal.calc?.bk || 1000)}\n\n🔎 Next Step: Our team will coordinate with you to arrange the SPA signing.${sig}`,
-          spa: `**${projName} | SPA PAYMENT REMINDER**\n\nDear ${client},\n\nThis is a reminder regarding your upcoming SPA payment.\n\n▫️ Project: ${p.name}\n▫️ Unit: ${deal.uid}\n▫️ SPA Amount Due: ${fUSD(deal.calc?.spaNet || 0)}\n▫️ Due Date: ${sDate}\n\n🔎 Please arrange the payment at your earliest convenience and let us know if you need any assistance.${sig}`,
-          installment: `**${projName} | INSTALLMENT REMINDER**\n\nDear ${client},\n\nPlease find your installment schedule update below.\n\n▫️ Project: ${p.name}\n▫️ Unit: ${deal.uid}\n▫️ Amount Due: ${fUSD(installmentRow?.amount || np?.amount || 0)}\n▫️ Due Date: ${iDate}\n▫️ Status: ${iStatus}\n\n🔎 Kindly arrange payment and share your transfer confirmation once completed.${sig}`,
-          handover: `**${projName} | HANDOVER NOTICE**\n\nDear ${client},\n\nYour unit is approaching handover.\n\n▫️ Project: ${p.name}\n▫️ Unit: ${unitDesc}\n▫️ Handover Balance: ${fUSD(handoverRow?.amount || deal.calc?.hoTotal || 0)}\n▫️ Target Date: ${hDate}\n\n🔎 Please prepare the final payment so we can schedule your key handover and inspection.${sig}`,
-          followup: `**${projName} | INVESTMENT FOLLOW UP**\n\nDear ${client},\n\nWe are checking in regarding your unit at ${p.name}.\n\n▫️ Unit: ${unitDesc}\n▫️ Purchase Price: ${fUSD(deal.net)}\n\n🔎 Please let us know if you need any updates on documentation, payment planning, or construction progress.${sig}`,
+          booking: `**${projName} | BOOKING CONFIRMATION**\n\nDear ${client},\n\nWe are pleased to confirm your booking details below.\n\n▫️ Project: ${p.name}\n▫️ Unit: ${unitDesc}\n▫️ Sale Price: ${fUSD(deal.net)}\n▫️ Booking Date: ${bDate}\n▫️ Booking Fee Received: ${fUSD(deal.calc?.bk || 1000)}\n\n🔎 Next Step: Our team will coordinate with you to arrange the SPA signing.${enSig}`,
+          spa: `**${projName} | SPA PAYMENT REMINDER**\n\nDear ${client},\n\nThis is a reminder regarding your upcoming SPA payment.\n\n▫️ Project: ${p.name}\n▫️ Unit: ${deal.uid}\n▫️ SPA Amount Due: ${fUSD(deal.calc?.spaNet || 0)}\n▫️ Due Date: ${sDate}\n\n🔎 Please arrange the payment at your earliest convenience and let us know if you need any assistance.${enSig}`,
+          installment: `**${projName} | INSTALLMENT REMINDER**\n\nDear ${client},\n\nPlease find your installment schedule update below.\n\n▫️ Project: ${p.name}\n▫️ Unit: ${deal.uid}\n▫️ Amount Due: ${fUSD(installmentRow?.amount || np?.amount || 0)}\n▫️ Due Date: ${iDate}\n▫️ Status: ${iStatus}\n\n🔎 Kindly arrange payment and share your transfer confirmation once completed.${enSig}`,
+          handover: `**${projName} | HANDOVER NOTICE**\n\nDear ${client},\n\nYour unit is approaching handover.\n\n▫️ Project: ${p.name}\n▫️ Unit: ${unitDesc}\n▫️ Handover Balance: ${fUSD(handoverRow?.amount || deal.calc?.hoTotal || 0)}\n▫️ Target Date: ${hDate}\n\n🔎 Please prepare the final payment so we can schedule your key handover and inspection.${enSig}`,
+          followup: `**${projName} | INVESTMENT FOLLOW UP**\n\nDear ${client},\n\nWe are checking in regarding your unit at ${p.name}.\n\n▫️ Unit: ${unitDesc}\n▫️ Purchase Price: ${fUSD(deal.net)}\n\n🔎 Please let us know if you need any updates on documentation, payment planning, or construction progress.${enSig}`,
         };
         return templates[stageKey] || templates.followup;
       }
@@ -12795,7 +12825,49 @@
         $("remindModal").classList.add("visible");
       }
 
+      function updateRemindLangUI() {
+        const enBtn = $("remindLangEnBtn");
+        const jaBtn = $("remindLangJaBtn");
+        if (enBtn) enBtn.classList.toggle("active", activeRemindLang === "en");
+        if (jaBtn) jaBtn.classList.toggle("active", activeRemindLang === "ja");
+      }
+
+      function setRemindLang(lang) {
+        activeRemindLang = lang === "ja" ? "ja" : "en";
+        try { localStorage.setItem("nick_remind_lang", activeRemindLang); } catch (e) {}
+        updateRemindLangUI();
+        if (activeRemindDeal) {
+          $("remindPreview").textContent = buildReminderMsg(
+            activeRemindDeal,
+            activeRemindStage,
+            activeRemindLang,
+          );
+        }
+      }
+
+      function copyRemindMsg() {
+        const msg = $("remindPreview").textContent || "";
+        const btn = $("copyRemindBtn");
+        const flashCopied = () => {
+          if (!btn) return;
+          const prev = btn.innerHTML;
+          btn.textContent = "✓ Copied";
+          setTimeout(() => { btn.innerHTML = prev; }, 2000);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(msg).then(flashCopied).catch(() => {});
+        } else {
+          const ta = document.createElement("textarea");
+          ta.value = msg;
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand("copy"); flashCopied(); } catch (e) {}
+          ta.remove();
+        }
+      }
+
       function buildRemindModal(deal) {
+        updateRemindLangUI();
         $("remindModalSub").textContent =
           `${deal.clientName} · Unit ${deal.uid} · ${PROJECTS[deal.proj].name}`;
         const tabs = $("remindStageTabs");
@@ -12807,16 +12879,17 @@
           btn.onclick = () => {
             activeRemindStage = s.id;
             document
-              .querySelectorAll(".rst")
+              .querySelectorAll("#remindStageTabs .rst")
               .forEach((b) => b.classList.remove("active"));
             btn.classList.add("active");
-            $("remindPreview").textContent = buildReminderMsg(deal, s.id);
+            $("remindPreview").textContent = buildReminderMsg(deal, s.id, activeRemindLang);
           };
           tabs.appendChild(btn);
         });
         $("remindPreview").textContent = buildReminderMsg(
           deal,
           activeRemindStage,
+          activeRemindLang,
         );
       }
 
