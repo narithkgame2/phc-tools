@@ -7462,12 +7462,12 @@
                     <div style="font-size:11px;color:var(--tx3);">Upload floor plans, developer price sheets, or promotional images (max 12 per project, 3MB each).</div>
                   </div>
                   <div style="display:flex;gap:6px;align-items:center;">
-                    <label class="cfg-btn" style="padding:7px 12px;font-size:11px;cursor:pointer;margin:0;background:var(--navy);color:#fff;border-color:var(--navy);">
+                    <label style="padding:7px 12px;border-radius:8px;font-size:11.5px;font-weight:700;cursor:pointer;margin:0;background:#073642;color:#ffffff;border:1px solid #073642;display:inline-flex;align-items:center;">
                       + Upload Images
                       <input type="file" accept="image/*" multiple style="display:none" onchange="handlePriceListUpload(event)">
                     </label>
-                    <button type="button" class="cfg-btn" onclick="openPriceListModal($('cfgInvProjSel')?.value || activeProjId)" style="padding:7px 10px;font-size:11px;">View Gallery</button>
-                    <button type="button" class="cfg-btn" onclick="clearProjectImages()" style="padding:7px 10px;font-size:11px;color:#b91c1c;border-color:#fecaca;">Clear</button>
+                    <button type="button" onclick="openPriceListModal($('cfgInvProjSel')?.value || activeProjId)" style="padding:7px 12px;border-radius:8px;font-size:11.5px;font-weight:600;cursor:pointer;background:#f8fafc;color:#073642;border:1px solid #cbd5e1;">View Gallery</button>
+                    <button type="button" onclick="clearProjectImages()" style="padding:7px 12px;border-radius:8px;font-size:11.5px;font-weight:600;cursor:pointer;background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;">Clear</button>
                   </div>
                 </div>
                 <div id="cfgPriceListGrid" class="price-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px;margin-top:8px;"></div>
@@ -7478,11 +7478,11 @@
               </div>
 
               <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--bd);display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;">
-                <span style="font-size:11px;color:var(--tx3);">Backup or restore project edits &amp; images:</span>
+                <span style="font-size:11.5px;color:#475569;font-weight:500;">Backup or restore project edits &amp; images:</span>
                 <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                  <button type="button" class="cfg-btn" onclick="exportProjectOverrides()" style="padding:6px 10px;font-size:11px;">Export JSON</button>
-                  <label class="cfg-btn" style="padding:6px 10px;font-size:11px;cursor:pointer;margin:0;">Import JSON<input type="file" accept=".json,application/json" style="display:none" onchange="importProjectOverrides(event)"></label>
-                  <button type="button" class="cfg-btn" onclick="resetProjectOverrides()" style="padding:6px 10px;font-size:11px;color:#b91c1c;border-color:#fecaca;">Reset Project</button>
+                  <button type="button" onclick="exportProjectOverrides()" style="padding:6px 12px;border-radius:8px;font-size:11.5px;font-weight:600;cursor:pointer;background:#f8fafc;color:#073642;border:1px solid #cbd5e1;">Export JSON</button>
+                  <label style="padding:6px 12px;border-radius:8px;font-size:11.5px;font-weight:600;cursor:pointer;margin:0;background:#f8fafc;color:#073642;border:1px solid #cbd5e1;display:inline-flex;align-items:center;">Import JSON<input type="file" accept=".json,application/json" style="display:none" onchange="importProjectOverrides(event)"></label>
+                  <button type="button" onclick="resetProjectOverrides()" style="padding:6px 12px;border-radius:8px;font-size:11.5px;font-weight:600;cursor:pointer;background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;">Reset Project</button>
                 </div>
               </div>
               <div id="cfgLayoutSaveMsg" style="font-size:11px;color:#15803d;font-weight:600;margin-top:8px;display:none;"></div>
