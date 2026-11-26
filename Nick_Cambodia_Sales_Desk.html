@@ -9614,22 +9614,29 @@
             C: { beds: "3 Bed Duplex", size: "130㎡", orientation: "West Facing (Street 335)" },
             D: { beds: "3 Bed Duplex", size: "130㎡", orientation: "West Facing (Street 335)" },
             E: { beds: "3 Bed Duplex", size: "130㎡", orientation: "West Facing (Street 335)" },
+            S: { beds: "1 Bed Crystal", size: "60㎡", orientation: "South Facing (Street 540)" },
             A: { beds: "4 Bed Duplex", size: "160㎡", orientation: "South-West Corner (Street 335 & 540)" },
             I: { beds: "4 Bed Duplex", size: "160㎡", orientation: "North-East Corner (Street 538)" },
             Z: { beds: "4 Bed Duplex", size: "160㎡", orientation: "South-East Corner (Street 540)" },
           },
           prices: {
             K: { 47: 93319 },
-            O: { 42: 90956 },
-            F: { 39: 145687, 42: 151594 },
-            T: { 39: 145687, 40: 147656, 42: 151594 },
+            L: { 33: 64680 },
+            O: { 17: 52470, 24: 58245, 30: 62370, 42: 90956 },
+            F: { 24: 87367, 39: 145687, 42: 151594 },
+            G: { 24: 87367 },
+            H: { 24: 87367 },
+            T: { 24: 87367, 30: 93555, 39: 145687, 40: 147656, 42: 151594 },
             U: { 39: 145687, 40: 147656, 42: 151594 },
-            V: { 38: 143719, 39: 145687, 40: 147656, 42: 151594 },
-            B: { 35: 183750, 37: 189000, 39: 194250, 40: 196875, 42: 202125 },
-            C: { 36: 186375, 38: 191625, 39: 194250, 40: 196875 },
+            V: { 24: 87367, 38: 143719, 39: 145687, 40: 147656, 42: 151594 },
+            B: { 24: 110666, 32: 121638, 35: 183750, 37: 189000, 39: 194250, 40: 196875, 42: 202125 },
+            C: { 24: 110666, 36: 186375, 38: 191625, 39: 194250, 40: 196875 },
             D: { 37: 189000, 38: 191625, 39: 194250 },
             E: { 38: 191625, 45: 207375 },
             A: {
+              12: 119625,
+              23: 143550,
+              25: 147675,
               35: 220500,
               37: 229950,
               38: 229950,
@@ -9637,16 +9644,14 @@
               42: 242550,
               45: 245700,
             },
-            I: { 41: 239400 },
+            I: { 28: 152625, 41: 239400 },
             Z: { 38: 229950, 40: 236250 },
-            G: {},
-            H: {},
-            L: {},
             M: {},
             N: {},
             P: {},
             J: {},
             Q: {},
+            S: {},
           },
         },
 
@@ -10740,20 +10745,41 @@
           })
           .join("\n");
       }
+      const TS7_CLASSIC_META = {
+        L: { beds: "1 Bed Classic", size: "40㎡" },
+        O: { beds: "1 Bed Classic", size: "40㎡" },
+        F: { beds: "1 Bed Crystal", size: "60㎡" },
+        G: { beds: "1 Bed Crystal", size: "60㎡" },
+        H: { beds: "1 Bed Crystal", size: "60㎡" },
+        S: { beds: "1 Bed Crystal", size: "60㎡" },
+        T: { beds: "1 Bed Crystal", size: "60㎡" },
+        U: { beds: "1 Bed Crystal", size: "60㎡" },
+        V: { beds: "1 Bed Crystal", size: "60㎡" },
+        B: { beds: "2 Bed Luxury", size: "76㎡" },
+        C: { beds: "2 Bed Luxury", size: "76㎡" },
+        A: { beds: "3 Bed Stylish", size: "100㎡" },
+        I: { beds: "3 Bed Stylish", size: "100㎡" },
+      };
       function getUnitMeta(projectId, type, floor = null) {
         const keyExact = `${floor}${type}`.toUpperCase();
         const keyType = String(type || "").toUpperCase();
         const cfgMap = getProjectCfg(projectId).unitMetaMap || {};
         const projectMeta = PROJECTS[projectId]?.unitTypes?.[type] || {};
+        const classicOverride =
+          projectId === "ts7" && floor != null && Number(floor) <= 33
+            ? TS7_CLASSIC_META[keyType] || {}
+            : {};
         const exactMeta = floor != null ? cfgMap[keyExact] || {} : {};
         const typeMeta = cfgMap[keyType] || {};
         return {
           ...projectMeta,
+          ...classicOverride,
           ...typeMeta,
           ...exactMeta,
           grossSize:
             exactMeta.grossSize ||
             typeMeta.grossSize ||
+            classicOverride.size ||
             projectMeta.grossSize ||
             projectMeta.size ||
             "",
@@ -12098,18 +12124,25 @@
           c.appendChild(d);
         });
       }
-      function getProjectPromo(projectId, type) {
+      function getProjectPromo(projectId, type, floor = null) {
+        if (projectId === "ts7" && floor != null && Number(floor) <= 33) {
+          return {
+            types: ["L", "O", "F", "G", "H", "S", "T", "U", "V", "B", "C", "A", "I"],
+            label: "Classic Remaining Unit · 15% Off",
+            discPct: 15,
+          };
+        }
         const project = PROJECTS[projectId];
         for (const [, g] of Object.entries(project.promoGroups || {}))
           if (g.types.includes(type)) return g;
         return null;
       }
-      function getPromo(type) {
-        return getProjectPromo(activeProjId, type);
+      function getPromo(type, floor = null) {
+        return getProjectPromo(activeProjId, type, floor);
       }
       function getInventoryNetPreview(projectId, type, floor, price) {
         const project = PROJECTS[projectId];
-        const promo = getProjectPromo(projectId, type);
+        const promo = getProjectPromo(projectId, type, floor);
         let discAmt = 0;
         if (promo?.flatDiscount) discAmt = promo.flatDiscount;
         else {
@@ -12249,6 +12282,20 @@
         calcROI();
         calcMort();
       }
+      function updatePromoBanner(type, floor = null) {
+        const promo = getPromo(type, floor),
+          banner = $("promoBanner");
+        if (!banner) return;
+        if (promo && type) {
+          $("promoTagText").textContent = promo.label;
+          const pct = promo.discPct || proj().discounts.promo;
+          const bonusTxt = promo.agentBonus > 0 ? ` · Bonus $${promo.agentBonus}` : "";
+          $("promoText").textContent = promo.flatDiscount
+            ? `Type ${type} — Flat −$${promo.flatDiscount.toLocaleString()}${bonusTxt}`
+            : `Type ${type} — ${pct}% Off${bonusTxt}`;
+          banner.classList.add("visible");
+        } else banner.classList.remove("visible");
+      }
       function onTypeChange() {
         const type = $("unitType").value;
         buildFloorSelect("floor", "unitType");
@@ -12256,15 +12303,7 @@
         $("resultCard").classList.remove("visible");
         $("actionBtns").style.display = "none";
         $("docStrip").style.display = "none";
-        const promo = getPromo(type),
-          banner = $("promoBanner");
-        if (promo && type) {
-          $("promoTagText").textContent = promo.label;
-          $("promoText").textContent = promo.flatDiscount
-            ? `Type ${type} — Flat −$${promo.flatDiscount.toLocaleString()}${promo.agentBonus > 0 ? " · Bonus $" + promo.agentBonus : ""}`
-            : `Type ${type} — ${promo.discPct || proj().discounts.promo}% · ${promo.agentBonus > 0 ? "Bonus $" + promo.agentBonus : ""}`;
-          banner.classList.add("visible");
-        } else banner.classList.remove("visible");
+        updatePromoBanner(type, $("floor")?.value ? parseInt($("floor").value, 10) : null);
       }
       function selectPlan(k, el) {
         activePlan = k;
@@ -12315,7 +12354,7 @@
             : null;
         const orig = ovrPrice || tablePx;
         if (!orig) return null;
-        const promo = getProjectPromo(targetProjId, type);
+        const promo = getProjectPromo(targetProjId, type, floor);
         let discAmt,
           discPct = null,
           discLabel,
@@ -12436,6 +12475,7 @@
           return;
         }
         lastCalc = r;
+        updatePromoBanner(type, floor);
         syncAnalysisFromCalc(r);
         $("rUnitId").textContent = r.uid;
         $("rBadge").textContent = r.info?.beds + " · Type " + type;
