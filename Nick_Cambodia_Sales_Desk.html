@@ -7438,50 +7438,22 @@
             </div>
           </div>
 
-          <!-- TAB 5: PROJECTS (CLEAN & REFINED) -->
+          <!-- TAB 5: PROJECTS (COMPACT SINGLE-PROJECT VIEW) -->
           <div id="cfgProjects" style="display: none">
             <div class="cfg-card">
-              <div class="cfg-card-title">Project Directory &amp; Handover Schedule</div>
-              <div class="cfg-card-desc">Target handover completion dates for payment schedules and ROI cash flow modeling.</div>
+              <div class="cfg-card-title">Project Settings &amp; Media</div>
+              <div class="cfg-card-desc">Pick a project to set its handover target or upload layout, price list, and promotional images. Individual unit prices and Available / Reserved / Sold status can be updated directly in the Inventory panel.</div>
 
-              <!-- Executive Stats Bar -->
-              <div class="comm-stats-bar" style="margin-top: 12px">
-                <div class="comm-stat-cell">
-                  <span class="comm-stat-num" id="projActiveCount">9 Projects</span>
-                  <span class="comm-stat-lbl">Active Portfolios</span>
+              <div style="display:grid;grid-template-columns:1fr 160px;gap:10px;align-items:end;margin-top:12px;">
+                <div>
+                  <label style="display:block;font-size:10.5px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Project</label>
+                  <select id="cfgInvProjSel" onchange="renderCfgInventoryEditor()" style="width:100%;padding:8px 10px;border:1px solid var(--bd);border-radius:8px;font-size:12.5px;font-weight:600;background:#fff;color:var(--tx);"></select>
                 </div>
-                <div class="comm-stat-cell">
-                  <span class="comm-stat-num" id="projDeliveryRange">2027 – 2028</span>
-                  <span class="comm-stat-lbl">Delivery Range</span>
-                </div>
-                <div class="comm-stat-cell">
-                  <span class="comm-stat-num">BKK1 · TTP · TK</span>
-                  <span class="comm-stat-lbl">Key Prime Hubs</span>
+                <div>
+                  <label style="display:block;font-size:10.5px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Handover Target</label>
+                  <input type="month" id="cfgSingleHandover" onchange="saveSingleProjectHandover()" style="width:100%;padding:7px 8px;border:1px solid var(--bd);border-radius:8px;font-size:12px;font-weight:600;background:#fff;color:var(--tx);">
                 </div>
               </div>
-
-              <!-- Project Cards Grid -->
-              <div id="projectTimelineCards" class="comm-cards-grid" style="margin-top: 12px"></div>
-
-              <div class="cfg-helper-note" style="margin-top: 14px">
-                <span class="cfg-helper-dot"></span>
-                <span>Handover dates automatically determine the final milestone in the Payment Schedule and initialize rental returns in the ROI Calculator.</span>
-              </div>
-            </div>
-
-            <div class="cfg-card" style="margin-top: 14px">
-              <div class="cfg-card-title">Price List, Layout &amp; Availability Manager</div>
-              <div class="cfg-card-desc">Update unit type layouts, sizes, facing directions, and export/import your inventory changes. Individual unit prices and Available / Reserved / Sold status can also be toggled directly from the Inventory panel.</div>
-
-              <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px;">
-                <select id="cfgInvProjSel" onchange="renderCfgInventoryEditor()" style="flex:1;min-width:180px;padding:8px 10px;border:1px solid var(--bd);border-radius:8px;font-size:12px;font-weight:600;background:#fff;color:var(--tx);"></select>
-                <button type="button" class="cfg-btn" onclick="exportProjectOverrides()" style="padding:7px 12px;font-size:11px;">Export JSON</button>
-                <label class="cfg-btn" style="padding:7px 12px;font-size:11px;cursor:pointer;margin:0;">Import JSON<input type="file" accept=".json,application/json" style="display:none" onchange="importProjectOverrides(event)"></label>
-                <button type="button" class="cfg-btn" onclick="resetProjectOverrides()" style="padding:7px 12px;font-size:11px;color:#b91c1c;border-color:#fecaca;">Reset Project</button>
-              </div>
-
-              <div id="cfgLayoutEditorWrap" style="margin-top:12px;overflow-x:auto;"></div>
-              <div id="cfgLayoutSaveMsg" style="font-size:11px;color:#15803d;font-weight:600;margin-top:8px;display:none;"></div>
 
               <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--bd);">
                 <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;">
@@ -7504,6 +7476,16 @@
                   <span><strong id="cfgPriceListStatusHead"></strong> <span id="cfgPriceListStatusSub"></span></span>
                 </div>
               </div>
+
+              <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--bd);display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;">
+                <span style="font-size:11px;color:var(--tx3);">Backup or restore project edits &amp; images:</span>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                  <button type="button" class="cfg-btn" onclick="exportProjectOverrides()" style="padding:6px 10px;font-size:11px;">Export JSON</button>
+                  <label class="cfg-btn" style="padding:6px 10px;font-size:11px;cursor:pointer;margin:0;">Import JSON<input type="file" accept=".json,application/json" style="display:none" onchange="importProjectOverrides(event)"></label>
+                  <button type="button" class="cfg-btn" onclick="resetProjectOverrides()" style="padding:6px 10px;font-size:11px;color:#b91c1c;border-color:#fecaca;">Reset Project</button>
+                </div>
+              </div>
+              <div id="cfgLayoutSaveMsg" style="font-size:11px;color:#15803d;font-weight:600;margin-top:8px;display:none;"></div>
             </div>
           </div>
         </div>
@@ -11423,13 +11405,11 @@
         loadProjectCfg(id);
       }
       function saveActiveProjectCfg() {
-        PROJ_ORDER.forEach((id) => {
-          const hInput = $("projHandover_" + id);
-          if (hInput) {
-            const data = getProjectCfg(id);
-            data.completionMonth = hInput.value || "";
-          }
-        });
+        const sel = $("cfgInvProjSel");
+        const hInput = $("cfgSingleHandover");
+        if (sel && hInput && PROJECTS[sel.value]) {
+          getProjectCfg(sel.value).completionMonth = hInput.value || "";
+        }
         if (activeProjId) syncHandoverFromProject();
       }
       function handlePriceListUpload(e) {
@@ -13086,123 +13066,41 @@
         btn.classList.add("active");
       }
       function buildProjectTimelineCards() {
-        const c = $("projectTimelineCards");
-        if (!c) return;
-        c.innerHTML = "";
-        let count = 0;
-        let years = [];
+        const sel = $("cfgInvProjSel");
+        if (!sel) return;
+        const prev = sel.value || activeProjId;
+        sel.innerHTML = "";
         PROJ_ORDER.forEach((id) => {
           const p = PROJECTS[id];
           if (!p) return;
-          count++;
-          const cfgData = getProjectCfg(id);
-          const d = DEFAULT_PROJECT_CFG[id] || {};
-          const val = cfgData.completionMonth || d.completionMonth || "";
-          if (val) {
-            const y = parseInt(val.split("-")[0], 10);
-            if (y && !years.includes(y)) years.push(y);
-          }
-          const row = document.createElement("div");
-          row.className = "comm-card-item";
-          row.innerHTML = `
-            <div class="comm-item-left">
-              <div class="comm-item-badge">${p.tabLabel || p.dev || id.toUpperCase()}</div>
-              <div style="min-width:0">
-                <div class="comm-item-name">${p.name}</div>
-                <div class="comm-item-sub">${p.location || p.dev} · Handover Target</div>
-              </div>
-            </div>
-            <div class="comm-item-right" style="display: flex; align-items: center; gap: 8px;">
-              <input 
-                type="month" 
-                id="projHandover_${id}" 
-                value="${val}" 
-                class="comm-input" 
-                style="width: 135px; text-align: center; font-size: 11.5px; font-weight: 600; padding: 6px 8px;"
-                onchange="updateProjTimelineStats()"
-              />
-            </div>
-          `;
-          c.appendChild(row);
+          const opt = document.createElement("option");
+          opt.value = id;
+          opt.textContent = `${p.name} (${p.location || p.dev})`;
+          sel.appendChild(opt);
         });
-        updateProjTimelineStats();
+        if (PROJECTS[prev]) sel.value = prev;
+        renderCfgInventoryEditor();
+      }
+
+      function saveSingleProjectHandover() {
         const sel = $("cfgInvProjSel");
-        if (sel) {
-          const prev = sel.value || activeProjId;
-          sel.innerHTML = "";
-          PROJ_ORDER.forEach((id) => {
-            const p = PROJECTS[id];
-            if (!p) return;
-            const opt = document.createElement("option");
-            opt.value = id;
-            opt.textContent = p.name;
-            sel.appendChild(opt);
-          });
-          if (PROJECTS[prev]) sel.value = prev;
-          renderCfgInventoryEditor();
-        }
+        const hInput = $("cfgSingleHandover");
+        if (!sel || !hInput) return;
+        const projId = sel.value || activeProjId;
+        getProjectCfg(projId).completionMonth = hInput.value || "";
+        if (projId === activeProjId) syncHandoverFromProject();
+        lsSave();
       }
 
       function renderCfgInventoryEditor() {
         const sel = $("cfgInvProjSel");
-        const wrap = $("cfgLayoutEditorWrap");
-        if (!sel || !wrap) return;
+        const hInput = $("cfgSingleHandover");
+        if (!sel) return;
         const projId = sel.value || activeProjId;
-        const p = PROJECTS[projId];
-        if (!p || !p.unitTypes) {
-          wrap.innerHTML = '<div style="font-size:12px;color:var(--tx3);padding:8px 0;">No unit types found for this project.</div>';
-          return;
-        }
-        const types = Object.keys(p.unitTypes);
-        const rowsHtml = types.map((t) => {
-          const meta = getUnitMeta(projId, t);
-          return `<tr>
-            <td style="padding:6px 8px;font-weight:700;color:var(--navy);">${t}</td>
-            <td style="padding:4px 6px;"><input type="text" data-type="${t}" data-field="beds" value="${(meta.beds || "").replace(/"/g, "&quot;")}" style="width:100%;min-width:90px;padding:5px 7px;border:1px solid var(--bd);border-radius:6px;font-size:11.5px;"></td>
-            <td style="padding:4px 6px;"><input type="text" data-type="${t}" data-field="size" value="${(meta.size || "").replace(/"/g, "&quot;")}" style="width:100%;min-width:70px;padding:5px 7px;border:1px solid var(--bd);border-radius:6px;font-size:11.5px;"></td>
-            <td style="padding:4px 6px;"><input type="text" data-type="${t}" data-field="orientation" value="${(meta.orientation || "").replace(/"/g, "&quot;")}" style="width:100%;min-width:140px;padding:5px 7px;border:1px solid var(--bd);border-radius:6px;font-size:11.5px;"></td>
-          </tr>`;
-        }).join("");
-        wrap.innerHTML = `
-          <table style="width:100%;border-collapse:collapse;font-size:11.5px;">
-            <thead>
-              <tr style="text-align:left;color:var(--tx3);border-bottom:1px solid var(--bd);">
-                <th style="padding:6px 8px;">Type</th>
-                <th style="padding:6px 6px;">Layout</th>
-                <th style="padding:6px 6px;">Size</th>
-                <th style="padding:6px 6px;">Facing / Direction</th>
-              </tr>
-            </thead>
-            <tbody>${rowsHtml}</tbody>
-          </table>
-          <div style="margin-top:10px;display:flex;justify-content:flex-end;">
-            <button type="button" onclick="saveCfgLayoutEdits()" style="padding:8px 14px;border-radius:8px;border:none;background:var(--navy);color:#fff;font-size:12px;font-weight:700;cursor:pointer;">Save Layout Changes</button>
-          </div>`;
+        const cfgData = getProjectCfg(projId);
+        const d = DEFAULT_PROJECT_CFG[projId] || {};
+        if (hInput) hInput.value = cfgData.completionMonth || d.completionMonth || "";
         renderProjectPriceGrid(projId);
-      }
-
-      function saveCfgLayoutEdits() {
-        const sel = $("cfgInvProjSel");
-        const wrap = $("cfgLayoutEditorWrap");
-        if (!sel || !wrap) return;
-        const projId = sel.value || activeProjId;
-        const pCfg = getProjectCfg(projId);
-        wrap.querySelectorAll("input[data-type]").forEach((inp) => {
-          const t = String(inp.dataset.type || "").toUpperCase();
-          const f = inp.dataset.field;
-          if (!t || !f) return;
-          if (!pCfg.unitMetaMap[t]) pCfg.unitMetaMap[t] = {};
-          pCfg.unitMetaMap[t][f] = inp.value.trim();
-        });
-        lsSave();
-        buildUnitTypeSelect();
-        renderInventory();
-        const msg = $("cfgLayoutSaveMsg");
-        if (msg) {
-          msg.textContent = `✓ Saved layout & facing updates for ${PROJECTS[projId]?.name || projId}.`;
-          msg.style.display = "block";
-          setTimeout(() => { msg.style.display = "none"; }, 3000);
-        }
       }
 
       function exportProjectOverrides() {
