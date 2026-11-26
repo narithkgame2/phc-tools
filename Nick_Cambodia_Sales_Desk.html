@@ -9909,7 +9909,7 @@
               : np
                 ? `お支払い期限まであと${np.daysUntil}日`
                 : "未定";
-          const jaSig = `\n\n※利回り・価格は参考値であり、将来の収益を保証するものではありません。\n\n**お問い合わせ**\nNICK | カンボジア不動産投資\n公式LINE: https://line.me/ti/p/@615ueovq`;
+          const jaSig = `\n\n**お問い合わせ**\nNICK | カンボジア不動産投資\n公式LINE: https://line.me/ti/p/@615ueovq`;
           const jaTemplates = {
             booking: `**${p.name} | ご予約確認**\n\n${client} 様\n\nご予約内容は以下の通りでございます。\n\n▫️ 物件名: ${p.name}\n▫️ 号室: ${unitDesc}\n▫️ 販売価格: ${fUSD(deal.net)}\n▫️ ご予約日: ${bDate}\n▫️ 受領済み予約金: ${fUSD(deal.calc?.bk || 1000)}\n\n🔎 次のステップ: SPA（売買契約書）締結の手続きについて改めてご連絡いたします。${jaSig}`,
             spa: `**${p.name} | SPAお支払いのご案内**\n\n${client} 様\n\nSPA（売買契約書）お支払いの時期が近づいております。\n\n▫️ 物件名: ${p.name}\n▫️ 号室: ${deal.uid}\n▫️ お支払い予定額: ${fUSD(deal.calc?.spaNet || 0)}\n▫️ お支払い期日: ${sDate}\n\n🔎 お手続きや送金方法についてご不明点がございましたら、公式LINEよりお気軽にご連絡ください。${jaSig}`,
@@ -9920,7 +9920,7 @@
           return jaTemplates[stageKey] || jaTemplates.followup;
         }
 
-        const enSig = `\n\nNote: Prices and yields are for reference only and do not guarantee future returns.\n\n**CONTACT**\nNICK | Cambodia Property Investment\nTelegram: https://t.me/Nick_REAKH`;
+        const enSig = `\n\n**CONTACT**\nNICK | Cambodia Property Investment\nTelegram: https://t.me/Nick_REAKH`;
         const iStatus = installmentMeta && installmentMeta.daysUntil < 0
           ? `Overdue by ${Math.abs(installmentMeta.daysUntil)} days`
           : installmentMeta
@@ -13613,7 +13613,7 @@
       ${scenarioSummary.map((row) => `<tr><td>${row.years} years</td><td>${fUSD(row.saleNet)}</td><td>${fUSD(row.rental)}</td><td class="dr" style="color:${row.profit >= 0 ? "var(--grn)" : "var(--red)"}">${row.profit >= 0 ? "+" : ""}${fUSD(row.profit)}</td><td class="dr">${row.roi}%</td></tr>`).join("")}
     </tbody></table>
     <div class="adv-verdict">This advisory is based on the live ROI assumptions entered for this client, not generic market defaults. The model assumes ${investor.app}% annual appreciation, ${investor.vac}% vacancy, ${investor.mgmt}% management, and rental income beginning on ${fmtDate(investor.timeline.rentalStartDate)}. ${r.floor >= 35 ? "High-floor positioning may support a rental premium, but the proposal keeps the financial case grounded in the entered rent assumption." : "The proposal is framed on practical yield and cash deployment rather than speculative premium pricing."}<br><br><span class="adv-rec">Recommended review focus: total cash required, rental start timing, and 5-year exit outcome.</span></div>
-    <div class="adv-note-small">All projections are estimates based on the assumptions shown above. They are not a guarantee of future performance.</div>
+    <div class="adv-note-small">${activeDocLang === "ja" ? "※利回り・価格は参考値であり、将来の収益を保証するものではありません。" : "All projections are estimates based on the assumptions shown above. They are not a guarantee of future performance."}</div>
     ${docFoot(cfgValue("quoteFooterRole", "カンボジア不動産アドバイザー"))}
   </div></div>`;
       }
