@@ -12520,12 +12520,12 @@
         ];
         if (activeProjId === "mvt2" || activeProjId === "mvt6") {
           plans = [
-            ["mvt_opt1", "Option 1: 10% Down (~$580/mo)", "10% SPA · 24 mos (13.42%) · 76.58% HO · 5% Disc"],
-            ["mvt_1pct", "Option 1B: 1% / Month", "10% SPA · 24 mos @ 1%/mo (24%) · 66% HO · 5% Disc"],
+            ["mvt_1pct", "Option 1: 1% / Month", "10% SPA · 24 mos @ 1%/mo (24%) · 66% HO · 5% Disc"],
+            ["mvt_opt1", "Option 1B: ~$580/mo (Flexible)", "10% SPA · 24 mos (13.42%) · 76.58% HO · 5% Disc"],
             ["mvt_opt2", "Option 2: Pay Off", "100% Pay Off · 15% Disc"],
             ["custom", "Custom Plan", "Set custom down payment & instalments"],
           ];
-          if (activePlan === "std") activePlan = "mvt_opt1";
+          if (activePlan === "std" || !["mvt_1pct", "mvt_opt1", "mvt_opt2", "custom"].includes(activePlan)) activePlan = "mvt_1pct";
         } else {
           if (activePlan === "mvt_opt1" || activePlan === "mvt_1pct" || activePlan === "mvt_opt2") activePlan = "std";
         }
@@ -13168,18 +13168,18 @@
           hoPct = parseFloat($("cHO").value) || 35;
           moPct = 100 - spaPct - hoPct;
           months = parseInt($("cMonths").value) || 45;
-        } else if (plan === "mvt_opt1" || ((targetProjId === "mvt2" || targetProjId === "mvt6") && plan === "std")) {
-          bk = 1000;
-          spaPct = 10;
-          months = 24;
-          moPct = 13.42;
-          hoPct = 76.58;
-        } else if (plan === "mvt_1pct") {
+        } else if (plan === "mvt_1pct" || ((targetProjId === "mvt2" || targetProjId === "mvt6") && plan === "std")) {
           bk = 1000;
           spaPct = 10;
           months = 24;
           moPct = 24;
           hoPct = 66;
+        } else if (plan === "mvt_opt1") {
+          bk = 1000;
+          spaPct = 10;
+          months = 24;
+          moPct = 13.42;
+          hoPct = 76.58;
         } else if (plan === "mvt_opt2") {
           bk = 1000;
           spaPct = 100;
