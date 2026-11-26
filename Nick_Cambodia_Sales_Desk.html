@@ -9146,12 +9146,12 @@
             { label: "4 Bedroom", types: ["C"] },
           ],
           unitTypes: {
-            M1: { beds: "1 Bed Special", size: "50㎡", orientation: "South-West (Street 57)" },
-            M2: { beds: "1 Bed Special", size: "29㎡", orientation: "South-West (Street 57)" },
-            X1: { beds: "1 Bed New Layout", size: "43㎡", orientation: "" },
-            X2: { beds: "1 Bed New Layout", size: "43㎡", orientation: "" },
-            X3: { beds: "1 Bed New Layout", size: "43㎡", orientation: "" },
-            X5: { beds: "1 Bed New Layout", size: "43㎡", orientation: "" },
+            M1: { beds: "1 Bed Special", size: "50㎡", netSize: "35㎡", orientation: "South-West (Street 57)" },
+            M2: { beds: "1 Bed Special", size: "29㎡", netSize: "20㎡", orientation: "South-West (Street 57)" },
+            X1: { beds: "1 Bed New Layout", size: "43㎡", netSize: "30㎡", orientation: "" },
+            X2: { beds: "1 Bed New Layout", size: "43㎡", netSize: "30㎡", orientation: "" },
+            X3: { beds: "1 Bed New Layout", size: "43㎡", netSize: "30㎡", orientation: "" },
+            X5: { beds: "1 Bed New Layout", size: "43㎡", netSize: "30㎡", orientation: "" },
             B: { beds: "1 Bed", size: "80㎡", netSize: "55㎡", orientation: "East Facing (Street 51)" },
             D: { beds: "1 Bed", size: "75㎡", netSize: "50㎡", orientation: "North Facing (Street 278)" },
             E: { beds: "1 Bed", size: "75㎡", netSize: "50㎡", orientation: "North Facing (Street 278)" },
@@ -10126,6 +10126,9 @@
         mapLaunch(["M"], g90);
         mapLaunch(["A"], g130);
         mapLaunch(["C"], g190);
+        mapLaunch(["M1"], {5:90917,6:91958,7:93000,8:94042,9:95083,10:96088,11:97129,12:97948,13:98803,14:99622,15:100440});
+        mapLaunch(["M2"], {5:55723,6:56362,7:57000,8:57638,9:58277,10:58892,11:59531,12:60032,13:60557,14:61058,15:61560});
+        mapLaunch(["X1","X2","X3","X5"], {5:73320,7:75000,8:75840,10:77490,11:78330,12:78990,13:79680,14:80340,17:82320,18:83010,19:83670,20:84330,21:84990,22:85830,23:86670,28:90890,29:91680,30:92400,31:93510,32:94500,33:95490,34:96510,35:97500,36:98490,38:101670});
       })();
       const FOLDER_PRICE_LIST_FILES = {
         ts7: [
