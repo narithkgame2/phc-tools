@@ -7482,6 +7482,28 @@
 
               <div id="cfgLayoutEditorWrap" style="margin-top:12px;overflow-x:auto;"></div>
               <div id="cfgLayoutSaveMsg" style="font-size:11px;color:#15803d;font-weight:600;margin-top:8px;display:none;"></div>
+
+              <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--bd);">
+                <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;">
+                  <div>
+                    <div style="font-size:12.5px;font-weight:700;color:var(--navy);">Layout, Price List &amp; Promo Images</div>
+                    <div style="font-size:11px;color:var(--tx3);">Upload floor plans, developer price sheets, or promotional images (max 12 per project, 3MB each).</div>
+                  </div>
+                  <div style="display:flex;gap:6px;align-items:center;">
+                    <label class="cfg-btn" style="padding:7px 12px;font-size:11px;cursor:pointer;margin:0;background:var(--navy);color:#fff;border-color:var(--navy);">
+                      + Upload Images
+                      <input type="file" accept="image/*" multiple style="display:none" onchange="handlePriceListUpload(event)">
+                    </label>
+                    <button type="button" class="cfg-btn" onclick="openPriceListModal($('cfgInvProjSel')?.value || activeProjId)" style="padding:7px 10px;font-size:11px;">View Gallery</button>
+                    <button type="button" class="cfg-btn" onclick="clearProjectImages()" style="padding:7px 10px;font-size:11px;color:#b91c1c;border-color:#fecaca;">Clear</button>
+                  </div>
+                </div>
+                <div id="cfgPriceListGrid" class="price-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px;margin-top:8px;"></div>
+                <div id="cfgPriceListStatus" class="cfg-helper-note" style="margin-top:8px;display:none;">
+                  <span class="cfg-helper-dot"></span>
+                  <span><strong id="cfgPriceListStatusHead"></strong> <span id="cfgPriceListStatusSub"></span></span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -10710,12 +10732,7 @@
         return `Price%20List/${encodeURIComponent(folder)}/${encodeURIComponent(fileName)}`;
       }
       function getFolderPriceListImages(projectId = activeProjId) {
-        return (FOLDER_PRICE_LIST_FILES[projectId] || []).map((fileName, index) => ({
-          id: `folder-${projectId}-${index}`,
-          name: fileName,
-          src: folderPriceListPath(projectId, fileName),
-          source: "folder",
-        }));
+        return [];
       }
       function getProjectPriceListImages(projectId = activeProjId) {
         const uploaded = getProjectCfg(projectId).priceListImages.map((img) => ({
@@ -11352,24 +11369,24 @@
           fetchLatestFxRates();
         }, 30 * 60 * 1000);
       }
-      function renderProjectPriceGrid(id = $("cfgProjectSelect")?.value || activeProjId) {
+      function renderProjectPriceGrid(id = $("cfgInvProjSel")?.value || $("cfgProjectSelect")?.value || activeProjId) {
         const grid = $("cfgPriceListGrid");
         if (!grid) return;
         const images = getProjectPriceListImages(id);
         if (!images.length) {
           grid.innerHTML =
-            '<div style="grid-column:1/-1;font-size:10px;color:var(--tx3);padding:10px 2px">No price list images stored for this project yet.</div>';
+            '<div style="grid-column:1/-1;font-size:11px;color:var(--tx3);padding:10px 2px">No layout, price list, or promo images uploaded for this project yet.</div>';
           renderProjectLibraryStatus(id);
           return;
         }
         grid.innerHTML = images
           .map(
-            (img) => `<div class="price-thumb" onclick="openPriceListModal('${id}')"><img src="${getImageSrc(img)}" alt="${img.name || "Price list"}">${img.source === "folder" ? "" : `<button type="button" onclick="event.stopPropagation();removeProjectImage('${id}','${img.id}')">${uiIcon("x", "ui-icon sm")}</button>`}</div>`,
+            (img) => `<div class="price-thumb" onclick="openPriceListModal('${id}')"><img src="${getImageSrc(img)}" alt="${img.name || "Project image"}">${img.source === "folder" ? "" : `<button type="button" onclick="event.stopPropagation();removeProjectImage('${id}','${img.id}')">${uiIcon("x", "ui-icon sm")}</button>`}</div>`,
           )
           .join("");
         renderProjectLibraryStatus(id);
       }
-      function renderProjectLibraryStatus(id = $("cfgProjectSelect")?.value || activeProjId) {
+      function renderProjectLibraryStatus(id = $("cfgInvProjSel")?.value || $("cfgProjectSelect")?.value || activeProjId) {
         const wrap = $("cfgPriceListStatus");
         const head = $("cfgPriceListStatusHead");
         const sub = $("cfgPriceListStatusSub");
@@ -11379,14 +11396,15 @@
         const count = images.length;
         const detailCount = Object.keys(data.unitMetaMap || {}).length;
         if (!count) {
+          wrap.style.display = "none";
           wrap.classList.remove("visible");
           return;
         }
         const last = images[count - 1];
-        const folderCount = getFolderPriceListImages(id).length;
         const uploadCount = data.priceListImages.length;
         head.textContent = `${count} image${count === 1 ? "" : "s"} saved for ${PROJECTS[id].name}`;
-        sub.textContent = `${folderCount ? `${folderCount} loaded from /Price List` : "No folder-linked images"}${uploadCount ? ` · ${uploadCount} uploaded in browser` : ""}${detailCount ? ` · ${detailCount} unit detail rule${detailCount === 1 ? "" : "s"}` : ""}. Reference only for now: the app does not yet read price, unit status, or availability from these screenshots. Latest: ${last.name || "Price list image"}${data.updatedAt ? " · " + formatStamp(data.updatedAt) : ""}`;
+        sub.textContent = `· ${uploadCount} uploaded in browser${detailCount ? ` · ${detailCount} layout rule${detailCount === 1 ? "" : "s"}` : ""}. Latest: ${last.name || "Project image"}`;
+        wrap.style.display = "flex";
         wrap.classList.add("visible");
       }
       function loadProjectCfg(id) {
@@ -11416,7 +11434,7 @@
       }
       function handlePriceListUpload(e) {
         const files = Array.from(e.target.files || []);
-        const id = $("cfgProjectSelect")?.value || activeProjId;
+        const id = $("cfgInvProjSel")?.value || $("cfgProjectSelect")?.value || activeProjId;
         const data = getProjectCfg(id);
         if (!files.length) return;
         if (data.priceListImages.length + files.length > 12) {
@@ -11456,7 +11474,7 @@
         updateHealthPanel();
         lsSave();
       }
-      function clearProjectImages(projectId = $("cfgProjectSelect")?.value || activeProjId) {
+      function clearProjectImages(projectId = $("cfgInvProjSel")?.value || $("cfgProjectSelect")?.value || activeProjId) {
         const data = getProjectCfg(projectId);
         data.priceListImages = [];
         data.updatedAt = "";
@@ -13160,6 +13178,7 @@
           <div style="margin-top:10px;display:flex;justify-content:flex-end;">
             <button type="button" onclick="saveCfgLayoutEdits()" style="padding:8px 14px;border-radius:8px;border:none;background:var(--navy);color:#fff;font-size:12px;font-weight:700;cursor:pointer;">Save Layout Changes</button>
           </div>`;
+        renderProjectPriceGrid(projId);
       }
 
       function saveCfgLayoutEdits() {
