@@ -394,14 +394,13 @@ function undoUnitSold(projectId, unitCode, actor = 'Nick') {
 }
 
 /**
- * Formats a verified, compliant Telegram client proposal card
+ * Formats a verified, compliant Telegram client proposal card in Buyer Quotation style
  */
 function formatProposalCard(analysis) {
   const { project, calculation, bestUnit, budgetMatched, requestedBudget, budgetVariance } = analysis;
   const s = calculation.schedule;
   const isOuter = calculation.isOuter;
 
-  // 1.4 Advisor Notes: Plan-based visible facts only. If none, output no note.
   let advisorNote = '';
   if (bestUnit.planNote) {
     advisorNote = bestUnit.planNote;
@@ -413,121 +412,93 @@ function formatProposalCard(analysis) {
 
   let budgetWarning = '';
   if (budgetMatched === false && requestedBudget) {
-    budgetWarning = `⚠️ <b>Budget Advisory:</b> No units are currently available within the $${requestedBudget.toLocaleString()} USD budget. The entry unit shown below is $${budgetVariance.toLocaleString()} USD above target.\n\n`;
+    budgetWarning = `⚠️ <b>Budget Advisory:</b> Entry unit shown is $${budgetVariance.toLocaleString()} USD above target $${requestedBudget.toLocaleString()} USD.\n\n`;
   }
 
-  // 1.3 Floor label: Display developer marketing floor directly without adding confusion
-  const floorDisplay = bestUnit.floorLabel || bestUnit.floor;
-  const sizeNum = calculation.grossAreaSqm;
-  const listPrice = bestUnit.listPrice.toLocaleString();
+  const pName = (project.name || '').toUpperCase();
+  const location = project.projectDetails?.location || 'Phnom Penh, Cambodia';
+  const floorDisplay = bestUnit.floorLabel || (bestUnit.floor ? `${bestUnit.floor}F` : '');
+  const bedsDisplay = bestUnit.bedrooms ? `${bestUnit.bedrooms} Bed` : (bestUnit.type || 'Unit');
+  const typeDisplay = bestUnit.column ? `Type ${bestUnit.column}` : '';
+  const unitBadge = [bedsDisplay, typeDisplay].filter(Boolean).join(' · ');
+
+  const oriText = bestUnit.orientation ? (bestUnit.orientation.includes('Facing') ? bestUnit.orientation : `${bestUnit.orientation} Facing`) : '';
+  const grossDisplay = `Gross ${calculation.grossAreaSqm} sqm`;
+  const netDisplay = bestUnit.netAreaSqm ? `Net ${bestUnit.netAreaSqm} sqm` : '';
+  const specsBits = [floorDisplay ? `Floor ${floorDisplay}` : '', oriText, grossDisplay, netDisplay].filter(Boolean).join(' · ');
+
+  let devStatus = '';
+  if (bestUnit.status === 'sold') {
+    devStatus = '⚠️ SOLD (Historical Reference Only)';
+  } else if (project.projectDetails?.handover?.toLowerCase().includes('completed')) {
+    devStatus = 'Completed / Ready to Move In';
+  } else {
+    devStatus = `Off-Plan (Handover ${project.projectDetails?.handover || 'Q4 2028'} · Strata Title)`;
+  }
+
+  const listPrice = (bestUnit.listPrice || calculation.listPrice).toLocaleString();
   const netPrice = calculation.netPrice.toLocaleString();
+  const discAmt = (calculation.discountAmount || 0).toLocaleString();
   const pricePerSqm = calculation.pricePerSqmNet.toLocaleString();
 
-  let discountStr = `${calculation.discountPercent || 10}%`;
+  let discountStr = `${calculation.discountPercent || 0}%`;
   if (calculation.cashRebateUsd && calculation.cashRebateUsd > 0) {
-    discountStr = `${calculation.discountPercent || 10}% + $${calculation.cashRebateUsd.toLocaleString()} Rebate`;
+    discountStr = `${calculation.discountPercent}% + $${calculation.cashRebateUsd.toLocaleString()} Rebate`;
   }
 
+  const planName = project.projectId.startsWith('mekong-view')
+    ? 'Option 1 (10% Down + 1%/mo)'
+    : (project.activePromotion?.name || 'Developer Standard Plan');
+
   const booking = s.bookingDeposit.toLocaleString();
-  // 1.2 Booking date: editable field, defaults to 'on booking'
-  const bookingDateText = calculation.bookingDate || 'on booking';
-  const downPayment = s.downPaymentDue.toLocaleString();
+  const downPaymentTotal = s.downPaymentTotal.toLocaleString();
+  const downPaymentNet = s.downPaymentDue.toLocaleString();
   const downPaymentPercent = s.downPaymentPercent || 10;
   const monthly = s.monthlyInstallment.toLocaleString();
   const duration = s.durationMonths;
   const totalInstallments = s.totalInstallments.toLocaleString();
-  
-  // 1.1 Balance at handover: computed remainder with true %
   const handoverPercent = s.handoverPercent;
   const handoverBalance = s.handoverBalance.toLocaleString();
-  const handoverDate = project.projectDetails?.handover || 'Q4 2028';
-  
-  // 1.5 Last confirmed with developer date field
-  const confirmedDate = project.provenance?.priceListDate || '2026-11-20';
-  const roundingDisplay = calculation.roundingRule === 'exact_cents' ? 'Exact cents' : 'Rounded whole dollar';
-
-  let devFlag = '';
-  if (calculation.developerConfirmationFlag) {
-    devFlag = `\n⚠️ <i>${escapeHtml(calculation.developerConfirmationFlag)}</i>\n`;
-  }
-
-  let advisorSection = '';
-  if (advisorNote) {
-    advisorSection = `\n▫️ <i>Advisor Note: ${escapeHtml(advisorNote)}</i>`;
-  }
-
-  // 4.3 Standard Risk & Due Diligence Profile
-  const titleType = project.projectDetails?.titleType || 'Foreign Freehold Strata Title';
-  const foreignQuota = project.projectDetails?.foreignQuotaRemaining || 'Available (Within 70% statutory quota)';
-  const completionDate = project.projectDetails?.handover || 'Q4 2028';
-  const developerRecord = project.projectDetails?.developerTrackRecord || 'Megakim World Corp: Completed Time Square 1, 2, 3, 5, 6, 7';
-
-  // Fields without verified data print strictly "To be confirmed"
-  const netYield = 'To be confirmed';
-  const cgtImpact = 'To be confirmed';
-  const exitLiquidity = 'To be confirmed';
-
-  const riskSection = `\n\n⸻\n\n` +
-    `<b>Due Diligence & Risk Profile</b>\n\n` +
-    `• <b>Title Type:</b> ${escapeHtml(titleType)}\n` +
-    `• <b>Foreign Quota Remaining:</b> ${escapeHtml(foreignQuota)}\n` +
-    `• <b>Completion Date:</b> ${escapeHtml(completionDate)}\n` +
-    `• <b>Developer Delivery Record:</b> ${escapeHtml(developerRecord)}\n` +
-    `• <b>Net Yield:</b> ${netYield}\n` +
-    `• <b>CGT Impact:</b> ${cgtImpact}\n` +
-    `• <b>Exit Liquidity:</b> ${exitLiquidity}`;
-
-  // 4.4 Closing execution requirements
-  const devBeneficiary = project.developer && project.developer.includes('Megakim')
-    ? 'Megakim World Corp Co., Ltd. (ABA Bank) (Verified corporate entity)'
-    : `${escapeHtml(project.developer || 'Developer')} (Verified corporate entity)`;
-
-  const devStatus = project.projectDetails?.handover?.toLowerCase().includes('completed')
-    ? 'Completed / Ready to Move In'
-    : `Off-Plan (Under Construction · Handover ${escapeHtml(completionDate)})`;
+  const handoverSub = project.projectDetails?.handover?.toLowerCase().includes('completed')
+    ? 'Upon key collection / transfer'
+    : `Est. ${project.projectDetails?.handover || 'Handover'}`;
 
   let feeSection = '';
-  if (project.projectDetails?.facilities && project.projectId.startsWith('mekong-view')) {
-    feeSection = `\n\n⸻\n\n` +
-      `<b>Building Operating Fees & Conditions</b>\n\n` +
-      project.projectDetails.facilities.map(f => `• ${escapeHtml(f)}`).join('\n');
+  if (project.projectId.startsWith('mekong-view')) {
+    feeSection = `\n<b>Building Operating Fees & Conditions</b>\n` +
+      `▫️ <b>Management Fee:</b> $0.70 / sqm\n` +
+      `▫️ <b>Utilities:</b> Electricity $0.25/kWh · Water $0.30/m³\n` +
+      `▫️ <b>Parking:</b> $25 / car / month (Motorcycle: Free)\n` +
+      `▫️ <b>Special:</b> All condition free decor package included\n`;
   }
 
-  const closingSection = `\n\n⸻\n\n` +
-    `<b>Contract Execution Details</b>\n\n` +
-    `▫️ <i>The developer requires hand-signed original agreements.</i>\n\n` +
-    `• <b>Booking Receipt:</b> $${booking} USD (Pending receipt confirmation)\n` +
-    `• <b>Developer Beneficiary:</b> ${devBeneficiary}\n` +
-    `• <b>Countersigning Party:</b> Developer authorized signatory\n` +
-    `• <b>Courier Tracking:</b> Pending dispatch / DHL tracking to be attached`;
+  let noteSection = '';
+  if (advisorNote) {
+    noteSection = `\n▫️ <i>Advisor Note: ${escapeHtml(advisorNote)}</i>\n`;
+  }
+
+  const confirmedDate = project.provenance?.priceListDate || '2026-11-20';
 
   return (
     budgetWarning +
-    `<b>Property Details:</b>\n\n` +
-    `<b>${escapeHtml(project.name)} · Unit ${escapeHtml(bestUnit.unitCode)}</b>\n\n` +
-    `<blockquote><b>Unit Details</b>\n\n` +
-    `• <b>Unit:</b> ${escapeHtml(bestUnit.unitCode)}\n` +
-    `• <b>Development Status:</b> ${devStatus}\n` +
-    `• <b>Floor:</b> ${escapeHtml(String(floorDisplay))}\n` +
-    `• <b>Size:</b> ${sizeNum} sqm Gross\n` +
-    `• <b>Original Price:</b> $${listPrice}\n` +
-    `• <b>Discount:</b> ${escapeHtml(discountStr)}\n` +
-    `• <b>Final Price:</b> $${netPrice} ($${pricePerSqm} / sqm)\n` +
-    `• <b>Status:</b> ${bestUnit.status === 'available' ? 'Available' : 'Sold'} (Last confirmed with developer: ${escapeHtml(confirmedDate)})\n\n` +
-    `⸻\n\n` +
-    `<b>Payment Schedule</b>\n\n` +
-    `• <b>Booking:</b> $${booking} (${escapeHtml(bookingDateText)})\n` +
-    `• <b>Down Payment (${downPaymentPercent}%):</b> $${downPayment}\n` +
-    `• <b>Installments (${duration} months):</b> $${monthly} / mo ($${totalInstallments})\n` +
-    `• <b>Balance at handover (${handoverPercent}%):</b> $${handoverBalance} (Est. ${escapeHtml(handoverDate)})\n` +
-    `• <b>Interest:</b> 0%\n` +
-    `• <b>Rounding Active:</b> ${roundingDisplay}` +
+    `<b>BUYER QUOTATION</b>\n` +
+    `<b>${escapeHtml(pName)}</b>\n` +
+    `<i>${escapeHtml(location)}</i>\n\n` +
+    `▫️ <b>Unit:</b> ${escapeHtml(bestUnit.unitCode)} (${escapeHtml(unitBadge)})\n` +
+    `▫️ <b>Specs:</b> ${escapeHtml(specsBits)}\n` +
+    `▫️ <b>Status:</b> ${escapeHtml(devStatus)}\n\n` +
+    `▫️ <b>List Price:</b> $${listPrice}\n` +
+    `▫️ <b>You Save:</b> $${discAmt} (${escapeHtml(discountStr)} Discount)\n` +
+    `▫️ <b>Final Price:</b> <b>$${netPrice}</b> ($${pricePerSqm} / sqm)\n\n` +
+    `<blockquote><b>PAYMENT SCHEDULE · ${escapeHtml(planName)}</b>\n\n` +
+    `① <b>Booking Fee:</b> $${booking} (Upon reservation)\n` +
+    `② <b>SPA Down Payment (${downPaymentPercent}%):</b> $${downPaymentTotal} (Net after booking: $${downPaymentNet})\n` +
+    `③ <b>Monthly Installments (${duration} mos):</b> ${duration} months × $${monthly} / mo ($${totalInstallments})\n` +
+    `④ <b>Handover Payment (${handoverPercent}%):</b> $${handoverBalance} (${escapeHtml(handoverSub)})\n` +
+    `▫️ <b>Total Purchase Price:</b> $${netPrice} (0% Interest)</blockquote>\n` +
     feeSection +
-    devFlag +
-    advisorSection +
-    riskSection +
-    closingSection +
-    `</blockquote>`
+    noteSection +
+    `\n▫️ <i>Official developer pricing verified ${escapeHtml(confirmedDate)}. Original hand-signed contracts via courier.</i>`
   );
 }
 
