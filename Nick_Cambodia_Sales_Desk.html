@@ -9584,6 +9584,10 @@
           },
           unitGroups: [
             {
+              label: "Modern New Layout 1BR · 43–51㎡",
+              types: ["A1", "A2"],
+            },
+            {
               label: "Duplex 1BR · 60㎡",
               types: ["K", "L", "M", "N", "O", "P"],
             },
@@ -9615,6 +9619,8 @@
             D: { beds: "3 Bed Duplex", size: "130㎡", orientation: "West Facing (Street 335)" },
             E: { beds: "3 Bed Duplex", size: "130㎡", orientation: "West Facing (Street 335)" },
             S: { beds: "1 Bed Crystal", size: "60㎡", orientation: "South Facing (Street 540)" },
+            A1: { beds: "1 Bed Modern", size: "51㎡", orientation: "West Facing (Street 335)" },
+            A2: { beds: "1 Bed Modern", size: "43㎡", orientation: "South Facing (Street 540)" },
             A: { beds: "4 Bed Duplex", size: "160㎡", orientation: "South-West Corner (Street 335 & 540)" },
             I: { beds: "4 Bed Duplex", size: "160㎡", orientation: "North-East Corner (Street 538)" },
             Z: { beds: "4 Bed Duplex", size: "160㎡", orientation: "South-East Corner (Street 540)" },
@@ -9633,6 +9639,8 @@
             C: { 24: 110666, 36: 186375, 38: 191625, 39: 194250, 40: 196875 },
             D: { 37: 189000, 38: 191625, 39: 194250 },
             E: { 38: 191625, 45: 207375 },
+            A1: { 26: 80636, 30: 84200, 31: 85536, 33: 87318 },
+            A2: { 31: 72864, 33: 74382 },
             A: {
               12: 119625,
               23: 143550,
@@ -12125,6 +12133,13 @@
         });
       }
       function getProjectPromo(projectId, type, floor = null) {
+        if (projectId === "ts7" && (type === "A1" || type === "A2")) {
+          return {
+            types: ["A1", "A2"],
+            label: "Modern New Layout · 10% Off",
+            discPct: 10,
+          };
+        }
         if (projectId === "ts7" && floor != null && Number(floor) <= 33) {
           return {
             types: ["L", "O", "F", "G", "H", "S", "T", "U", "V", "B", "C", "A", "I"],
