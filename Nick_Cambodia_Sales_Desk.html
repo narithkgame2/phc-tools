@@ -10726,6 +10726,11 @@
         typeof n === "number" && !isNaN(n)
           ? "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
           : "$0.00";
+      function formatPct(val) {
+        const n = Number(val);
+        if (!Number.isFinite(n)) return "0%";
+        return `${Number(n.toFixed(2))}%`;
+      }
       function formatFx(code, n) {
         const meta = CURRENCY_META[code] || CURRENCY_META.USD;
         const rate = fxRates[code] || 1;
@@ -12288,7 +12293,7 @@
           num: 2,
           kind: "spa",
           date: spa,
-          stage: `SPA Down Payment (${r.spaPct}%)`,
+          stage: `SPA Down Payment (${formatPct(r.spaPct)})`,
           amount: r.spaNet,
           status: defaultRowStatus(
             existingByKind.get("spa") ||
@@ -12319,7 +12324,7 @@
           num: rows.length + 1,
           kind: "handover",
           date: hoDate,
-          stage: isMvtProj ? `Remaining Balance (${r.hoPct.toFixed(1)}%)` : "Handover Payment",
+          stage: isMvtProj ? `Remaining Balance (${formatPct(r.hoPct)})` : "Handover Payment",
           amount: r.hoTotal,
           status: defaultRowStatus(
             existingByKind.get("handover") || existingByKind.get("Handover Payment") || existingByKind.get("Remaining Balance"),
@@ -12515,13 +12520,14 @@
         ];
         if (activeProjId === "mvt2" || activeProjId === "mvt6") {
           plans = [
-            ["mvt_opt1", "Option 1: 10% Down", "10% SPA · 24 mos (0% int) · 5% Disc"],
+            ["mvt_opt1", "Option 1: 10% Down (~$580/mo)", "10% SPA · 24 mos (13.42%) · 76.58% HO · 5% Disc"],
+            ["mvt_1pct", "Option 1B: 1% / Month", "10% SPA · 24 mos @ 1%/mo (24%) · 66% HO · 5% Disc"],
             ["mvt_opt2", "Option 2: Pay Off", "100% Pay Off · 15% Disc"],
             ["custom", "Custom Plan", "Set custom down payment & instalments"],
           ];
           if (activePlan === "std") activePlan = "mvt_opt1";
         } else {
-          if (activePlan === "mvt_opt1" || activePlan === "mvt_opt2") activePlan = "std";
+          if (activePlan === "mvt_opt1" || activePlan === "mvt_1pct" || activePlan === "mvt_opt2") activePlan = "std";
         }
         plans.forEach(([k, lbl, sub]) => {
           const d = document.createElement("div");
@@ -13050,7 +13056,7 @@
         if (activeProjId === "mvt2" || activeProjId === "mvt6") {
           const sel = $("discOvr");
           if (sel) {
-            if (k === "mvt_opt1") sel.value = "5";
+            if (k === "mvt_opt1" || k === "mvt_1pct") sel.value = "5";
             else if (k === "mvt_opt2") sel.value = "15";
           }
         }
@@ -13064,7 +13070,7 @@
           if (selVal === "15") {
             activePlan = "mvt_opt2";
           } else if (selVal === "5") {
-            activePlan = "mvt_opt1";
+            if (activePlan !== "mvt_1pct") activePlan = "mvt_opt1";
           }
           buildPlanPills();
         }
@@ -13166,8 +13172,14 @@
           bk = 1000;
           spaPct = 10;
           months = 24;
-          moPct = 13.41816;
-          hoPct = 76.58184;
+          moPct = 13.42;
+          hoPct = 76.58;
+        } else if (plan === "mvt_1pct") {
+          bk = 1000;
+          spaPct = 10;
+          months = 24;
+          moPct = 24;
+          hoPct = 66;
         } else if (plan === "mvt_opt2") {
           bk = 1000;
           spaPct = 100;
@@ -13286,7 +13298,7 @@
           },
           {
             icon: uiIcon("document", "ui-icon sm"),
-            label: activePlan === "mvt_opt2" ? "Pay Off (100%)" : `SPA Down Payment (${r.spaPct}%)`,
+            label: activePlan === "mvt_opt2" ? "Pay Off (100%)" : `SPA Down Payment (${formatPct(r.spaPct)})`,
             sub: `Less booking · Net ${fUSD(r.spaNet)}`,
             amt: r.spaTotal,
           },
@@ -13294,13 +13306,15 @@
         if (activePlan !== "mvt_opt2") {
           sched.push({
             icon: uiIcon("calendar", "ui-icon sm"),
-            label: isMvt ? "Monthly Instalments (0% Interest)" : "Monthly Instalments",
-            sub: `${r.months} × ${fUSD(Math.round(r.moAmt))}/mo${isMvt ? " (No interest)" : ""}`,
+            label: isMvt ? `Monthly Instalments (${formatPct(r.moPct)})` : "Monthly Instalments",
+            sub: isMvt && activePlan === "mvt_1pct"
+              ? `24 mos × 1%/mo (${fUSD(Math.round(r.moAmt))}/mo · 0% Int)`
+              : `${r.months} × ${fUSD(Math.round(r.moAmt))}/mo${isMvt ? " (0% Int)" : ""}`,
             amt: r.moTotal,
           });
           sched.push({
             icon: uiIcon("building", "ui-icon sm"),
-            label: isMvt ? `Remaining Balance (${r.hoPct.toFixed(1)}%)` : `Handover Payment (${r.hoPct}%)`,
+            label: isMvt ? `Remaining Balance (${formatPct(r.hoPct)})` : `Handover Payment (${formatPct(r.hoPct)})`,
             sub: isMvt ? "After 24 months instalment" : "Upon key collection",
             amt: r.hoTotal,
           });
@@ -13900,7 +13914,7 @@
         const r = lastCalc,
           p = PROJECTS[r.proj || activeProjId];
         const client = $("clientName").value || "[Client]";
-        const text = `🏠 *${p.name} — Unit ${r.uid}*\n\nDear ${client},\n\n📋 ${r.uid} · ${r.info?.beds} · ${r.info?.size}\n💰 List: ${fUSD(r.orig)} → Save: ${fUSD(r.discAmt)} (${r.discLabel})\n✅ Final: *${fUSD(r.net)}*\n\n*Payment Plan*\n📌 Booking: ${fUSD(r.bk)}\n📝 SPA (${r.spaPct}%): ${fUSD(r.spaNet)} net\n📅 Monthly: ${r.months} × ${fUSD(r.moAmt)}\n🏠 Handover (${r.hoPct}%): ${fUSD(r.hoTotal)}\n\n${cfg.name ? cfg.name + "\n" : ""}${cfg.phone ? cfg.phone + "\n" : ""}_${cfg.agency || "NICK | カンボジア不動産投資"} · ${dateStr()}_`;
+        const text = `🏠 *${p.name} — Unit ${r.uid}*\n\nDear ${client},\n\n📋 ${r.uid} · ${r.info?.beds} · ${r.info?.size}\n💰 List: ${fUSD(r.orig)} → Save: ${fUSD(r.discAmt)} (${r.discLabel})\n✅ Final: *${fUSD(r.net)}*\n\n*Payment Plan*\n📌 Booking: ${fUSD(r.bk)}\n📝 SPA (${formatPct(r.spaPct)}): ${fUSD(r.spaNet)} net\n📅 Monthly: ${r.months} × ${fUSD(r.moAmt)}${r.moPct ? ` (${formatPct(r.moPct)})` : ""}\n🏠 Handover (${formatPct(r.hoPct)}): ${fUSD(r.hoTotal)}\n\n${cfg.name ? cfg.name + "\n" : ""}${cfg.phone ? cfg.phone + "\n" : ""}_${cfg.agency || "NICK | カンボジア不動産投資"} · ${dateStr()}_`;
         $("waPreview").textContent = text;
         $("waModal").classList.add("visible");
       }
@@ -14372,17 +14386,28 @@
         const colPct = "%";
         const colAmt = isJa ? "金額 (Amount USD)" : "Amount (USD)";
 
+        const isMvt = r.proj === "mvt2" || r.proj === "mvt6";
+        const isPayOff = r.spaPct === 100 || (r.moPct === 0 && r.hoPct === 0);
+
         const row1Title = isJa ? "予約金 (Booking Fee)" : "Booking Fee";
         const row1Sub = isJa ? "予約時にお支払い" : "Upon reservation";
 
-        const row2Title = isJa ? "契約頭金 (SPA Payment)" : "SPA (Down Payment)";
+        const row2Title = isPayOff
+          ? (isJa ? "一括支払い (100% Pay Off)" : "Full Payment (100% Pay Off)")
+          : (isJa ? "契約頭金 (SPA Payment)" : "SPA (Down Payment)");
         const row2Sub = isJa ? `予約金を充当 · 差引支払額 ${fUSD(r.spaNet)}` : `Less booking · Net ${fUSD(r.spaNet)}`;
 
-        const row3Title = isJa ? "月々分割払い (Monthly Instalments)" : "Monthly Instalments";
+        const row3Title = isJa
+          ? (isMvt ? "月々分割払い (0%金利・24ヶ月)" : "月々分割払い (Monthly Instalments)")
+          : (isMvt ? "Monthly Instalments (0% Interest)" : "Monthly Instalments");
         const row3Sub = isJa ? `${r.months}ヶ月 × ${fUSD(r.moAmt)} / 月` : `${r.months} months × ${fUSD(r.moAmt)} / month`;
 
-        const row4Title = isJa ? "引渡時残金 (Handover Payment)" : "Handover Payment";
-        const row4Sub = isJa ? "物件完成・鍵の引渡時" : "Upon key collection";
+        const row4Title = isMvt
+          ? (isJa ? "引渡時残金 (Remaining Balance)" : "Remaining Balance (Handover)")
+          : (isJa ? "引渡時残金 (Handover Payment)" : "Handover Payment");
+        const row4Sub = isMvt
+          ? (isJa ? "24ヶ月分割支払い完了後・物件引渡時" : "After 24 months instalment · Key collection")
+          : (isJa ? "物件完成・鍵の引渡時" : "Upon key collection");
 
         const totTitle = isJa ? "ご購入総額 (Total Purchase Price)" : "Total Purchase Price";
         const totSub = isJa ? "物件取得総額" : "100% full acquisition price";
@@ -14454,16 +14479,17 @@
             <div style="font-size:11.5px;font-weight:600;color:var(--navy)">${row2Title}</div>
             <div style="font-size:9.5px;color:var(--tx3);margin-top:2px">${row2Sub}</div>
           </td>
-          <td style="text-align:center;font-weight:600;color:var(--navy)">${r.spaPct}%</td>
+          <td style="text-align:center;font-weight:600;color:var(--navy)">${formatPct(r.spaPct)}</td>
           <td class="dr" style="font-size:12px;font-weight:600;color:var(--navy)">${fUSD(r.spaTotal)}</td>
         </tr>
+        ${!isPayOff ? `
         <tr>
           <td style="text-align:center;font-weight:700;color:var(--navy)">3</td>
           <td>
             <div style="font-size:11.5px;font-weight:600;color:var(--navy)">${row3Title}</div>
             <div style="font-size:9.5px;color:var(--tx3);margin-top:2px">${row3Sub}</div>
           </td>
-          <td style="text-align:center;font-weight:600;color:var(--navy)">${r.moPct}%</td>
+          <td style="text-align:center;font-weight:600;color:var(--navy)">${formatPct(r.moPct)}</td>
           <td class="dr" style="font-size:12px;font-weight:700;color:var(--navy)">${fUSD(r.moTotal)}</td>
         </tr>
         <tr>
@@ -14472,9 +14498,9 @@
             <div style="font-size:11.5px;font-weight:600;color:var(--navy)">${row4Title}</div>
             <div style="font-size:9.5px;color:var(--tx3);margin-top:2px">${row4Sub}</div>
           </td>
-          <td style="text-align:center;font-weight:600;color:var(--navy)">${r.hoPct}%</td>
+          <td style="text-align:center;font-weight:600;color:var(--navy)">${formatPct(r.hoPct)}</td>
           <td class="dr" style="font-size:12px;font-weight:600;color:var(--navy)">${fUSD(r.hoTotal)}</td>
-        </tr>
+        </tr>` : ""}
         <tr class="tot" style="background:#FAF8F5;border-top:1.5px solid #9E8052">
           <td></td>
           <td>
@@ -15230,9 +15256,9 @@
             <!-- SECTION 4: PAYMENT CASH FLOW COMMITMENT -->
             <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#9E8052;margin:14px 0 6px;padding-bottom:3px;border-bottom:1px solid rgba(158,128,82,0.2);">📅 Payment Plan Commitment</div>
             <div class="cmp-stat"><span class="cmp-l">Booking Deposit</span><span class="cmp-v">${fUSD(r.bk)}</span></div>
-            <div class="cmp-stat"><span class="cmp-l">SPA Down Payment (${r.spaPct}%)</span><span class="cmp-v">${fUSD(r.spaTotal)}</span></div>
+            <div class="cmp-stat"><span class="cmp-l">SPA Down Payment (${formatPct(r.spaPct)})</span><span class="cmp-v">${fUSD(r.spaTotal)}</span></div>
             <div class="cmp-stat"><span class="cmp-l">Monthly Instalment</span><span class="cmp-v ${isBestMo ? 'better' : ''}" style="font-weight:700;color:${isBestMo ? '#86BE3F' : '#073642'};">${fUSD(r.moAmt)} / mo (${r.months} mo)</span></div>
-            <div class="cmp-stat"><span class="cmp-l">Handover Final (${r.hoPct}%)</span><span class="cmp-v">${fUSD(r.hoTotal)}</span></div>
+            <div class="cmp-stat"><span class="cmp-l">Handover Final (${formatPct(r.hoPct)})</span><span class="cmp-v">${fUSD(r.hoTotal)}</span></div>
 
             <!-- SECTION 5: RENTAL & INVESTMENT PROJECTION -->
             <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#9E8052;margin:14px 0 6px;padding-bottom:3px;border-bottom:1px solid rgba(158,128,82,0.2);">📈 Rental &amp; Yield Projection</div>
