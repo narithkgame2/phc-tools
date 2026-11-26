@@ -703,8 +703,8 @@
       }
       .inventory-table th:not(:first-child),
       .inventory-table td:not(:first-child) {
-        min-width: 84px;
-        width: 94px;
+        min-width: 78px;
+        width: 86px;
       }
       .inventory-table th,
       .inventory-table td {
@@ -7081,7 +7081,7 @@
 
       /* ═══ MULTI-SCREEN RESPONSIVE POLISH (Mobile / Tablet / Desktop / Ultrawide) ═══ */
       html, body {
-        overflow-x: hidden;
+        overflow-x: clip;
         max-width: 100%;
       }
       .cfg-proj-grid {
@@ -11165,10 +11165,22 @@
         const floors = [...new Set(matchingRows.map((row) => row.floor))].sort(
           (a, b) => b - a,
         );
+        const sampleFloor =
+          activeProjId === "ts7" && inventorySeriesFilter === "classic" ? 24 : null;
+        const classicBandNames = {
+          "Duplex 1BR · 60㎡": "Classic 1 Bedroom",
+          "Duplex 2BR · 100㎡": "Crystal 1 Bedroom",
+          "Duplex 3BR · 130㎡": "Luxury 2 Bedroom",
+          "Duplex 4BR · 160㎡": "Stylish 3 Bedroom",
+        };
         const groupHead = columns
           .map(
             (group) => {
-              const bandLabel = group.label.split("·")[0].trim().replace(/\bBed\b/g, "Bedroom");
+              const rawLabel =
+                sampleFloor === 24 && classicBandNames[group.label]
+                  ? classicBandNames[group.label]
+                  : group.label;
+              const bandLabel = rawLabel.split("·")[0].trim().replace(/\bBed\b/g, "Bedroom");
               return `<th colspan="${group.types.length}" style="background:${group.color}">${bandLabel}</th>`;
             },
           )
@@ -11176,7 +11188,7 @@
         const unitHead = columns
           .flatMap((group) =>
             group.types.map((type) => {
-              const info = getUnitMeta(activeProjId, type);
+              const info = getUnitMeta(activeProjId, type, sampleFloor);
               return `<th><div class="inventory-unit-head"><div class="code">${type}</div><div class="dir">${cleanFacingDirection(info.orientation)}</div></div></th>`;
             }),
           )
@@ -11184,7 +11196,7 @@
         const detailHead = columns
           .flatMap((group) =>
             group.types.map((type) => {
-              const info = getUnitMeta(activeProjId, type);
+              const info = getUnitMeta(activeProjId, type, sampleFloor);
               const grossSize = info.grossSize || info.size || "—";
               const netSize = info.netSize || "—";
               return `<th><div class="inventory-detail-head"><div class="beds">${info.beds || "—"}</div><div class="size">G ${grossSize} · N ${netSize}</div></div></th>`;
