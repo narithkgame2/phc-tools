@@ -703,8 +703,8 @@
       }
       .inventory-table th:not(:first-child),
       .inventory-table td:not(:first-child) {
-        min-width: 78px;
-        width: 86px;
+        min-width: 94px;
+        width: 104px;
       }
       .inventory-table th,
       .inventory-table td {
@@ -6419,12 +6419,12 @@
         }
         /* Compact Mobile Unit Cells */
         .inventory-table th, .inventory-table td {
-          min-width: 76px !important;
-          width: 76px !important;
+          min-width: 86px !important;
+          width: 86px !important;
           padding: 3px !important;
         }
         .inventory-unit {
-          min-width: 70px !important;
+          min-width: 80px !important;
           min-height: 52px !important;
           padding: 5px 3px !important;
           border-radius: 6px !important;
@@ -11593,9 +11593,13 @@
           .flatMap((group) =>
             group.types.map((type) => {
               const info = getUnitMeta(activeProjId, type, sampleFloor);
-              const grossSize = info.grossSize || info.size || "—";
-              const netSize = info.netSize || "—";
-              return `<th><div class="inventory-detail-head"><div class="beds">${info.beds || "—"}</div><div class="size">G ${grossSize} · N ${netSize}</div></div></th>`;
+              const grossSize = info.grossSize || info.size || "";
+              const netSize = info.netSize || "";
+              const hasNet = netSize && netSize !== "—";
+              const sizeHtml = hasNet
+                ? `<div class="size">G: ${grossSize}</div><div class="size">N: ${netSize}</div>`
+                : (grossSize ? `<div class="size">G: ${grossSize}</div>` : `<div class="size">—</div>`);
+              return `<th><div class="inventory-detail-head"><div class="beds">${info.beds || "—"}</div>${sizeHtml}</div></th>`;
             }),
           )
           .join("");
