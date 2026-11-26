@@ -9124,6 +9124,7 @@
             },
           },
           unitGroups: [
+            { label: "New Special Layout 1BR · 29–50㎡", types: ["M1", "M2"] },
             { label: "New Layout 1BR · 43㎡", types: ["X1", "X2", "X3", "X5"] },
             { label: "1 Bed · 80㎡", types: ["B"] },
             {
@@ -9139,6 +9140,8 @@
             { label: "4 Bedroom", types: ["C"] },
           ],
           unitTypes: {
+            M1: { beds: "1 Bed Special", size: "50㎡", orientation: "South-West (Street 57)" },
+            M2: { beds: "1 Bed Special", size: "29㎡", orientation: "South-West (Street 57)" },
             X1: { beds: "1 Bed New Layout", size: "43㎡", orientation: "New Layout (43㎡)" },
             X2: { beds: "1 Bed New Layout", size: "43㎡", orientation: "New Layout (43㎡)" },
             X3: { beds: "1 Bed New Layout", size: "43㎡", orientation: "New Layout (43㎡)" },
@@ -9165,6 +9168,8 @@
             C: { beds: "4 Bed", size: "190㎡", orientation: "North-East (Street 278 & 51)" },
           },
           prices: {
+            M1: { 5: 90917, 6: 91958, 8: 94042, 9: 95083, 10: 96088, 12: 97948, 13: 98803, 15: 100440 },
+            M2: { 7: 57000, 10: 58892, 12: 60032, 14: 61058 },
             X1: { 5: 73320, 10: 77490, 11: 78330, 13: 79680, 17: 82320, 19: 83670, 20: 84330, 23: 86670, 28: 90890, 29: 91680, 31: 93510, 33: 95490, 35: 97500, 36: 98490 },
             X2: { 5: 73320, 8: 75840, 10: 77490, 11: 78330, 12: 78990, 13: 79680, 17: 82320, 18: 83010, 19: 83670, 20: 84330, 21: 84990, 22: 85830, 29: 91680, 30: 92400, 31: 93510, 33: 95490, 36: 98490 },
             X3: { 8: 75840, 10: 77490, 12: 78990, 13: 79680, 18: 83010, 19: 83670, 20: 84330, 22: 85830, 29: 91680, 30: 92400, 31: 93510, 32: 94500, 33: 95490, 36: 98490, 38: 101670 },
@@ -12237,6 +12242,13 @@
         });
       }
       function getProjectPromo(projectId, type, floor = null) {
+        if (projectId === "ts9" && (type === "M1" || type === "M2")) {
+          return {
+            types: ["M1", "M2"],
+            label: "New Special Layout · 15% Off",
+            discPct: 15,
+          };
+        }
         if (projectId === "ts9" && ["X1", "X2", "X3", "X5"].includes(type)) {
           if (floor != null && Number(floor) >= 20) {
             return {
