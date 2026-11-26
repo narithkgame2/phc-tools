@@ -9880,18 +9880,27 @@
           ? getPaymentStatusMeta(installmentRow)
           : null;
         const client = deal.clientName || "Valued Client";
-        const con = cfg.name || "Your Consultant";
-        const agency = cfg.agency || "NICK | カンボジア不動産投資";
-        const phone = cfg.phone || "";
-        const greeting = `Dear ${client},\n\nプノンペン在住のニックです。(*${agency}*)\nカンボジア不動産を、数字と現地目線でお届けします。`;
-        const sig = `\n\n個別相談は公式LINEへ: https://line.me/ti/p/@615ueovq\nWhatsApp: +855 86 552 459\nTelegram: @Nick_REAKH\n*${con} (日本人向け不動産コンサルタント)*\n${agency}`;
+        const projName = (p.name || "").toUpperCase();
+        const unitDesc = [deal.uid, deal.info?.beds, deal.info?.size].filter(Boolean).join(" | ");
+        const sig = `\n\n**CONTACT**\nProperty Hub Cambodia\nPhone: 096 96 61 555\nTelegram: https://t.me/Nick_REAKH`;
+        const bDate = bookingRow ? fmtDate(bookingRow.date instanceof Date ? bookingRow.date : new Date(bookingRow.date)) : "To be confirmed";
+        const sDate = spaRow ? fmtDate(spaRow.date instanceof Date ? spaRow.date : new Date(spaRow.date)) : "To be confirmed";
+        const iDate = installmentRow ? fmtDate(installmentMeta.date) : np ? fmtDate(np.date) : "To be confirmed";
+        const iStatus = installmentMeta && installmentMeta.daysUntil < 0
+          ? `Overdue by ${Math.abs(installmentMeta.daysUntil)} days`
+          : installmentMeta
+            ? `Due in ${installmentMeta.daysUntil} days`
+            : np
+              ? `Due in ${np.daysUntil} days`
+              : "To be confirmed";
+        const hDate = handoverRow ? fmtDate(handoverRow.date instanceof Date ? handoverRow.date : new Date(handoverRow.date)) : "To be confirmed";
 
         const templates = {
-          booking: `${greeting}\n\nWe're thrilled to confirm your *Booking* for:\n\n📍 *${p.name}*\n🏠 Unit: *${deal.uid}* · ${deal.info?.beds} · ${deal.info?.size}\n💰 Sale Price: *${fUSD(deal.net)}*${bookingRow ? "\n📅 Booking Date: *" + fmtDate(bookingRow.date instanceof Date ? bookingRow.date : new Date(bookingRow.date)) + "*" : ""}\n\nYour booking fee of *${fUSD(deal.calc?.bk || 1000)}* has been received. Our team will be in touch shortly to arrange the SPA signing.${sig}`,
-          spa: `${greeting}\n\nThis is a friendly reminder that your *SPA Payment* is due:\n\n📍 *${p.name}* — Unit *${deal.uid}*\n💰 SPA Amount: *${fUSD(deal.calc?.spaNet || 0)}*${spaRow ? "\n📅 Due: *" + fmtDate(spaRow.date instanceof Date ? spaRow.date : new Date(spaRow.date)) + "*" : ""}\n\nPlease arrange your payment at your earliest convenience. If you have any questions, don't hesitate to reach out.${sig}`,
-          installment: `${greeting}\n\n${installmentMeta && installmentMeta.daysUntil < 0 ? "⚠️ Your instalment payment is *OVERDUE*:" : "⏰ Upcoming instalment payment reminder:"}\n\n📍 *${p.name}* — Unit *${deal.uid}*\n💰 Amount Due: *${fUSD(installmentRow?.amount || np?.amount || 0)}*\n📅 Due Date: *${installmentRow ? fmtDate(installmentMeta.date) : np ? fmtDate(np.date) : "—"}*${installmentMeta && installmentMeta.daysUntil < 0 ? "\n🔴 Overdue by *" + Math.abs(installmentMeta.daysUntil) + " days*" : installmentMeta ? "\n🟢 Due in *" + installmentMeta.daysUntil + " days*" : np ? "\n🟢 Due in *" + np.daysUntil + " days*" : ""}\n\nKindly arrange payment and send us confirmation. Thank you for staying on track!${sig}`,
-          handover: `${greeting}\n\n🎉 Exciting news — your unit is *nearly ready for handover*!\n\n📍 *${p.name}* — Unit *${deal.uid}*\n🏠 ${deal.info?.beds} · ${deal.info?.size}\n💰 Handover Balance: *${fUSD(handoverRow?.amount || deal.calc?.hoTotal || 0)}*${handoverRow ? "\n📅 Due: *" + fmtDate(handoverRow.date instanceof Date ? handoverRow.date : new Date(handoverRow.date)) + "*" : ""}\n\nPlease prepare your *final payment* so we can schedule your key handover ceremony. We look forward to handing you the keys to your new home!${sig}`,
-          followup: `${greeting}\n\nWe wanted to check in on your *${p.name}* purchase:\n\n📍 Unit *${deal.uid}* · ${deal.info?.beds} · ${deal.info?.size}\n💎 Investment Value: *${fUSD(deal.net)}*\n\nIs there anything we can assist you with? We're always here to help — whether it's documentation, payment planning, or project updates.${sig}`,
+          booking: `**${projName} | BOOKING CONFIRMATION**\n\nDear ${client},\n\nWe are pleased to confirm your booking details below.\n\n▫️ Project: ${p.name}\n▫️ Unit: ${unitDesc}\n▫️ Sale Price: ${fUSD(deal.net)}\n▫️ Booking Date: ${bDate}\n▫️ Booking Fee Received: ${fUSD(deal.calc?.bk || 1000)}\n\n🔎 Next Step: Our team will coordinate with you to arrange the SPA signing.${sig}`,
+          spa: `**${projName} | SPA PAYMENT REMINDER**\n\nDear ${client},\n\nThis is a reminder regarding your upcoming SPA payment.\n\n▫️ Project: ${p.name}\n▫️ Unit: ${deal.uid}\n▫️ SPA Amount Due: ${fUSD(deal.calc?.spaNet || 0)}\n▫️ Due Date: ${sDate}\n\n🔎 Please arrange the payment at your earliest convenience and let us know if you need any assistance.${sig}`,
+          installment: `**${projName} | INSTALLMENT REMINDER**\n\nDear ${client},\n\nPlease find your installment schedule update below.\n\n▫️ Project: ${p.name}\n▫️ Unit: ${deal.uid}\n▫️ Amount Due: ${fUSD(installmentRow?.amount || np?.amount || 0)}\n▫️ Due Date: ${iDate}\n▫️ Status: ${iStatus}\n\n🔎 Kindly arrange payment and share your transfer confirmation once completed.${sig}`,
+          handover: `**${projName} | HANDOVER NOTICE**\n\nDear ${client},\n\nYour unit is approaching handover.\n\n▫️ Project: ${p.name}\n▫️ Unit: ${unitDesc}\n▫️ Handover Balance: ${fUSD(handoverRow?.amount || deal.calc?.hoTotal || 0)}\n▫️ Target Date: ${hDate}\n\n🔎 Please prepare the final payment so we can schedule your key handover and inspection.${sig}`,
+          followup: `**${projName} | INVESTMENT FOLLOW UP**\n\nDear ${client},\n\nWe are checking in regarding your unit at ${p.name}.\n\n▫️ Unit: ${unitDesc}\n▫️ Purchase Price: ${fUSD(deal.net)}\n\n🔎 Please let us know if you need any updates on documentation, payment planning, or construction progress.${sig}`,
         };
         return templates[stageKey] || templates.followup;
       }
