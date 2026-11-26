@@ -10322,6 +10322,48 @@
         mapLaunch(["T1","T2","T3","T5","T6"], cT);
         mapLaunch(["S1","S2","S3","S5"], cS);
       })();
+
+      // Populate TS11 7-39F status from developer master release (Sold in red)
+      (function hydrateTs11Status() {
+        const ts11 = PROJECTS.ts11;
+        if (!ts11) return;
+        ts11.defaultStatus = ts11.defaultStatus || {};
+        const soldUids = [
+          '39A1', '39A5', '39C2', '39C3', '39C5',
+          '38A5', '38C3', '38D',
+          '37A3', '37A5', '37C3', '37D',
+          '36A5', '36C3', '36D',
+          '35A5', '35B2', '35C3',
+          '33A5', '33B1',
+          '32C2',
+          '31D',
+          '30A5', '30C3', '30D',
+          '29D',
+          '28C2', '28C3', '28D',
+          '27B1', '27C3', '27D',
+          '26B1', '26B2', '26C1', '26C2',
+          '25C2',
+          '22C2',
+          '21A5', '21C2', '21C3', '21C5',
+          '20A1', '20C2', '20C3',
+          '19D',
+          '18B2', '18C2', '18D',
+          '17C2', '17D',
+          '16A5', '16C2', '16D',
+          '15A2',
+          '14A2',
+          '13C3',
+          '12D',
+          '11C2', '11C3', '11D',
+          '10B2', '10B3', '10C2', '10D',
+          '9C3', '9D',
+          '8D',
+          '7A5', '7C2', '7C3', '7D'
+        ];
+        soldUids.forEach((uid) => {
+          ts11.defaultStatus[uid] = "sold";
+        });
+      })();
       const FOLDER_PRICE_LIST_FILES = {
         ts7: [
           "TS7 - Price List.jpeg",
@@ -10345,6 +10387,7 @@
           "TS10 Special Discount.PNG",
         ],
         ts11: [
+          "TS11/TS11 Original Price List 7F-39F.jpg",
           "TS11/TS11 S-Type Gross and Net.png",
           "TS11/TS11 New Layout Plate S1-S5.jpg",
           "TS11/TS11 Type S2_S5 40sqm.jpg",
