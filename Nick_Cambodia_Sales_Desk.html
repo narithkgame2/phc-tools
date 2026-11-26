@@ -9647,12 +9647,12 @@
             { label: "Duplex 4BR · 160㎡", types: ["A", "I", "Z"] },
           ],
           unitTypes: {
-            K: { beds: "1 Bed Duplex", size: "60㎡", orientation: "Inner East (Sky Garden Atrium)" },
-            L: { beds: "1 Bed Duplex", size: "60㎡", orientation: "Inner Courtyard (Sky Garden Atrium)" },
-            M: { beds: "1 Bed Duplex", size: "60㎡", orientation: "Inner Lightwell (Sky Garden Atrium)" },
-            N: { beds: "1 Bed Duplex", size: "60㎡", orientation: "Inner Lightwell (Sky Garden Atrium)" },
-            O: { beds: "1 Bed Duplex", size: "60㎡", orientation: "Inner Courtyard (Sky Garden Atrium)" },
-            P: { beds: "1 Bed Duplex", size: "60㎡", orientation: "Inner East (Sky Garden Atrium)" },
+            K: { beds: "1 Bed Duplex", size: "60㎡", orientation: "South Facing (Inner Courtyard)" },
+            L: { beds: "1 Bed Duplex", size: "60㎡", orientation: "South Facing (Inner Courtyard)" },
+            M: { beds: "1 Bed Duplex", size: "60㎡", orientation: "East Facing (Inner Lightwell)" },
+            N: { beds: "1 Bed Duplex", size: "60㎡", orientation: "East Facing (Inner Lightwell)" },
+            O: { beds: "1 Bed Duplex", size: "60㎡", orientation: "North Facing (Inner Courtyard)" },
+            P: { beds: "1 Bed Duplex", size: "60㎡", orientation: "North Facing (Inner Courtyard)" },
             J: { beds: "1 Bed Duplex", size: "70㎡", orientation: "East Facing (Outer View)" },
             Q: { beds: "1 Bed Duplex", size: "70㎡", orientation: "East Facing (Outer View)" },
             F: { beds: "2 Bed Duplex", size: "100㎡", orientation: "North Facing (Street 538)" },
@@ -10438,17 +10438,11 @@
         if (/north-west/i.test(ori)) return "North-West";
         if (/south-east/i.test(ori)) return "South-East";
         if (/south-west/i.test(ori)) return "South-West";
-        if (/north\s*facing/i.test(ori)) return "North";
-        if (/south\s*facing/i.test(ori)) return "South";
-        if (/east\s*facing/i.test(ori)) return "East";
-        if (/west\s*facing/i.test(ori)) return "West";
-        if (/inner\s*east/i.test(ori)) return "Inner East";
-        if (/inner\s*lightwell/i.test(ori)) return "Inner Lightwell";
-        if (/inner\s*courtyard/i.test(ori)) return "Inner Courtyard";
-        if (/ocean\s*view/i.test(ori)) return "Ocean View";
-        if (/mountain/i.test(ori)) return "Mountain View";
-        const base = ori.replace(/\s*\([^)]*\)/g, "").trim();
-        return base || "—";
+        if (/\bnorth\b/i.test(ori)) return "North";
+        if (/\bsouth\b/i.test(ori)) return "South";
+        if (/\beast\b/i.test(ori)) return "East";
+        if (/\bwest\b/i.test(ori)) return "West";
+        return "—";
       }
       function addMonths(d, m) {
         const r = new Date(d);
