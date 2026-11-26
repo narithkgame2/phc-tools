@@ -9152,26 +9152,26 @@
             X2: { beds: "1 Bed New Layout", size: "43㎡", orientation: "" },
             X3: { beds: "1 Bed New Layout", size: "43㎡", orientation: "" },
             X5: { beds: "1 Bed New Layout", size: "43㎡", orientation: "" },
-            B: { beds: "1 Bed", size: "80㎡", orientation: "East Facing (Street 51)" },
-            D: { beds: "1 Bed", size: "75㎡", orientation: "North Facing (Street 278)" },
-            E: { beds: "1 Bed", size: "75㎡", orientation: "North Facing (Street 278)" },
-            F: { beds: "1 Bed", size: "75㎡", orientation: "North Facing (Street 278)" },
-            G: { beds: "1 Bed", size: "75㎡", orientation: "North Facing (Street 278)" },
-            H: { beds: "1 Bed", size: "75㎡", orientation: "North Facing (Street 278)" },
-            I: { beds: "1 Bed", size: "75㎡", orientation: "North Facing (Street 278)" },
-            J: { beds: "1 Bed", size: "75㎡", orientation: "North Facing (Street 278)" },
-            L: { beds: "1 Bed", size: "60㎡", orientation: "West Facing (Street 57)" },
-            N: { beds: "1 Bed", size: "60㎡", orientation: "South Facing (City View)" },
-            O: { beds: "1 Bed", size: "60㎡", orientation: "South Facing (City View)" },
-            P: { beds: "1 Bed", size: "60㎡", orientation: "South Facing (City View)" },
-            Q: { beds: "1 Bed", size: "60㎡", orientation: "South Facing (City View)" },
-            R: { beds: "1 Bed", size: "60㎡", orientation: "South Facing (City View)" },
-            S: { beds: "1 Bed", size: "60㎡", orientation: "South Facing (City View)" },
-            T: { beds: "1 Bed", size: "60㎡", orientation: "South Facing (City View)" },
-            K: { beds: "2 Bed", size: "95㎡", orientation: "North-West (Street 278 & 57)" },
-            M: { beds: "2 Bed", size: "90㎡", orientation: "South-West (Street 57)" },
-            A: { beds: "3 Bed", size: "130㎡", orientation: "South-East (Street 51)" },
-            C: { beds: "4 Bed", size: "190㎡", orientation: "North-East (Street 278 & 51)" },
+            B: { beds: "1 Bed", size: "80㎡", netSize: "55㎡", orientation: "East Facing (Street 51)" },
+            D: { beds: "1 Bed", size: "75㎡", netSize: "50㎡", orientation: "North Facing (Street 278)" },
+            E: { beds: "1 Bed", size: "75㎡", netSize: "50㎡", orientation: "North Facing (Street 278)" },
+            F: { beds: "1 Bed", size: "75㎡", netSize: "50㎡", orientation: "North Facing (Street 278)" },
+            G: { beds: "1 Bed", size: "75㎡", netSize: "50㎡", orientation: "North Facing (Street 278)" },
+            H: { beds: "1 Bed", size: "75㎡", netSize: "50㎡", orientation: "North Facing (Street 278)" },
+            I: { beds: "1 Bed", size: "75㎡", netSize: "50㎡", orientation: "North Facing (Street 278)" },
+            J: { beds: "1 Bed", size: "75㎡", netSize: "50㎡", orientation: "North Facing (Street 278)" },
+            L: { beds: "1 Bed", size: "60㎡", netSize: "40㎡", orientation: "West Facing (Street 57)" },
+            N: { beds: "1 Bed", size: "60㎡", netSize: "40㎡", orientation: "South Facing (City View)" },
+            O: { beds: "1 Bed", size: "60㎡", netSize: "40㎡", orientation: "South Facing (City View)" },
+            P: { beds: "1 Bed", size: "60㎡", netSize: "40㎡", orientation: "South Facing (City View)" },
+            Q: { beds: "1 Bed", size: "60㎡", netSize: "40㎡", orientation: "South Facing (City View)" },
+            R: { beds: "1 Bed", size: "60㎡", netSize: "40㎡", orientation: "South Facing (City View)" },
+            S: { beds: "1 Bed", size: "60㎡", netSize: "40㎡", orientation: "South Facing (City View)" },
+            T: { beds: "1 Bed", size: "60㎡", netSize: "40㎡", orientation: "South Facing (City View)" },
+            K: { beds: "2 Bed", size: "95㎡", netSize: "65㎡", orientation: "North-West (Street 278 & 57)" },
+            M: { beds: "2 Bed", size: "90㎡", netSize: "60㎡", orientation: "South-West (Street 57)" },
+            A: { beds: "3 Bed", size: "130㎡", netSize: "90㎡", orientation: "South-East (Street 51)" },
+            C: { beds: "4 Bed", size: "190㎡", netSize: "130㎡", orientation: "North-East (Street 278 & 51)" },
           },
           prices: {
             M1: { 5: 90917, 6: 91958, 8: 94042, 9: 95083, 10: 96088, 12: 97948, 13: 98803, 15: 100440 },
@@ -10093,6 +10093,39 @@
         mapLaunch(["Q","R"], dpx124);
         mapLaunch(["A"], dpx173);
         mapLaunch(["B","C"], dpx167);
+      })();
+
+      // Populate TS9 Gatsby Floors 5-39F matrix as Sold for the ALL view
+      (function hydrateTs9FullMatrix() {
+        const ts9 = PROJECTS.ts9;
+        if (!ts9) return;
+        ts9.defaultStatus = ts9.defaultStatus || {};
+        const g75 = {5:122200,6:123600,7:125000,8:126400,9:127800,10:129150,11:130550,12:131650,13:132800,14:133900,15:135000,16:136100,17:137200,18:138350,19:139450,20:140550,21:141650,22:143050,23:144450,24:145850,25:147200,26:148600,27:150000,28:151400,29:152800,30:154000,31:155850,32:157500,33:159150,34:160850,35:162500,36:164150,37:165850,38:169450,39:175000};
+        const g80 = {5:134420,6:135960,7:137500,8:139040,9:140580,10:142065,11:143605,12:144815,13:146080,14:147290,15:148500,16:149710,17:150920,18:152185,19:153395,20:154605,21:155815,22:157355,23:158895,24:160435,25:161920,26:163460,27:165000,28:166540,29:168080,30:169400,31:171435,32:173250,33:175065,34:176935,35:178750,36:180565,37:182435,38:186395,39:192500};
+        const g60 = {5:97760,6:98880,7:100000,8:101120,9:102240,10:103320,11:104440,12:105320,13:106240,14:107120,15:108000,16:108880,17:109760,18:110680,19:111560,20:112440,21:113320,22:114440,23:115560,24:116680,25:117760,26:118880,27:120000,28:121120,29:122240,30:123200,31:124680,32:126000,33:127320,34:128680,35:130000,36:131320,37:132680,38:135560,39:140000};
+        const g95 = {5:158860,6:160680,7:162500,8:164320,9:166140,10:167895,11:169715,12:171145,13:172640,14:174070,15:175500,16:176930,17:178360,18:179855,19:181285,20:182715,21:184145,22:185965,23:187785,24:189605,25:191360,26:193180,27:195000,28:196820,29:198640,30:200200,31:202605,32:204750,33:206895,34:209105,35:211250,36:213395,37:215605,38:220285,39:227500};
+        const g90 = {5:146640,6:148320,7:150000,8:151680,9:153360,10:154980,11:156660,12:157980,13:159360,14:160680,15:162000,16:163320,17:164640,18:166020,19:167340,20:168660,21:169980,22:171660,23:173340,24:175020,25:176640,26:178320,27:180000,28:181680,29:183360,30:184800,31:187020,32:189000,33:190980,34:193020,35:195000,36:196980,37:199020,38:203340,39:210000};
+        const g130 = {5:219960,6:222480,7:225000,8:227520,9:230040,10:232470,11:234990,12:236970,13:239040,14:241020,15:243000,16:244980,17:246960,18:249030,19:251010,20:252990,21:254970,22:257490,23:260010,24:262530,25:264960,26:267480,27:270000,28:272520,29:275040,30:277200,31:280530,32:283500,33:286470,34:289530,35:292500,36:295470,37:298530,38:305010,39:315000};
+        const g190 = {5:317720,6:321360,7:325000,8:328640,9:332280,10:335790,11:339430,12:342290,13:345280,14:348140,15:351000,16:353860,17:356720,18:359710,19:362570,20:365430,21:368290,22:371930,23:375570,24:379210,25:382720,26:386360,27:390000,28:393640,29:397280,30:400400,31:405210,32:409500,33:413790,34:418210,35:422500,36:426790,37:431210,38:440570,39:455000};
+
+        const mapLaunch = (types, table) => {
+          types.forEach((t) => {
+            if (!ts9.prices[t]) ts9.prices[t] = {};
+            Object.entries(table).forEach(([fl, px]) => {
+              if (!ts9.prices[t][fl]) {
+                ts9.prices[t][fl] = px;
+                ts9.defaultStatus[`${fl}${t}`] = "sold";
+              }
+            });
+          });
+        };
+        mapLaunch(["B"], g80);
+        mapLaunch(["D","E","F","G","H","I","J"], g75);
+        mapLaunch(["L","N","O","P","Q","R","S","T"], g60);
+        mapLaunch(["K"], g95);
+        mapLaunch(["M"], g90);
+        mapLaunch(["A"], g130);
+        mapLaunch(["C"], g190);
       })();
       const FOLDER_PRICE_LIST_FILES = {
         ts7: [
