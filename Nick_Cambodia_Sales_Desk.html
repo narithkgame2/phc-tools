@@ -8033,7 +8033,7 @@
             </div>
             <div class="field">
               <label>Discount</label
-              ><select id="discOvr">
+              ><select id="discOvr" onchange="onDiscountChange()">
                 <option value="auto">Auto-detect</option>
               </select>
             </div>
@@ -8183,6 +8183,20 @@
           </div>
           <div class="schtitle">Payment Schedule</div>
           <div class="schrows" id="schRows"></div>
+          <div id="mvtFeeCard" style="display:none;margin-top:14px;padding:12px 14px;border:1px solid #cbd5e1;border-radius:10px;background:#f8fafc;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <div style="font-weight:700;color:#073642;font-size:12px;">🏢 Project Fees & Handover Terms</div>
+              <span style="background:#dcfce7;color:#15803d;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;">🎉 Free Decor</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px;color:#334155;">
+              <div>• <strong>Management Fee:</strong> $0.70/㎡</div>
+              <div>• <strong>Car Parking:</strong> $25/car/month</div>
+              <div>• <strong>Electricity:</strong> $0.25/kWh</div>
+              <div>• <strong>Motorcycle:</strong> Free Parking</div>
+              <div>• <strong>Water:</strong> $0.30/m³</div>
+              <div>• <strong>Decoration:</strong> All Condition Free Decor</div>
+            </div>
+          </div>
           <div id="promoNote" class="promo-note"></div>
           <div id="agentBonus" class="agent-bonus"></div>
           <div class="card-title" style="margin-top: 18px; margin-bottom: 10px">
@@ -9960,7 +9974,7 @@
             "12": { 3: 112125, 5: 113160, 6: 114440, 7: 115920, 9: 117300, 10: 117800, 11: 118880, 12: 120060 },
             "16": { 2: 138460, 3: 139750 },
             "16A": { 6: 69720 },
-            "17": { 3: 105625, 5: 106600, 6: 107900 },
+            "17": { 3: 105625, 5: 106600, 6: 107900, 7: 109200 },
             "18": { 5: 178500, 6: 182700, 7: 183750, 10: 186900 },
           },
         },
@@ -12182,27 +12196,46 @@
             fallbackPaid,
           ),
         });
+        if (r.spaPct === 100 || r.moPct === 0) {
+          rows.push({
+            num: 2,
+            kind: "payoff",
+            date: spa,
+            stage: "100% Full Payment (Pay Off)",
+            amount: r.spaNet,
+            status: defaultRowStatus(
+              existingByKind.get("payoff") ||
+                existingByKind.get("spa") ||
+                [...existingByKind.values()].find((row) =>
+                  String(row.stage || "").includes("Payment") || String(row.stage || "").includes("Pay Off"),
+                ),
+              fallbackPaid,
+            ),
+          });
+          return rows;
+        }
         rows.push({
           num: 2,
           kind: "spa",
           date: spa,
-          stage: `SPA Payment (${r.spaPct}%)`,
+          stage: `SPA Down Payment (${r.spaPct}%)`,
           amount: r.spaNet,
           status: defaultRowStatus(
             existingByKind.get("spa") ||
               [...existingByKind.values()].find((row) =>
-                String(row.stage || "").startsWith("SPA Payment"),
+                String(row.stage || "").startsWith("SPA Payment") || String(row.stage || "").startsWith("SPA Down Payment"),
               ),
             fallbackPaid,
           ),
         });
+        const isMvtProj = r.proj === "mvt2" || r.proj === "mvt6";
         for (let i = 1; i <= r.months; i++) {
           const d = endOfMonth(new Date(spa.getFullYear(), spa.getMonth() + i, 1));
           rows.push({
             num: 2 + i,
             kind: `installment-${i}`,
             date: d,
-            stage: `Instalment ${i}/${r.months}`,
+            stage: isMvtProj ? `Instalment ${i}/${r.months} (0% Int)` : `Instalment ${i}/${r.months}`,
             amount: r.moAmt,
             status: defaultRowStatus(
               existingByKind.get(`installment-${i}`) ||
@@ -12216,10 +12249,10 @@
           num: rows.length + 1,
           kind: "handover",
           date: hoDate,
-          stage: "Handover Payment",
+          stage: isMvtProj ? `Remaining Balance (${r.hoPct.toFixed(1)}%)` : "Handover Payment",
           amount: r.hoTotal,
           status: defaultRowStatus(
-            existingByKind.get("handover") || existingByKind.get("Handover Payment"),
+            existingByKind.get("handover") || existingByKind.get("Handover Payment") || existingByKind.get("Remaining Balance"),
             fallbackPaid,
           ),
           isHandover: true,
@@ -12583,6 +12616,34 @@
           estRent3BR: 2100,
           tenant: "Discerning expats, regional corporate directors, local elite",
           appeal: "Sophisticated European architectural design in a master-planned community."
+        },
+        mvt2: {
+          district: "Chroy Changvar, Phnom Penh",
+          areaShort: "Chroy Changvar",
+          character: "Riverfront Completed Residence",
+          developerFull: "Bun Ches Company",
+          trackRecord: "Mekong View 1, 2, 3, 6 Series",
+          handover: "Completed (Ready to Move In)",
+          title: "Foreign Freehold Strata Title",
+          estRent1BR: 450,
+          estRent2BR: 700,
+          estRent3BR: 950,
+          tenant: "Riverfront expats, embassy/NGO staff, local professionals",
+          appeal: "Scenic waterfront lifestyle with low management fees ($0.70/㎡) and flexible 24-month 0% interest payment plan."
+        },
+        mvt6: {
+          district: "Chroy Changvar, Phnom Penh",
+          areaShort: "Chroy Changvar",
+          character: "Modern River-Peninsula High-Rise",
+          developerFull: "Bun Ches Company",
+          trackRecord: "Mekong View 1, 2, 3, 6 Series",
+          handover: "Completed (Ready to Move In)",
+          title: "Foreign Freehold Strata Title",
+          estRent1BR: 450,
+          estRent2BR: 700,
+          estRent3BR: 1000,
+          tenant: "River-view lovers, expat couples, medical & IT professionals",
+          appeal: "Unobstructed Mekong & Tonle Sap views, All Condition Free Decor, and 15% payoff discount."
         }
       };
 
@@ -12916,6 +12977,30 @@
           .forEach((p) => p.classList.remove("active"));
         el.classList.add("active");
         $("customPlanFields").style.display = k === "custom" ? "block" : "none";
+        if (activeProjId === "mvt2" || activeProjId === "mvt6") {
+          const sel = $("discOvr");
+          if (sel) {
+            if (k === "mvt_opt1") sel.value = "5";
+            else if (k === "mvt_opt2") sel.value = "15";
+          }
+        }
+        if ($("resultCard")?.classList.contains("visible") || lastCalc) {
+          calculate();
+        }
+      }
+      function onDiscountChange() {
+        const selVal = $("discOvr").value;
+        if (activeProjId === "mvt2" || activeProjId === "mvt6") {
+          if (selVal === "15") {
+            activePlan = "mvt_opt2";
+          } else if (selVal === "5") {
+            activePlan = "mvt_opt1";
+          }
+          buildPlanPills();
+        }
+        if ($("resultCard")?.classList.contains("visible") || lastCalc) {
+          calculate();
+        }
       }
       function toggleOvr() {
         showOvr = !showOvr;
@@ -13011,8 +13096,8 @@
           bk = 1000;
           spaPct = 10;
           months = 24;
-          moPct = 15;
-          hoPct = 75;
+          moPct = 13.41816;
+          hoPct = 76.58184;
         } else if (plan === "mvt_opt2") {
           bk = 1000;
           spaPct = 100;
@@ -13119,6 +13204,9 @@
         $("rFinalC").textContent =
           activeCurr !== "USD" ? formatFx(activeCurr, r.net) : "Final price";
         const isMvt = r.proj === "mvt2" || r.proj === "mvt6";
+        if ($("mvtFeeCard")) {
+          $("mvtFeeCard").style.display = isMvt ? "block" : "none";
+        }
         const sched = [
           {
             icon: uiIcon("save", "ui-icon sm"),
@@ -13137,12 +13225,12 @@
           sched.push({
             icon: uiIcon("calendar", "ui-icon sm"),
             label: isMvt ? "Monthly Instalments (0% Interest)" : "Monthly Instalments",
-            sub: `${r.months} × ${fUSD(r.moAmt)}/mo`,
+            sub: `${r.months} × ${fUSD(Math.round(r.moAmt))}/mo${isMvt ? " (No interest)" : ""}`,
             amt: r.moTotal,
           });
           sched.push({
             icon: uiIcon("building", "ui-icon sm"),
-            label: isMvt ? `Remaining Balance (${r.hoPct}%)` : `Handover Payment (${r.hoPct}%)`,
+            label: isMvt ? `Remaining Balance (${r.hoPct.toFixed(1)}%)` : `Handover Payment (${r.hoPct}%)`,
             sub: isMvt ? "After 24 months instalment" : "Upon key collection",
             amt: r.hoTotal,
           });
