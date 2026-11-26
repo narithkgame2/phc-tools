@@ -8118,6 +8118,9 @@
             >
               <span><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 4h18"/><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="6" width="18" height="15" rx="2"/><path d="M7 13h4"/><path d="M7 17h7"/><path d="m16 14 2 2 3-4"/></svg></span>Payment Tracker
             </div>
+            <div class="doc-btn" id="copyUnitLinkBtn" onclick="copyUnitShareLink()">
+              <span><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span>Copy Unit Link
+            </div>
           </div>
           <div
             id="scheduleHint"
@@ -9884,7 +9887,7 @@
         const agency = cfg.agency || "NICK | カンボジア不動産投資";
         const phone = cfg.phone || "";
         const greeting = `Dear ${client},\n\nプノンペン在住のニックです。(*${agency}*)\nカンボジア不動産を、数字と現地目線でお届けします。`;
-        const sig = `\n\n個別相談は公式LINEへ: https://line.me/ti/p/@615ueovq\nWhatsApp: +855 86 552 459\nTelegram: @Nick_REAKH\n*${con} (日本人向け不動産コンサルタント)*\n${agency}`;
+        const sig = `\n\n※利回り・価格は参考値であり、将来の収益を保証するものではありません。\n\n個別相談は公式LINEへ: https://line.me/ti/p/@615ueovq\n*${con} (日本人向け不動産コンサルタント)*\n${agency}`;
 
         const templates = {
           booking: `${greeting}\n\nWe're thrilled to confirm your *Booking* for:\n\n📍 *${p.name}*\n🏠 Unit: *${deal.uid}* · ${deal.info?.beds} · ${deal.info?.size}\n💰 Sale Price: *${fUSD(deal.net)}*${bookingRow ? "\n📅 Booking Date: *" + fmtDate(bookingRow.date instanceof Date ? bookingRow.date : new Date(bookingRow.date)) + "*" : ""}\n\nYour booking fee of *${fUSD(deal.calc?.bk || 1000)}* has been received. Our team will be in touch shortly to arrange the SPA signing.${sig}`,
@@ -11071,9 +11074,41 @@
         if (!inventorySelectedUnit && selectedRow) inventorySelectedUnit = selectedRow.uid;
         renderInventorySide(selectedRow);
       }
+      function syncUnitUrl(projectId, uid) {
+        try {
+          const url = new URL(window.location.href);
+          if (projectId) url.searchParams.set("project", projectId);
+          if (uid) url.searchParams.set("unit", uid);
+          window.history.replaceState({}, "", url.toString());
+        } catch (e) {}
+      }
+      function copyUnitShareLink() {
+        const projId = lastCalc?.proj || activeProjId;
+        const uid = lastCalc?.uid || ($("floor")?.value && $("unitType")?.value ? `${$("floor").value}${$("unitType").value}` : "");
+        syncUnitUrl(projId, uid);
+        const link = window.location.href;
+        const btn = $("copyUnitLinkBtn");
+        const setCopied = () => {
+          if (!btn) return;
+          const prev = btn.innerHTML;
+          btn.textContent = "✓ Link Copied";
+          setTimeout(() => { btn.innerHTML = prev; }, 2000);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(link).then(setCopied).catch(() => {});
+        } else {
+          const ta = document.createElement("textarea");
+          ta.value = link;
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand("copy"); setCopied(); } catch (e) {}
+          ta.remove();
+        }
+      }
       function selectInventoryUnit(projectId, type, floor) {
         if (projectId !== activeProjId) switchProj(projectId);
         inventorySelectedUnit = `${floor}${type}`;
+        syncUnitUrl(projectId, inventorySelectedUnit);
         $("unitType").value = type;
         onTypeChange();
         $("floor").value = String(floor);
@@ -13180,7 +13215,7 @@
         }
         const footerName = isJa ? "Nick" : "NICK";
         const footerSubline = isJa
-          ? "カンボジア不動産アドバイザー"
+          ? "カンボジア不動産アドバイザー · 公式LINE: @615ueovq"
           : "Cambodia Property Advisor";
 
         return `<div class="doc-foot">
@@ -15211,6 +15246,21 @@ tr:nth-child(even) td{background:#faf8f4}
         renderPriceListRef();
         renderROITimeline();
         renderInventory();
+        try {
+          const params = new URLSearchParams(window.location.search);
+          const qProj = (params.get("project") || "").toLowerCase();
+          const qUnit = (params.get("unit") || "").toUpperCase();
+          if (qProj && PROJECTS[qProj]) {
+            if (qProj !== activeProjId) switchProj(qProj);
+            if (qUnit) {
+              const rows = getInventoryRows(qProj);
+              const match = rows.find((r) => (r.uid || "").toUpperCase() === qUnit);
+              if (match) {
+                selectInventoryUnit(match.proj, match.type, match.floor);
+              }
+            }
+          }
+        } catch (e) {}
         fetchLatestFxRates();
         scheduleFxAutoRefresh();
         rsInit();
