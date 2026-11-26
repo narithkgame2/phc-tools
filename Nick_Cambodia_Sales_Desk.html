@@ -10878,20 +10878,16 @@
           <div class="inventory-side-price">
             <div>
               <div class="inventory-side-k">List Price</div>
-              <div class="inventory-side-sub" style="margin-top:4px">Update status or price below.</div>
+              <div class="inventory-side-sub" style="margin-top:4px">Available status is controlled manually.</div>
             </div>
             <div class="v">${fUSD(row.price)}</div>
           </div>
           <div style="margin-top:10px;padding:10px;border:1px solid var(--bd);border-radius:10px;background:var(--cream);">
-            <div style="font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--tx3);margin-bottom:6px;">Quick Update Unit</div>
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--tx3);margin-bottom:6px;">Unit Status</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
               <button type="button" onclick="setInventoryStatus('${row.proj}','${row.uid}','available')" style="padding:6px 4px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid ${row.status==='available'?'#15803d':'var(--bd)'};background:${row.status==='available'?'#dcfce7':'#fff'};color:${row.status==='available'?'#166534':'var(--tx2)'};">Available</button>
               <button type="button" onclick="setInventoryStatus('${row.proj}','${row.uid}','reserved')" style="padding:6px 4px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid ${row.status==='reserved'?'#b45309':'var(--bd)'};background:${row.status==='reserved'?'#fef3c7':'#fff'};color:${row.status==='reserved'?'#92400e':'var(--tx2)'};">Reserved</button>
               <button type="button" onclick="setInventoryStatus('${row.proj}','${row.uid}','sold')" style="padding:6px 4px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid ${row.status==='sold'?'#b91c1c':'var(--bd)'};background:${row.status==='sold'?'#fee2e2':'#fff'};color:${row.status==='sold'?'#991b1b':'var(--tx2)'};">Sold</button>
-            </div>
-            <div style="display:flex;gap:6px;align-items:center;">
-              <input id="quickUnitPriceInput" type="number" min="0" step="100" value="${Math.round(row.price)}" style="flex:1;min-width:0;padding:6px 8px;border:1px solid var(--bd);border-radius:6px;font-size:12px;font-weight:600;background:#fff;color:var(--tx);" placeholder="USD Price">
-              <button type="button" onclick="setUnitPriceOverride('${row.proj}','${row.uid}',document.getElementById('quickUnitPriceInput').value)" style="padding:6px 10px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--navy);background:var(--navy);color:#fff;">Save</button>
             </div>
           </div>
           <button class="inventory-side-cta" type="button" onclick="selectInventoryUnit('${row.proj}','${row.type}',${row.floor})">Use In Calculator</button>
