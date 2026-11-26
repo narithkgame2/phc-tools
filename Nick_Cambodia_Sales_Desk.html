@@ -9497,26 +9497,37 @@
             },
           },
           unitGroups: [
-            { label: "Standard · 1BR", types: ["D", "E", "F", "G", "H", "I"] },
-            { label: "Standard · 2BR", types: ["Q", "R", "B", "C", "S"] },
+            { label: "Premium Duplex 1BR · 85㎡", types: ["B1", "B2", "C1", "C2"] },
+            { label: "Duplex 1BR · 73–79㎡", types: ["L", "M", "O"] },
             {
-              label: "Duplex · 2BR ★",
-              types: ["DX", "EX", "FX", "GX", "HX", "IX"],
+              label: "Duplex 2BR · 104–112㎡",
+              types: ["D", "G", "H", "DX", "EX", "FX", "GX", "HX", "IX"],
             },
-            { label: "Duplex · 4BR ★", types: ["AX", "BX", "CX"] },
+            { label: "Duplex 3BR · 124㎡", types: ["Q", "R"] },
+            { label: "Duplex 4BR · 173㎡", types: ["A", "AX", "BX", "CX"] },
+            { label: "Standard · 1BR", types: ["E", "F", "I"] },
+            { label: "Standard · 2BR", types: ["B", "C", "S"] },
           ],
           unitTypes: {
-            D: { beds: "1 Bed", size: "60㎡", orientation: "South Facing (Street 410)" },
+            B1: { beds: "1 Bed Premium Duplex", size: "85㎡", orientation: "South Facing (Street 410 / Skyline)" },
+            B2: { beds: "1 Bed Premium Duplex", size: "85㎡", orientation: "South Facing (Street 410 / Skyline)" },
+            C1: { beds: "1 Bed Premium Duplex", size: "85㎡", orientation: "South Facing (Street 410 / Skyline)" },
+            C2: { beds: "1 Bed Premium Duplex", size: "85㎡", orientation: "South Facing (Street 410 / Skyline)" },
+            L: { beds: "1 Bed Duplex", size: "79㎡", orientation: "South Facing (Street 410 / Skyline)" },
+            M: { beds: "1 Bed Duplex", size: "79㎡", orientation: "South Facing (Street 410 / Skyline)" },
+            O: { beds: "1 Bed Duplex", size: "73㎡", orientation: "North Facing (Mao Tse Toung Blvd)" },
+            D: { beds: "2 Bed Duplex", size: "112㎡", orientation: "South Facing (Street 410 / Skyline)" },
             E: { beds: "1 Bed", size: "60㎡", orientation: "South Facing (Street 410)" },
             F: { beds: "1 Bed", size: "60㎡", orientation: "South Facing (Street 410)" },
-            G: { beds: "1 Bed", size: "60㎡", orientation: "South Facing (Street 410)" },
-            H: { beds: "1 Bed", size: "60㎡", orientation: "South Facing (Street 410)" },
+            G: { beds: "2 Bed Duplex", size: "104㎡", orientation: "South Facing (Street 410 / Skyline)" },
+            H: { beds: "2 Bed Duplex", size: "104㎡", orientation: "South Facing (Street 410 / Skyline)" },
             I: { beds: "1 Bed", size: "60㎡", orientation: "South Facing (Street 410)" },
-            Q: { beds: "2 Bed", size: "73㎡", orientation: "North Facing (Mao Tse Toung Blvd)" },
-            R: { beds: "2 Bed", size: "73㎡", orientation: "North Facing (Mao Tse Toung Blvd)" },
+            Q: { beds: "3 Bed Duplex", size: "124㎡", orientation: "North Facing (Mao Tse Toung Blvd)" },
+            R: { beds: "3 Bed Duplex", size: "124㎡", orientation: "North Facing (Mao Tse Toung Blvd)" },
             B: { beds: "2 Bed", size: "88㎡", orientation: "South Facing (Street 410)" },
             C: { beds: "2 Bed", size: "88㎡", orientation: "South Facing (Street 410)" },
             S: { beds: "2 Bed", size: "88㎡", orientation: "North-East Corner (Mao Tse Toung Blvd)" },
+            A: { beds: "4 Bed Duplex", size: "173㎡", orientation: "South-East Corner (Panoramic View)" },
             DX: { beds: "2 Bed Duplex", size: "112㎡", orientation: "South Facing (Street 410 / Skyline)" },
             EX: { beds: "2 Bed Duplex", size: "112㎡", orientation: "South Facing (Street 410 / Skyline)" },
             FX: { beds: "2 Bed Duplex", size: "112㎡", orientation: "South Facing (Street 410 / Skyline)" },
@@ -9528,20 +9539,28 @@
             CX: { beds: "4 Bed Duplex", size: "167㎡", orientation: "South Facing (Panoramic View)" },
           },
           prices: {
-            DX: { 45: 169680 },
-            EX: { 41: 162120, 45: 169680 },
-            FX: { 47: 180600 },
-            AX: { 45: 262600 },
-            BX: { 41: 241250, 45: 256250 },
-            CX: { 40: 237500, 47: 268750 },
-            D: {},
+            B1: { 42: 128625, 43: 130594, 45: 134532, 47: 141094 },
+            B2: { 42: 128625, 44: 132563, 45: 134532, 46: 137157 },
+            C1: { 42: 128625, 44: 132563, 45: 134532, 46: 137157, 47: 141094 },
+            C2: { 41: 126657, 42: 128625, 43: 130594, 45: 134532, 46: 137157, 47: 141094 },
+            L: { 44: 119180, 46: 129476, 47: 133193 },
+            M: { 46: 129476 },
+            O: { 44: 116655 },
+            D: { 42: 172872, 45: 180810 },
+            G: { 43: 162981 },
+            H: { 44: 165438 },
+            Q: { 45: 200183 },
+            R: { 46: 204089 },
+            A: { 44: 275730 },
+            DX: {},
+            EX: {},
+            FX: {},
+            AX: {},
+            BX: {},
+            CX: {},
             E: {},
             F: {},
-            G: {},
-            H: {},
             I: {},
-            Q: {},
-            R: {},
             B: {},
             C: {},
             S: {},
@@ -10863,6 +10882,9 @@
         updateHealthPanel();
         lsSave();
       }
+      function displayFloorLabel(projectId, floor) {
+        return projectId === "ts8" && Number(floor) === 44 ? "45A" : String(floor);
+      }
       function getInventoryRows(projectId = activeProjId) {
         const p = PROJECTS[projectId];
         const rows = [];
@@ -10871,7 +10893,7 @@
             const numFloor = Number(floor);
             const numPrice = getEffectiveUnitPrice(projectId, type, numFloor) || Number(price);
             if (!Number.isFinite(numPrice) || numPrice <= 0) return;
-            const uid = `${numFloor}${type}`;
+            const uid = `${displayFloorLabel(projectId, numFloor)}${type}`;
             const info = getUnitMeta(projectId, type, numFloor);
             const preview = getInventoryNetPreview(
               projectId,
@@ -11236,7 +11258,7 @@
                 }),
               )
               .join("");
-            return `<tr><th class="inventory-floor">${floor}<small>Floor</small></th>${cells}</tr>`;
+            return `<tr><th class="inventory-floor">${displayFloorLabel(activeProjId, floor)}<small>Floor</small></th>${cells}</tr>`;
           })
           .join("");
         // Update View Switcher Buttons & Counter
@@ -12206,6 +12228,24 @@
         });
       }
       function getProjectPromo(projectId, type, floor = null) {
+        if (projectId === "ts8") {
+          if (["B1", "B2", "C1", "C2"].includes(type)) {
+            return {
+              types: ["B1", "B2", "C1", "C2"],
+              label: "Premium Duplex 1BR · 10% + $5,000 Off",
+              discPct: 10,
+              extraFlatDiscount: 5000,
+            };
+          }
+          if (["L", "M", "O", "D", "G", "H", "Q", "R"].includes(type)) {
+            return {
+              types: ["L", "M", "O", "D", "G", "H", "Q", "R"],
+              label: "Duplex 1/2/3BR · 10% + $3,000 Off",
+              discPct: 10,
+              extraFlatDiscount: 3000,
+            };
+          }
+        }
         if (projectId === "ts7" && ["B1", "B2", "C1", "C2", "D1", "D2", "E1", "E2"].includes(type)) {
           return {
             types: ["B1", "B2", "C1", "C2", "D1", "D2", "E1", "E2"],
