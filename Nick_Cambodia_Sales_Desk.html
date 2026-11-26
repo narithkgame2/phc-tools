@@ -9588,6 +9588,10 @@
               types: ["A1", "A2"],
             },
             {
+              label: "Modern Duplex 1BR · 65㎡",
+              types: ["B1", "B2", "C1", "C2", "D1", "D2", "E1", "E2"],
+            },
+            {
               label: "Duplex 1BR · 60㎡",
               types: ["K", "L", "M", "N", "O", "P"],
             },
@@ -9621,6 +9625,14 @@
             S: { beds: "1 Bed Crystal", size: "60㎡", orientation: "South Facing (Street 540)" },
             A1: { beds: "1 Bed Modern", size: "51㎡", orientation: "West Facing (Street 335)" },
             A2: { beds: "1 Bed Modern", size: "43㎡", orientation: "South Facing (Street 540)" },
+            B1: { beds: "1 Bed Modern Duplex", size: "65㎡", orientation: "West Facing (Street 335)" },
+            B2: { beds: "1 Bed Modern Duplex", size: "65㎡", orientation: "West Facing (Street 335)" },
+            C1: { beds: "1 Bed Modern Duplex", size: "65㎡", orientation: "West Facing (Street 335)" },
+            C2: { beds: "1 Bed Modern Duplex", size: "65㎡", orientation: "West Facing (Street 335)" },
+            D1: { beds: "1 Bed Modern Duplex", size: "65㎡", orientation: "West Facing (Street 335)" },
+            D2: { beds: "1 Bed Modern Duplex", size: "65㎡", orientation: "West Facing (Street 335)" },
+            E1: { beds: "1 Bed Modern Duplex", size: "65㎡", orientation: "West Facing (Street 335)" },
+            E2: { beds: "1 Bed Modern Duplex", size: "65㎡", orientation: "West Facing (Street 335)" },
             A: { beds: "4 Bed Duplex", size: "160㎡", orientation: "South-West Corner (Street 335 & 540)" },
             I: { beds: "4 Bed Duplex", size: "160㎡", orientation: "North-East Corner (Street 538)" },
             Z: { beds: "4 Bed Duplex", size: "160㎡", orientation: "South-East Corner (Street 540)" },
@@ -9630,15 +9642,23 @@
             L: { 33: 64680 },
             O: { 17: 52470, 24: 58245, 30: 62370, 42: 90956 },
             F: { 24: 87367, 39: 145687, 42: 151594 },
-            G: { 24: 87367 },
+            G: { 24: 87367, 46: 161438 },
             H: { 24: 87367 },
             T: { 24: 87367, 30: 93555, 39: 145687, 40: 147656, 42: 151594 },
-            U: { 39: 145687, 40: 147656, 42: 151594 },
+            U: { 37: 141750, 39: 145687, 40: 147656, 42: 151594 },
             V: { 24: 87367, 38: 143719, 39: 145687, 40: 147656, 42: 151594 },
             B: { 24: 110666, 32: 121638, 35: 183750, 37: 189000, 39: 194250, 40: 196875, 42: 202125 },
             C: { 24: 110666, 36: 186375, 38: 191625, 39: 194250, 40: 196875 },
-            D: { 37: 189000, 38: 191625, 39: 194250 },
+            D: { 37: 189000, 38: 191625, 39: 194250, 46: 215250 },
             E: { 38: 191625, 45: 207375 },
+            B1: { 39: 97125, 41: 99750 },
+            B2: { 40: 98437, 41: 99750 },
+            C1: { 39: 97125, 40: 98437, 42: 101062, 45: 103688 },
+            C2: { 38: 95813, 39: 97125, 40: 98437, 42: 101062, 45: 103688 },
+            D1: { 39: 97125, 41: 99750, 42: 101062 },
+            D2: { 39: 97125, 40: 98437, 41: 99750, 42: 101062 },
+            E1: { 39: 97125, 40: 98437, 41: 99750, 45: 103688 },
+            E2: { 40: 98437, 41: 99750, 42: 101062 },
             A1: { 26: 80636, 30: 84200, 31: 85536, 33: 87318 },
             A2: { 31: 72864, 33: 74382 },
             A: {
@@ -9652,12 +9672,12 @@
               42: 242550,
               45: 245700,
             },
-            I: { 28: 152625, 41: 239400 },
+            I: { 28: 152625, 39: 233100, 41: 239400 },
             Z: { 38: 229950, 40: 236250 },
             M: {},
             N: {},
             P: {},
-            J: {},
+            J: { 46: 118388 },
             Q: {},
             S: {},
           },
@@ -12133,6 +12153,14 @@
         });
       }
       function getProjectPromo(projectId, type, floor = null) {
+        if (projectId === "ts7" && ["B1", "B2", "C1", "C2", "D1", "D2", "E1", "E2"].includes(type)) {
+          return {
+            types: ["B1", "B2", "C1", "C2", "D1", "D2", "E1", "E2"],
+            label: "Modern Duplex · 12% + $3,000 Off",
+            discPct: 12,
+            extraFlatDiscount: 3000,
+          };
+        }
         if (projectId === "ts7" && (type === "A1" || type === "A2")) {
           return {
             types: ["A1", "A2"],
@@ -12164,7 +12192,7 @@
           const discPct = promo
             ? promo.discPct || project.discounts.promo
             : project.discounts.standard;
-          discAmt = (price * discPct) / 100;
+          discAmt = (price * discPct) / 100 + (promo?.extraFlatDiscount || 0);
         }
         return {
           net: Math.max(0, price - discAmt),
@@ -12307,7 +12335,7 @@
           const bonusTxt = promo.agentBonus > 0 ? ` · Bonus $${promo.agentBonus}` : "";
           $("promoText").textContent = promo.flatDiscount
             ? `Type ${type} — Flat −$${promo.flatDiscount.toLocaleString()}${bonusTxt}`
-            : `Type ${type} — ${pct}% Off${bonusTxt}`;
+            : `Type ${type} — ${pct}%${promo.extraFlatDiscount ? ` + $${promo.extraFlatDiscount.toLocaleString()}` : ""} Off${bonusTxt}`;
           banner.classList.add("visible");
         } else banner.classList.remove("visible");
       }
@@ -12394,8 +12422,9 @@
           discPct = promo
             ? promo.discPct || p.discounts.promo
             : p.discounts.standard;
-          discAmt = (orig * discPct) / 100;
-          discLabel = `${discPct}%`;
+          const extraFlat = promo?.extraFlatDiscount || 0;
+          discAmt = (orig * discPct) / 100 + extraFlat;
+          discLabel = extraFlat > 0 ? `${discPct}% + $${extraFlat.toLocaleString()}` : `${discPct}%`;
         } else {
           discPct = parseFloat(discMode);
           discAmt = (orig * discPct) / 100;
