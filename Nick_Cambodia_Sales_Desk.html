@@ -9884,6 +9884,86 @@
             D: {},
           },
         },
+
+        mvt2: {
+          id: "mvt2",
+          name: "Mekong View Tower 2",
+          dev: "MVT2",
+          tabLabel: "CCV",
+          location: "Phnom Penh, Chroy Changvar",
+          commission: 10,
+          discounts: { standard: 0, promo: 0 },
+          promoGroups: {},
+          unitGroups: [
+            { label: "Tower A · 1 Bedroom", types: ["A08", "A06", "A07"] },
+            { label: "Tower B · 2 Bedroom", types: ["B02", "B03"] },
+          ],
+          unitTypes: {
+            A08: { beds: "1 Bed", size: "79.63㎡", netSize: "63.70㎡", orientation: "West Facing" },
+            A06: { beds: "1 Bed", size: "79.63㎡", netSize: "63.70㎡", orientation: "West Facing (Rental)" },
+            A07: { beds: "1 Bed", size: "78.45㎡", netSize: "62.76㎡", orientation: "West Facing" },
+            B02: { beds: "2 Bed", size: "85.46㎡", netSize: "68.37㎡", orientation: "East Facing (Rental)" },
+            B03: { beds: "2 Bed", size: "89.83㎡", netSize: "71.86㎡", orientation: "East Facing" },
+          },
+          prices: {
+            A08: { 6: 91539, 7: 92484, 8: 93429, 10: 95319 },
+            A06: { 12: 95666 },
+            A07: { 15: 96596, 17: 98456 },
+            B02: { 3: 96764 },
+            B03: { 3: 101033, 5: 102098 },
+          },
+        },
+
+        mvt6: {
+          id: "mvt6",
+          name: "Mekong View Tower 6",
+          dev: "MVT6",
+          tabLabel: "CCV",
+          location: "Phnom Penh, Chroy Changvar",
+          commission: 10,
+          discounts: { standard: 0, promo: 0 },
+          promoGroups: {},
+          unitGroups: [
+            { label: "1 Bedroom · 52.5–55㎡", types: ["05", "08", "09", "16A"] },
+            { label: "2 Bedroom · 72.5–86.25㎡", types: ["06", "07", "12", "17"] },
+            { label: "2 Bedroom Deluxe · 80–138.75㎡", types: ["01", "02", "03", "11", "18"] },
+            { label: "3–4 Bedroom / Special", types: ["16", "10A"] },
+          ],
+          unitTypes: {
+            "01": { beds: "2 Bed", size: "80.00㎡", netSize: "64.00㎡", orientation: "East Facing" },
+            "02": { beds: "2 Bed", size: "132.50㎡", netSize: "106.00㎡", orientation: "North-East Facing" },
+            "03": { beds: "2 Bed", size: "117.50㎡", netSize: "94.00㎡", orientation: "North-West Facing" },
+            "05": { beds: "1 Bed", size: "52.50㎡", netSize: "42.00㎡", orientation: "West Facing" },
+            "06": { beds: "2 Bed", size: "72.50㎡", netSize: "58.00㎡", orientation: "North Facing" },
+            "07": { beds: "2 Bed", size: "81.25㎡", netSize: "65.00㎡", orientation: "North Facing" },
+            "08": { beds: "1 Bed", size: "55.00㎡", netSize: "44.00㎡", orientation: "North Facing" },
+            "09": { beds: "1 Bed", size: "55.00㎡", netSize: "44.00㎡", orientation: "North Facing" },
+            "10A": { beds: "1 Bed", size: "85.00㎡", netSize: "68.00㎡", orientation: "North-West Facing" },
+            "11": { beds: "2 Bed", size: "138.75㎡", netSize: "111.00㎡", orientation: "North-West Facing" },
+            "12": { beds: "2 Bed", size: "86.25㎡", netSize: "69.00㎡", orientation: "South Facing" },
+            "16": { beds: "2 Bed", size: "107.50㎡", netSize: "86.00㎡", orientation: "South Facing" },
+            "16A": { beds: "1 Bed", size: "52.50㎡", netSize: "42.00㎡", orientation: "South Facing (Rental)" },
+            "17": { beds: "2 Bed", size: "81.25㎡", netSize: "65.00㎡", orientation: "South Facing" },
+            "18": { beds: "2 Bed", size: "131.25㎡", netSize: "105.00㎡", orientation: "South-East Facing" },
+          },
+          prices: {
+            "01": { 3: 102400 },
+            "02": { 3: 171720, 7: 178080 },
+            "03": { 15: 161210, 21: 169200 },
+            "05": { 9: 68880, 21: 75810 },
+            "06": { 7: 94540, 9: 95700, 10: 96550 },
+            "07": { 3: 102375, 7: 105950, 11: 109200, 15: 110850 },
+            "08": { 3: 69300, 5: 69960, 7: 71720 },
+            "09": { 5: 69960 },
+            "10A": { 1: 103360, 15: 305170 },
+            "11": { 11: 189705, 12: 192030, 20: 202020 },
+            "12": { 3: 112125, 5: 113160, 6: 114440, 7: 115920, 9: 117300, 10: 117800, 11: 118880, 12: 120060 },
+            "16": { 2: 138460, 3: 139750 },
+            "16A": { 6: 69720 },
+            "17": { 3: 105625, 5: 106600, 6: 107900 },
+            "18": { 5: 178500, 6: 182700, 7: 183750, 10: 186900 },
+          },
+        },
       };
 
       const TS11_PRICE_MAPS = {
@@ -10043,7 +10123,7 @@
         D: { ...TS11_PRICE_MAPS.D },
       };
 
-      const PROJ_ORDER = ["ts9","ts8","ts7","ts10","ts11","kingston","leconde","jtower3","odomtower","odomliving","uc88","diamondbay","angkor","lzseaview","picasso","gato"];
+      const PROJ_ORDER = ["ts9","ts8","ts7","ts10","ts11","mvt2","mvt6","kingston","leconde","jtower3","odomtower","odomliving","uc88","diamondbay","angkor","lzseaview","picasso","gato"];
 
       // Populate TS7 historical launch matrix (8-33F Classic & 35-47F Duplex) as Sold for the ALL view
       (function hydrateTs7FullMatrix() {
@@ -10241,6 +10321,8 @@
           "TS10 Special Discount.PNG",
         ],
         ts11: ["TS11 Price List.png"],
+        mvt2: ["All Mekong View Towers Sales Table.jpg"],
+        mvt6: ["All Mekong View Towers Sales Table.jpg"],
       };
       const STAGES = [
         { id: "lead", label: "Lead", cls: "sp-lead" },
@@ -10938,7 +11020,9 @@
         ts7: { completionMonth: "2028-09", handoverLabel: "Q3 2028" },
         ts8: { completionMonth: "2028-12", handoverLabel: "Q4 2028" },
         ts9: { completionMonth: "2027-12", handoverLabel: "Q4 2027" },
-        ts11: { completionMonth: "2027-12", handoverLabel: "Q4 2027" }
+        ts11: { completionMonth: "2027-12", handoverLabel: "Q4 2027" },
+        mvt2: { completionMonth: "2024-01", handoverLabel: "Completed (Ready to Move In)" },
+        mvt6: { completionMonth: "2024-01", handoverLabel: "Completed (Ready to Move In)" },
       };
 
       function getProjectCfg(id = activeProjId) {
@@ -11069,7 +11153,9 @@
         A: { beds: "3 Bed", size: "111㎡" },
       };
       function getUnitMeta(projectId, type, floor = null) {
-        const keyExact = `${floor}${type}`.toUpperCase();
+        const uid = floor != null ? formatUnitUid(projectId, floor, type) : "";
+        const keyExact = uid.toUpperCase();
+        const keyFallback = `${floor}${type}`.toUpperCase();
         const keyType = String(type || "").toUpperCase();
         const cfgMap = getProjectCfg(projectId).unitMetaMap || {};
         const projectMeta = PROJECTS[projectId]?.unitTypes?.[type] || {};
@@ -11078,8 +11164,16 @@
             ? TS7_CLASSIC_META[keyType] || {}
             : projectId === "ts8" && floor != null && Number(floor) <= 38
               ? TS8_CLASSIC_META[keyType] || {}
-              : {};
-        const exactMeta = floor != null ? cfgMap[keyExact] || {} : {};
+              : projectId === "mvt6" && floor != null && String(floor) === "15" && type === "10A"
+                ? { beds: "4 Bed Merged", size: "220.00㎡", netSize: "176.00㎡", orientation: "North-West (Merged #1510A+#1511)" }
+                : projectId === "mvt6" && floor != null && String(floor) === "2" && type === "16"
+                  ? { beds: "3 Bed", size: "107.50㎡", netSize: "86.00㎡", orientation: "South Facing" }
+                  : projectId === "mvt6" && floor != null && String(floor) === "9" && type === "06"
+                    ? { beds: "1 Bed", size: "72.50㎡", netSize: "58.00㎡", orientation: "North Facing (Rental)" }
+                    : projectId === "mvt2" && floor != null && String(floor) === "10" && type === "A08"
+                      ? { size: "78.45㎡", netSize: "62.76㎡" }
+                      : {};
+        const exactMeta = floor != null ? (cfgMap[keyExact] || cfgMap[keyFallback] || {}) : {};
         const typeMeta = cfgMap[keyType] || {};
         return {
           ...projectMeta,
@@ -11145,6 +11239,15 @@
         updateHealthPanel();
         lsSave();
       }
+      function formatUnitUid(projectId, floor, type) {
+        if (projectId === "mvt2") {
+          const str = String(type || "");
+          const tower = str.charAt(0);
+          const unit = str.slice(1);
+          return `${tower}${floor}${unit}`;
+        }
+        return `${displayFloorLabel(projectId, floor)}${type}`;
+      }
       function displayFloorLabel(projectId, floor) {
         return projectId === "ts8" && Number(floor) === 44 ? "45A" : String(floor);
       }
@@ -11156,7 +11259,7 @@
             const numFloor = Number(floor);
             const numPrice = getEffectiveUnitPrice(projectId, type, numFloor) || Number(price);
             if (!Number.isFinite(numPrice) || numPrice <= 0) return;
-            const uid = `${displayFloorLabel(projectId, numFloor)}${type}`;
+            const uid = formatUnitUid(projectId, numFloor, type);
             const info = getUnitMeta(projectId, type, numFloor);
             const preview = getInventoryNetPreview(
               projectId,
@@ -11658,7 +11761,7 @@
       }
       function selectInventoryUnit(projectId, type, floor) {
         if (projectId !== activeProjId) switchProj(projectId);
-        inventorySelectedUnit = `${floor}${type}`;
+        inventorySelectedUnit = formatUnitUid(projectId, floor, type);
         syncUnitUrl(projectId, inventorySelectedUnit);
         $("unitType").value = type;
         onTypeChange();
@@ -12360,6 +12463,34 @@
           estRent3BR: 1200,
           tenant: "Mid-level corporate professionals, younger expats, regional managers",
           appeal: "High net rental yield with lower capital outlay and strong price catch-up to BKK1."
+        },
+        mvt2: {
+          district: "Chroy Changvar, Phnom Penh",
+          areaShort: "Chroy Changvar",
+          character: "Mekong Riverfront Peninsula Living",
+          developerFull: "Bun Ches Group (Mekong View)",
+          trackRecord: "Mekong View 1, 2, 3, 6",
+          handover: "Completed (Ready to Move In)",
+          title: "Foreign Freehold Strata Title",
+          estRent1BR: 450,
+          estRent2BR: 650,
+          estRent3BR: 950,
+          tenant: "Expatriates, international consultants, embassy staff seeking river views",
+          appeal: "Move-in ready waterfront living with immediate rental cashflow and affordable entry pricing."
+        },
+        mvt6: {
+          district: "Chroy Changvar, Phnom Penh",
+          areaShort: "Chroy Changvar",
+          character: "Established Riverside Community",
+          developerFull: "Bun Ches Group (Mekong View)",
+          trackRecord: "Mekong View 1, 2, 3, 6",
+          handover: "Completed (Ready to Move In)",
+          title: "Foreign Freehold Strata Title",
+          estRent1BR: 450,
+          estRent2BR: 650,
+          estRent3BR: 1000,
+          tenant: "Families, river lifestyle expats, local professionals",
+          appeal: "Completed high-rise condo offering panoramic river views and high net rental yields."
         },
         leconde: {
           district: "BKK1 (Boeung Keng Kang 1), Phnom Penh",
