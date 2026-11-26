@@ -7468,6 +7468,21 @@
                 <span>Handover dates automatically determine the final milestone in the Payment Schedule and initialize rental returns in the ROI Calculator.</span>
               </div>
             </div>
+
+            <div class="cfg-card" style="margin-top: 14px">
+              <div class="cfg-card-title">Price List, Layout &amp; Availability Manager</div>
+              <div class="cfg-card-desc">Update unit type layouts, sizes, facing directions, and export/import your inventory changes. Individual unit prices and Available / Reserved / Sold status can also be toggled directly from the Inventory panel.</div>
+
+              <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px;">
+                <select id="cfgInvProjSel" onchange="renderCfgInventoryEditor()" style="flex:1;min-width:180px;padding:8px 10px;border:1px solid var(--bd);border-radius:8px;font-size:12px;font-weight:600;background:#fff;color:var(--tx);"></select>
+                <button type="button" class="cfg-btn" onclick="exportProjectOverrides()" style="padding:7px 12px;font-size:11px;">Export JSON</button>
+                <label class="cfg-btn" style="padding:7px 12px;font-size:11px;cursor:pointer;margin:0;">Import JSON<input type="file" accept=".json,application/json" style="display:none" onchange="importProjectOverrides(event)"></label>
+                <button type="button" class="cfg-btn" onclick="resetProjectOverrides()" style="padding:7px 12px;font-size:11px;color:#b91c1c;border-color:#fecaca;">Reset Project</button>
+              </div>
+
+              <div id="cfgLayoutEditorWrap" style="margin-top:12px;overflow-x:auto;"></div>
+              <div id="cfgLayoutSaveMsg" style="font-size:11px;color:#15803d;font-weight:600;margin-top:8px;display:none;"></div>
+            </div>
           </div>
         </div>
 
@@ -10600,6 +10615,9 @@
         if (!cfgProjects[id].unitMetaMap || typeof cfgProjects[id].unitMetaMap !== "object") {
           cfgProjects[id].unitMetaMap = {};
         }
+        if (!cfgProjects[id].priceOverrides || typeof cfgProjects[id].priceOverrides !== "object") {
+          cfgProjects[id].priceOverrides = {};
+        }
         if (
           cfgProjects[id].orientationMap &&
           typeof cfgProjects[id].orientationMap === "object"
@@ -10713,13 +10731,31 @@
       function getInventoryStatus(projectId, uid) {
         return getProjectCfg(projectId).inventoryStatus[uid] || "available";
       }
+      function getEffectiveUnitPrice(projectId, type, floor) {
+        const uid = `${floor}${type}`;
+        const ovr = getProjectCfg(projectId).priceOverrides?.[uid];
+        if (Number.isFinite(Number(ovr)) && Number(ovr) > 0) return Number(ovr);
+        return Number(PROJECTS[projectId]?.prices?.[type]?.[floor] || 0);
+      }
+      function setUnitPriceOverride(projectId, uid, rawVal) {
+        const num = Number(String(rawVal || "").replace(/[^0-9.]/g, ""));
+        const pCfg = getProjectCfg(projectId);
+        if (Number.isFinite(num) && num > 0) {
+          pCfg.priceOverrides[uid] = num;
+        } else {
+          delete pCfg.priceOverrides[uid];
+        }
+        renderInventory();
+        updateHealthPanel();
+        lsSave();
+      }
       function getInventoryRows(projectId = activeProjId) {
         const p = PROJECTS[projectId];
         const rows = [];
         Object.entries(p.prices || {}).forEach(([type, floors]) => {
           Object.entries(floors || {}).forEach(([floor, price]) => {
-            const numPrice = Number(price);
             const numFloor = Number(floor);
+            const numPrice = getEffectiveUnitPrice(projectId, type, numFloor) || Number(price);
             if (!Number.isFinite(numPrice) || numPrice <= 0) return;
             const uid = `${numFloor}${type}`;
             const info = getUnitMeta(projectId, type, numFloor);
@@ -10843,9 +10879,21 @@
           <div class="inventory-side-price">
             <div>
               <div class="inventory-side-k">List Price</div>
-              <div class="inventory-side-sub" style="margin-top:4px">Available status is controlled manually.</div>
+              <div class="inventory-side-sub" style="margin-top:4px">Update status or price below.</div>
             </div>
             <div class="v">${fUSD(row.price)}</div>
+          </div>
+          <div style="margin-top:10px;padding:10px;border:1px solid var(--bd);border-radius:10px;background:var(--cream);">
+            <div style="font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--tx3);margin-bottom:6px;">Quick Update Unit</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px;">
+              <button type="button" onclick="setInventoryStatus('${row.proj}','${row.uid}','available')" style="padding:6px 4px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid ${row.status==='available'?'#15803d':'var(--bd)'};background:${row.status==='available'?'#dcfce7':'#fff'};color:${row.status==='available'?'#166534':'var(--tx2)'};">Available</button>
+              <button type="button" onclick="setInventoryStatus('${row.proj}','${row.uid}','reserved')" style="padding:6px 4px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid ${row.status==='reserved'?'#b45309':'var(--bd)'};background:${row.status==='reserved'?'#fef3c7':'#fff'};color:${row.status==='reserved'?'#92400e':'var(--tx2)'};">Reserved</button>
+              <button type="button" onclick="setInventoryStatus('${row.proj}','${row.uid}','sold')" style="padding:6px 4px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid ${row.status==='sold'?'#b91c1c':'var(--bd)'};background:${row.status==='sold'?'#fee2e2':'#fff'};color:${row.status==='sold'?'#991b1b':'var(--tx2)'};">Sold</button>
+            </div>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <input id="quickUnitPriceInput" type="number" min="0" step="100" value="${Math.round(row.price)}" style="flex:1;min-width:0;padding:6px 8px;border:1px solid var(--bd);border-radius:6px;font-size:12px;font-weight:600;background:#fff;color:var(--tx);" placeholder="USD Price">
+              <button type="button" onclick="setUnitPriceOverride('${row.proj}','${row.uid}',document.getElementById('quickUnitPriceInput').value)" style="padding:6px 10px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--navy);background:var(--navy);color:#fff;">Save</button>
+            </div>
           </div>
           <button class="inventory-side-cta" type="button" onclick="selectInventoryUnit('${row.proj}','${row.type}',${row.floor})">Use In Calculator</button>
         `;
@@ -12209,7 +12257,7 @@
       function computeCalc(type, floor, discMode, plan, overrides, projectId = null) {
         const targetProjId = projectId || activeProjId;
         const p = PROJECTS[targetProjId] || proj(),
-          tablePx = p.prices?.[type]?.[floor];
+          tablePx = getEffectiveUnitPrice(targetProjId, type, floor) || p.prices?.[type]?.[floor];
         const ovrPrice =
           overrides.price && parseFloat(overrides.price) > 0
             ? parseFloat(overrides.price)
@@ -12314,7 +12362,7 @@
           pct: $("ovrPct").disabled ? "" : $("ovrPct").value,
           flatAmt: $("ovrFlat").disabled ? "" : $("ovrFlat").value,
         };
-        if (!ovr.price && !proj().prices[type]?.[floor]) {
+        if (!ovr.price && !getEffectiveUnitPrice(activeProjId, type, floor)) {
           err.textContent =
             "No price data. Use Pricing Override to enter a custom price.";
           err.classList.add("visible");
@@ -12323,7 +12371,7 @@
         const baseOrig =
           (ovr.price && parseFloat(ovr.price) > 0
             ? parseFloat(ovr.price)
-            : proj().prices[type]?.[floor]) || 0;
+            : getEffectiveUnitPrice(activeProjId, type, floor)) || 0;
         const planErr = validateCurrentPlan(baseOrig);
         if (planErr) {
           err.textContent = planErr;
@@ -13060,6 +13108,140 @@
           c.appendChild(row);
         });
         updateProjTimelineStats();
+        const sel = $("cfgInvProjSel");
+        if (sel) {
+          const prev = sel.value || activeProjId;
+          sel.innerHTML = "";
+          PROJ_ORDER.forEach((id) => {
+            const p = PROJECTS[id];
+            if (!p) return;
+            const opt = document.createElement("option");
+            opt.value = id;
+            opt.textContent = p.name;
+            sel.appendChild(opt);
+          });
+          if (PROJECTS[prev]) sel.value = prev;
+          renderCfgInventoryEditor();
+        }
+      }
+
+      function renderCfgInventoryEditor() {
+        const sel = $("cfgInvProjSel");
+        const wrap = $("cfgLayoutEditorWrap");
+        if (!sel || !wrap) return;
+        const projId = sel.value || activeProjId;
+        const p = PROJECTS[projId];
+        if (!p || !p.unitTypes) {
+          wrap.innerHTML = '<div style="font-size:12px;color:var(--tx3);padding:8px 0;">No unit types found for this project.</div>';
+          return;
+        }
+        const types = Object.keys(p.unitTypes);
+        const rowsHtml = types.map((t) => {
+          const meta = getUnitMeta(projId, t);
+          return `<tr>
+            <td style="padding:6px 8px;font-weight:700;color:var(--navy);">${t}</td>
+            <td style="padding:4px 6px;"><input type="text" data-type="${t}" data-field="beds" value="${(meta.beds || "").replace(/"/g, "&quot;")}" style="width:100%;min-width:90px;padding:5px 7px;border:1px solid var(--bd);border-radius:6px;font-size:11.5px;"></td>
+            <td style="padding:4px 6px;"><input type="text" data-type="${t}" data-field="size" value="${(meta.size || "").replace(/"/g, "&quot;")}" style="width:100%;min-width:70px;padding:5px 7px;border:1px solid var(--bd);border-radius:6px;font-size:11.5px;"></td>
+            <td style="padding:4px 6px;"><input type="text" data-type="${t}" data-field="orientation" value="${(meta.orientation || "").replace(/"/g, "&quot;")}" style="width:100%;min-width:140px;padding:5px 7px;border:1px solid var(--bd);border-radius:6px;font-size:11.5px;"></td>
+          </tr>`;
+        }).join("");
+        wrap.innerHTML = `
+          <table style="width:100%;border-collapse:collapse;font-size:11.5px;">
+            <thead>
+              <tr style="text-align:left;color:var(--tx3);border-bottom:1px solid var(--bd);">
+                <th style="padding:6px 8px;">Type</th>
+                <th style="padding:6px 6px;">Layout</th>
+                <th style="padding:6px 6px;">Size</th>
+                <th style="padding:6px 6px;">Facing / Direction</th>
+              </tr>
+            </thead>
+            <tbody>${rowsHtml}</tbody>
+          </table>
+          <div style="margin-top:10px;display:flex;justify-content:flex-end;">
+            <button type="button" onclick="saveCfgLayoutEdits()" style="padding:8px 14px;border-radius:8px;border:none;background:var(--navy);color:#fff;font-size:12px;font-weight:700;cursor:pointer;">Save Layout Changes</button>
+          </div>`;
+      }
+
+      function saveCfgLayoutEdits() {
+        const sel = $("cfgInvProjSel");
+        const wrap = $("cfgLayoutEditorWrap");
+        if (!sel || !wrap) return;
+        const projId = sel.value || activeProjId;
+        const pCfg = getProjectCfg(projId);
+        wrap.querySelectorAll("input[data-type]").forEach((inp) => {
+          const t = String(inp.dataset.type || "").toUpperCase();
+          const f = inp.dataset.field;
+          if (!t || !f) return;
+          if (!pCfg.unitMetaMap[t]) pCfg.unitMetaMap[t] = {};
+          pCfg.unitMetaMap[t][f] = inp.value.trim();
+        });
+        lsSave();
+        buildUnitTypeSelect();
+        renderInventory();
+        const msg = $("cfgLayoutSaveMsg");
+        if (msg) {
+          msg.textContent = `✓ Saved layout & facing updates for ${PROJECTS[projId]?.name || projId}.`;
+          msg.style.display = "block";
+          setTimeout(() => { msg.style.display = "none"; }, 3000);
+        }
+      }
+
+      function exportProjectOverrides() {
+        const blob = new Blob([JSON.stringify(cfgProjects, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `nick-sales-desk-projects-${new Date().toISOString().slice(0, 10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      function importProjectOverrides(ev) {
+        const file = ev.target?.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            const parsed = JSON.parse(String(reader.result || "{}"));
+            if (parsed && typeof parsed === "object") {
+              Object.keys(parsed).forEach((id) => {
+                if (PROJECTS[id]) {
+                  cfgProjects[id] = { ...getProjectCfg(id), ...parsed[id] };
+                }
+              });
+              lsSave();
+              buildProjectTimelineCards();
+              buildUnitTypeSelect();
+              renderInventory();
+              const msg = $("cfgLayoutSaveMsg");
+              if (msg) {
+                msg.textContent = "✓ Imported project price list & availability data.";
+                msg.style.display = "block";
+                setTimeout(() => { msg.style.display = "none"; }, 3000);
+              }
+            }
+          } catch (e) {
+            alert("Invalid JSON file.");
+          }
+        };
+        reader.readAsText(file);
+        ev.target.value = "";
+      }
+
+      function resetProjectOverrides() {
+        const sel = $("cfgInvProjSel");
+        const projId = sel?.value || activeProjId;
+        if (!confirm(`Reset custom layouts, prices, and unit status for ${PROJECTS[projId]?.name || projId}?`)) return;
+        const pCfg = getProjectCfg(projId);
+        pCfg.inventoryStatus = {};
+        pCfg.priceOverrides = {};
+        pCfg.unitMetaMap = {};
+        lsSave();
+        renderCfgInventoryEditor();
+        buildUnitTypeSelect();
+        renderInventory();
       }
 
       function updateProjTimelineStats() {
