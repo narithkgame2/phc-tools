@@ -10428,21 +10428,21 @@
       }
       function cleanFacingDirection(ori) {
         if (!ori) return "—";
-        if (/north-east/i.test(ori)) return "(Facing North-East)";
-        if (/north-west/i.test(ori)) return "(Facing North-West)";
-        if (/south-east/i.test(ori)) return "(Facing South-East)";
-        if (/south-west/i.test(ori)) return "(Facing South-West)";
-        if (/north\s*facing/i.test(ori)) return "(Facing North)";
-        if (/south\s*facing/i.test(ori)) return "(Facing South)";
-        if (/east\s*facing/i.test(ori)) return "(Facing East)";
-        if (/west\s*facing/i.test(ori)) return "(Facing West)";
-        if (/inner\s*east/i.test(ori)) return "(Inner East)";
-        if (/inner\s*lightwell/i.test(ori)) return "(Inner Lightwell)";
-        if (/inner\s*courtyard/i.test(ori)) return "(Inner Courtyard)";
-        if (/ocean\s*view/i.test(ori)) return "(Ocean View)";
-        if (/mountain/i.test(ori)) return "(Mountain View)";
+        if (/north-east/i.test(ori)) return "North-East";
+        if (/north-west/i.test(ori)) return "North-West";
+        if (/south-east/i.test(ori)) return "South-East";
+        if (/south-west/i.test(ori)) return "South-West";
+        if (/north\s*facing/i.test(ori)) return "North";
+        if (/south\s*facing/i.test(ori)) return "South";
+        if (/east\s*facing/i.test(ori)) return "East";
+        if (/west\s*facing/i.test(ori)) return "West";
+        if (/inner\s*east/i.test(ori)) return "Inner East";
+        if (/inner\s*lightwell/i.test(ori)) return "Inner Lightwell";
+        if (/inner\s*courtyard/i.test(ori)) return "Inner Courtyard";
+        if (/ocean\s*view/i.test(ori)) return "Ocean View";
+        if (/mountain/i.test(ori)) return "Mountain View";
         const base = ori.replace(/\s*\([^)]*\)/g, "").trim();
-        return base ? `(${base})` : "—";
+        return base || "—";
       }
       function addMonths(d, m) {
         const r = new Date(d);
@@ -11219,9 +11219,14 @@
           .join("");
         const unitHead = columns
           .flatMap((group) =>
+            group.types.map((type) => `<th><div class="inventory-unit-head"><div class="code">${type}</div></div></th>`),
+          )
+          .join("");
+        const dirHead = columns
+          .flatMap((group) =>
             group.types.map((type) => {
               const info = getUnitMeta(activeProjId, type, sampleFloor);
-              return `<th><div class="inventory-unit-head"><div class="code">${type}</div><div class="dir">${cleanFacingDirection(info.orientation)}</div></div></th>`;
+              return `<th><div class="inventory-unit-head"><div class="dir" style="padding:5px 4px;font-size:10.5px;font-weight:600;color:#475569;">${cleanFacingDirection(info.orientation)}</div></div></th>`;
             }),
           )
           .join("");
@@ -11346,6 +11351,7 @@
                 <thead>
                   <tr class="inventory-group-row"><th class="corner"></th>${groupHead}</tr>
                   <tr class="inventory-type-row"><th class="floor-hd">Unit Type</th>${unitHead}</tr>
+                  <tr class="inventory-dir-row" style="background:#f8f5ee;"><th class="floor-hd">Direction</th>${dirHead}</tr>
                   <tr class="inventory-size-row"><th class="floor-hd">Detail</th>${detailHead}</tr>
                 </thead>
                 <tbody>${body}</tbody>
