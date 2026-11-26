@@ -106,20 +106,43 @@ function getTS8UnitLayoutImage(unit) {
     ? path.join(__dirname, '..', 'phc-website', 'Property Listing', 'Time Square 8', 'Unit Layout')
     : path.join(__dirname, '..', '..', 'phc-website', 'Property Listing', 'Time Square 8', 'Unit Layout');
 
+  // MVT2 & MVT6 layout and sales table matching
+  const mvt2Table = path.join(__dirname, '..', 'Price List', 'MVT2', 'All Mekong View Towers Sales Table.jpg');
+  const mvt6Table = path.join(__dirname, '..', 'Price List', 'MVT6', 'All Mekong View Towers Sales Table.jpg');
+  if (['A06', 'A07', 'A08', 'B02', 'B03'].includes(col) && fs.existsSync(mvt2Table)) {
+    return mvt2Table;
+  }
+  if (['01', '02', '03', '05', '06', '07', '08', '09', '10A', '11', '12', '16', '16A', '17', '18'].includes(col) && fs.existsSync(mvt6Table)) {
+    return mvt6Table;
+  }
+
+  // TS10 oceanfront layout / main image
+  const ts10Img = path.join(__dirname, '..', '..', 'phc-website', 'Property Listing', 'TS10 Main.png');
+  if (['B1', 'B2', 'B3', 'C2', 'C5', 'L2', 'K1', 'J1', 'J2'].includes(col) && fs.existsSync(ts10Img)) {
+    return ts10Img;
+  }
+
   // TS11 layout matching
   const ts11Dir = fs.existsSync(path.join(__dirname, '..', '..', 'phc-website'))
     ? path.join(__dirname, '..', '..', 'phc-website', 'Property Listing', 'Time Square 11', 'Floor Plan')
     : path.join(__dirname, '..', 'phc-website', 'Property Listing', 'Time Square 11', 'Floor Plan');
+  const ts11Local = path.join(__dirname, '..', 'Price List', 'TS11');
 
   if (['S1', 'S3'].includes(col)) {
+    const p1 = path.join(ts11Local, 'TS11 Type S1_S3 30sqm.jpg');
+    if (fs.existsSync(p1)) return p1;
     const p = path.join(ts11Dir, 'TS11_Layout_Type_S1_S3_30sqm.jpg');
     if (fs.existsSync(p)) return p;
   }
   if (['S2', 'S5'].includes(col)) {
+    const p1 = path.join(ts11Local, 'TS11 Type S2_S5 40sqm.jpg');
+    if (fs.existsSync(p1)) return p1;
     const p = path.join(ts11Dir, 'TS11_Layout_Type_S2_S5_40sqm.jpg');
     if (fs.existsSync(p)) return p;
   }
   if (['A1', 'A2', 'A3', 'A5', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3', 'C5', 'D'].includes(col)) {
+    const p1 = path.join(ts11Local, 'TS11 7-39F Directions.jpg');
+    if (fs.existsSync(p1)) return p1;
     const p = path.join(ts11Dir, 'TS11_Overall_Floor_Plate_Master_Plan.jpg');
     if (fs.existsSync(p)) return p;
   }
@@ -318,6 +341,196 @@ async function sendTS11OverviewMenu(chatId) {
   });
 }
 
+async function sendProjectsMenu(chatId) {
+  const text = `<b>🏛️ VERIFIED DEVELOPER PROJECTS</b>\n\n` +
+    `▫️ <i>Official developer inventory and verified payment plans in Phnom Penh & Sihanoukville.</i>\n\n` +
+    `Select a development below to view overview, pricing, and available units:`;
+
+  const keyboard = {
+    inline_keyboard: [
+      [{ text: '🏢 Time Square 7 (TK Duplex Lofts)', callback_data: 'menu_ts7' }],
+      [{ text: '🏢 Time Square 8 (TTP Duplexes)', callback_data: 'ts8_menu_main' }],
+      [{ text: '🏢 Time Square 9 (The Gatsby BKK1)', callback_data: 'menu_ts9' }],
+      [{ text: '🏢 Time Square 10 (Oceanfront SHV)', callback_data: 'menu_ts10' }],
+      [{ text: '🏢 Time Square 11 (Time Castle XI BKK3)', callback_data: 'menu_ts11' }],
+      [{ text: '🌊 Mekong View Tower 2 (Chroy Changvar)', callback_data: 'menu_mvt2' }],
+      [{ text: '🌊 Mekong View Tower 6 (Riverfront CCV)', callback_data: 'menu_mvt6' }]
+    ]
+  };
+
+  await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML', reply_markup: keyboard })
+  });
+}
+
+async function sendTS10OverviewMenu(chatId) {
+  const ts10Img = fs.existsSync(path.join(__dirname, '..', '..', 'phc-website', 'Property Listing', 'TS10 Main.png'))
+    ? path.join(__dirname, '..', '..', 'phc-website', 'Property Listing', 'TS10 Main.png')
+    : path.join(__dirname, '..', 'phc-website', 'Property Listing', 'TS10 Main.png');
+
+  const text = `<b>TIME SQUARE 10 · OCEAN RESIDENCE</b>\n\n` +
+    `▫️ <b>Location:</b> Sihanoukville, Otres Beachfront\n` +
+    `▫️ <b>Developer:</b> Megakim World Corp\n` +
+    `▫️ <b>Handover:</b> Q4 2027 (Foreign Freehold Strata Title)\n\n` +
+    `<blockquote><b>Active Developer Campaigns</b>\n\n` +
+    `① <b>Ocean Diamond 3-Bedrooms (140 sqm):</b>\n` +
+    `• B1, B2, B3 (14% Promo): From $143,265 Net\n` +
+    `• Direct Unobstructed Ocean View\n\n` +
+    `② <b>Ocean Gold 2-3 Bedrooms:</b>\n` +
+    `• K1 2-Bed (90 sqm): From $93,679 Net\n` +
+    `• J1/J2 3-Bed (113 sqm): From $113,443 Net</blockquote>\n\n` +
+    `Select a unit below or type any unit code (e.g. 7B1, 6K1, 8J1):`;
+
+  const keyboard = {
+    inline_keyboard: [
+      [{ text: 'Unit 7B1 · 140 sqm 3-Bed · $145,351 Net', callback_data: 'prop_unit_7B1' }],
+      [{ text: 'Unit 10B2 · 140 sqm 3-Bed · $151,704 Net', callback_data: 'prop_unit_10B2' }],
+      [{ text: 'Unit 6K1 · 90 sqm 2-Bed · $93,679 Net', callback_data: 'prop_unit_6K1' }],
+      [{ text: 'Unit 8J1 · 113 sqm 3-Bed · $115,133 Net', callback_data: 'prop_unit_8J1' }],
+      [{ text: '« Back to All Projects', callback_data: 'menu_projects' }]
+    ]
+  };
+
+  if (ts10Img && fs.existsSync(ts10Img)) {
+    try {
+      const fileData = fs.readFileSync(ts10Img);
+      const formData = new FormData();
+      formData.append('chat_id', chatId);
+      formData.append('photo', new Blob([fileData], { type: 'image/png' }), path.basename(ts10Img));
+      formData.append('caption', text);
+      formData.append('parse_mode', 'HTML');
+      formData.append('reply_markup', JSON.stringify(keyboard));
+      const res = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, { method: 'POST', body: formData });
+      const resData = await res.json();
+      if (resData.ok) return;
+    } catch (e) {}
+  }
+
+  await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML', reply_markup: keyboard })
+  });
+}
+
+async function sendMVT2OverviewMenu(chatId) {
+  const mvtPath = path.join(__dirname, '..', 'Price List', 'MVT2', 'All Mekong View Towers Sales Table.jpg');
+
+  const text = `<b>MEKONG VIEW TOWER 2 (MVT2)</b>\n\n` +
+    `▫️ <b>Location:</b> Chroy Changvar, Phnom Penh\n` +
+    `▫️ <b>Developer:</b> Bun Ches Group / Mekong View\n` +
+    `▫️ <b>Status:</b> Completed / Ready to Move In\n` +
+    `▫️ <b>Title:</b> Hard Title / Strata Title (Foreign Eligible)\n\n` +
+    `<blockquote><b>Payment Plans & Incentives</b>\n\n` +
+    `① <b>Option 1 (1% / Month):</b> 10% SPA · 24 mos @ 1%/mo · 66% HO (5% Disc)\n` +
+    `② <b>Option 1B (Flexible):</b> 10% SPA · ~$580/mo (0% Int) · 76.58% HO (5% Disc)\n` +
+    `③ <b>Option 2 (Pay Off):</b> 100% Full Payment (15% Cash Disc)\n\n` +
+    `▫️ <b>Building Operating Fees:</b>\n` +
+    `• Management: $0.70/sqm · Car Parking: $25/mo (Free Motor)\n` +
+    `• Utilities: $0.25/kWh · Water: $0.30/m³\n` +
+    `• 🎉 All Condition Free Decor Included!</blockquote>\n\n` +
+    `Select a unit below or type any unit code (e.g. A608, B302):`;
+
+  const keyboard = {
+    inline_keyboard: [
+      [{ text: 'Unit A608 · 1BR · 79.63㎡ · $86,962 Net', callback_data: 'prop_unit_A608' }],
+      [{ text: 'Unit A708 · 1BR · 79.63㎡ · $87,860 Net', callback_data: 'prop_unit_A708' }],
+      [{ text: 'Unit B302 · 2BR · 85.46㎡ · $91,926 (Rental)', callback_data: 'prop_unit_B302' }],
+      [{ text: 'Unit B303 · 2BR · 89.83㎡ · $95,981 Net', callback_data: 'prop_unit_B303' }],
+      [{ text: '« Back to All Projects', callback_data: 'menu_projects' }]
+    ]
+  };
+
+  if (mvtPath && fs.existsSync(mvtPath)) {
+    try {
+      const fileData = fs.readFileSync(mvtPath);
+      const formData = new FormData();
+      formData.append('chat_id', chatId);
+      formData.append('photo', new Blob([fileData], { type: 'image/jpeg' }), path.basename(mvtPath));
+      formData.append('caption', text);
+      formData.append('parse_mode', 'HTML');
+      formData.append('reply_markup', JSON.stringify(keyboard));
+      const res = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, { method: 'POST', body: formData });
+      const resData = await res.json();
+      if (resData.ok) return;
+    } catch (e) {}
+  }
+
+  await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML', reply_markup: keyboard })
+  });
+}
+
+async function sendMVT6OverviewMenu(chatId) {
+  const mvtPath = path.join(__dirname, '..', 'Price List', 'MVT6', 'All Mekong View Towers Sales Table.jpg');
+
+  const text = `<b>MEKONG VIEW TOWER 6 (MVT6)</b>\n\n` +
+    `▫️ <b>Location:</b> Chroy Changvar Riverfront Promenade\n` +
+    `▫️ <b>Developer:</b> Bun Ches Group / Mekong View\n` +
+    `▫️ <b>Status:</b> Completed / Ready to Move In\n` +
+    `▫️ <b>Title:</b> Hard Title / Strata Title (Foreign Eligible)\n\n` +
+    `<blockquote><b>Payment Plans & Incentives</b>\n\n` +
+    `① <b>Option 1 (1% / Month):</b> 10% SPA · 24 mos @ 1%/mo · 66% HO (5% Disc)\n` +
+    `② <b>Option 1B (Flexible):</b> 10% SPA · ~$580/mo (0% Int) · 76.58% HO (5% Disc)\n` +
+    `③ <b>Option 2 (Pay Off):</b> 100% Full Payment (15% Cash Disc)\n\n` +
+    `▫️ <b>Building Operating Fees:</b>\n` +
+    `• Management: $0.70/sqm · Car Parking: $25/mo (Free Motor)\n` +
+    `• Utilities: $0.25/kWh · Water: $0.30/m³\n` +
+    `• 🎉 All Condition Free Decor Included!</blockquote>\n\n` +
+    `Select a unit below or type any unit code (e.g. 707, 717, 905):`;
+
+  const keyboard = {
+    inline_keyboard: [
+      [{ text: 'Unit 707 · 2BR · 81.25㎡ · $100,653 Net', callback_data: 'prop_unit_707' }],
+      [{ text: 'Unit 717 · 2BR · 81.25㎡ · $103,740 Net', callback_data: 'prop_unit_717' }],
+      [{ text: 'Unit 905 · 1BR · 52.50㎡ · $65,436 Net', callback_data: 'prop_unit_905' }],
+      [{ text: 'Unit 308 · 1BR · 55.00㎡ · $65,835 (Rental)', callback_data: 'prop_unit_308' }],
+      [{ text: 'Unit 712 · 2BR · 86.25㎡ · $110,124 Net', callback_data: 'prop_unit_712' }],
+      [{ text: '« Back to All Projects', callback_data: 'menu_projects' }]
+    ]
+  };
+
+  if (mvtPath && fs.existsSync(mvtPath)) {
+    try {
+      const fileData = fs.readFileSync(mvtPath);
+      const formData = new FormData();
+      formData.append('chat_id', chatId);
+      formData.append('photo', new Blob([fileData], { type: 'image/jpeg' }), path.basename(mvtPath));
+      formData.append('caption', text);
+      formData.append('parse_mode', 'HTML');
+      formData.append('reply_markup', JSON.stringify(keyboard));
+      const res = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, { method: 'POST', body: formData });
+      const resData = await res.json();
+      if (resData.ok) return;
+    } catch (e) {}
+  }
+
+  await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML', reply_markup: keyboard })
+  });
+}
+
+async function sendMVTChoiceMenu(chatId) {
+  const text = `<b>MEKONG VIEW TOWERS · CHROY CHANGVAR</b>\n\n` +
+    `▫️ <b>Developer:</b> Bun Ches Group / Mekong View\n` +
+    `▫️ <b>Status:</b> Completed / Ready to Move In\n` +
+    `▫️ <b>Title:</b> Hard Title / Strata Title\n\n` +
+    `Select a tower below:`;
+  const keyboard = {
+    inline_keyboard: [
+      [{ text: '🏢 Mekong View Tower 2 (MVT2)', callback_data: 'menu_mvt2' }],
+      [{ text: '🏢 Mekong View Tower 6 (MVT6)', callback_data: 'menu_mvt6' }],
+      [{ text: '« Back to All Projects', callback_data: 'menu_projects' }]
+    ]
+  };
+  await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML', reply_markup: keyboard })
+  });
+}
+
 async function sendTS8UnitProposal(chatId, unit, project) {
   const calculation = projectEngine.calculatePaymentPlan(project, unit);
   const cardText = projectEngine.formatProposalCard({
@@ -333,15 +546,24 @@ async function sendTS8UnitProposal(chatId, unit, project) {
     ? [{ text: `Undo Sold for ${unit.unitCode}`, callback_data: `admin_undo_ts8_${unit.unitCode}` }]
     : [{ text: `Mark ${unit.unitCode} as Sold`, callback_data: `admin_sold_ts8_${unit.unitCode}` }];
 
+  let backCallback = 'ts8_menu_main';
+  let backLabel = '« Back to TS8 Inventory';
+  if (project.projectId === 'time-square-7') { backCallback = 'admin_reset_ts7'; backLabel = '« Back to TS7'; }
+  else if (project.projectId === 'time-square-9') { backCallback = 'menu_ts9'; backLabel = '« Back to TS9'; }
+  else if (project.projectId === 'time-square-10') { backCallback = 'menu_ts10'; backLabel = '« Back to TS10'; }
+  else if (project.projectId === 'time-square-11') { backCallback = 'menu_ts11'; backLabel = '« Back to TS11'; }
+  else if (project.projectId === 'mekong-view-2') { backCallback = 'menu_mvt2'; backLabel = '« Back to MVT2'; }
+  else if (project.projectId === 'mekong-view-6') { backCallback = 'menu_mvt6'; backLabel = '« Back to MVT6'; }
+
   const replyMarkup = {
     inline_keyboard: [
-      soldButton,
-      [
+      project.projectId === 'time-square-8' ? soldButton : [],
+      project.projectId === 'time-square-8' ? [
         { text: 'Developer Price Sheet', callback_data: isPrem ? 'ts8_img_prem' : 'ts8_img_std' },
         { text: 'Upload New Sheet', callback_data: 'ts8_upload_prompt' }
-      ],
-      [{ text: '« Back to Inventory', callback_data: 'ts8_menu_main' }]
-    ]
+      ] : [],
+      [{ text: backLabel, callback_data: backCallback }, { text: '🏛️ All Projects', callback_data: 'menu_projects' }]
+    ].filter(r => r.length > 0)
   };
 
   const layoutPath = getTS8UnitLayoutImage(unit);
@@ -394,6 +616,7 @@ async function setupBotCommands() {
     // 1. Default (English - Private Client Architecture)
     const defaultCommands = [
       { command: 'start', description: '🏛️ Main Menu & Welcome' },
+      { command: 'projects', description: '🏢 Developer Projects (TS7-11, MVT)' },
       { command: 'explore', description: '🏢 Explore Condos (Buy / Rent)' },
       { command: 'tour', description: '📅 Book Private Tour / Video' },
       { command: 'list', description: '🤝 List Your Property (Owners)' },
@@ -409,6 +632,7 @@ async function setupBotCommands() {
     // 2. Japanese Localized Commands (for Japanese phone locales)
     const jpCommands = [
       { command: 'start', description: '🏛️ メインメニュー' },
+      { command: 'projects', description: '🏢 デベロッパー厳選プロジェクト (TS, MVT)' },
       { command: 'explore', description: '🏢 厳選物件（売買・賃貸）' },
       { command: 'tour', description: '📅 プライベート内覧予約' },
       { command: 'list', description: '🤝 物件掲載・売却 (オーナー)' },
@@ -2586,6 +2810,13 @@ async function pollUpdates() {
           return;
         }
 
+        // ── DEVELOPER PROJECT INTELLIGENCE ENGINE (TS10) ──
+        if (text === '/ts10' || text.toLowerCase() === 'ts10' || text.toLowerCase().includes('time square 10') || text.toLowerCase().includes('otres')) {
+          console.log(`🏢 Project Inventory query for Time Square 10 from ${senderName} (${chatId})`);
+          await sendTS10OverviewMenu(chatId);
+          return;
+        }
+
         // ── DEVELOPER PROJECT INTELLIGENCE ENGINE (TS11) ──
         if (text === '/ts11' || text.toLowerCase() === 'ts11' || text.toLowerCase().includes('time square 11') || text.toLowerCase().includes('time castle')) {
           console.log(`🏢 Project Inventory query for Time Square 11 from ${senderName} (${chatId})`);
@@ -2593,9 +2824,37 @@ async function pollUpdates() {
           return;
         }
 
-        // ── DIRECT UNIT CODE QUERY (TS8, TS9, TS11, TS7) ──
+        // ── DEVELOPER PROJECT INTELLIGENCE ENGINE (MVT2) ──
+        if (text === '/mvt2' || text.toLowerCase() === 'mvt2' || text.toLowerCase().includes('mekong view 2') || text.toLowerCase().includes('mvt 2')) {
+          console.log(`🏢 Project Inventory query for Mekong View 2 from ${senderName} (${chatId})`);
+          await sendMVT2OverviewMenu(chatId);
+          return;
+        }
+
+        // ── DEVELOPER PROJECT INTELLIGENCE ENGINE (MVT6) ──
+        if (text === '/mvt6' || text.toLowerCase() === 'mvt6' || text.toLowerCase().includes('mekong view 6') || text.toLowerCase().includes('mvt 6')) {
+          console.log(`🏢 Project Inventory query for Mekong View 6 from ${senderName} (${chatId})`);
+          await sendMVT6OverviewMenu(chatId);
+          return;
+        }
+
+        // ── DEVELOPER PROJECT INTELLIGENCE ENGINE (MVT GENERAL) ──
+        if (text === '/mvt' || text.toLowerCase() === 'mvt' || text.toLowerCase() === 'mekong view' || text.toLowerCase().includes('mekong view tower')) {
+          console.log(`🏢 Project Inventory query for Mekong View Towers from ${senderName} (${chatId})`);
+          await sendMVTChoiceMenu(chatId);
+          return;
+        }
+
+        // ── ALL DEVELOPER PROJECTS DIRECTORY ──
+        if (text === '/projects' || text.toLowerCase() === 'projects' || text.toLowerCase().includes('all project') || text.toLowerCase().includes('developments')) {
+          console.log(`🏢 All Projects Directory requested by ${senderName} (${chatId})`);
+          await sendProjectsMenu(chatId);
+          return;
+        }
+
+        // ── DIRECT UNIT CODE QUERY (TS7, TS8, TS9, TS10, TS11, MVT2, MVT6) ──
         try {
-          const projectIds = ['time-square-8', 'time-square-9', 'time-square-11', 'time-square-7'];
+          const projectIds = ['time-square-8', 'time-square-9', 'time-square-11', 'time-square-7', 'time-square-10', 'mekong-view-2', 'mekong-view-6'];
           for (const pid of projectIds) {
             const proj = projectEngine.loadProject(pid);
             const directUnit = projectEngine.findUnit(proj, text);
@@ -3100,7 +3359,7 @@ async function pollUpdates() {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ callback_query_id: cbId, text: `Loading proposal for ${unitCode}...` })
           });
-          for (const pid of ['time-square-8', 'time-square-9', 'time-square-11', 'time-square-7']) {
+          for (const pid of ['time-square-8', 'time-square-9', 'time-square-11', 'time-square-7', 'time-square-10', 'mekong-view-2', 'mekong-view-6']) {
             const pr = projectEngine.loadProject(pid);
             const u = projectEngine.findUnit(pr, unitCode);
             if (u) {
@@ -3108,6 +3367,56 @@ async function pollUpdates() {
               return;
             }
           }
+          return;
+        }
+
+        // ── DEVELOPER PROJECT DIRECTORY CALLBACKS ─────────────────
+        if (dataStr === 'menu_projects') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+          await sendProjectsMenu(msg.chat.id);
+          return;
+        }
+        if (dataStr === 'menu_ts9') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+          await sendTS9OverviewMenu(msg.chat.id);
+          return;
+        }
+        if (dataStr === 'menu_ts10') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+          await sendTS10OverviewMenu(msg.chat.id);
+          return;
+        }
+        if (dataStr === 'menu_ts11') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+          await sendTS11OverviewMenu(msg.chat.id);
+          return;
+        }
+        if (dataStr === 'menu_mvt2') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+          await sendMVT2OverviewMenu(msg.chat.id);
+          return;
+        }
+        if (dataStr === 'menu_mvt6') {
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: cbId })
+          });
+          await sendMVT6OverviewMenu(msg.chat.id);
           return;
         }
 

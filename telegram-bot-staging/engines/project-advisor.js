@@ -50,13 +50,18 @@ function formatFloorLabel(floor, floorLabel) {
 }
 
 /**
- * Finds a unit by unit code (case-insensitive, trimmed)
+ * Finds a unit by unit code (case-insensitive, trimmed, supports leading #)
  */
 function findUnit(project, unitCode) {
   if (!unitCode) return null;
-  const normalized = String(unitCode).trim().toUpperCase();
+  const raw = String(unitCode).trim().toUpperCase();
+  const stripped = raw.replace(/^#/, '');
   for (const t of project.unitTypes || []) {
-    const found = (t.availableUnits || []).find(u => u.unitCode.trim().toUpperCase() === normalized);
+    const found = (t.availableUnits || []).find(u => {
+      const uCode = u.unitCode.trim().toUpperCase();
+      const uStripped = uCode.replace(/^#/, '');
+      return uCode === raw || uStripped === stripped || uCode === stripped || uStripped === raw;
+    });
     if (found) return found;
   }
   return null;
@@ -473,11 +478,26 @@ function formatProposalCard(analysis) {
     `• <b>Exit Liquidity:</b> ${exitLiquidity}`;
 
   // 4.4 Closing execution requirements
+  const devBeneficiary = project.developer && project.developer.includes('Megakim')
+    ? 'Megakim World Corp Co., Ltd. (ABA Bank) (Verified corporate entity)'
+    : `${escapeHtml(project.developer || 'Developer')} (Verified corporate entity)`;
+
+  const devStatus = project.projectDetails?.handover?.toLowerCase().includes('completed')
+    ? 'Completed / Ready to Move In'
+    : `Off-Plan (Under Construction · Handover ${escapeHtml(completionDate)})`;
+
+  let feeSection = '';
+  if (project.projectDetails?.facilities && project.projectId.startsWith('mekong-view')) {
+    feeSection = `\n\n⸻\n\n` +
+      `<b>Building Operating Fees & Conditions</b>\n\n` +
+      project.projectDetails.facilities.map(f => `• ${escapeHtml(f)}`).join('\n');
+  }
+
   const closingSection = `\n\n⸻\n\n` +
     `<b>Contract Execution Details</b>\n\n` +
     `▫️ <i>The developer requires hand-signed original agreements.</i>\n\n` +
     `• <b>Booking Receipt:</b> $${booking} USD (Pending receipt confirmation)\n` +
-    `• <b>Developer Beneficiary:</b> Megakim World Corp Co., Ltd. (ABA Bank) (Verified corporate entity)\n` +
+    `• <b>Developer Beneficiary:</b> ${devBeneficiary}\n` +
     `• <b>Countersigning Party:</b> Developer authorized signatory\n` +
     `• <b>Courier Tracking:</b> Pending dispatch / DHL tracking to be attached`;
 
@@ -487,7 +507,7 @@ function formatProposalCard(analysis) {
     `<b>${escapeHtml(project.name)} · Unit ${escapeHtml(bestUnit.unitCode)}</b>\n\n` +
     `<blockquote><b>Unit Details</b>\n\n` +
     `• <b>Unit:</b> ${escapeHtml(bestUnit.unitCode)}\n` +
-    `• <b>Development Status:</b> Off-Plan (Under Construction · Handover ${escapeHtml(completionDate)})\n` +
+    `• <b>Development Status:</b> ${devStatus}\n` +
     `• <b>Floor:</b> ${escapeHtml(String(floorDisplay))}\n` +
     `• <b>Size:</b> ${sizeNum} sqm Gross\n` +
     `• <b>Original Price:</b> $${listPrice}\n` +
@@ -502,6 +522,7 @@ function formatProposalCard(analysis) {
     `• <b>Balance at handover (${handoverPercent}%):</b> $${handoverBalance} (Est. ${escapeHtml(handoverDate)})\n` +
     `• <b>Interest:</b> 0%\n` +
     `• <b>Rounding Active:</b> ${roundingDisplay}` +
+    feeSection +
     devFlag +
     advisorSection +
     riskSection +
