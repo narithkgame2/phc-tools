@@ -9518,14 +9518,14 @@
           },
           unitGroups: [
             { label: "Premium Duplex 1BR · 85㎡", types: ["B1", "B2", "C1", "C2"] },
-            { label: "Duplex 1BR · 73–79㎡", types: ["L", "M", "O"] },
+            { label: "Duplex 1BR · 73–85㎡", types: ["L", "M", "N", "O", "P"] },
             {
               label: "Duplex 2BR · 104–112㎡",
               types: ["D", "G", "H", "DX", "EX", "FX", "GX", "HX", "IX"],
             },
-            { label: "Duplex 3BR · 124㎡", types: ["Q", "R"] },
+            { label: "Duplex 3BR · 124–140㎡", types: ["W", "Q", "R"] },
             { label: "Duplex 4BR · 173㎡", types: ["A", "AX", "BX", "CX"] },
-            { label: "Standard · 1BR", types: ["E", "F", "I"] },
+            { label: "Standard · 1BR", types: ["E", "F", "I", "J", "K"] },
             { label: "Standard · 2BR", types: ["B", "C", "S"] },
           ],
           unitTypes: {
@@ -9535,7 +9535,12 @@
             C2: { beds: "1 Bed Premium Duplex", size: "85㎡", orientation: "South Facing (Street 410 / Skyline)" },
             L: { beds: "1 Bed Duplex", size: "79㎡", orientation: "South Facing (Street 410 / Skyline)" },
             M: { beds: "1 Bed Duplex", size: "79㎡", orientation: "South Facing (Street 410 / Skyline)" },
+            N: { beds: "1 Bed Duplex", size: "85㎡", orientation: "South Facing (Street 410 / Skyline)" },
             O: { beds: "1 Bed Duplex", size: "73㎡", orientation: "North Facing (Mao Tse Toung Blvd)" },
+            P: { beds: "1 Bed Duplex", size: "73㎡", orientation: "North Facing (Mao Tse Toung Blvd)" },
+            J: { beds: "1 Bed", size: "40㎡", orientation: "East Facing" },
+            K: { beds: "1 Bed", size: "47㎡", orientation: "South Facing (Street 410)" },
+            W: { beds: "3 Bed Duplex", size: "140㎡", orientation: "North Facing (Mao Tse Toung Blvd)" },
             D: { beds: "2 Bed Duplex", size: "112㎡", orientation: "South Facing (Street 410 / Skyline)" },
             E: { beds: "1 Bed", size: "60㎡", orientation: "South Facing (Street 410)" },
             F: { beds: "1 Bed", size: "60㎡", orientation: "South Facing (Street 410)" },
@@ -10034,6 +10039,60 @@
         mapLaunch(["F","G","H","T","U","V"], dpx100);
         mapLaunch(["B","C","D","E"], dpx130);
         mapLaunch(["A","I","Z"], dpx160);
+      })();
+
+      // Populate TS8 historical launch matrix (8-35F Standard & 40-45F Duplex) as Sold for the ALL view
+      (function hydrateTs8FullMatrix() {
+        const ts8 = PROJECTS.ts8;
+        if (!ts8) return;
+        ts8.defaultStatus = ts8.defaultStatus || {};
+        const std60 = {10:65250,11:66600,12:67950,13:69300,14:70650,15:72000,16:73125,17:74250,18:75375,19:76500,20:77625,21:78750,22:79875,23:81000,24:82125,25:83250,30:88875,31:89775,32:90675,35:93375};
+        const std40 = {22:53250,23:54000,24:54750,25:55500,31:59850,32:60450};
+        const std47 = {15:56000,16:56875,17:57750,18:58625,19:59500,20:60375,21:61250,22:62125,23:63000,24:63875,25:64750,30:69125,31:69825,32:70525,35:72625};
+        const std88 = {13:101640,14:103620,15:105600,16:107250,17:108900,18:110550,19:112200,20:113850,21:115500,22:117150,23:118800,24:120450,25:122100,30:130350,31:131670,32:132990,35:136950};
+        const std73 = {11:81400,12:83050,13:84700,14:86350,15:88000,16:89375,17:90750,18:92125,19:93500,20:94875,21:96250,22:97625,23:99000,24:100375,25:101750,30:108625,31:109725,32:110825,35:114125};
+        const std111 = {14:130310,16:134875,17:136950,18:139025,19:141100,20:143175,21:145250,22:147325,23:149400,24:151475,25:153550,30:163925,31:165585,32:167245,35:172225};
+        const dpx79 = {40:112100,41:113870,42:115640,43:117410,44:119180,45:120950};
+        const dpx85 = {40:121600,41:123520,42:125440,43:127360,44:129280,45:131200};
+        const dpx73 = {40:104500,41:106150,42:107800,43:109450,44:111100,45:112750};
+        const dpx112 = {40:159600,41:162120,42:164640,43:167160,44:169680,45:172200};
+        const dpx104 = {40:148200,41:150540,42:152880,43:155220,44:157560,45:159900};
+        const dpx96 = {40:136800,41:138960,42:141120,43:143280,44:145440,45:147600};
+        const dpx140 = {40:199500,41:202650,42:205800,43:208950,44:212100,45:215250};
+        const dpx124 = {40:176700,41:179490,42:182280,43:185070,44:187860,45:190650};
+        const dpx173 = {40:247000,41:250900,42:254800,43:258700,44:262600,45:266500};
+        const dpx167 = {40:237500,41:241250,42:245000,43:248750,44:252500,45:256250};
+
+        const mapLaunch = (types, table) => {
+          types.forEach((t) => {
+            if (!ts8.prices[t]) ts8.prices[t] = {};
+            Object.entries(table).forEach(([fl, px]) => {
+              if (!ts8.prices[t][fl]) {
+                ts8.prices[t][fl] = px;
+                const label = Number(fl) === 44 ? "45A" : String(fl);
+                ts8.defaultStatus[`${label}${t}`] = "sold";
+              }
+            });
+          });
+        };
+        mapLaunch(["D","E","F","G","H","I"], std60);
+        mapLaunch(["J"], std40);
+        mapLaunch(["K","L","M","N","O","P"], std47);
+        ts8.prices.S = ts8.prices.S || {};
+        if (!ts8.prices.S[30]) { ts8.prices.S[30] = 128375; ts8.defaultStatus["30S"] = "sold"; }
+        mapLaunch(["B","C","S"], std88);
+        mapLaunch(["Q","R"], std73);
+        mapLaunch(["A"], std111);
+        mapLaunch(["L","M"], dpx79);
+        mapLaunch(["N"], dpx85);
+        mapLaunch(["O","P"], dpx73);
+        mapLaunch(["D","E","F"], dpx112);
+        mapLaunch(["G","H"], dpx104);
+        mapLaunch(["I"], dpx96);
+        mapLaunch(["W","S"], dpx140);
+        mapLaunch(["Q","R"], dpx124);
+        mapLaunch(["A"], dpx173);
+        mapLaunch(["B","C"], dpx167);
       })();
       const FOLDER_PRICE_LIST_FILES = {
         ts7: [
@@ -10864,6 +10923,27 @@
         A: { beds: "3 Bed Stylish", size: "100㎡" },
         I: { beds: "3 Bed Stylish", size: "100㎡" },
       };
+      const TS8_CLASSIC_META = {
+        D: { beds: "1 Bed", size: "60㎡" },
+        E: { beds: "1 Bed", size: "60㎡" },
+        F: { beds: "1 Bed", size: "60㎡" },
+        G: { beds: "1 Bed", size: "60㎡" },
+        H: { beds: "1 Bed", size: "60㎡" },
+        I: { beds: "1 Bed", size: "60㎡" },
+        J: { beds: "1 Bed", size: "40㎡" },
+        K: { beds: "1 Bed", size: "47㎡" },
+        L: { beds: "1 Bed", size: "47㎡" },
+        M: { beds: "1 Bed", size: "47㎡" },
+        N: { beds: "1 Bed", size: "47㎡" },
+        O: { beds: "1 Bed", size: "47㎡" },
+        P: { beds: "1 Bed", size: "47㎡" },
+        B: { beds: "2 Bed", size: "88㎡" },
+        C: { beds: "2 Bed", size: "88㎡" },
+        S: { beds: "2 Bed", size: "88㎡" },
+        Q: { beds: "2 Bed", size: "73㎡" },
+        R: { beds: "2 Bed", size: "73㎡" },
+        A: { beds: "3 Bed", size: "111㎡" },
+      };
       function getUnitMeta(projectId, type, floor = null) {
         const keyExact = `${floor}${type}`.toUpperCase();
         const keyType = String(type || "").toUpperCase();
@@ -10872,7 +10952,9 @@
         const classicOverride =
           projectId === "ts7" && floor != null && Number(floor) <= 33
             ? TS7_CLASSIC_META[keyType] || {}
-            : {};
+            : projectId === "ts8" && floor != null && Number(floor) <= 38
+              ? TS8_CLASSIC_META[keyType] || {}
+              : {};
         const exactMeta = floor != null ? cfgMap[keyExact] || {} : {};
         const typeMeta = cfgMap[keyType] || {};
         return {
