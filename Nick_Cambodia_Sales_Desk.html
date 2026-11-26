@@ -694,10 +694,15 @@
       }
       @media (max-width: 700px) { .inv-scroll-hint { display: block; } }
       .inventory-table {
-        width: 100%;
-        min-width: 900px;
+        width: auto;
+        min-width: 0;
         border-collapse: separate;
         border-spacing: 0;
+      }
+      .inventory-table th:not(:first-child),
+      .inventory-table td:not(:first-child) {
+        min-width: 98px;
+        width: 112px;
       }
       .inventory-table th,
       .inventory-table td {
