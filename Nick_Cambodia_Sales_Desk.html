@@ -60,7 +60,7 @@
         font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
         min-height: 100vh;
         -webkit-font-smoothing: antialiased;
-        overflow-x: hidden;
+        overflow-x: clip;
       }
       input,
       select,
@@ -381,7 +381,8 @@
           width: 220px; flex-shrink: 0;
           background: var(--sb);
           position: sticky; top: 52px;
-          height: calc(100vh - 52px);
+          height: calc(100dvh - 52px);
+          min-height: calc(100vh - 52px);
           overflow: hidden;
           transition: width .15s ease;
         }
