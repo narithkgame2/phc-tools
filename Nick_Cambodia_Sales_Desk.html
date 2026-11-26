@@ -9892,7 +9892,7 @@
           tabLabel: "CCV",
           location: "Phnom Penh, Chroy Changvar",
           commission: 10,
-          discounts: { standard: 0, promo: 0 },
+          discounts: { standard: 5, promo: 15 },
           promoGroups: {},
           unitGroups: [
             { label: "Tower A · 1 Bedroom", types: ["A08", "A06", "A07"] },
@@ -9921,7 +9921,7 @@
           tabLabel: "CCV",
           location: "Phnom Penh, Chroy Changvar",
           commission: 10,
-          discounts: { standard: 0, promo: 0 },
+          discounts: { standard: 5, promo: 15 },
           promoGroups: {},
           unitGroups: [
             { label: "1 Bedroom · 52.5–55㎡", types: ["05", "08", "09", "16A"] },
@@ -11395,6 +11395,21 @@
               <button type="button" onclick="setInventoryStatus('${row.proj}','${row.uid}','sold')" style="padding:6px 4px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid ${row.status==='sold'?'#b91c1c':'var(--bd)'};background:${row.status==='sold'?'#fee2e2':'#fff'};color:${row.status==='sold'?'#991b1b':'var(--tx2)'};">Sold</button>
             </div>
           </div>
+          ${row.proj === "mvt2" || row.proj === "mvt6" ? `
+          <div style="margin-top:10px;padding:10px;border:1px solid #cbd5e1;border-radius:10px;background:#f8fafc;font-size:11px;">
+            <div style="font-weight:700;color:#073642;margin-bottom:4px;">💳 Payment Options</div>
+            <div style="color:#475569;line-height:1.45;">
+              <div>• <strong>Option 1 (10% Down):</strong> 5% Disc · 24 mos 0% interest</div>
+              <div>• <strong>Option 2 (Pay Off):</strong> 15% Disc (100% Cash)</div>
+            </div>
+            <div style="font-weight:700;color:#073642;margin-top:7px;margin-bottom:4px;">🏢 Fees & Inclusions</div>
+            <div style="color:#475569;line-height:1.45;">
+              <div>• Mgmt Fee: $0.70/㎡</div>
+              <div>• Electricity: $0.25/kWh · Water: $0.30/m³</div>
+              <div>• Parking: $25/car/mo · Motor: Free</div>
+              <div style="color:#15803d;font-weight:700;margin-top:3px;">🎉 All Condition Free Decor</div>
+            </div>
+          </div>` : ""}
           <button class="inventory-side-cta" type="button" onclick="selectInventoryUnit('${row.proj}','${row.type}',${row.floor})">Use In Calculator</button>
         `;
       }
@@ -12371,7 +12386,9 @@
         if (p.discounts.standard > 0) {
           const o = document.createElement("option");
           o.value = p.discounts.standard;
-          o.textContent = p.discounts.standard + "% Standard";
+          o.textContent = (p.id === "mvt2" || p.id === "mvt6")
+            ? `${p.discounts.standard}% (Option 1: 10% Down)`
+            : `${p.discounts.standard}% Standard`;
           sel.appendChild(o);
         }
         if (
@@ -12380,17 +12397,30 @@
         ) {
           const o = document.createElement("option");
           o.value = p.discounts.promo;
-          o.textContent = p.discounts.promo + "% Promo";
+          o.textContent = (p.id === "mvt2" || p.id === "mvt6")
+            ? `${p.discounts.promo}% (Option 2: Pay Off)`
+            : `${p.discounts.promo}% Promo`;
           sel.appendChild(o);
         }
       }
       function buildPlanPills() {
         const c = $("planPills");
         c.innerHTML = "";
-        [
+        let plans = [
           ["std", "Standard Plan", "20% SPA · 45% (45 mos) · 35% Handover"],
           ["custom", "Custom Plan", "Set custom down payment & instalments"],
-        ].forEach(([k, lbl, sub]) => {
+        ];
+        if (activeProjId === "mvt2" || activeProjId === "mvt6") {
+          plans = [
+            ["mvt_opt1", "Option 1: 10% Down", "10% SPA · 24 mos (0% int) · 5% Disc"],
+            ["mvt_opt2", "Option 2: Pay Off", "100% Pay Off · 15% Disc"],
+            ["custom", "Custom Plan", "Set custom down payment & instalments"],
+          ];
+          if (activePlan === "std") activePlan = "mvt_opt1";
+        } else {
+          if (activePlan === "mvt_opt1" || activePlan === "mvt_opt2") activePlan = "std";
+        }
+        plans.forEach(([k, lbl, sub]) => {
           const d = document.createElement("div");
           d.className = "plan-pill" + (k === activePlan ? " active" : "");
           d.innerHTML = `<div class="pp-title"><span>${lbl}</span><span style="font-size:11px;font-weight:700;color:${k === activePlan ? '#86BE3F' : 'rgba(7,54,66,0.3)'}">${k === activePlan ? '●' : '○'}</span></div><div class="pp-sub">${sub}</div>`;
@@ -12950,9 +12980,13 @@
           discAmt = promo.flatDiscount;
           discLabel = `−$${promo.flatDiscount.toLocaleString()}`;
         } else if (discMode === "auto") {
-          discPct = promo
-            ? promo.discPct || p.discounts.promo
-            : p.discounts.standard;
+          if (targetProjId === "mvt2" || targetProjId === "mvt6") {
+            discPct = plan === "mvt_opt2" ? 15 : 5;
+          } else {
+            discPct = promo
+              ? promo.discPct || p.discounts.promo
+              : p.discounts.standard;
+          }
           const extraFlat = promo?.extraFlatDiscount || 0;
           discAmt = (orig * discPct) / 100 + extraFlat;
           discLabel = extraFlat > 0 ? `${discPct}% + $${extraFlat.toLocaleString()}` : `${discPct}%`;
@@ -12973,6 +13007,18 @@
           hoPct = parseFloat($("cHO").value) || 35;
           moPct = 100 - spaPct - hoPct;
           months = parseInt($("cMonths").value) || 45;
+        } else if (plan === "mvt_opt1" || ((targetProjId === "mvt2" || targetProjId === "mvt6") && plan === "std")) {
+          bk = 1000;
+          spaPct = 10;
+          months = 24;
+          moPct = 15;
+          hoPct = 75;
+        } else if (plan === "mvt_opt2") {
+          bk = 1000;
+          spaPct = 100;
+          moPct = 0;
+          months = 1;
+          hoPct = 0;
         }
         const spaTotal = (net * spaPct) / 100,
           moTotal = (net * moPct) / 100,
@@ -13072,6 +13118,7 @@
         $("rFinal").textContent = fUSD(r.net);
         $("rFinalC").textContent =
           activeCurr !== "USD" ? formatFx(activeCurr, r.net) : "Final price";
+        const isMvt = r.proj === "mvt2" || r.proj === "mvt6";
         const sched = [
           {
             icon: uiIcon("save", "ui-icon sm"),
@@ -13081,23 +13128,25 @@
           },
           {
             icon: uiIcon("document", "ui-icon sm"),
-            label: `SPA Payment (${r.spaPct}%)`,
+            label: activePlan === "mvt_opt2" ? "Pay Off (100%)" : `SPA Down Payment (${r.spaPct}%)`,
             sub: `Less booking · Net ${fUSD(r.spaNet)}`,
             amt: r.spaTotal,
           },
-          {
+        ];
+        if (activePlan !== "mvt_opt2") {
+          sched.push({
             icon: uiIcon("calendar", "ui-icon sm"),
-            label: "Monthly Instalments",
+            label: isMvt ? "Monthly Instalments (0% Interest)" : "Monthly Instalments",
             sub: `${r.months} × ${fUSD(r.moAmt)}/mo`,
             amt: r.moTotal,
-          },
-          {
+          });
+          sched.push({
             icon: uiIcon("building", "ui-icon sm"),
-            label: `Handover Payment (${r.hoPct}%)`,
-            sub: "Upon key collection",
+            label: isMvt ? `Remaining Balance (${r.hoPct}%)` : `Handover Payment (${r.hoPct}%)`,
+            sub: isMvt ? "After 24 months instalment" : "Upon key collection",
             amt: r.hoTotal,
-          },
-        ];
+          });
+        }
         const sr = $("schRows");
         sr.innerHTML = "";
         sched.forEach((row, i) => {
