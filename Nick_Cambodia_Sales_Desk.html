@@ -9124,6 +9124,7 @@
             },
           },
           unitGroups: [
+            { label: "New Layout 1BR · 43㎡", types: ["X1", "X2", "X3", "X5"] },
             { label: "1 Bed · 80㎡", types: ["B"] },
             {
               label: "1 Bed · 75㎡",
@@ -9138,6 +9139,10 @@
             { label: "4 Bedroom", types: ["C"] },
           ],
           unitTypes: {
+            X1: { beds: "1 Bed New Layout", size: "43㎡", orientation: "New Layout (43㎡)" },
+            X2: { beds: "1 Bed New Layout", size: "43㎡", orientation: "New Layout (43㎡)" },
+            X3: { beds: "1 Bed New Layout", size: "43㎡", orientation: "New Layout (43㎡)" },
+            X5: { beds: "1 Bed New Layout", size: "43㎡", orientation: "New Layout (43㎡)" },
             B: { beds: "1 Bed", size: "80㎡", orientation: "East Facing (Street 51)" },
             D: { beds: "1 Bed", size: "75㎡", orientation: "North Facing (Street 278)" },
             E: { beds: "1 Bed", size: "75㎡", orientation: "North Facing (Street 278)" },
@@ -9160,6 +9165,10 @@
             C: { beds: "4 Bed", size: "190㎡", orientation: "North-East (Street 278 & 51)" },
           },
           prices: {
+            X1: { 5: 73320, 10: 77490, 11: 78330, 13: 79680, 17: 82320, 19: 83670, 20: 84330, 23: 86670, 28: 90890, 29: 91680, 31: 93510, 33: 95490, 35: 97500, 36: 98490 },
+            X2: { 5: 73320, 8: 75840, 10: 77490, 11: 78330, 12: 78990, 13: 79680, 17: 82320, 18: 83010, 19: 83670, 20: 84330, 21: 84990, 22: 85830, 29: 91680, 30: 92400, 31: 93510, 33: 95490, 36: 98490 },
+            X3: { 8: 75840, 10: 77490, 12: 78990, 13: 79680, 18: 83010, 19: 83670, 20: 84330, 22: 85830, 29: 91680, 30: 92400, 31: 93510, 32: 94500, 33: 95490, 36: 98490, 38: 101670 },
+            X5: { 5: 73320, 8: 75840, 10: 77490, 11: 78330, 12: 78990, 18: 83010, 19: 83670, 20: 84330, 21: 84990, 22: 85830, 23: 86670, 28: 90890, 30: 92400, 31: 93510, 32: 94500, 33: 95490, 34: 96510, 36: 98490, 38: 101670 },
             B: {
               5: 134420,
               7: 137500,
@@ -12228,6 +12237,21 @@
         });
       }
       function getProjectPromo(projectId, type, floor = null) {
+        if (projectId === "ts9" && ["X1", "X2", "X3", "X5"].includes(type)) {
+          if (floor != null && Number(floor) >= 20) {
+            return {
+              types: ["X1", "X2", "X3", "X5"],
+              label: "New Layout (20–38F) · 15% + $3,000 + Free TV/Fridge/Washer",
+              discPct: 15,
+              extraFlatDiscount: 3000,
+            };
+          }
+          return {
+            types: ["X1", "X2", "X3", "X5"],
+            label: "New Layout (5–19F) · 15% Off",
+            discPct: 15,
+          };
+        }
         if (projectId === "ts8") {
           if (["B1", "B2", "C1", "C2"].includes(type)) {
             return {
