@@ -8403,6 +8403,7 @@
                   <span>Card List (<span id="invMatchCount">0</span>)</span>
                 </button>
               </div>
+              <div id="invSeriesBar" style="display:none;flex-wrap:wrap;gap:6px;margin-top:10px;"></div>
               <div class="inventory-grid" id="inventoryGrid"></div>
             </div>
             <aside class="inventory-side" id="inventorySide"></aside>
@@ -11043,7 +11044,42 @@
         renderInventory();
       }
     
-      function renderInventory() {
+        let inventorySeriesFilter = "all";
+        function setInventorySeriesFilter(next) {
+          inventorySeriesFilter = next || "all";
+          renderInventory();
+        }
+        function matchesTs7Series(row, series) {
+          if (series === "all") return true;
+          const isA12 = row.type === "A1" || row.type === "A2";
+          const isModDpx = ["B1", "B2", "C1", "C2", "D1", "D2", "E1", "E2"].includes(row.type);
+          if (series === "classic") return row.floor <= 33 && !isA12;
+          if (series === "modern1br") return isA12;
+          if (series === "moderndpx") return isModDpx;
+          if (series === "luxdpx") return row.floor >= 35 && !isModDpx;
+          return true;
+        }
+        function renderInventory() {
+        const seriesBar = $("invSeriesBar");
+        if (seriesBar) {
+          if (activeProjId === "ts7") {
+            const opts = [
+              { id: "all", label: "All Series" },
+              { id: "classic", label: "Classic (8–33F · 15% Off)" },
+              { id: "modern1br", label: "Modern 1BR (A1/A2 · 10% Off)" },
+              { id: "moderndpx", label: "Modern Duplex 65㎡ (B1–E2)" },
+              { id: "luxdpx", label: "Luxury Duplex (35–47F)" },
+            ];
+            seriesBar.innerHTML = opts.map((o) => {
+              const active = inventorySeriesFilter === o.id;
+              return `<button type="button" onclick="setInventorySeriesFilter('${o.id}')" style="padding:6px 11px;border-radius:999px;font-size:11.5px;font-weight:700;cursor:pointer;border:1px solid ${active ? "#073642" : "#cbd5e1"};background:${active ? "#073642" : "#ffffff"};color:${active ? "#ffffff" : "#073642"};white-space:nowrap;">${o.label}</button>`;
+            }).join("");
+            seriesBar.style.display = "flex";
+          } else {
+            seriesBar.style.display = "none";
+            inventorySeriesFilter = "all";
+          }
+        }
         const grid = $("inventoryGrid");
         if (!grid) return;
         const q = ($("inventorySearch")?.value || "").trim().toLowerCase();
@@ -11093,7 +11129,9 @@
             inventoryDirectionFilter === "all"
               ? true
               : (row.orientation || "").toLowerCase().includes(inventoryDirectionFilter);
-          return matchesFilter && matchesBed && matchesDirection && inventoryRowMatches(row, q);
+          const matchesSeries =
+            activeProjId === "ts7" ? matchesTs7Series(row, inventorySeriesFilter) : true;
+          return matchesFilter && matchesBed && matchesDirection && matchesSeries && inventoryRowMatches(row, q);
         });
         if (!matchingRows.length) {
           grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><span class="empty-icon">${uiIcon("building", "ui-icon lg")}</span><div class="empty-h">No Units Match</div><div class="empty-s">Try another project, search term, or status filter.</div></div>`;
@@ -11101,11 +11139,11 @@
           return;
         }
         const project = PROJECTS[activeProjId];
-        const rowsByUid = new Map(allRows.map((row) => [row.uid, row]));
+        const rowsByUid = new Map(matchingRows.map((row) => [row.uid, row]));
         const columns = [];
         (project.unitGroups || []).forEach((group, groupIndex) => {
           const types = (group.types || []).filter((type) =>
-            allRows.some((row) => row.type === type),
+            matchingRows.some((row) => row.type === type),
           );
           if (!types.length) return;
           columns.push({
