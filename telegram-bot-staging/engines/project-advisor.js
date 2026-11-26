@@ -394,47 +394,37 @@ function undoUnitSold(projectId, unitCode, actor = 'Nick') {
 }
 
 /**
- * Formats a verified, compliant Telegram client proposal card in Buyer Quotation style
+ * Formats a verified, compliant Telegram client proposal card in Nick's exact quotation layout
  */
 function formatProposalCard(analysis) {
   const { project, calculation, bestUnit, budgetMatched, requestedBudget, budgetVariance } = analysis;
   const s = calculation.schedule;
-  const isOuter = calculation.isOuter;
-
-  let advisorNote = '';
-  if (bestUnit.planNote) {
-    advisorNote = bestUnit.planNote;
-  } else if (isOuter === false) {
-    advisorNote = 'Faces the internal courtyard void per floor plan.';
-  } else if (isOuter === true) {
-    advisorNote = 'Perimeter unit facing outward per floor plan.';
-  }
 
   let budgetWarning = '';
   if (budgetMatched === false && requestedBudget) {
     budgetWarning = `⚠️ <b>Budget Advisory:</b> Entry unit shown is $${budgetVariance.toLocaleString()} USD above target $${requestedBudget.toLocaleString()} USD.\n\n`;
   }
 
-  const pName = (project.name || '').toUpperCase();
-  const location = project.projectDetails?.location || 'Phnom Penh, Cambodia';
+  const pName = (project.name || '').replace(/\s*\(.*\)/, '').toUpperCase();
   const floorDisplay = bestUnit.floorLabel || (bestUnit.floor ? `${bestUnit.floor}F` : '');
   const bedsDisplay = bestUnit.bedrooms ? `${bestUnit.bedrooms} Bed` : (bestUnit.type || 'Unit');
   const typeDisplay = bestUnit.column ? `Type ${bestUnit.column}` : '';
   const unitBadge = [bedsDisplay, typeDisplay].filter(Boolean).join(' · ');
 
-  const oriText = bestUnit.orientation ? (bestUnit.orientation.includes('Facing') ? bestUnit.orientation : `${bestUnit.orientation} Facing`) : '';
+  const orientationDisplay = bestUnit.orientation || '';
   const grossDisplay = `Gross ${calculation.grossAreaSqm} sqm`;
   const netDisplay = bestUnit.netAreaSqm ? `Net ${bestUnit.netAreaSqm} sqm` : '';
-  const specsBits = [floorDisplay ? `Floor ${floorDisplay}` : '', oriText, grossDisplay, netDisplay].filter(Boolean).join(' · ');
+  const sizeLine = [grossDisplay, netDisplay].filter(Boolean).join(' · ');
 
-  let devStatus = '';
+  let statusLine = '';
   if (bestUnit.status === 'sold') {
-    devStatus = '⚠️ SOLD (Historical Reference Only)';
+    statusLine = 'Status: ⚠️ SOLD (Historical Reference Only)';
   } else if (project.projectDetails?.handover?.toLowerCase().includes('completed')) {
-    devStatus = 'Completed / Ready to Move In';
+    statusLine = 'Status: Completed / Ready to Move In';
   } else {
-    devStatus = `Off-Plan (Handover ${project.projectDetails?.handover || 'Q4 2028'} · Strata Title)`;
+    statusLine = `Status: Off-Plan (Handover ${project.projectDetails?.handover || 'Q4 2028'})`;
   }
+  const titleType = project.projectDetails?.titleType || 'Strata Title';
 
   const listPrice = (bestUnit.listPrice || calculation.listPrice).toLocaleString();
   const netPrice = calculation.netPrice.toLocaleString();
@@ -446,59 +436,58 @@ function formatProposalCard(analysis) {
     discountStr = `${calculation.discountPercent}% + $${calculation.cashRebateUsd.toLocaleString()} Rebate`;
   }
 
-  const planName = project.projectId.startsWith('mekong-view')
-    ? 'Option 1 (10% Down + 1%/mo)'
-    : (project.activePromotion?.name || 'Developer Standard Plan');
-
   const booking = s.bookingDeposit.toLocaleString();
-  const downPaymentTotal = s.downPaymentTotal.toLocaleString();
-  const downPaymentNet = s.downPaymentDue.toLocaleString();
   const downPaymentPercent = s.downPaymentPercent || 10;
+  const downPaymentTotal = s.downPaymentTotal.toLocaleString();
   const monthly = s.monthlyInstallment.toLocaleString();
   const duration = s.durationMonths;
   const totalInstallments = s.totalInstallments.toLocaleString();
+  const monthlyTotalPercent = Math.round((s.totalInstallments / calculation.netPrice) * 100);
   const handoverPercent = s.handoverPercent;
   const handoverBalance = s.handoverBalance.toLocaleString();
-  const handoverSub = project.projectDetails?.handover?.toLowerCase().includes('completed')
-    ? 'Upon key collection / transfer'
-    : `Est. ${project.projectDetails?.handover || 'Handover'}`;
+
+  const projMap = {
+    'time-square-7': 'ts7',
+    'time-square-8': 'ts8',
+    'time-square-9': 'ts9',
+    'time-square-10': 'ts10',
+    'time-square-11': 'ts11',
+    'mekong-view-2': 'mvt2',
+    'mekong-view-6': 'mvt6'
+  };
+  const pCode = projMap[project.projectId] || project.projectId;
+  const cleanUnit = (bestUnit.unitCode || '').replace(/^#/, '');
+  const vipUrl = `https://www.propertyhubcambodia.com/vip-desk/?project=${pCode}&unit=${cleanUnit}`;
 
   let feeSection = '';
   if (project.projectId.startsWith('mekong-view')) {
-    feeSection = `\n<b>Building Operating Fees & Conditions</b>\n` +
-      `▫️ <b>Management Fee:</b> $0.70 / sqm\n` +
-      `▫️ <b>Utilities:</b> Electricity $0.25/kWh · Water $0.30/m³\n` +
-      `▫️ <b>Parking:</b> $25 / car / month (Motorcycle: Free)\n` +
-      `▫️ <b>Special:</b> All condition free decor package included\n`;
+    feeSection = `\n` +
+      `▫️ Management Fee: $0.70 / sqm\n` +
+      `▫️ Utilities: Electricity $0.25/kWh · Water $0.30/m³\n` +
+      `▫️ Parking: $25 / car / month (Motor: Free)\n` +
+      `▫️ Condition: All Condition Free Decor\n`;
   }
-
-  let noteSection = '';
-  if (advisorNote) {
-    noteSection = `\n▫️ <i>Advisor Note: ${escapeHtml(advisorNote)}</i>\n`;
-  }
-
-  const confirmedDate = project.provenance?.priceListDate || '2026-11-20';
 
   return (
     budgetWarning +
-    `<b>BUYER QUOTATION</b>\n` +
-    `<b>${escapeHtml(pName)}</b>\n` +
-    `<i>${escapeHtml(location)}</i>\n\n` +
-    `▫️ <b>Unit:</b> ${escapeHtml(bestUnit.unitCode)} (${escapeHtml(unitBadge)})\n` +
-    `▫️ <b>Specs:</b> ${escapeHtml(specsBits)}\n` +
-    `▫️ <b>Status:</b> ${escapeHtml(devStatus)}\n\n` +
-    `▫️ <b>List Price:</b> $${listPrice}\n` +
-    `▫️ <b>You Save:</b> $${discAmt} (${escapeHtml(discountStr)} Discount)\n` +
-    `▫️ <b>Final Price:</b> <b>$${netPrice}</b> ($${pricePerSqm} / sqm)\n\n` +
-    `<blockquote><b>PAYMENT SCHEDULE · ${escapeHtml(planName)}</b>\n\n` +
-    `① <b>Booking Fee:</b> $${booking} (Upon reservation)\n` +
-    `② <b>SPA Down Payment (${downPaymentPercent}%):</b> $${downPaymentTotal} (Net after booking: $${downPaymentNet})\n` +
-    `③ <b>Monthly Installments (${duration} mos):</b> ${duration} months × $${monthly} / mo ($${totalInstallments})\n` +
-    `④ <b>Handover Payment (${handoverPercent}%):</b> $${handoverBalance} (${escapeHtml(handoverSub)})\n` +
-    `▫️ <b>Total Purchase Price:</b> $${netPrice} (0% Interest)</blockquote>\n` +
+    `<b>${escapeHtml(pName)}</b>\n\n` +
+    `▫️ Unit: ${escapeHtml(bestUnit.unitCode)} (${escapeHtml(unitBadge)})\n` +
+    `▫️ Specs: Floor ${escapeHtml(floorDisplay)}\n` +
+    (orientationDisplay ? `▫️ ${escapeHtml(orientationDisplay)}\n` : '') +
+    `▫️ ${escapeHtml(sizeLine)}\n` +
+    `▫️ ${escapeHtml(statusLine)}\n` +
+    `▫️ ${escapeHtml(titleType)}\n\n` +
+    `▫️ List Price: $${listPrice}\n` +
+    `▫️ You Save: $${discAmt} (${escapeHtml(discountStr)} Discount)\n` +
+    `▫️ Final Price: $${netPrice} ($${pricePerSqm} / sqm)\n\n` +
+    `<b>PAYMENT SCHEDULE</b>\n\n` +
+    `① Booking : $${booking}\n` +
+    `② SPA (${downPaymentPercent}%): $${downPaymentTotal}\n` +
+    `③ Installments (${monthlyTotalPercent}%): ${duration} months × $${monthly} / mo ($${totalInstallments})\n` +
+    `④ Handover Payment (${handoverPercent}%): $${handoverBalance}\n` +
+    `▫️ Total Purchase Price: $${netPrice} (0% Interest)\n` +
     feeSection +
-    noteSection +
-    `\n▫️ <i>Official developer pricing verified ${escapeHtml(confirmedDate)}. Original hand-signed contracts via courier.</i>`
+    `\nLink to VIP-Desk:\n${vipUrl}`
   );
 }
 
