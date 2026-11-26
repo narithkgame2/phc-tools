@@ -9867,7 +9867,9 @@
             { label: "2 Bed · G 75㎡ / N 56㎡", types: ["A1", "A2", "A3", "A5"] },
             { label: "1 Bed · G 50㎡ / N 36㎡", types: ["B1", "B2", "B3"] },
             { label: "1 Bed · G 45㎡ / N 33㎡", types: ["C1", "C2", "C3", "C5"] },
+            { label: "1 Bed · G 40㎡ / N 30㎡ (New)", types: ["S2", "S5"] },
             { label: "1 Bed · G 38㎡ / N 28㎡", types: ["D"] },
+            { label: "1 Bed · G 30㎡ / N 23㎡ (New)", types: ["S1", "S3"] },
           ],
           unitTypes: {
             A1: { beds: "2 Bed", size: "75.00㎡", grossSize: "75.00㎡", netSize: "56.00㎡", orientation: "North-West Corner (St 113)" },
@@ -9882,6 +9884,10 @@
             C3: { beds: "1 Bed", size: "45.00㎡", grossSize: "45.00㎡", netSize: "33.00㎡", orientation: "East Facing" },
             C5: { beds: "1 Bed", size: "45.00㎡", grossSize: "45.00㎡", netSize: "33.00㎡", orientation: "North Facing" },
             D: { beds: "1 Bed", size: "38.00㎡", grossSize: "38.00㎡", netSize: "28.00㎡", orientation: "East Facing" },
+            S1: { beds: "1 Bed", size: "30.00㎡", grossSize: "30.00㎡", netSize: "23.00㎡", orientation: "North Facing (New Layout)" },
+            S2: { beds: "1 Bed", size: "40.00㎡", grossSize: "40.00㎡", netSize: "30.00㎡", orientation: "West Facing (Street 113)" },
+            S3: { beds: "1 Bed", size: "30.00㎡", grossSize: "30.00㎡", netSize: "23.00㎡", orientation: "South Facing (New Layout)" },
+            S5: { beds: "1 Bed", size: "40.00㎡", grossSize: "40.00㎡", netSize: "30.00㎡", orientation: "South-West Corner (St 113 & 390)" },
           },
           prices: {
             A1: {},
@@ -10135,6 +10141,10 @@
         C3: { ...TS11_PRICE_MAPS.C },
         C5: { ...TS11_PRICE_MAPS.C },
         D: { ...TS11_PRICE_MAPS.D },
+        S1: { 17: 43826, 30: 49199, 31: 49755 },
+        S2: { 9: 54424 },
+        S3: { 29: 48666, 31: 49755, 32: 50288 },
+        S5: { 24: 58520 },
       };
 
       const PROJ_ORDER = ["ts9","ts8","ts7","ts10","ts11","mvt2","mvt6","kingston","leconde","jtower3","odomtower","odomliving","uc88","diamondbay","angkor","lzseaview","picasso","gato"];
@@ -10335,10 +10345,14 @@
           "TS10 Special Discount.PNG",
         ],
         ts11: [
+          "TS11/TS11 S-Type Gross and Net.png",
+          "TS11/TS11 New Layout Plate S1-S5.jpg",
+          "TS11/TS11 Type S2_S5 40sqm.jpg",
+          "TS11/TS11 Type S1_S3 30sqm.jpg",
           "TS11/TS11 Gross and Net.png",
           "TS11/TS11 7-39F Directions.jpg",
           "TS11/TS11 7-39F Layout.jpg",
-          "TS11 Price List.png",
+          "TS11/2026-11-20_TS11_Special_Layout_PriceList.jpg",
         ],
         mvt2: ["All Mekong View Towers Sales Table.jpg"],
         mvt6: ["All Mekong View Towers Sales Table.jpg"],
