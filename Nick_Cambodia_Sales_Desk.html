@@ -11222,8 +11222,10 @@
         );
       }
       function getEffectiveUnitPrice(projectId, type, floor) {
-        const uid = `${floor}${type}`;
-        const ovr = getProjectCfg(projectId).priceOverrides?.[uid];
+        const uid = formatUnitUid(projectId, floor, type);
+        const ovr =
+          getProjectCfg(projectId).priceOverrides?.[uid] ||
+          getProjectCfg(projectId).priceOverrides?.[`${floor}${type}`];
         if (Number.isFinite(Number(ovr)) && Number(ovr) > 0) return Number(ovr);
         return Number(PROJECTS[projectId]?.prices?.[type]?.[floor] || 0);
       }
@@ -11602,7 +11604,7 @@
             const cells = columns
               .flatMap((group) =>
                 group.types.map((type) => {
-                  const uid = `${floor}${type}`;
+                  const uid = formatUnitUid(activeProjId, floor, type);
                   const row = rowsByUid.get(uid);
                   if (!row) return `<td></td>`;
                   const matchesFilter =
@@ -12996,7 +12998,7 @@
           info: getUnitMeta(targetProjId, type, floor),
           type,
           floor,
-          uid: `${floor}${type}`,
+          uid: formatUnitUid(targetProjId, floor, type),
           proj: targetProjId,
           projName: p.name,
           dev: p.dev,
