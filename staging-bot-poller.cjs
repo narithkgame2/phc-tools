@@ -85,6 +85,36 @@ function getTS8OverviewFlyerPath() {
 
 function getTS8UnitLayoutImage(unit) {
   const col = (unit.column || '').toUpperCase();
+
+  // 1. NickCambodia Project Assets (Canonical source)
+  const ncProjectsDir = '/Users/macbook/Documents/GitHub/nickcambodia/public/assets/projects';
+  if (fs.existsSync(ncProjectsDir)) {
+    if (['S1', 'S3'].includes(col)) {
+      const p = path.join(ncProjectsDir, 'time-square-11', 'layouts', 'S1_S3_30sqm.jpg');
+      if (fs.existsSync(p)) return p;
+    }
+    if (['S2', 'S5'].includes(col)) {
+      const p = path.join(ncProjectsDir, 'time-square-11', 'layouts', 'S2_S5_40sqm.jpg');
+      if (fs.existsSync(p)) return p;
+    }
+    if (['A1', 'A2', 'A3', 'A5', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3', 'C5', 'D'].includes(col)) {
+      const p = path.join(ncProjectsDir, 'time-square-11', 'layouts', 'Floor_Plate_Directions.jpg');
+      if (fs.existsSync(p)) return p;
+    }
+    if (['01', '02', '03', '05', '06', '07', '08', '09', '10A', '11', '12', '16', '16A', '17', '18'].includes(col)) {
+      const p = path.join(ncProjectsDir, 'mekong-view-6', 'layouts', 'MVT6_Sales_Table.jpg');
+      if (fs.existsSync(p)) return p;
+    }
+    if (['A06', 'A07', 'A08', 'B02', 'B03'].includes(col)) {
+      const p = path.join(ncProjectsDir, 'mekong-view-2', 'layouts', 'MVT2_Sales_Table.jpg');
+      if (fs.existsSync(p)) return p;
+    }
+    if (['B1', 'B2', 'B3', 'C2', 'C5', 'L2', 'K1', 'J1', 'J2'].includes(col)) {
+      const p = path.join(ncProjectsDir, 'time-square-10', 'hero', 'TS10_Main.png');
+      if (fs.existsSync(p)) return p;
+    }
+  }
+
   const baseDir = fs.existsSync(path.join(__dirname, '..', 'phc-website'))
     ? path.join(__dirname, '..', 'phc-website', 'Property Listing', 'Time Square 8', 'Unit Layout')
     : path.join(__dirname, '..', '..', 'phc-website', 'Property Listing', 'Time Square 8', 'Unit Layout');
