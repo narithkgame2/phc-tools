@@ -3179,24 +3179,26 @@ async function pollUpdates() {
         const isJP = userLang === 'JP';
         const senderHandle = sender.username ? `@${sender.username}` : senderName;
 
-        // Alert Nick of incoming direct client inquiry
-        await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: nickChatId,
-            text: `💬 <b>NEW INCOMING CLIENT MESSAGE!</b>\n\n` +
-              `▫️ <b>Client:</b> ${senderHandle} (${senderName})\n` +
-              `▫️ <b>User ID:</b> <code>${chatId}</code>\n` +
-              `▫️ <b>Language:</b> ${userLang}\n` +
-              `▫️ <b>Message:</b> "${text}"`,
-            parse_mode: 'HTML',
-            reply_markup: {
-              inline_keyboard: [
-                [{ text: '💬 Message Client', url: `tg://user?id=${chatId}` }]
-              ]
-            }
-          })
-        });
+        // Alert Nick of incoming direct client inquiry (except for Nick's own test chat)
+        if (String(chatId) !== String(nickChatId)) {
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: nickChatId,
+              text: `💬 <b>NEW INCOMING CLIENT MESSAGE!</b>\n\n` +
+                `▫️ <b>Client:</b> ${senderHandle} (${senderName})\n` +
+                `▫️ <b>User ID:</b> <code>${chatId}</code>\n` +
+                `▫️ <b>Language:</b> ${userLang}\n` +
+                `▫️ <b>Message:</b> "${text}"`,
+              parse_mode: 'HTML',
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: '💬 Message Client', url: `tg://user?id=${chatId}` }]
+                ]
+              }
+            })
+          });
+        }
 
         // Instant polite response with direct advisory access and clean menu
         const fallbackText = isJP ?

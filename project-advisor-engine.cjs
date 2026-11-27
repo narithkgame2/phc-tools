@@ -50,16 +50,16 @@ function formatFloorLabel(floor, floorLabel) {
 }
 
 /**
- * Finds a unit by unit code (case-insensitive, trimmed, supports leading #)
+ * Finds a unit by unit code (case-insensitive, trimmed, supports leading # and /)
  */
 function findUnit(project, unitCode) {
   if (!unitCode) return null;
   const raw = String(unitCode).trim().toUpperCase();
-  const stripped = raw.replace(/^#/, '');
+  const stripped = raw.replace(/^[#/]/, '');
   for (const t of project.unitTypes || []) {
     const found = (t.availableUnits || []).find(u => {
       const uCode = u.unitCode.trim().toUpperCase();
-      const uStripped = uCode.replace(/^#/, '');
+      const uStripped = uCode.replace(/^[#/]/, '');
       return uCode === raw || uStripped === stripped || uCode === stripped || uStripped === raw;
     });
     if (found) return found;
