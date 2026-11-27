@@ -457,7 +457,7 @@ function formatProposalCard(analysis) {
   };
   const pCode = projMap[project.projectId] || project.projectId;
   const cleanUnit = (bestUnit.unitCode || '').replace(/^#/, '');
-  const vipUrl = `https://www.propertyhubcambodia.com/vip-desk/?project=${pCode}&unit=${cleanUnit}`;
+  const vipUrl = `https://www.nickcambodia.com/vip-desk/?project=${pCode}&unit=${cleanUnit}`;
 
   let feeSection = '';
   if (project.projectId.startsWith('mekong-view')) {
